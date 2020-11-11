@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-import 'package:onion/const/MyUrl.dart';
-import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
+
+import '../../const/MyUrl.dart';
+import '../../myHttpGlobal/MyHttpGlobal.dart';
 import './CategoryProvider.dart';
 
 class IndustryProvider with ChangeNotifier {
@@ -14,15 +14,19 @@ class IndustryProvider with ChangeNotifier {
 
   Future<void> fetchItems({@required String name}) async {
     try {
-      // final response = await http.get(testUrl);
-      final response = await APIRequest().get(myUrl: "$baseDropDownItemsUrl$name");
-      final extractedData = json.decode(response.body);
+      final response =
+          await APIRequest().get(myUrl: "$baseDropDownItemsUrl$name");
+      print("Mahdi: $response");
+
+      final extractedData = response.data;
+
+      // final extractedData = json.decode(response.body);
       if (extractedData == null) {
         return;
       }
       final List<CategoryModel> loadedProducts = [];
-      print("Mahdi: title $extractedData");
-      //
+      // print("Mahdi: title $extractedData");
+
       // loadedProducts.add(extractedData.forEach());
 
       extractedData.forEach((netItems) {

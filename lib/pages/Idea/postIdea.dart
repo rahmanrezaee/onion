@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
+import 'package:onion/widgets/MyLittleAppbar.dart';
 
 class PostIdea extends StatefulWidget {
   static final routeName = "/postIdea";
+
   @override
   _PostIdeaState createState() => _PostIdeaState();
 }
@@ -12,10 +14,14 @@ class _PostIdeaState extends State<PostIdea> {
     {"id": 1, "image": "assets/images/document.jpg"},
     {"id": 2, "image": "assets/images/document.jpg"},
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: PreferredSize(
+        preferredSize: const Size(double.infinity, kToolbarHeight),
+        child: MyLittleAppbar(myTitle: "Add new Idea"),
+      ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(15),
@@ -561,7 +567,7 @@ class _PostIdeaState extends State<PostIdea> {
                           color: Theme.of(context).primaryColor,
                         ),
                       ),
-                      
+
                       SizedBox(
                         height: 10,
                       ),
