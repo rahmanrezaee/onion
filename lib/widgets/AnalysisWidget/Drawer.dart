@@ -5,7 +5,7 @@ import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/pages/F&Q.dart';
 import 'package:onion/pages/Services.dart';
 import 'package:onion/pages/authentication/Login.dart';
-import 'package:onion/provider/auth_provider.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../const/Size.dart';

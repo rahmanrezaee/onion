@@ -110,6 +110,11 @@ class Auth with ChangeNotifier {
       prefs.setString('userData', userData);
       notifyListeners();
     } on DioError catch (e) {
+      
+      if(e.response == null){
+        return null;
+      }
+
       if (e.response.data['errors'] != null) {
         throw new LoginException(e.response.data['errors'][0]["msg"]);
       }
@@ -172,8 +177,8 @@ class Auth with ChangeNotifier {
   Future changePassword({String email, String password, String code}) async {
     final url = '$BASE_URL/user/changepasswordwithKey';
     try {
-      var result = await dio.post(url, data: {"newpassword": password, "keycode": code});
-      
+      var result =
+          await dio.post(url, data: {"newpassword": password, "keycode": code});
     } on DioError catch (e) {
       if (e.response.data['message'] != null) {
         throw new LoginException(e.response.data['message']);

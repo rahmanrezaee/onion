@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onion/models/users.dart';
-import 'package:onion/provider/auth_provider.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/widgets/AuthenticationWidget/OvalBottomBorderClipper.dart';
 import 'package:onion/widgets/Checkbox/GlowCheckbox.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';

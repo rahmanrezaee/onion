@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onion/pages/authentication/ForgetPassword.dart';
 import 'package:onion/pages/authentication/signup.dart';
-import 'package:onion/provider/auth_provider.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/widgets/AuthenticationWidget/OvalBottomBorderClipper.dart';
 import 'package:onion/widgets/Snanckbar.dart';
 import 'package:provider/provider.dart';

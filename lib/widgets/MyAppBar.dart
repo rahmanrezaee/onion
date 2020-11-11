@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onion/provider/auth_provider.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:provider/provider.dart';
 

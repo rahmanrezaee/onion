@@ -12,7 +12,7 @@ import 'package:onion/pages/authentication/ChangePassword.dart';
 import 'package:onion/pages/authentication/ForgetPassword.dart';
 import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/pages/authentication/signup.dart';
-import 'package:onion/provider/auth_provider.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 import './statemanagment/dropDownItem/AnalyticsProvider.dart';
@@ -32,6 +32,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => MyFlagState()),
       ChangeNotifierProvider(create: (_) => IndustryProvider()),
       ChangeNotifierProvider(create: (_) => AnalyticsProvider()),
+      ChangeNotifierProvider(create: (_) => Auth()),
     ],
     child: MyApp(),
   ));
@@ -40,58 +41,45 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(
-          value: Auth(),
+    return Consumer<Auth>(
+      builder: (ctx, auth, _) => MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: Color(0xFF7B3C8A),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          pageTransitionsTheme: PageTransitionsTheme(builders: {
+            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          }),
         ),
-      ],
-      child: Consumer<Auth>(
-        builder: (ctx, auth, _) =>
-            MaterialApp(
-              title: 'Flutter Demo',
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData(
-                primaryColor: Color(0xFF7B3C8A),
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-                pageTransitionsTheme: PageTransitionsTheme(builders: {
-                  TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-                }),
+        home: CustomDrawerPage(),
+        routes: {
+          Login.routeName: (context) => auth.token != null
+              ? CustomDrawerPage()
+              : FutureBuilder(
+                  future:
+                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(child: Text("Loading...")),
+                            )
+                          : Login()),
+          SignUp.routeName: (context) => SignUp(),
+          CustomDrawerPage.routeName: (context) => CustomDrawerPage(),
+          AnalyticsOne.routeName: (context) => AnalyticsOne(),
+          Analysis.routerName: (context) => Analysis(),
+          RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
+          ForgetPassword.routeName: (context) => ForgetPassword(),
+          SetupIdea.routeName: (context) => SetupIdea(),
+          PostIdea.routeName: (context) => PostIdea(),
+          ChangePassword.routeName: (context) => ChangePassword(
+                ModalRoute.of(context).settings.arguments,
               ),
-              home: CustomDrawerPage(),
-              routes: {
-                Login.routeName: (context) =>
-                auth.token != null
-                    ? CustomDrawerPage()
-                    : FutureBuilder(
-                    future: Provider.of<Auth>(context, listen: false)
-                        .tryAutoLogin(),
-                    builder: (ctx, authResultSnapshot) =>
-                    authResultSnapshot.connectionState ==
-                        ConnectionState.waiting
-                        ? Scaffold(
-                      body: Center(child: Text("Loading...")),
-                    )
-                        : Login()),
-                SignUp.routeName: (context) => SignUp(),
-                CustomDrawerPage.routeName: (context) => CustomDrawerPage(),
-                AnalyticsOne.routeName: (context) => AnalyticsOne(),
-                Analysis.routerName: (context) => Analysis(),
-                RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-                ForgetPassword.routeName: (context) => ForgetPassword(),
-                SetupIdea.routeName: (context) => SetupIdea(),
-                PostIdea.routeName: (context) => PostIdea(),
-                ChangePassword.routeName: (context) =>
-                    ChangePassword(
-                      ModalRoute
-                          .of(context)
-                          .settings
-                          .arguments,
-                    ),
-                FandQ.routeName: (context) => FandQ(),
-                Services.routeName: (context) => Services(),
-              },
-            ),
+          FandQ.routeName: (context) => FandQ(),
+          Services.routeName: (context) => Services(),
+        },
       ),
     );
   }
