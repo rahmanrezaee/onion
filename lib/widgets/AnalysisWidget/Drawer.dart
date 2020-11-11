@@ -4,6 +4,7 @@ import 'package:onion/pages/AnalyticsOne.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/pages/F&Q.dart';
 import 'package:onion/pages/Services.dart';
+import 'package:onion/pages/Settings.dart';
 import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
@@ -122,8 +123,15 @@ class MyDrawer extends StatelessWidget {
               myListTile(
                 context: context,
                 name: "Analytics One",
-                icon: Icons.settings,
+                icon: Icons.opacity,
                 routeName: AnalyticsOne.routeName,
+              ),
+              Divider(color: Colors.white, height: 0.1),
+              myListTile(
+                context: context,
+                name: "Settings",
+                icon: Icons.settings,
+                routeName: Settings.routeName,
               ),
               Divider(color: Colors.white, height: 0.1),
               myListTile(

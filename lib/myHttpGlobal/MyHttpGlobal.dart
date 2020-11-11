@@ -8,6 +8,7 @@ class APIRequest {
     @required String myUrl,
   }) {
     return dio.get(myUrl);
+    
   }
 
   Future post({

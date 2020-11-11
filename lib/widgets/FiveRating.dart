@@ -14,11 +14,11 @@ class MyFiveRating extends StatelessWidget {
       allowHalfRating: true,
       itemCount: 5,
       itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-      //If itemBuilder gets error check this issue: https://github.com/sarbagyastha/flutter_rating_bar/issues/44
-      itemBuilder: (context, _) => Icon(
-        Icons.star,
-        color: middlePurple,
-      ),
+      // If itemBuilder gets error check this issue: https://github.com/sarbagyastha/flutter_rating_bar/issues/44
+      // itemBuilder: (context, _) => Icon(
+      //   Icons.star,
+      //   color: middlePurple,
+      // ),
       onRatingUpdate: (rating) {
         print(rating);
       },

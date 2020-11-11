@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
+import 'package:onion/services/SimpleHttp.dart';
+import 'package:shimmer/shimmer.dart';
 
 class FandQ extends StatelessWidget {
   static String routeName = "FandQ";
@@ -16,29 +18,75 @@ class FandQ extends StatelessWidget {
                   .pushReplacementNamed(CustomDrawerPage.routeName);
             }),
       ),
-      body: ListView(
-        children: [
-          SizedBox(height: 15),
-          CustomizeExpansion(
-            title: Text("Lorem Ipsum has been the industry's standard dummy",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xff555555),
-                )),
-            content: Text(
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in"),
-            openedIcon: Icon(Icons.remove, color: Color(0xFF555555)),
-          ),
-          CustomizeExpansion(
-            openedIcon: Icon(Icons.remove, color: Color(0xFF555555)),
-          ),
-          CustomizeExpansion(
-            openedIcon: Icon(Icons.remove, color: Color(0xFF555555)),
-          ),
-          CustomizeExpansion(
-            openedIcon: Icon(Icons.remove, color: Color(0xFF555555)),
-          ),
-        ],
+      body: FutureBuilder(
+        future: SimpleHttp().getFandQ(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List data = snapshot.data as List;
+            print("data: $data");
+            return ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (context, i) {
+                print("index: $i");
+                return CustomizeExpansion(
+                  title: Text(data[i]["question"],
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff555555),
+                      )),
+                  content: Text(data[i]["anwser"]),
+                  openedIcon: Icon(Icons.remove, color: Color(0xFF555555)),
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            print("Something went wrang when loadgin F&Q: ${snapshot.error}");
+            return Text("Something went wrong!! Please try again later.");
+          } else {
+            return Center(child: SingleChildScrollView());
+            //Loading
+            // return ListView(
+            //   children: [
+                
+                // Row(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   children: [
+                //     ClipRRect(
+                //       borderRadius: BorderRadius.circular(20),
+                //       child: SizedBox(
+                //         width: 20,
+                //         height: 20,
+                //       ),
+                //     ),
+                //     Expanded(child:Column(
+                //       children: [
+                //         SizedBox(
+                //           height: 10,
+                //         ),
+                //       ],
+                //     )),
+                //   ]
+                // ),
+                // SizedBox(
+                //   width: 20.0,
+                //   height: 20.0,
+                //   child: Shimmer.fromColors(
+                //     baseColor: Colors.red,
+                //     highlightColor: Colors.yellow,
+                //     child: Text(
+                //       'Shimmer',
+                //       textAlign: TextAlign.center,
+                //       style: TextStyle(
+                //         fontSize: 40.0,
+                //         fontWeight: FontWeight.bold,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+            //   ],
+            // );
+          }
+        },
       ),
     );
   }
@@ -98,8 +146,7 @@ class _CustomizeExpansionState extends State<CustomizeExpansion> {
             trailing: Icon(Icons.add, color: Colors.white),
             //Set leading icon
             //Title
-            title: Row(
-              children: [
+            title: Row(children: [
               Container(
                 decoration: BoxDecoration(
                   color: Color(0xFFd8d8d8),
@@ -110,13 +157,15 @@ class _CustomizeExpansionState extends State<CustomizeExpansion> {
                     : expansionIcon,
               ),
               SizedBox(width: 15),
-              Expanded(child:widget.title == null
-                  ? Text("Lorem Ipsum has been the industry's standard dummy",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff555555),
-                      ))
-                  : widget.title)
+              Expanded(
+                  child: widget.title == null
+                      ? Text(
+                          "Lorem Ipsum has been the industry's standard dummy",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff555555),
+                          ))
+                      : widget.title)
             ]),
             //Paddings
             tilePadding: EdgeInsets.symmetric(horizontal: 10),
@@ -127,9 +176,6 @@ class _CustomizeExpansionState extends State<CustomizeExpansion> {
                   ? Text(
                       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in")
                   : widget.content,
-              SizedBox(
-                height: 20,
-              ),
             ],
           ),
         ),

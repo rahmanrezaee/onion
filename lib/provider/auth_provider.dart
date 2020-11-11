@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:onion/const/values.dart';
+import 'package:onion/const/MyUrl.dart';
 import 'package:onion/models/users.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +22,7 @@ class Auth with ChangeNotifier {
 
   Future registerUser({User user}) async {
     try {
-      final String url = "$BASE_URL/user/signup";
+      final String url = "$baseUrl/user/signup";
       print(url);
       print(user.toMap());
 
@@ -85,7 +85,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> _authenticate(String username, String password) async {
-    final url = '${BASE_URL}/user/login';
+    final url = '${baseUrl}/user/login';
 
     try {
       final response = await dio.post(url, data: {
@@ -153,7 +153,7 @@ class Auth with ChangeNotifier {
   }
 
   Future forgetPassword(String email) async {
-    final url = '$BASE_URL/user/forgetpassword';
+    final url = '$baseUrl/user/forgetpassword';
 
     try {
       final response = await dio.post(url, data: {
@@ -170,7 +170,7 @@ class Auth with ChangeNotifier {
   }
 
   Future changePassword({String email, String password, String code}) async {
-    final url = '$BASE_URL/user/changepasswordwithKey';
+    final url = '$baseUrl/user/changepasswordwithKey';
     try {
       var result = await dio.post(url, data: {"newpassword": password, "keycode": code});
       

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onion/pages/Settings.dart';
 import 'package:onion/statemanagment/dropDownItem/MyFlagState.dart';
 
 import 'package:onion/pages/Home.dart';
@@ -90,6 +91,7 @@ class MyApp extends StatelessWidget {
                     ),
                 FandQ.routeName: (context) => FandQ(),
                 Services.routeName: (context) => Services(),
+                Settings.routeName: (context) => Settings(),
               },
             ),
       ),
