@@ -43,48 +43,51 @@ class FandQ extends StatelessWidget {
             print("Something went wrang when loadgin F&Q: ${snapshot.error}");
             return Text("Something went wrong!! Please try again later.");
           } else {
-            return Center(child: SingleChildScrollView());
-            //Loading
-            // return ListView(
-            //   children: [
-                
-                // Row(
-                //   crossAxisAlignment: CrossAxisAlignment.start,
-                //   children: [
-                //     ClipRRect(
-                //       borderRadius: BorderRadius.circular(20),
-                //       child: SizedBox(
-                //         width: 20,
-                //         height: 20,
-                //       ),
-                //     ),
-                //     Expanded(child:Column(
-                //       children: [
-                //         SizedBox(
-                //           height: 10,
-                //         ),
-                //       ],
-                //     )),
-                //   ]
-                // ),
-                // SizedBox(
-                //   width: 20.0,
-                //   height: 20.0,
-                //   child: Shimmer.fromColors(
-                //     baseColor: Colors.red,
-                //     highlightColor: Colors.yellow,
-                //     child: Text(
-                //       'Shimmer',
-                //       textAlign: TextAlign.center,
-                //       style: TextStyle(
-                //         fontSize: 40.0,
-                //         fontWeight: FontWeight.bold,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-            //   ],
-            // );
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFd8d8d8),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Icon(Icons.add, color: Color(0xFF555555))),
+                SizedBox(width: 10),
+                Expanded(
+                    child: Column(
+                  children: [
+                    SizedBox(height: 5),
+                    Shimmer.fromColors(
+                      child: Container(
+                        height: 5,
+                        color: Color(0xFFd8d8d8),
+                      ),
+                      baseColor: Color(0xFFd8d8d8),
+                      highlightColor: Colors.white,
+                    ),
+                    SizedBox(height: 5),
+                    Shimmer.fromColors(
+                      child: Container(
+                        height: 5,
+                        color: Color(0xFFd8d8d8),
+                      ),
+                      baseColor: Color(0xFFd8d8d8),
+                      highlightColor: Colors.white,
+                    ),
+                    SizedBox(height: 5),
+                    Shimmer.fromColors(
+                      child: Container(
+                        height: 5,
+                        color: Color(0xFFd8d8d8),
+                      ),
+                      baseColor: Color(0xFFd8d8d8),
+                      highlightColor: Colors.white,
+                    ),
+                  ],
+                )),
+              ]),
+            );
           }
         },
       ),

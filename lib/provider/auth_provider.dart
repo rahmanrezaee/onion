@@ -94,7 +94,7 @@ class Auth with ChangeNotifier {
       });
 
       final responseData = response.data;
-
+      print("responseData ${response.data}");
       var prefs = await SharedPreferences.getInstance();
       final userData = json.encode(
         {

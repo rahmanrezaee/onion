@@ -1,19 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:onion/const/color.dart';
+import 'package:onion/pages/CustomDrawerPage.dart';
+import 'package:onion/provider/auth_provider.dart';
+import 'package:onion/services/SettingsHttp.dart';
+import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   static String routeName = "Settings";
+
+  @override
+  _SettingsState createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  bool receiveEmail = true;
+  bool receiveWebsite = false;
+  bool receiveSMS = false;
+  bool receiveAppUpdates = true;
+  String profileType = "Select Profile Type";
+  List profileTypes = [
+    "Service Provider",
+    "Project Manager",
+    "Investor",
+  ];
+  String token;
+  bool _loadingButton = false;
+  getDefaultData() async {
+  token = await Auth().getToken();
+  var defaultData = await SettingsHttp().getDefaultSettings(token);
+  print("defaultData $defaultData");
+}
+
+  initState(){
+    getDefaultData();
+    super.initState();
+  }
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        backgroundColor: middlePurple,
+        title: Text("Notification"),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.of(context)
+                .pushReplacementNamed(CustomDrawerPage.routeName);
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: MyAlertIcon(num: 3),
+            onPressed: () {},
+          )
+        ],
+      ),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: ListView(children: [
-          SizedBox(height: 15),
+          SizedBox(height: 10),
           //popup section start
-          Text("Select your primary profile"),
+          Text("Select your primary profile",
+              style: TextStyle(color: middlePurple)),
           Container(
-            height: 30,
+            height: 25,
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.only(left: 15),
             decoration: BoxDecoration(
@@ -21,9 +75,9 @@ class Settings extends StatelessWidget {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black38,
-                    spreadRadius: 5,
-                    blurRadius: 7,
+                    color: Colors.black12,
+                    spreadRadius: 3,
+                    blurRadius: 4,
                     offset: Offset(0, 3),
                   ),
                 ]),
@@ -31,22 +85,27 @@ class Settings extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Select Profile Type",
-                    style: TextStyle(color: Colors.black)),
+                Text(
+                  profileType,
+                ),
                 PopupMenuButton(
                     padding: EdgeInsets.all(0),
                     icon: Icon(Icons.arrow_drop_down, color: Colors.black),
-                    onSelected: (result) {},
+                    onSelected: (index) {
+                      setState(() {
+                        profileType = profileTypes[index];
+                      });
+                    },
                     itemBuilder: (context) {
                       return [
-                        const PopupMenuItem(
-                          value: 1,
-                          child: Text('I am Services provider'),
-                        ),
-                        const PopupMenuItem(
-                          value: 2,
-                          child: Text('I am Project manager'),
-                        ),
+                        ...profileTypes
+                            .map(
+                              (e) => PopupMenuItem(
+                                value: profileTypes.indexOf(e),
+                                child: Text(e),
+                              ),
+                            )
+                            .toList(),
                       ];
                     })
               ],
@@ -55,10 +114,11 @@ class Settings extends StatelessWidget {
           SizedBox(height: 15),
           //popup section End
           //Card section start
-          Text("Notification settings"),
+          Text("Notification settings", style: TextStyle(color: middlePurple)),
           SizedBox(height: 10),
           Card(
-            elevation: 4,
+            elevation: 3,
+            shadowColor: Colors.black12,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: Column(
@@ -71,8 +131,14 @@ class Settings extends StatelessWidget {
                           Transform.scale(
                             scale: 0.6,
                             alignment: Alignment.centerRight,
-                            child:
-                                CupertinoSwitch(value: true, onChanged: (v) {}),
+                            child: CupertinoSwitch(
+                                activeColor: middlePurple,
+                                value: receiveEmail,
+                                onChanged: (v) {
+                                  setState(() {
+                                    receiveEmail = v;
+                                  });
+                                }),
                           ),
                         ]),
                     Row(
@@ -82,8 +148,14 @@ class Settings extends StatelessWidget {
                           Transform.scale(
                             scale: 0.6,
                             alignment: Alignment.centerRight,
-                            child:
-                                CupertinoSwitch(value: true, onChanged: (v) {}),
+                            child: CupertinoSwitch(
+                                activeColor: middlePurple,
+                                value: receiveWebsite,
+                                onChanged: (v) {
+                                  setState(() {
+                                    receiveWebsite = v;
+                                  });
+                                }),
                           ),
                         ]),
                     Row(
@@ -93,8 +165,14 @@ class Settings extends StatelessWidget {
                           Transform.scale(
                             scale: 0.6,
                             alignment: Alignment.centerRight,
-                            child:
-                                CupertinoSwitch(value: true, onChanged: (v) {}),
+                            child: CupertinoSwitch(
+                                activeColor: middlePurple,
+                                value: receiveSMS,
+                                onChanged: (v) {
+                                  setState(() {
+                                    receiveSMS = v;
+                                  });
+                                }),
                           ),
                         ]),
                     Row(
@@ -104,8 +182,14 @@ class Settings extends StatelessWidget {
                           Transform.scale(
                             scale: 0.6,
                             alignment: Alignment.centerRight,
-                            child:
-                                CupertinoSwitch(value: true, onChanged: (v) {}),
+                            child: CupertinoSwitch(
+                                activeColor: middlePurple,
+                                value: receiveAppUpdates,
+                                onChanged: (v) {
+                                  setState(() {
+                                    receiveAppUpdates = v;
+                                  });
+                                }),
                           ),
                         ]),
                   ]),
@@ -116,8 +200,36 @@ class Settings extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(10),
             child: RaisedButton(
-              child: Text("SAVE CHANGES"),
-              onPressed: () {},
+              color: middlePurple,
+              child:_loadingButton == true ? LinearProgressIndicator(backgroundColor: firstPurple) : 
+                  Text("SAVE CHANGES", style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                setState((){
+                _loadingButton = true;
+                });
+                // Map settings = {
+                //   "ProfileType": profileType,
+                //   "ReceiveEmail": receiveEmail,
+                //   "ReceiveWebsite": receiveWebsite,
+                //   "ReceiveSMS": receiveSMS,
+                //   "ReceiveAppUpdates": receiveAppUpdates,
+                // };
+                SettingsHttp().setSettings(
+                  profileType: profileType,
+                  email: receiveEmail,
+                  website: receiveWebsite,
+                  sms: receiveSMS,
+                  update: receiveAppUpdates,
+                  token: token,
+                ).then((value) {
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text("Settings Saved Succesfully"),
+                  ));
+                  setState((){
+                  _loadingButton = false;
+                  });
+                });
+              },
             ),
           ),
         ]),
