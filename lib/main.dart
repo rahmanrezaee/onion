@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Idea/MyIdeaId.dart';
 import 'package:onion/pages/authentication/ComplateProfile.dart';
+import 'package:onion/pages/Settings.dart';
+import 'package:onion/statemanagment/dropDownItem/MyFlagState.dart';
+
+import 'package:onion/pages/Home.dart';
+import 'package:onion/pages/HomeAfterLogin.dart';
+import 'package:onion/pages/Idea/postIdea.dart';
+import 'package:onion/pages/F&Q.dart';
+import 'package:onion/pages/Services.dart';
+import 'package:onion/pages/Idea/setupIdea.dart';
+import 'package:onion/pages/RequestedIdeaPage.dart';
+import 'package:onion/pages/authentication/ChangePassword.dart';
+import 'package:onion/pages/authentication/ForgetPassword.dart';
+import 'package:onion/pages/authentication/Login.dart';
+import 'package:onion/pages/authentication/signup.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 import './pages/MyMessagePage.dart';
