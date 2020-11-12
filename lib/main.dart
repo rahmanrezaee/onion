@@ -30,8 +30,7 @@ import './test.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
-
-   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
   runApp(MultiProvider(
@@ -76,22 +75,57 @@ class MyApp extends StatelessWidget {
                           : Login(),
                 ),
           MyIdeaId.routeName: (context) => MyIdeaId(),
-          SignUp.routeName: (context) => SignUp(),
+          SignUp.routeName: (context) => auth.token != null
+              ? CustomDrawerPage()
+              : FutureBuilder(
+                  future:
+                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(child: Text("Loading...")),
+                            )
+                          : SignUp(),
+                ),
           CustomDrawerPage.routeName: (context) => CustomDrawerPage(),
           AnalyticsOne.routeName: (context) => AnalyticsOne(),
           Analysis.routerName: (context) => Analysis(),
           RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-          ForgetPassword.routeName: (context) => ForgetPassword(),
+          ForgetPassword.routeName: (context) => auth.token != null
+              ? CustomDrawerPage()
+              : FutureBuilder(
+                  future:
+                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(child: Text("Loading...")),
+                            )
+                          : ForgetPassword(),
+                ),
+          ChangePassword.routeName: (context) => auth.token != null
+              ? CustomDrawerPage()
+              : FutureBuilder(
+                  future:
+                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(child: Text("Loading...")),
+                            )
+                          : ChangePassword(
+                              ModalRoute.of(context).settings.arguments,
+                            ),
+                ),
           SetupIdea.routeName: (context) => SetupIdea(),
           PostIdea.routeName: (context) => PostIdea(),
-          ChangePassword.routeName: (context) => ChangePassword(
-                ModalRoute.of(context).settings.arguments,
-              ),
           ProjectChat.routeName: (context) => ProjectChat(),
           MyMessagePage.routeName: (context) => MyMessagePage(),
           NotificationsList.routeName: (context) => NotificationsList(),
           PostIdea.routeName: (context) => PostIdea(),
-          ChangePassword.routeName: (context) => ChangePassword(ModalRoute.of(context).settings.arguments,),
           FandQ.routeName: (context) => FandQ(),
           Services.routeName: (context) => Services(),
         },

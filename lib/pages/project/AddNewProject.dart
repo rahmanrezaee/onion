@@ -10,11 +10,13 @@ class _AddNewProjectState extends State<AddNewProject> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(15),
           child: Column(
+             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
                 children: [

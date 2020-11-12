@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import 'package:firebase_auth/firebase_auth.dart' as fi;
+
 class Login extends StatefulWidget {
   static String routeName = '/login';
 
@@ -78,7 +80,7 @@ class _LoginState extends State<Login> {
                           key: _formKey,
                           child: Column(
                             children: [
-                              SizedBox(height: 65),
+                              SizedBox(height: 70),
                               Text(
                                 "Login Account",
                                 style: TextStyle(
@@ -86,7 +88,7 @@ class _LoginState extends State<Login> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 20),
+                              SizedBox(height: 10),
                               TextFormField(
                                 keyboardType: TextInputType.emailAddress,
                                 style: TextStyle(
@@ -120,7 +122,7 @@ class _LoginState extends State<Login> {
                                 ),
                               ),
 
-                              SizedBox(height: 15),
+                              SizedBox(height: 10),
                               TextFormField(
                                 obscureText: _obscureText,
                                 controller: passport,
@@ -157,7 +159,6 @@ class _LoginState extends State<Login> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 10),
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: FlatButton(
@@ -169,7 +170,7 @@ class _LoginState extends State<Login> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 15),
+
                               SizedBox(
                                 width: double.infinity,
                                 height: 30,
@@ -261,7 +262,10 @@ class _LoginState extends State<Login> {
                                               ? SizedBox(
                                                   height: 20,
                                                   width: 20,
-                                                child: CircularProgressIndicator(backgroundColor: Colors.white))
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                          backgroundColor:
+                                                              Colors.white))
                                               : FaIcon(
                                                   FontAwesomeIcons.googlePlusG,
                                                   color: Colors.white,
@@ -273,16 +277,16 @@ class _LoginState extends State<Login> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 25),
+                              SizedBox(height: 10),
                             ],
                           ),
                         ),
                       ),
                       Positioned(
-                        top: -110,
+                        top: -60,
                         child: Image.asset(
                           "assets/images/logo.png",
-                          width: 170,
+                          width: 130,
                         ),
                       ),
                     ],
@@ -362,14 +366,19 @@ class _LoginState extends State<Login> {
     });
 
     try {
-      var result = await signInWithGoogle();
+      fi.User result = await signInWithGoogle();
       if (result != null) {
-        await Provider.of<Auth>(context, listen: false).loginWithGmail(result);
+        bool hasAccount = await Auth().loginWithGmail(result);
+      //   if(hasAccount){
+
+          
+          
+      //   }
       }
     } catch (e) {
       _scaffoldKey.currentState
           .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
-      print(e.cause);
+      // print(e.cause);
     }
     setState(() {
       _isloadingGoogle = false;

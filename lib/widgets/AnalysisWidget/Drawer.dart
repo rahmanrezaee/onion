@@ -96,7 +96,8 @@ class MyDrawer extends StatelessWidget {
                       ),
                       value.token != null
                           ? Text(
-                              "Mr: Hacker",
+                          
+                              value.currentUser.name,
                               textScaleFactor: 1.2,
                               style: TextStyle(color: Colors.white),
                             )

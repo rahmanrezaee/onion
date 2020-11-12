@@ -8,6 +8,8 @@ import 'package:onion/models/users.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:firebase_auth/firebase_auth.dart' as fi;
+
 enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
 
 class Auth with ChangeNotifier {
@@ -15,6 +17,7 @@ class Auth with ChangeNotifier {
 
   String token;
   Map userDataField;
+  User currentUser = new User();
 
   Future<bool> isAuth() async {
     await tryAutoLogin();
@@ -32,6 +35,7 @@ class Auth with ChangeNotifier {
 
       var prefs = await SharedPreferences.getInstance();
 
+      currentUser = user;
       userDataField = {
         'token': responseData['token'],
         'username': user.name,
@@ -66,6 +70,9 @@ class Auth with ChangeNotifier {
         json.decode(prefs.getString('userData')) as Map<String, Object>;
 
     token = extractedUserData['token'];
+    currentUser.name = extractedUserData['username'];
+    currentUser.email = extractedUserData['email'];
+
     notifyListeners();
     return true;
   }
@@ -109,11 +116,15 @@ class Auth with ChangeNotifier {
           'password': password,
         },
       );
+
+      currentUser.name = responseData['data']['username'];
+      currentUser.email = responseData['data']['email'];
+      currentUser.country = responseData['data']['country'];
+
       prefs.setString('userData', userData);
       notifyListeners();
     } on DioError catch (e) {
-      
-      if(e.response == null){
+      if (e.response == null) {
         return null;
       }
 
@@ -188,9 +199,19 @@ class Auth with ChangeNotifier {
     }
   }
 
-  Future<void> loginWithGmail(String result) async {
-    print("google Sign In");
-    print(result);
+  Future<bool> loginWithGmail(fi.User result) async {
+    String email = result.email;
+    print(result.uid);
+    final url = '$BASE_URL/user/exits';
+    try {
+      Response result = await dio.post(url, data: {"email": email});
+      return result.data;
+    } on DioError catch (e) {
+      if (e.response.data['message'] != null) {
+        throw new LoginException(e.response.data['message']);
+      }
+    }
+    // print(result);
   }
 }
 
