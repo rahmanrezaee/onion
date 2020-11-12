@@ -22,6 +22,14 @@ class MyFiveRating extends StatelessWidget {
       onRatingUpdate: (rating) {
         print(rating);
       },
+      ratingWidget: RatingWidget(
+        full: Icon(
+          Icons.star,
+          color: middlePurple,
+        ),
+        empty: null,
+        half: null,
+      ),
     );
   }
 }
