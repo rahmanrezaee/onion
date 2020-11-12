@@ -33,7 +33,7 @@ class Analysis extends StatelessWidget {
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.clear_all_outlined),
+          icon: Icon(Icons.menu),
           color: Colors.white,
           onPressed: openDrawer,
         ),

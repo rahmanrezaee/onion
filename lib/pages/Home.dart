@@ -24,6 +24,7 @@ import '../widgets/MyAppBar.dart';
 import '../widgets/MyAppBarContainer.dart';
 
 class HomePage extends StatefulWidget {
+  static const routeName = "home_page";
   final Function openDrawer;
 
   const HomePage({Key key, this.openDrawer});

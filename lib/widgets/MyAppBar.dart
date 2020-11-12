@@ -26,7 +26,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.clear_all_outlined, color: Colors.white),
+          icon: Icon(Icons.menu, color: Colors.white),
           color: Colors.white,
           onPressed: openDrawer,
         ),

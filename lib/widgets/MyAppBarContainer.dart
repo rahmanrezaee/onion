@@ -35,14 +35,16 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    this.fetchCategory =
-        Provider.of<CategoryProvider>(context, listen: false).fetchItems();
+
     // industryFlag = false;
     // analyticsFlag = false;
   }
 
   @override
   Widget build(BuildContext context) {
+    this.fetchCategory = Provider.of<CategoryProvider>(context, listen: false)
+        .fetchItems(context);
+
     return Container(
       height: deviceSize(context).height * 0.16,
       padding: EdgeInsets.symmetric(
@@ -83,15 +85,27 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                       return Consumer<CategoryProvider>(
                         builder: (context, value, Widget child) {
                           // industryFlag = true;
-                          return MySmallDropdown(
-                            myisExpanded: false,
-                            myDropDownList: value.filterItems(parentName: "0"),
-                            dropDownAroundColor: Colors.white,
-                            dropDownColor: middlePurple,
-                            txtColor: Colors.white,
-                            iconColor: Colors.white,
-                            futureType: "category",
-                          );
+                          if (value.items.isEmpty) {
+                            return Text(
+                              "loading...",
+                              style: TextStyle(color: Colors.white),
+                            );
+                          } else {
+                            // this.fetchIndustry = Provider.of<IndustryProvider>(
+                            //   context,
+                            //   listen: false,
+                            // ).fetchItems(name: value.items[0].name, context: context);
+                            return MySmallDropdown(
+                              myisExpanded: false,
+                              myDropDownList: value.items,
+                              dropDownAroundColor: Colors.white,
+                              dropDownColor: middlePurple,
+                              txtColor: Colors.white,
+                              iconColor: Colors.white,
+                              futureType: "category",
+                              firstVal: value.firstItem.name,
+                            );
+                          }
                         },
                       );
                     }
@@ -99,7 +113,7 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                 },
               ),
               FutureBuilder(
-                future: fetchCategory,
+                future: fetchIndustry,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text(
@@ -114,16 +128,34 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                     } else {
                       return Consumer<IndustryProvider>(
                         builder: (BuildContext context, value, Widget child) {
-                          return MySmallDropdown(
-                            myisExpanded: false,
-                            myDropDownList:
-                                value.items == null ? [] : value.items,
-                            dropDownAroundColor: Colors.white,
-                            dropDownColor: middlePurple,
-                            iconColor: Colors.white,
-                            txtColor: Colors.white,
-                            futureType: "industry",
-                          );
+                          if (value.items.isEmpty) {
+                            return Text(
+                              "loading...",
+                              style: TextStyle(color: Colors.white),
+                            );
+                          } else {
+                            // this.fetchAnalytics =
+                            //     Provider.of<AnalyticsProvider>(
+                            //   context,
+                            //   listen: false,
+                            // ).fetchItems(name: value.items[0].name);
+                            return value.items == null
+                                ? Text(
+                                    "loading...",
+                                    style: TextStyle(color: Colors.white),
+                                  )
+                                : MySmallDropdown(
+                                    myisExpanded: false,
+                                    myDropDownList:
+                                        value.items == null ? [] : value.items,
+                                    dropDownAroundColor: Colors.white,
+                                    dropDownColor: middlePurple,
+                                    iconColor: Colors.white,
+                                    txtColor: Colors.white,
+                                    futureType: "industry",
+                                    firstVal: value.items[0].name,
+                                  );
+                          }
                         },
                       );
                     }
@@ -131,7 +163,7 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                 },
               ),
               FutureBuilder(
-                future: fetchCategory,
+                future: fetchAnalytics,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text(
@@ -146,16 +178,24 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                     } else {
                       return Consumer<AnalyticsProvider>(
                         builder: (BuildContext context, value, Widget child) {
-                          return MySmallDropdown(
-                            myisExpanded: false,
-                            myDropDownList:
-                                value.items == null ? [] : value.items,
-                            dropDownAroundColor: Colors.white,
-                            dropDownColor: middlePurple,
-                            iconColor: Colors.white,
-                            txtColor: Colors.white,
-                            futureType: "analytics",
-                          );
+                          if (value.items.isEmpty) {
+                            return Text(
+                              "loading...",
+                              style: TextStyle(color: Colors.white),
+                            );
+                          } else {
+                            return MySmallDropdown(
+                              myisExpanded: false,
+                              myDropDownList:
+                                  value.items == null ? [] : value.items,
+                              dropDownAroundColor: Colors.white,
+                              dropDownColor: middlePurple,
+                              iconColor: Colors.white,
+                              txtColor: Colors.white,
+                              futureType: "analytics",
+                              firstVal: value.firstItem.name,
+                            );
+                          }
                         },
                       );
                     }

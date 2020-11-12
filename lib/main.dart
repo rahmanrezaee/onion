@@ -5,7 +5,6 @@ import 'package:onion/pages/Settings.dart';
 import 'package:onion/statemanagment/dropDownItem/MyFlagState.dart';
 
 import 'package:onion/pages/Home.dart';
-import 'package:onion/pages/HomeAfterLogin.dart';
 import 'package:onion/pages/Idea/postIdea.dart';
 import 'package:onion/pages/F&Q.dart';
 import 'package:onion/pages/Services.dart';
@@ -18,12 +17,13 @@ import 'package:onion/pages/authentication/signup.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:provider/provider.dart';
 
+import './pages/Idea/MyIdeaId.dart';
+import './statemanagment/DrawerScaffold.dart';
 import './pages/MyMessagePage.dart';
 import './pages/NotificationsList.dart';
 import './pages/ProjectChat.dart';
 import './statemanagment/dropDownItem/MyFlagState.dart';
 import './pages/Home.dart';
-import './pages/HomeAfterLogin.dart';
 import './pages/Idea/postIdea.dart';
 import './pages/F&Q.dart';
 import './pages/Services.dart';
@@ -33,16 +33,12 @@ import './pages/authentication/ChangePassword.dart';
 import './pages/authentication/ForgetPassword.dart';
 import './pages/authentication/Login.dart';
 import './pages/authentication/signup.dart';
-import 'package:onion/statemanagment/auth_provider.dart';
 import './statemanagment/dropDownItem/AnalyticsProvider.dart';
 import './statemanagment/dropDownItem/CategoryProvider.dart';
 import './statemanagment/dropDownItem/IndustryProvider.dart';
-import './pages/RequestedIdeaPage.dart';
 import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
-import './const/color.dart';
 import './pages/Analysis.dart';
-import './test.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -55,6 +51,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => MyFlagState()),
       ChangeNotifierProvider(create: (_) => IndustryProvider()),
       ChangeNotifierProvider(create: (_) => AnalyticsProvider()),
+      ChangeNotifierProvider(create: (_) => DrawerScaffold()),
       ChangeNotifierProvider(create: (_) => Auth()),
     ],
     child: MyApp(),
@@ -115,7 +112,9 @@ class MyApp extends StatelessWidget {
                           ? Scaffold(
                               body: Center(child: Text("Loading...")),
                             )
-                          : ComplateProfile(ModalRoute.of(context).settings.arguments,),
+                          : ComplateProfile(
+                              ModalRoute.of(context).settings.arguments,
+                            ),
                 ),
           CustomDrawerPage.routeName: (context) => CustomDrawerPage(),
           AnalyticsOne.routeName: (context) => AnalyticsOne(),
@@ -157,6 +156,10 @@ class MyApp extends StatelessWidget {
           PostIdea.routeName: (context) => PostIdea(),
           FandQ.routeName: (context) => FandQ(),
           Services.routeName: (context) => Services(),
+          SetupIdea.routeName: (context) => SetupIdea(),
+          HomePage.routeName: (context) => HomePage(),
+          PostIdea.routeName: (context) => PostIdea(),
+          Settings.routeName: (context) => Settings(),
         },
       ),
     );
