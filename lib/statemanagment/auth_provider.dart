@@ -213,6 +213,11 @@ class Auth with ChangeNotifier {
     }
     // print(result);
   }
+
+  loginWithFaceBook(fi.User result) {
+    String email = result.email;
+    print(result.uid);
+  }
 }
 
 class LoginException implements Exception {

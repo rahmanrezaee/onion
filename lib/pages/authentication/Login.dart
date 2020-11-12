@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onion/pages/authentication/ForgetPassword.dart';
 import 'package:onion/pages/authentication/sign_with_gmail.dart';
@@ -238,12 +239,20 @@ class _LoginState extends State<Login> {
                                           width: 35,
                                           height: 35,
                                           alignment: Alignment.center,
-                                          child: FaIcon(
-                                              FontAwesomeIcons.facebookF,
-                                              color: Colors.white,
-                                              size: 18),
+                                          child: _isloadingFacebook
+                                              ? SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                          backgroundColor:
+                                                              Colors.white))
+                                              : FaIcon(
+                                                  FontAwesomeIcons.facebookF,
+                                                  color: Colors.white,
+                                                  size: 18),
                                         ),
-                                        onTap: () {},
+                                        onTap: signFacebook,
                                       ),
                                     ),
                                   ),
@@ -336,6 +345,7 @@ class _LoginState extends State<Login> {
   }
 
   bool _isloadingGoogle = false;
+  bool _isloadingFacebook = false;
 
   Future<void> loginUserDB() async {
     if (!_formKey.currentState.validate()) {
@@ -367,13 +377,13 @@ class _LoginState extends State<Login> {
 
     try {
       fi.User result = await signInWithGoogle();
-      if (result != null) {
-        bool hasAccount = await Auth().loginWithGmail(result);
-      //   if(hasAccount){
 
-          
-          
-      //   }
+      if (result != null) {
+        print(result);
+        //   bool hasAccount = await Auth().loginWithGmail(result);
+        //   //   if(hasAccount){
+
+        //   //   }
       }
     } catch (e) {
       _scaffoldKey.currentState
@@ -382,6 +392,45 @@ class _LoginState extends State<Login> {
     }
     setState(() {
       _isloadingGoogle = false;
+    });
+  }
+
+  Future<void> signFacebook() async {
+    setState(() {
+      _isloadingFacebook = true;
+    });
+
+    try {
+      // by default the login method has the next permissions ['email','public_profile']
+      AccessToken accessToken = await FacebookAuth.instance.login();
+      print(accessToken.toJson());
+      // get the user data
+      final auserDatasd = await FacebookAuth.instance.getUserData();
+      print(auserDatasd);
+    } catch (e, s) {
+      if (e is FacebookAuthException) {
+        print(e.message);
+        switch (e.errorCode) {
+          case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
+            print("You have a previous login operation in progress");
+            break;
+          case FacebookAuthErrorCode.CANCELLED:
+            print("login cancelled");
+            break;
+          case FacebookAuthErrorCode.FAILED:
+            print("login failed");
+            break;
+        }
+      }
+    }
+
+    // } catch (e) {
+    //   _scaffoldKey.currentState
+    //       .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+    //   // print(e.cause);
+    // }
+    setState(() {
+      _isloadingFacebook = false;
     });
   }
 }
