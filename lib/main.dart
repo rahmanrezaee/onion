@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:onion/pages/Idea/MyIdeaId.dart';
 import 'package:provider/provider.dart';
 
+import './pages/Idea/MyIdeaId.dart';
+import './statemanagment/DrawerScaffold.dart';
 import './pages/MyMessagePage.dart';
 import './pages/NotificationsList.dart';
 import './pages/ProjectChat.dart';
@@ -35,6 +36,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => MyFlagState()),
       ChangeNotifierProvider(create: (_) => IndustryProvider()),
       ChangeNotifierProvider(create: (_) => AnalyticsProvider()),
+      ChangeNotifierProvider(create: (_) => DrawerScaffold()),
     ],
     child: MyApp(),
   ));
@@ -83,6 +85,7 @@ class MyApp extends StatelessWidget {
             RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
             ForgetPassword.routeName: (context) => ForgetPassword(),
             SetupIdea.routeName: (context) => SetupIdea(),
+            HomePage.routeName: (context) => HomePage(),
             ProjectChat.routeName: (context) => ProjectChat(),
             MyMessagePage.routeName: (context) => MyMessagePage(),
             NotificationsList.routeName: (context) => NotificationsList(),
