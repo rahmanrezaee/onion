@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-import 'package:onion/const/MyUrl.dart';
-import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
+
+import '../../const/MyUrl.dart';
+import '../../myHttpGlobal/MyHttpGlobal.dart';
 
 class CategoryModel {
   final String id;
@@ -31,15 +31,18 @@ class CategoryProvider with ChangeNotifier {
 
   Future<void> fetchItems() async {
     try {
-      // final response = await http.get(testUrl);
-      final response = await APIRequest().get(myUrl: "${baseDropDownItemsUrl}0");
-      final extractedData = json.decode(response.body);
+      // final response = await http.get("${baseDropDownItemsUrl}0");
+      final response =
+          await APIRequest().get(myUrl: "${baseDropDownItemsUrl}0");
+      // print("Mahdi: ${response.body}");
+
+      final extractedData = response.data;
       if (extractedData == null) {
         return;
       }
       final List<CategoryModel> loadedProducts = [];
       print("Mahdi: title $extractedData");
-      //
+
       // loadedProducts.add(extractedData.forEach());
 
       extractedData.forEach((netItems) {

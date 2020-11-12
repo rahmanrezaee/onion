@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Idea/postIdea.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
+import 'package:onion/widgets/MyLittleAppbar.dart';
 
 class SetupIdea extends StatefulWidget {
   static final routeName = "setupIdea";
@@ -12,7 +13,10 @@ class _SetupIdeaState extends State<SetupIdea> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: PreferredSize(
+        preferredSize: const Size(double.infinity, kToolbarHeight),
+        child: MyLittleAppbar(myTitle: "Setup Idea"),
+      ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(15),

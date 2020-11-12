@@ -3,6 +3,7 @@ import 'package:onion/pages/Analysis.dart';
 import 'package:onion/pages/AnalyticsOne.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/pages/F&Q.dart';
+import 'package:onion/pages/Idea/MyIdeaId.dart';
 import 'package:onion/pages/Services.dart';
 import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
@@ -106,7 +107,8 @@ class MyDrawer extends StatelessWidget {
                                 "click to login..",
                                 textScaleFactor: 1.2,
                                 style: TextStyle(color: Colors.white),
-                              )),
+                              ),
+                            ),
                     ],
                   ),
                 ),
@@ -186,6 +188,13 @@ class MyDrawer extends StatelessWidget {
                 name: "FAQ",
                 icon: Icons.help,
                 routeName: FandQ.routeName,
+              ),
+              Divider(color: Colors.white, height: 0.1),
+              myListTile(
+                context: context,
+                name: "My Idea List",
+                icon: Icons.help,
+                routeName: MyIdeaId.routeName,
               ),
               value.token != null
                   ? RaisedButton(

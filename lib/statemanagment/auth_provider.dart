@@ -14,6 +14,7 @@ class Auth with ChangeNotifier {
   Dio dio = new Dio();
 
   String token;
+  Map userDataField;
 
   Future<bool> isAuth() async {
     await tryAutoLogin();
@@ -26,20 +27,20 @@ class Auth with ChangeNotifier {
       print(url);
       print(user.toMap());
 
-      final response = await dio.post(url, data: user.toMap());
+      var response = await dio.post(url, data: user.toMap());
       final responseData = response.data;
 
       var prefs = await SharedPreferences.getInstance();
-      final userData = json.encode(
-        {
-          'token': responseData['token'],
-          'username': user.name,
-          'country': user.country,
-          'phone': user.phone,
-          'email': user.email,
-          'password': user.password,
-        },
-      );
+
+      userDataField = {
+        'token': responseData['token'],
+        'username': user.name,
+        'country': user.country,
+        'phone': user.phone,
+        'email': user.email,
+        'password': user.password,
+      };
+      var userData = json.encode(userDataField);
       prefs.setString('userData', userData);
       notifyListeners();
     } on DioError catch (e) {
@@ -95,6 +96,7 @@ class Auth with ChangeNotifier {
 
       final responseData = response.data;
 
+      print(responseData);
       var prefs = await SharedPreferences.getInstance();
       final userData = json.encode(
         {
@@ -184,6 +186,11 @@ class Auth with ChangeNotifier {
         throw new LoginException(e.response.data['message']);
       }
     }
+  }
+
+  Future<void> loginWithGmail(String result) async {
+    print("google Sign In");
+    print(result);
   }
 }
 

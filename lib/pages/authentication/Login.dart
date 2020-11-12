@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onion/pages/authentication/ForgetPassword.dart';
+import 'package:onion/pages/authentication/sign_with_gmail.dart';
 import 'package:onion/pages/authentication/signup.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/widgets/AuthenticationWidget/OvalBottomBorderClipper.dart';
 import 'package:onion/widgets/Snanckbar.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Login extends StatefulWidget {
   static String routeName = '/login';
@@ -15,6 +18,10 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  // // google Sign Up
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
   final GlobalKey<FormState> _formKey = GlobalKey();
   bool _isloading = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -154,7 +161,8 @@ class _LoginState extends State<Login> {
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: FlatButton(
-                                  onPressed: ()=> Navigator.pushNamed(context, ForgetPassword.routeName),
+                                  onPressed: () => Navigator.pushNamed(
+                                      context, ForgetPassword.routeName),
                                   child: Text(
                                     "Forgot Password?",
                                     style: TextStyle(color: Colors.purple),
@@ -249,12 +257,17 @@ class _LoginState extends State<Login> {
                                           width: 35,
                                           height: 35,
                                           alignment: Alignment.center,
-                                          child: FaIcon(
-                                              FontAwesomeIcons.googlePlusG,
-                                              color: Colors.white,
-                                              size: 18),
+                                          child: _isloadingGoogle
+                                              ? SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                child: CircularProgressIndicator(backgroundColor: Colors.white))
+                                              : FaIcon(
+                                                  FontAwesomeIcons.googlePlusG,
+                                                  color: Colors.white,
+                                                  size: 18),
                                         ),
-                                        onTap: () {},
+                                        onTap: signGoogle,
                                       ),
                                     ),
                                   ),
@@ -318,6 +331,8 @@ class _LoginState extends State<Login> {
     );
   }
 
+  bool _isloadingGoogle = false;
+
   Future<void> loginUserDB() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
@@ -338,6 +353,26 @@ class _LoginState extends State<Login> {
     }
     setState(() {
       _isloading = false;
+    });
+  }
+
+  Future<void> signGoogle() async {
+    setState(() {
+      _isloadingGoogle = true;
+    });
+
+    try {
+      var result = await signInWithGoogle();
+      if (result != null) {
+        await Provider.of<Auth>(context, listen: false).loginWithGmail(result);
+      }
+    } catch (e) {
+      _scaffoldKey.currentState
+          .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+      print(e.cause);
+    }
+    setState(() {
+      _isloadingGoogle = false;
     });
   }
 }

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "807043919223",
+    "firebase_url": "https://onion-4bb60.firebaseio.com",
+    "project_id": "onion-4bb60",
+    "storage_bucket": "onion-4bb60.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807043919223:android:d56a93cc706cb9d2190572",
+        "android_client_info": {
+          "package_name": "com.example.onion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "807043919223-jv39n6pnbs4e1p4ulljrguksmusgc028.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.onion",
+            "certificate_hash": "ace0c7badaa0310ad7b71f7002d9fc699f407614"
+          }
+        },
+        {
+          "client_id": "807043919223-87gmadd0k20co4pgs1dbe6c7jcg007b9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCktjvdewKLRVIP5hM8yn5FOY5KSv2D0jw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "807043919223-87gmadd0k20co4pgs1dbe6c7jcg007b9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

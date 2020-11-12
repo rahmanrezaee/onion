@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
 import 'package:onion/const/MyUrl.dart';
@@ -16,18 +17,21 @@ class AnalyticsProvider with ChangeNotifier {
 
   Future<void> fetchItems({@required String name}) async {
     try {
-    
       final response =
           await APIRequest().get(myUrl: "$baseDropDownItemsUrl$name");
-      final extractedData = json.decode(response.body);
+      print("Mahdi: $response");
 
-      
+      final extractedData = response.data;
+
+      // final extractedData = json.decode(response.body);
       if (extractedData == null) {
         return;
       }
       final List<CategoryModel> loadedProducts = [];
-      print("Mahdi: title $extractedData");
-     
+      // print("Mahdi: title $extractedData");
+
+      // loadedProducts.add(extractedData.forEach());
+
       extractedData.forEach((netItems) {
         loadedProducts.add(
           CategoryModel(
