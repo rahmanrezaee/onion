@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onion/pages/Settings.dart';
 import 'package:provider/provider.dart';
 
 import './pages/Idea/MyIdeaId.dart';
@@ -95,6 +96,7 @@ class MyApp extends StatelessWidget {
                 ),
             FandQ.routeName: (context) => FandQ(),
             Services.routeName: (context) => Services(),
+            Settings.routeName: (context) => Settings(),
           },
         ),
       ),
