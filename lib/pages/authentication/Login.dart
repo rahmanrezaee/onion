@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:onion/models/Image.dart';
+import 'package:onion/pages/authentication/ComplateProfile.dart';
 import 'package:onion/pages/authentication/ForgetPassword.dart';
 import 'package:onion/pages/authentication/sign_with_gmail.dart';
 import 'package:onion/pages/authentication/signup.dart';
@@ -10,6 +12,7 @@ import 'package:onion/widgets/Snanckbar.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:onion/models/users.dart' as user;
 
 import 'package:firebase_auth/firebase_auth.dart' as fi;
 
@@ -379,11 +382,16 @@ class _LoginState extends State<Login> {
       fi.User result = await signInWithGoogle();
 
       if (result != null) {
-        print(result);
-        //   bool hasAccount = await Auth().loginWithGmail(result);
-        //   //   if(hasAccount){
+        user.User newUser = new user.User();
 
-        //   //   }
+        newUser.name = result.displayName;
+        newUser.email = result.email;
+        newUser.phone = result.phoneNumber;
+        ImageModel image = new ImageModel();
+        image.url = result.photoURL;
+        newUser.profile = image;
+        Navigator.pushNamed(context, ComplateProfile.routeName,
+            arguments: newUser);
       }
     } catch (e) {
       _scaffoldKey.currentState
@@ -402,11 +410,21 @@ class _LoginState extends State<Login> {
 
     try {
       // by default the login method has the next permissions ['email','public_profile']
-      AccessToken accessToken = await FacebookAuth.instance.login();
-      print(accessToken.toJson());
-      // get the user data
+      await FacebookAuth.instance.login();
       final auserDatasd = await FacebookAuth.instance.getUserData();
       print(auserDatasd);
+      if (auserDatasd != null) {
+        user.User newUser = new user.User();
+
+        newUser.name = auserDatasd["name"];
+        newUser.email = auserDatasd["email"];
+        newUser.phone = "";
+        ImageModel image = new ImageModel();
+        image.url = auserDatasd['picture']['data']['url'];
+        newUser.profile = image;
+        Navigator.pushNamed(context, ComplateProfile.routeName,
+            arguments: newUser);
+      }
     } catch (e, s) {
       if (e is FacebookAuthException) {
         print(e.message);

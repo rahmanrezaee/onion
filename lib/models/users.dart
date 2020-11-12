@@ -1,3 +1,5 @@
+import 'package:onion/models/Image.dart';
+
 class User {
   int id;
   String name;
@@ -9,6 +11,7 @@ class User {
   String interst;
   String country;
   String state;
+  ImageModel profile;
 
   Map<String, String> toMap() {
     return {

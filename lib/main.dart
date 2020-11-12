@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Idea/MyIdeaId.dart';
+import 'package:onion/pages/authentication/ComplateProfile.dart';
 import 'package:provider/provider.dart';
 
 import './pages/MyMessagePage.dart';
@@ -87,6 +88,19 @@ class MyApp extends StatelessWidget {
                               body: Center(child: Text("Loading...")),
                             )
                           : SignUp(),
+                ),
+          ComplateProfile.routeName: (context) => auth.token != null
+              ? CustomDrawerPage()
+              : FutureBuilder(
+                  future:
+                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(child: Text("Loading...")),
+                            )
+                          : ComplateProfile(ModalRoute.of(context).settings.arguments,),
                 ),
           CustomDrawerPage.routeName: (context) => CustomDrawerPage(),
           AnalyticsOne.routeName: (context) => AnalyticsOne(),

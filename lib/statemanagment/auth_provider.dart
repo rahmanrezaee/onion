@@ -78,10 +78,8 @@ class Auth with ChangeNotifier {
   }
 
   Future<String> getToken() async {
-    // final prefs = await SharedPreferences.getInstance();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     if (prefs.getString('userData') == null) {
       return Future.value(null);
     }
@@ -89,6 +87,7 @@ class Auth with ChangeNotifier {
         json.decode(prefs.getString('userData')) as Map<String, Object>;
 
     final token = extractedUserData['token'];
+
     return Future.value(token);
   }
 
