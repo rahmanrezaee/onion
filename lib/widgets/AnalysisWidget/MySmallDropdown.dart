@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -63,10 +64,7 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
   Widget build(BuildContext context) {
     analyticsProvider = Provider.of<AnalyticsProvider>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
-    industryProvider = Provider.of<IndustryProvider>(
-      context,
-      listen: false,
-    );
+    industryProvider = Provider.of<IndustryProvider>(context, listen: false);
 
     return Container(
       padding: EdgeInsets.all(deviceSize(context).width * 0.01),
@@ -85,46 +83,34 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
             iconDisabledColor: widget.iconColor,
             iconEnabledColor: widget.iconColor,
             dropdownColor: widget.dropDownColor,
-            onChanged: (value) {
-              _value = value;
-
-              if (widget.futureType == "category") {
-                // industryProvider.clearDate();
-                // categoryProvider.updateIndustryItem(value, context);
-                print("Mahdi II $value");
-                industryProvider.clearDate();
-                industryProvider.fetchItems(name: value, context: context);
-                // industryProvider.fetchItems(
-                //   name: _value,
-                //   context: context,
-                // );
-                // analyticsProvider.clearDate();
-                // analyticsProvider.fetchItems(
-                //   name: _value,
-                //   context: context,
-                // );
-              } else if (widget.futureType == "industry") {
-                // widget.firstVal = value;
-                // analyticsProvider.clearDate();
-                // analyticsProvider.fetchItems(
-                //   name: _value,
-                //   context: context,
-                // );
-                analyticsProvider.clearDate();
-                analyticsProvider.fetchItems(name: value, context: context);
-              }
+            onChanged: (value) async {
               setState(() {
                 _value = value;
               });
+              if (widget.futureType == "category") {
+                industryProvider.clearDate();
+                await industryProvider.fetchItems(
+                  name: value,
+                  context: context,
+                );
+              } else if (widget.futureType == "industry") {
+                analyticsProvider.clearDate();
+                await analyticsProvider.fetchItems(
+                  name: value,
+                  context: context,
+                );
+              }
             },
             isDense: true,
             items: widget.myDropDownList.isNotEmpty
                 ? widget.myDropDownList.map((e) {
                     print("Mahdi: ${e.id}");
+                    print("Mahdi: ${e.name}");
+
                     return DropdownMenuItem(
                       child: SizedBox(
                         width: deviceSize(context).width * 0.19,
-                        child: Text(
+                        child: AutoSizeText(
                           "${e.name}",
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,

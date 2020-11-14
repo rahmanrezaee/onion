@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:onion/pages/Settings.dart';
 import 'package:provider/provider.dart';
 
 import './pages/Idea/MyIdeaId.dart';
+import './pages/Settings.dart';
+import './pages/invest/SendInvRequest.dart';
 import './statemanagment/DrawerScaffold.dart';
 import './pages/MyMessagePage.dart';
 import './pages/NotificationsList.dart';
@@ -54,7 +55,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
-          title: 'Flutter Demo',
+          title: "Onion.ai",
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primaryColor: Color(0xFF7B3C8A),
@@ -63,7 +64,7 @@ class MyApp extends StatelessWidget {
               TargetPlatform.android: CupertinoPageTransitionsBuilder(),
             }),
           ),
-          home: CustomDrawerPage(),
+          home: SendInvRequest(),
           routes: {
             Login.routeName: (context) => auth.token != null
                 ? CustomDrawerPage()
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
                   ),
             MyIdeaId.routeName: (context) => MyIdeaId(),
             SignUp.routeName: (context) => SignUp(),
+            SendInvRequest.routeName: (context) => SendInvRequest(),
             CustomDrawerPage.routeName: (context) => CustomDrawerPage(),
             AnalyticsOne.routeName: (context) => AnalyticsOne(),
             Analysis.routerName: (context) => Analysis(),
