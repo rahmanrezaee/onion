@@ -16,7 +16,6 @@ import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/pages/authentication/signup.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:provider/provider.dart';
-
 import './pages/Idea/MyIdeaId.dart';
 import './statemanagment/DrawerScaffold.dart';
 import './pages/MyMessagePage.dart';
@@ -39,12 +38,10 @@ import './statemanagment/dropDownItem/IndustryProvider.dart';
 import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
-import 'package:firebase_core/firebase_core.dart';
+import './test.dart';
+import './pages/request.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
+void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
