@@ -4,7 +4,6 @@ import 'package:onion/pages/Home.dart';
 import 'package:onion/services/ServicesPage.dart';
 import 'package:provider/provider.dart';
 import 'package:lottie/lottie.dart';
-
 import '../const/color.dart';
 import '../pages/CustomDrawerPage.dart';
 import '../statemanagment/DrawerScaffold.dart';
@@ -46,7 +45,6 @@ class _ServicesState extends State<Services> {
           listen: false,
         ).scaffoldFunc(mScaffoldType: HomePage.routeName);
       },
-
       child: Scaffold(
         appBar: MyAppBar(title: "Services", openDrawer: widget.openDrawer),
         body: ScrollConfiguration(
@@ -71,66 +69,71 @@ class _ServicesState extends State<Services> {
                 //Image Slider start
                 sliderImages == null
                     ? Padding(
-                    padding: EdgeInsets.all(8), child: LinearProgressIndicator())
+                        padding: EdgeInsets.all(8),
+                        child: LinearProgressIndicator())
                     : CarouselSlider(
-                  options: CarouselOptions(
-                      viewportFraction: .9,
-                      height: 150.0,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          _current = index;
-                        });
-                      }),
-                  items: sliderImages.map((imageLink) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return Container(
-                            width: MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              // image: DecorationImage(
-                              // image: NetworkImage(imageLink), fit: BoxFit.cover,
-                              // ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: FadeInImage.assetNetwork(
-                                placeholder: "assets/images/placeholder.gif",
-                                image: imageLink,
-                                fit: BoxFit.cover,
-                                fadeOutDuration: Duration(milliseconds: 10),
-                                fadeInDuration: Duration(milliseconds: 300),
-                              ),
-                            ));
-                      },
-                    );
-                  }).toList(),
-                ),
+                        options: CarouselOptions(
+                            viewportFraction: .9,
+                            height: 150.0,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _current = index;
+                              });
+                            }),
+                        items: sliderImages.map((imageLink) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    // image: DecorationImage(
+                                    // image: NetworkImage(imageLink), fit: BoxFit.cover,
+                                    // ),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder:
+                                          "assets/images/placeholder.gif",
+                                      image: imageLink,
+                                      fit: BoxFit.cover,
+                                      fadeOutDuration:
+                                          Duration(milliseconds: 10),
+                                      fadeInDuration:
+                                          Duration(milliseconds: 300),
+                                    ),
+                                  ));
+                            },
+                          );
+                        }).toList(),
+                      ),
                 SizedBox(height: 10),
                 // Making custome Indicator
                 sliderImages == null
                     ? Padding(
-                    padding: EdgeInsets.all(8), child: LinearProgressIndicator())
+                        padding: EdgeInsets.all(8),
+                        child: LinearProgressIndicator())
                     : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...sliderImages.map((element) {
-                      int index = sliderImages.indexOf(element);
-                      return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5),
-                        width: 25,
-                        height: 3,
-                        decoration: BoxDecoration(
-                          color: _current == index
-                              ? Color(0xffc193cc)
-                              : Color(0xffe0e6eb),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      );
-                    }).toList(),
-                  ],
-                ),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ...sliderImages.map((element) {
+                            int index = sliderImages.indexOf(element);
+                            return Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5),
+                              width: 25,
+                              height: 3,
+                              decoration: BoxDecoration(
+                                color: _current == index
+                                    ? Color(0xffc193cc)
+                                    : Color(0xffe0e6eb),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            );
+                          }).toList(),
+                        ],
+                      ),
                 //Slider End
                 Padding(
                   padding: const EdgeInsets.only(

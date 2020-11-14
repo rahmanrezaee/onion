@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:http/http.dart';
 import 'package:onion/pages/Settings.dart';
+import 'package:onion/pages/request.dart';
 import 'package:onion/services/SimpleHttp.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -184,6 +186,13 @@ class MyDrawer extends StatelessWidget {
                 icon: Icons.person,
                 justPush: true,
               ),
+              Divider(color: Colors.white, height: 0.1),
+              myListTile(
+                  context: context,
+                  name: "Request",
+                  icon: Icons.request_page,
+                  routeName: RequestPage.routeName,
+                  justPush: true),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
                 context: context,
