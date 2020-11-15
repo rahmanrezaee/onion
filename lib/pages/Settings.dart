@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
-import 'package:onion/provider/auth_provider.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/services/SettingsHttp.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 
