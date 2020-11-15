@@ -12,6 +12,7 @@ class _ItemIdeaState extends State<ItemIdea> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 4,
       child: Container(
         padding: EdgeInsets.all(10),
         child: Column(
@@ -19,13 +20,12 @@ class _ItemIdeaState extends State<ItemIdea> {
           children: [
             Row(
               children: [
-                Container(
-                  child: Image.asset(
-                    "assets/images/empty_profile.jpg",
-                    height: 70,
-                    width: 70,
-                  ),
+                CircleAvatar(
+                  radius: 25,
+                  backgroundImage:
+                      AssetImage("assets/images/empty_profile.jpg"),
                 ),
+                SizedBox(width: 5),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +85,7 @@ class _ItemIdeaState extends State<ItemIdea> {
                           mypopup.PopupMenuItem(
                             value: 1,
                             child: Container(
-                             padding: EdgeInsets.symmetric(vertical: 10),
+                              padding: EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
                                 color: Theme.of(context).primaryColor,
                                 // border:
@@ -96,7 +96,8 @@ class _ItemIdeaState extends State<ItemIdea> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Text("Edit"),
+                                  Text("Edit",
+                                      style: TextStyle(color: Colors.white)),
                                 ],
                               ),
                             ),
@@ -107,8 +108,8 @@ class _ItemIdeaState extends State<ItemIdea> {
                               padding: EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
                                 // color: ,
-                                border:
-                                    Border.all(color: Colors.grey[200], width: 2),
+                                border: Border.all(
+                                    color: Colors.grey[200], width: 2),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5.0)),
                               ),
@@ -120,14 +121,15 @@ class _ItemIdeaState extends State<ItemIdea> {
                               ),
                             ),
                           ),
-                           mypopup.PopupMenuItem(
+                          mypopup.PopupMenuItem(
                             value: 2,
                             child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
                               decoration: BoxDecoration(
                                 // color: ,
-                                border:
-                                    Border.all(color: Colors.grey[200], width: 2),
+                                border: Border.all(
+                                    color: Colors.grey[200], width: 2),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5.0)),
                               ),
@@ -145,8 +147,8 @@ class _ItemIdeaState extends State<ItemIdea> {
                               padding: EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
                                 // color: ,
-                                border:
-                                    Border.all(color: Colors.grey[200], width: 2),
+                                border: Border.all(
+                                    color: Colors.grey[200], width: 2),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5.0)),
                               ),
@@ -161,11 +163,12 @@ class _ItemIdeaState extends State<ItemIdea> {
                           mypopup.PopupMenuItem(
                             value: 2,
                             child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
                               decoration: BoxDecoration(
                                 // color: ,
-                                border:
-                                    Border.all(color: Colors.grey[200], width: 2),
+                                border: Border.all(
+                                    color: Colors.grey[200], width: 2),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5.0)),
                               ),
@@ -197,7 +200,7 @@ class _ItemIdeaState extends State<ItemIdea> {
                   child: RichText(
                     text: TextSpan(children: [
                       TextSpan(
-                        text: "Industry: ",
+                        text: "Requirments: ",
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,

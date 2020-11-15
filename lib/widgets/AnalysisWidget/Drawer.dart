@@ -5,9 +5,13 @@ import 'package:onion/pages/Analysis.dart';
 import 'package:onion/pages/AnalyticsOne.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/pages/F&Q.dart';
+import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/Idea/MyIdeaId.dart';
 import 'package:onion/pages/Services.dart';
 import 'package:onion/pages/Settings.dart';
 import 'package:onion/pages/authentication/Login.dart';
+import 'package:onion/pages/franchises/requestFranchisesUser.dart';
+import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/provider/auth_provider.dart';
 import 'package:onion/services/SimpleHttp.dart';
 import 'package:provider/provider.dart';
@@ -135,7 +139,7 @@ class MyDrawer extends StatelessWidget {
                 context: context,
                 name: "Settings",
                 icon: Icons.settings,
-                routeName: Settings.routeName,
+                routeName: RequestFranchisesUser.routeName,
               ),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
@@ -172,7 +176,21 @@ class MyDrawer extends StatelessWidget {
                 context: context,
                 name: "Services",
                 icon: Icons.person,
-                routeName: Services.routeName,
+                routeName: ViewFranchisesUser.routeName,
+              ),
+              Divider(color: Colors.white, height: 0.1),
+              myListTile(
+                context: context,
+                name: "My Idea Id",
+                icon: Icons.ac_unit,
+                routeName: MyIdeaId.routeName,
+              ),
+              Divider(color: Colors.white, height: 0.1),
+              myListTile(
+                context: context,
+                name: "My Idea detail",
+                icon: Icons.ac_unit,
+                routeName: MyIdeaDetails.routeName,
               ),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
@@ -312,7 +330,8 @@ class TandCDialog extends StatelessWidget {
                           (index) => Column(
                                 children: [
                                   Container(
-                                    width: double.infinity - Random().nextInt(50 - 0),
+                                    width: double.infinity -
+                                        Random().nextInt(50 - 0),
                                     height: 5,
                                     color: Color(0xFFd8d8d8),
                                   ),
