@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_echarts/flutter_echarts.dart';
 import 'package:onion/pages/Idea/setupIdea.dart';
 import 'package:onion/pages/authentication/Login.dart';
-import 'package:onion/provider/auth_provider.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
 import 'package:onion/widgets/Home/MyPopup.dart';
 import 'package:onion/widgets/Snanckbar.dart';
@@ -203,14 +203,18 @@ class _HomePageState extends State<HomePage> {
                 ),
                 MyCardListItem(
                   callBack: () {
-                    _scaffoldKey.currentState.showSnackBar(showSnackbar(
-                        "add other", Icon(Icons.alarm), Colors.green));
+                    _scaffoldKey.currentState.showSnackBar(
+                      showSnackbar(
+                          "add other", Icon(Icons.alarm), Colors.green),
+                    );
                   },
                 ),
                 MyCardListItem(
                   callBack: () {
-                    _scaffoldKey.currentState.showSnackBar(showSnackbar(
-                        "add Second", Icon(Icons.alarm), Colors.green));
+                    _scaffoldKey.currentState.showSnackBar(
+                      showSnackbar(
+                          "add Second", Icon(Icons.alarm), Colors.green),
+                    );
                   },
                 ),
               ],

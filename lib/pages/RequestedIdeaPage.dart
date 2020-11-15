@@ -71,7 +71,7 @@ class MyCardItem extends StatelessWidget {
                         name: "Rated:",
                         fontWeight: FontWeight.normal,
                       ),
-                      MyFiveRating(),
+                      MyFiveRating(rateVal: 4.5),
                     ],
                   ),
                 ],

@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:http/http.dart';
 import 'package:onion/pages/Settings.dart';
+import 'package:onion/pages/request.dart';
 import 'package:onion/services/SimpleHttp.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,7 @@ import '../../pages/Idea/MyIdeaId.dart';
 import '../../pages/MyMessagePage.dart';
 import '../../pages/Services.dart';
 import '../../pages/authentication/Login.dart';
-import '../../provider/auth_provider.dart';
+import '../../statemanagment/auth_provider.dart';
 import '../DropdownWidget/Terms%20&%20Conditions.dart';
 import '../../const/Size.dart';
 import '../../const/color.dart';
@@ -121,7 +123,8 @@ class MyDrawer extends StatelessWidget {
                       ),
                       value.token != null
                           ? Text(
-                              "Mr: Hacker",
+                          
+                              value.currentUser.name,
                               textScaleFactor: 1.2,
                               style: TextStyle(color: Colors.white),
                             )
@@ -184,6 +187,13 @@ class MyDrawer extends StatelessWidget {
                 icon: Icons.person,
                 justPush: true,
               ),
+              Divider(color: Colors.white, height: 0.1),
+              myListTile(
+                  context: context,
+                  name: "Request",
+                  icon: Icons.request_page,
+                  routeName: RequestPage.routeName,
+                  justPush: true),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
                 context: context,

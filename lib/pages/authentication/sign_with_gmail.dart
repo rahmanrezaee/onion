@@ -1,7 +1,9 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'package:onion/models/users.dart' as userModel;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -10,7 +12,7 @@ String name;
 String email;
 String imageUrl;
 
-Future<String> signInWithGoogle() async {
+Future<User> signInWithGoogle() async {
   await Firebase.initializeApp();
 
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -47,9 +49,7 @@ Future<String> signInWithGoogle() async {
     final User currentUser = _auth.currentUser;
     assert(user.uid == currentUser.uid);
 
-    print('signInWithGoogle succeeded: $user');
-
-    return '$user';
+    return user;
   }
 
   return null;
@@ -59,4 +59,20 @@ Future<void> signOutGoogle() async {
   await googleSignIn.signOut();
 
   print("User Signed Out");
+}
+
+Future<userModel.User> signInWithFacebook() async {
+  userModel.User u = new userModel.User();
+  // Trigger the sign-in flow
+  await Firebase.initializeApp();
+
+  // by default the login method has the next permissions ['email','public_profile']
+  AccessToken accessToken = await FacebookAuth.instance.login();
+  print(accessToken.toJson());
+  // get the user data
+  final auserDatasd = await FacebookAuth.instance.getUserData();
+  // print(auserDatasdz);
+  // u.name = auserDatasd['']
+
+  return u;
 }

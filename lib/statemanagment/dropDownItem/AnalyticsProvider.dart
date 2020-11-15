@@ -17,6 +17,7 @@ class AnalyticsProvider with ChangeNotifier {
     dropDownFilter = nameParam;
   }
 
+  
   List<CategoryModel> get items {
     return _items;
   }
@@ -69,7 +70,6 @@ class AnalyticsProvider with ChangeNotifier {
       isLoading = false;
       _items = loadedProducts;
       notifyListeners();
-      // print("Mahdi: ${_items[1].name}: 5h");
     } catch (e) {
       isLoading = false;
       _items = [];
