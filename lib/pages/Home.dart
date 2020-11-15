@@ -9,14 +9,11 @@ import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
 import 'package:onion/widgets/Home/MyPopup.dart';
-<<<<<<< HEAD
 // import 'package:syncfusion_flutter_charts/charts.dart';
 // import 'package:syncfusion_flutter_maps/maps.dart';
-=======
 import 'package:onion/widgets/Snanckbar.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_maps/maps.dart';
->>>>>>> e1d1ab3a4ba92f25b7bb2db6832595f92e5984b5
+// import 'package:syncfusion_flutter_charts/charts.dart';
+// import 'package:syncfusion_flutter_maps/maps.dart';
 
 import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
