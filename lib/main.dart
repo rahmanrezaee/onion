@@ -1,23 +1,26 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/pages/Idea/MyIdeaId.dart';
-import 'package:onion/pages/authentication/ComplateProfile.dart';
-import 'package:onion/pages/Settings.dart';
-import 'package:onion/statemanagment/dropDownItem/MyFlagState.dart';
-
-import 'package:onion/pages/Home.dart';
-import 'package:onion/pages/Idea/postIdea.dart';
-import 'package:onion/pages/F&Q.dart';
-import 'package:onion/pages/Services.dart';
-import 'package:onion/pages/Idea/setupIdea.dart';
-import 'package:onion/pages/RequestedIdeaPage.dart';
-import 'package:onion/pages/authentication/ChangePassword.dart';
-import 'package:onion/pages/authentication/ForgetPassword.dart';
-import 'package:onion/pages/authentication/Login.dart';
-import 'package:onion/pages/authentication/signup.dart';
-import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:provider/provider.dart';
 
+import './pages/Home.dart';
+import 'pages/Franchise/RequestOnFranchise.dart';
+import './pages/Idea/postIdea.dart';
 import './pages/Idea/MyIdeaId.dart';
+import './pages/authentication/ComplateProfile.dart';
+import './pages/Settings.dart';
+import './statemanagment/dropDownItem/MyFlagState.dart';
+import './pages/F&Q.dart';
+import './pages/Services.dart';
+import './pages/Idea/setupIdea.dart';
+import './pages/RequestedIdeaPage.dart';
+import './pages/authentication/ChangePassword.dart';
+import './pages/authentication/ForgetPassword.dart';
+import './pages/authentication/Login.dart';
+import './pages/authentication/signup.dart';
+import './statemanagment/auth_provider.dart';
+import './pages/Idea/MyIdeaId.dart';
+import './pages/Settings.dart';
+import './pages/invest/SendInvRequest.dart';
 import './statemanagment/DrawerScaffold.dart';
 import './pages/MyMessagePage.dart';
 import './pages/NotificationsList.dart';
@@ -39,12 +42,12 @@ import './statemanagment/dropDownItem/IndustryProvider.dart';
 import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
-import 'package:firebase_core/firebase_core.dart';
+import './test.dart';
+import './pages/request.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
@@ -72,7 +75,7 @@ class MyApp extends StatelessWidget {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: CustomDrawerPage(),
+        home: RequestOnFranchise(),
         routes: {
           Login.routeName: (context) => auth.token != null
               ? CustomDrawerPage()
@@ -88,6 +91,7 @@ class MyApp extends StatelessWidget {
                           : Login(),
                 ),
           MyIdeaId.routeName: (context) => MyIdeaId(),
+          RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) => auth.token != null
               ? CustomDrawerPage()
               : FutureBuilder(
@@ -148,6 +152,7 @@ class MyApp extends StatelessWidget {
                               ModalRoute.of(context).settings.arguments,
                             ),
                 ),
+          SendInvRequest.routeName: (context) => SendInvRequest(),
           SetupIdea.routeName: (context) => SetupIdea(),
           PostIdea.routeName: (context) => PostIdea(),
           ProjectChat.routeName: (context) => ProjectChat(),

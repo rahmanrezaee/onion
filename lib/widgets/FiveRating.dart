@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:onion/const/Size.dart';
-import 'package:onion/const/color.dart';
+
+import '../const/Size.dart';
+import '../const/color.dart';
 
 class MyFiveRating extends StatelessWidget {
+  final double rateVal;
+
+  const MyFiveRating({Key key, this.rateVal}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return RatingBar(
-      initialRating: 4.5,
+      initialRating: rateVal,
       minRating: 1,
       itemSize: deviceSize(context).width * 0.05,
       direction: Axis.horizontal,
@@ -27,8 +32,14 @@ class MyFiveRating extends StatelessWidget {
           Icons.star,
           color: middlePurple,
         ),
-        empty: null,
-        half: null,
+        empty: Icon(
+          Icons.star_border,
+          color: middlePurple,
+        ),
+        half: Icon(
+          Icons.star_half,
+          color: middlePurple,
+        ),
       ),
     );
   }

@@ -12,6 +12,7 @@ class IndustryProvider with ChangeNotifier {
   List<CategoryModel> _items = [];
   String dropDownFilter;
   AnalyticsProvider analyticsProvider;
+  bool isLoading = true;
 
   boolDropDownFilter(String nameParam) {
     dropDownFilter = nameParam;
@@ -44,6 +45,7 @@ class IndustryProvider with ChangeNotifier {
 
   Future<void> fetchItems({@required String name, BuildContext context}) async {
     try {
+      isLoading = true;
       final response =
           await APIRequest().get(myUrl: "$baseDropDownItemsUrl$name");
       print("Mahdi: $response");
@@ -52,6 +54,7 @@ class IndustryProvider with ChangeNotifier {
 
       // final extractedData = json.decode(response.body);
       if (extractedData == null) {
+        _items = [];
         return;
       }
       final List<CategoryModel> loadedProducts = [];
@@ -76,14 +79,21 @@ class IndustryProvider with ChangeNotifier {
       //   loadedProducts.add(CategoryModel(id: i, val: extractedData['$i']));
       // }
 
+      _items = [];
       _items = loadedProducts;
-      Provider.of<AnalyticsProvider>(context, listen: false).fetchItems(
+      isLoading = false;
+
+      notifyListeners();
+      Provider.of<AnalyticsProvider>(context, listen: false).clearDate();
+      await Provider.of<AnalyticsProvider>(context, listen: false).fetchItems(
         name: _items[0].name,
         context: context,
       );
-      notifyListeners();
       // print("Mahdi: ${_items[1].name}: 5h");
     } catch (e) {
+      isLoading = false;
+      _items = [];
+      notifyListeners();
       print("Mahdi Error $e");
     }
   }

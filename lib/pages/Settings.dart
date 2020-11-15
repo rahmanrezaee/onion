@@ -27,15 +27,16 @@ class _SettingsState extends State<Settings> {
   String token;
   bool _loadingButton = false;
   getDefaultData() async {
-  token = await Auth().getToken();
-  var defaultData = await SettingsHttp().getDefaultSettings(token);
-  print("defaultData $defaultData");
-}
+    token = await Auth().getToken();
+    var defaultData = await SettingsHttp().getDefaultSettings(token);
+    print("defaultData $defaultData");
+  }
 
-  initState(){
+  initState() {
     getDefaultData();
     super.initState();
   }
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -201,11 +202,12 @@ class _SettingsState extends State<Settings> {
             padding: EdgeInsets.all(10),
             child: RaisedButton(
               color: middlePurple,
-              child:_loadingButton == true ? LinearProgressIndicator(backgroundColor: firstPurple) : 
-                  Text("SAVE CHANGES", style: TextStyle(color: Colors.white)),
+              child: _loadingButton == true
+                  ? LinearProgressIndicator(backgroundColor: firstPurple)
+                  : Text("SAVE CHANGES", style: TextStyle(color: Colors.white)),
               onPressed: () {
-                setState((){
-                _loadingButton = true;
+                setState(() {
+                  _loadingButton = true;
                 });
                 // Map settings = {
                 //   "ProfileType": profileType,
@@ -214,19 +216,21 @@ class _SettingsState extends State<Settings> {
                 //   "ReceiveSMS": receiveSMS,
                 //   "ReceiveAppUpdates": receiveAppUpdates,
                 // };
-                SettingsHttp().setSettings(
+                SettingsHttp()
+                    .setSettings(
                   profileType: profileType,
                   email: receiveEmail,
                   website: receiveWebsite,
                   sms: receiveSMS,
                   update: receiveAppUpdates,
                   token: token,
-                ).then((value) {
+                )
+                    .then((value) {
                   _scaffoldKey.currentState.showSnackBar(SnackBar(
                     content: Text("Settings Saved Succesfully"),
                   ));
-                  setState((){
-                  _loadingButton = false;
+                  setState(() {
+                    _loadingButton = false;
                   });
                 });
               },
