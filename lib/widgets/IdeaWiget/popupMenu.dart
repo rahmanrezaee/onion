@@ -18,12 +18,12 @@ import 'package:flutter/widgets.dart';
 const Duration _kMenuDuration = Duration(milliseconds: 300);
 const double _kBaselineOffsetFromBottom = 20.0;
 const double _kMenuCloseIntervalEnd = 2.0 / 3.0;
-const double _kMenuHorizontalPadding = 0.0;//16.0;
+const double _kMenuHorizontalPadding = 0.0; //16.0;
 const double _kMenuItemHeight = 48.0;
 const double _kMenuDividerHeight = 16.0;
 const double _kMenuMaxWidth = 5.0 * _kMenuWidthStep;
 const double _kMenuMinWidth = 2.0 * _kMenuWidthStep;
-const double _kMenuVerticalPadding = 0.0;//8.0;
+const double _kMenuVerticalPadding = 0.0; //8.0;
 const double _kMenuWidthStep = 56.0;
 const double _kMenuScreenPadding = 8.0;
 
@@ -655,7 +655,6 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
       child: Builder(
         builder: (BuildContext context) {
           return CustomSingleChildLayout(
-            
             delegate: _PopupMenuRouteLayout(
               position,
               selectedItemOffset,
@@ -738,9 +737,19 @@ Future<T> showMenu<T>({
       label = semanticLabel;
       break;
     case TargetPlatform.android:
+ 
+    case TargetPlatform.linux:
+      // TODO: Handle this case.
+      break;
+    case TargetPlatform.macOS:
+      // TODO: Handle this case.
+      break;
+    case TargetPlatform.windows:
+      // TODO: Handle this case.
+      break;
     case TargetPlatform.fuchsia:
-      label =
-          semanticLabel ?? MaterialLocalizations.of(context)?.popupMenuLabel;
+      // TODO: Handle this case.
+      break;
   }
 
   return Navigator.push(
@@ -935,7 +944,6 @@ class _PopupMenuButtonState<T> extends State<PopupMenuButton<T>> {
         context: context,
         elevation: widget.elevation,
         items: items,
-        
         initialValue: widget.initialValue,
         position: position,
       ).then<void>((T newValue) {
@@ -957,6 +965,15 @@ class _PopupMenuButtonState<T> extends State<PopupMenuButton<T>> {
         return const Icon(Icons.more_vert);
       case TargetPlatform.iOS:
         return const Icon(Icons.more_horiz);
+      case TargetPlatform.linux:
+        // TODO: Handle this case.
+        break;
+      case TargetPlatform.macOS:
+        // TODO: Handle this case.
+        break;
+      case TargetPlatform.windows:
+        // TODO: Handle this case.
+        break;
     }
     return null;
   }

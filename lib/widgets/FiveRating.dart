@@ -14,7 +14,7 @@ class MyFiveRating extends StatelessWidget {
       allowHalfRating: true,
       itemCount: 5,
       itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-      // If itemBuilder gets error check this issue: https://github.com/sarbagyastha/flutter_rating_bar/issues/44
+      //If itemBuilder gets error check this issue: https://github.com/sarbagyastha/flutter_rating_bar/issues/44
       // itemBuilder: (context, _) => Icon(
       //   Icons.star,
       //   color: middlePurple,
@@ -22,6 +22,14 @@ class MyFiveRating extends StatelessWidget {
       onRatingUpdate: (rating) {
         print(rating);
       },
+      ratingWidget: RatingWidget(
+        full: Icon(
+          Icons.star,
+          color: middlePurple,
+        ),
+        empty: null,
+        half: null,
+      ),
     );
   }
 }

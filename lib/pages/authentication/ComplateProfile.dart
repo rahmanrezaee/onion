@@ -8,14 +8,16 @@ import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/Snanckbar.dart';
 import 'package:provider/provider.dart';
 
-class SignUp extends StatefulWidget {
-  static String routeName = '/signup';
-
+// ignore: must_be_immutable
+class ComplateProfile extends StatefulWidget {
+  static String routeName = '/complateProfile';
+  User user;
+  ComplateProfile(this.user);
   @override
-  _SignUpState createState() => _SignUpState();
+  _ComplateProfileState createState() => _ComplateProfileState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _ComplateProfileState extends State<ComplateProfile> {
   final _formKey = new GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   User user = new User();
@@ -87,7 +89,7 @@ class _SignUpState extends State<SignUp> {
                       children: [
                         SizedBox(height: 25),
                         Text(
-                          "Sign Up",
+                          "Complate Profile",
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -106,77 +108,32 @@ class _SignUpState extends State<SignUp> {
                               width: 4.0,
                             ),
                           ),
-                          child: Image.asset("assets/images/user.png"),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(25.0),
+                            child: FadeInImage.assetNetwork(
+                              image: widget.user.profile != null
+                                  ? widget.user.profile.url
+                                  : null,
+                              placeholder: "assets/images/user.png",
+                            ),
+                          ),
                         ),
                         SizedBox(height: 10),
-                        TextFormField(
-                          keyboardType: TextInputType.text,
+                        Text(
+                          widget.user.name,
                           style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Your name is empty";
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            user.name = value;
-                          },
-                          decoration: InputDecoration(
-                            hintText: "Name",
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0,
-                              horizontal: 10,
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.black87,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.purple,
-                              ),
-                            ),
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
 
-                        SizedBox(height: 10),
-                        TextFormField(
-                          keyboardType: TextInputType.emailAddress,
+                        Text(
+                          widget.user.email,
                           style: TextStyle(
-                            color: Colors.purple,
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Your Email is empty";
-                            }
-                            if (!value.contains("@"))
-                              return "Your Email not valided";
-                          },
-                          onSaved: (value) {
-                            user.email = value;
-                          },
-                          decoration: InputDecoration(
-                            hintText: "Email",
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0,
-                              horizontal: 10,
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.black87,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.purple,
-                              ),
-                            ),
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-
                         SizedBox(height: 10),
                         TextFormField(
                           keyboardType: TextInputType.phone,
@@ -191,45 +148,6 @@ class _SignUpState extends State<SignUp> {
                           },
                           decoration: InputDecoration(
                             hintText: "Phone Number",
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0,
-                              horizontal: 10,
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.black87,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.purple,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 10),
-                        TextFormField(
-                          obscureText: _obscureText,
-                          style: TextStyle(color: Colors.purple),
-                          validator: (value) {
-                            if (value.isEmpty) return "Your password is empty";
-                          },
-                          onSaved: (value) {
-                            user.password = value;
-                          },
-                          decoration: InputDecoration(
-                            suffix: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _obscureText = !_obscureText;
-                                });
-                              },
-                              icon: _obscureText
-                                  ? Icon(Icons.visibility_off)
-                                  : Icon(Icons.visibility),
-                            ),
-                            hintText: "Password",
                             contentPadding: const EdgeInsets.symmetric(
                               vertical: 0,
                               horizontal: 10,
@@ -354,7 +272,6 @@ class _SignUpState extends State<SignUp> {
                               value: checkboxSelected,
                               enable: true,
                               onChange: (bool value) {
-                                print(value);
                                 setState(() {
                                   checkboxSelected = !checkboxSelected;
                                 });
@@ -409,41 +326,38 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future<void> signUp() async {
+    _scaffoldKey.currentState.showSnackBar(showSnackbar(
+        "For now is not Avilable",
+        Icon(Icons.alarm),
+        Colors.red));
+    // if (_formKey.currentState.validate()) {
+    //   _formKey.currentState.save();
 
-    if (!checkboxSelected) {
-      _scaffoldKey.currentState.showSnackBar(
-          showSnackbar("Accept Our Agreement", Icon(Icons.error), Colors.red));
-      return;
-    }
+    //   setState(() {
+    //     _isLoading = true;
+    //   });
+    //   try {
+    //     var re = await Provider.of<Auth>(context, listen: false)
+    //         .registerUser(user: user);
 
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
+    //     if (re != null) {
+    //       _scaffoldKey.currentState
+    //           .showSnackBar(showSnackbar(re, Icon(Icons.alarm), Colors.red));
+    //     } else {
+    //       Navigator.pop(context);
+    //     }
 
-      setState(() {
-        _isLoading = true;
-      });
-      try {
-        var re = await Provider.of<Auth>(context, listen: false)
-            .registerUser(user: user);
+    //     // Navigator.pop(context);
+    //   } on LoginException catch (e) {
+    //     _scaffoldKey.currentState.showSnackBar(showSnackbar(
+    //         "Have Problem to Connection. Check Your Connection",
+    //         Icon(Icons.alarm),
+    //         Colors.red));
+    //   }
 
-        if (re != null) {
-          _scaffoldKey.currentState
-              .showSnackBar(showSnackbar(re, Icon(Icons.error), Colors.red));
-        } else {
-          Navigator.pop(context);
-        }
-
-        // Navigator.pop(context);
-      } on LoginException catch (e) {
-        _scaffoldKey.currentState.showSnackBar(showSnackbar(
-            "Have Problem to Connection. Check Your Connection",
-            Icon(Icons.error),
-            Colors.red));
-      }
-
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    //   setState(() {
+    //     _isLoading = false;
+    //   });
+    // }
   }
 }

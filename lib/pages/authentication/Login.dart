@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:onion/models/Image.dart';
+import 'package:onion/pages/authentication/ComplateProfile.dart';
 import 'package:onion/pages/authentication/ForgetPassword.dart';
+import 'package:onion/pages/authentication/sign_with_gmail.dart';
 import 'package:onion/pages/authentication/signup.dart';
-import 'package:onion/provider/auth_provider.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/widgets/AuthenticationWidget/OvalBottomBorderClipper.dart';
 import 'package:onion/widgets/Snanckbar.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:onion/models/users.dart' as user;
+
+import 'package:firebase_auth/firebase_auth.dart' as fi;
 
 class Login extends StatefulWidget {
   static String routeName = '/login';
@@ -15,6 +24,10 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  // // google Sign Up
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
   final GlobalKey<FormState> _formKey = GlobalKey();
   bool _isloading = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -71,7 +84,7 @@ class _LoginState extends State<Login> {
                           key: _formKey,
                           child: Column(
                             children: [
-                              SizedBox(height: 65),
+                              SizedBox(height: 70),
                               Text(
                                 "Login Account",
                                 style: TextStyle(
@@ -79,7 +92,7 @@ class _LoginState extends State<Login> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 20),
+                              SizedBox(height: 10),
                               TextFormField(
                                 keyboardType: TextInputType.emailAddress,
                                 style: TextStyle(
@@ -113,7 +126,7 @@ class _LoginState extends State<Login> {
                                 ),
                               ),
 
-                              SizedBox(height: 15),
+                              SizedBox(height: 10),
                               TextFormField(
                                 obscureText: _obscureText,
                                 controller: passport,
@@ -150,18 +163,18 @@ class _LoginState extends State<Login> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 10),
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: FlatButton(
-                                  onPressed: ()=> Navigator.pushNamed(context, ForgetPassword.routeName),
+                                  onPressed: () => Navigator.pushNamed(
+                                      context, ForgetPassword.routeName),
                                   child: Text(
                                     "Forgot Password?",
                                     style: TextStyle(color: Colors.purple),
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 15),
+
                               SizedBox(
                                 width: double.infinity,
                                 height: 30,
@@ -229,12 +242,20 @@ class _LoginState extends State<Login> {
                                           width: 35,
                                           height: 35,
                                           alignment: Alignment.center,
-                                          child: FaIcon(
-                                              FontAwesomeIcons.facebookF,
-                                              color: Colors.white,
-                                              size: 18),
+                                          child: _isloadingFacebook
+                                              ? SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                          backgroundColor:
+                                                              Colors.white))
+                                              : FaIcon(
+                                                  FontAwesomeIcons.facebookF,
+                                                  color: Colors.white,
+                                                  size: 18),
                                         ),
-                                        onTap: () {},
+                                        onTap: signFacebook,
                                       ),
                                     ),
                                   ),
@@ -249,27 +270,35 @@ class _LoginState extends State<Login> {
                                           width: 35,
                                           height: 35,
                                           alignment: Alignment.center,
-                                          child: FaIcon(
-                                              FontAwesomeIcons.googlePlusG,
-                                              color: Colors.white,
-                                              size: 18),
+                                          child: _isloadingGoogle
+                                              ? SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                          backgroundColor:
+                                                              Colors.white))
+                                              : FaIcon(
+                                                  FontAwesomeIcons.googlePlusG,
+                                                  color: Colors.white,
+                                                  size: 18),
                                         ),
-                                        onTap: () {},
+                                        onTap: signGoogle,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 25),
+                              SizedBox(height: 10),
                             ],
                           ),
                         ),
                       ),
                       Positioned(
-                        top: -110,
+                        top: -60,
                         child: Image.asset(
                           "assets/images/logo.png",
-                          width: 170,
+                          width: 130,
                         ),
                       ),
                     ],
@@ -318,6 +347,9 @@ class _LoginState extends State<Login> {
     );
   }
 
+  bool _isloadingGoogle = false;
+  bool _isloadingFacebook = false;
+
   Future<void> loginUserDB() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
@@ -338,6 +370,85 @@ class _LoginState extends State<Login> {
     }
     setState(() {
       _isloading = false;
+    });
+  }
+
+  Future<void> signGoogle() async {
+    setState(() {
+      _isloadingGoogle = true;
+    });
+
+    try {
+      fi.User result = await signInWithGoogle();
+
+      if (result != null) {
+        user.User newUser = new user.User();
+
+        newUser.name = result.displayName;
+        newUser.email = result.email;
+        newUser.phone = result.phoneNumber;
+        ImageModel image = new ImageModel();
+        image.url = result.photoURL;
+        newUser.profile = image;
+        Navigator.pushNamed(context, ComplateProfile.routeName,
+            arguments: newUser);
+      }
+    } catch (e) {
+      _scaffoldKey.currentState
+          .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+      // print(e.cause);
+    }
+    setState(() {
+      _isloadingGoogle = false;
+    });
+  }
+
+  Future<void> signFacebook() async {
+    setState(() {
+      _isloadingFacebook = true;
+    });
+
+    try {
+      // by default the login method has the next permissions ['email','public_profile']
+      await FacebookAuth.instance.login();
+      final auserDatasd = await FacebookAuth.instance.getUserData();
+      print(auserDatasd);
+      if (auserDatasd != null) {
+        user.User newUser = new user.User();
+
+        newUser.name = auserDatasd["name"];
+        newUser.email = auserDatasd["email"];
+        newUser.phone = "";
+        ImageModel image = new ImageModel();
+        image.url = auserDatasd['picture']['data']['url'];
+        newUser.profile = image;
+        Navigator.pushNamed(context, ComplateProfile.routeName,
+            arguments: newUser);
+      }
+    } catch (e, s) {
+      if (e is FacebookAuthException) {
+        print(e.message);
+        switch (e.errorCode) {
+          case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
+            print("You have a previous login operation in progress");
+            break;
+          case FacebookAuthErrorCode.CANCELLED:
+            print("login cancelled");
+            break;
+          case FacebookAuthErrorCode.FAILED:
+            print("login failed");
+            break;
+        }
+      }
+    }
+
+    // } catch (e) {
+    //   _scaffoldKey.currentState
+    //       .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+    //   // print(e.cause);
+    // }
+    setState(() {
+      _isloadingFacebook = false;
     });
   }
 }

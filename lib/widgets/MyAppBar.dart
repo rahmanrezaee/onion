@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onion/provider/auth_provider.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +26,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.clear_all_outlined, color: Colors.white),
+          icon: Icon(Icons.menu, color: Colors.white),
           color: Colors.white,
           onPressed: openDrawer,
         ),

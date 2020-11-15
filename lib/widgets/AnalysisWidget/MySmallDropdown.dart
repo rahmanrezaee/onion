@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
-import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
-import 'package:onion/statemanagment/dropDownItem/MyFlagState.dart';
 import 'package:provider/provider.dart';
 
 import '../../statemanagment/dropDownItem/CategoryProvider.dart';
 import '../../const/Size.dart';
 import '../../const/color.dart';
+import '../../statemanagment/dropDownItem/AnalyticsProvider.dart';
+import '../../statemanagment/dropDownItem/IndustryProvider.dart';
+import '../../statemanagment/dropDownItem/MyFlagState.dart';
 
 class MySmallDropdown extends StatefulWidget {
   final List<CategoryModel> myDropDownList;
@@ -18,8 +18,9 @@ class MySmallDropdown extends StatefulWidget {
   final Color iconColor;
   final bool myisExpanded;
   final String futureType;
+  String firstVal;
 
-  const MySmallDropdown({
+  MySmallDropdown({
     Key key,
     @required this.myDropDownList,
     @required this.dropDownAroundColor,
@@ -28,6 +29,7 @@ class MySmallDropdown extends StatefulWidget {
     this.dropDownColor,
     this.iconColor,
     this.futureType,
+    this.firstVal,
   });
 
   @override
@@ -39,20 +41,32 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
   Future<void> myFuture;
   String name;
   AnalyticsProvider analyticsProvider;
+  IndustryProvider industryProvider;
+  CategoryProvider categoryProvider;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("Mahdi Object ${widget.myDropDownList}");
+    // print("Mahdi Object ${widget.myDropDownList}");
+    // // _value = widget.firstVal;
+    if (widget.futureType == "category") {
+      _value = widget.firstVal;
+    } else if (widget.futureType == "industry") {
+      _value = widget.firstVal;
+    } else if (widget.futureType == "analytics") {
+      _value = widget.firstVal;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     analyticsProvider = Provider.of<AnalyticsProvider>(context, listen: false);
-    if(widget.myDropDownList.isNotEmpty){
-      _value = widget.myDropDownList[0].name;
-    }
+    categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
+    industryProvider = Provider.of<IndustryProvider>(
+      context,
+      listen: false,
+    );
 
     return Container(
       padding: EdgeInsets.all(deviceSize(context).width * 0.01),
@@ -72,14 +86,32 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
             iconEnabledColor: widget.iconColor,
             dropdownColor: widget.dropDownColor,
             onChanged: (value) {
-              print("mahdi: onChange $value");
+              _value = value;
+
               if (widget.futureType == "category") {
-                Provider.of<IndustryProvider>(
-                  context,
-                  listen: false,
-                ).fetchItems(name: value);
+                // industryProvider.clearDate();
+                // categoryProvider.updateIndustryItem(value, context);
+                print("Mahdi II $value");
+                industryProvider.clearDate();
+                industryProvider.fetchItems(name: value, context: context);
+                // industryProvider.fetchItems(
+                //   name: _value,
+                //   context: context,
+                // );
+                // analyticsProvider.clearDate();
+                // analyticsProvider.fetchItems(
+                //   name: _value,
+                //   context: context,
+                // );
               } else if (widget.futureType == "industry") {
-                analyticsProvider.fetchItems(name: value);
+                // widget.firstVal = value;
+                // analyticsProvider.clearDate();
+                // analyticsProvider.fetchItems(
+                //   name: _value,
+                //   context: context,
+                // );
+                analyticsProvider.clearDate();
+                analyticsProvider.fetchItems(name: value, context: context);
               }
               setState(() {
                 _value = value;
@@ -88,6 +120,7 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
             isDense: true,
             items: widget.myDropDownList.isNotEmpty
                 ? widget.myDropDownList.map((e) {
+                    print("Mahdi: ${e.id}");
                     return DropdownMenuItem(
                       child: SizedBox(
                         width: deviceSize(context).width * 0.19,

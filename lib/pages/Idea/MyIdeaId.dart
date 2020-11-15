@@ -3,6 +3,7 @@ import 'package:onion/const/color.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:onion/widgets/IdeaWiget/itemIdea.dart';
+import 'package:onion/widgets/MyLittleAppbar.dart';
 
 class MyIdeaId extends StatefulWidget {
   static String routeName = "MyIdeaId";

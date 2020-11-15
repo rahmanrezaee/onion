@@ -4,10 +4,19 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_echarts/flutter_echarts.dart';
+import 'package:onion/pages/Idea/setupIdea.dart';
+import 'package:onion/pages/authentication/Login.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
 import 'package:onion/widgets/Home/MyPopup.dart';
+<<<<<<< HEAD
 // import 'package:syncfusion_flutter_charts/charts.dart';
 // import 'package:syncfusion_flutter_maps/maps.dart';
+=======
+import 'package:onion/widgets/Snanckbar.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_maps/maps.dart';
+>>>>>>> e1d1ab3a4ba92f25b7bb2db6832595f92e5984b5
 
 import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
@@ -20,6 +29,7 @@ import '../widgets/MyAppBar.dart';
 import '../widgets/MyAppBarContainer.dart';
 
 class HomePage extends StatefulWidget {
+  static const routeName = "home_page";
   final Function openDrawer;
 
   const HomePage({Key key, this.openDrawer});
@@ -30,6 +40,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // Future<void> categoryProvider;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -43,6 +54,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      key: _scaffoldKey,
       appBar: MyAppBar(title: "Home", openDrawer: widget.openDrawer),
       body: ListView(
         children: [
@@ -109,18 +121,38 @@ class _HomePageState extends State<HomePage> {
                           )
                         ],
                       ),
-                      RaisedButton(
-                        color: middlePurple,
-                        child: Text("See Analysis"),
-                        textColor: Colors.white,
-                        onPressed: () => showMyDialog(context: context),
+                      Consumer<Auth>(
+                        builder: (consumerContext, val, child) {
+                          return RaisedButton(
+                            color: middlePurple,
+                            child: Text("See Analysis"),
+                            textColor: Colors.white,
+                            onPressed: () => val.isAuth().then((token) => token
+                                ? showMyDialog(context: context)
+                                : Navigator.pushNamed(
+                                    context, Login.routeName)),
+                          );
+                        },
                       ),
                     ],
                   ),
                 ),
-                MyCardListItem(),
-                MyCardListItem(),
-                MyCardListItem(),
+                MyCardListItem(
+                  callBack: () =>
+                      Navigator.pushNamed(context, SetupIdea.routeName),
+                ),
+                MyCardListItem(
+                  callBack: () {
+                    _scaffoldKey.currentState.showSnackBar(showSnackbar(
+                        "add other", Icon(Icons.alarm), Colors.green));
+                  },
+                ),
+                MyCardListItem(
+                  callBack: () {
+                    _scaffoldKey.currentState.showSnackBar(showSnackbar(
+                        "add Second", Icon(Icons.alarm), Colors.green));
+                  },
+                ),
               ],
             ),
           ),
@@ -130,11 +162,19 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class MyCardListItem extends StatelessWidget {
-  const MyCardListItem({
+class MyCardListItem extends StatefulWidget {
+  Function callBack;
+
+  MyCardListItem({
+    this.callBack,
     Key key,
   }) : super(key: key);
 
+  @override
+  _MyCardListItemState createState() => _MyCardListItemState();
+}
+
+class _MyCardListItemState extends State<MyCardListItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -200,19 +240,25 @@ class MyCardListItem extends StatelessWidget {
               ],
             ),
             SizedBox(height: deviceSize(context).height * 0.02),
-            Expanded(
-              child: InkWell(
-                child: Text(
-                  "Post an Idea Now",
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                    color: firstPurple,
-                    decoration: TextDecoration.underline,
-                    fontWeight: FontWeight.bold,
+            Consumer<Auth>(
+              builder: (consumerContext, val, child) {
+                return Expanded(
+                  child: GestureDetector(
+                    child: Text(
+                      "Post an Idea Now",
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        color: firstPurple,
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onTap: () => val.token != null
+                        ? widget.callBack()
+                        : Navigator.pushNamed(context, Login.routeName),
                   ),
-                ),
-                onTap: () {},
-              ),
+                );
+              },
             ),
           ],
         ),

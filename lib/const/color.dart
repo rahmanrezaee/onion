@@ -7,3 +7,5 @@ Color deepBlue = Color(0xFF3c465f);
 Color lightGrey = Color(0xFFededed);
 Color middleGrey = Color(0xFFa5aab6);
 Color deepGrey = Color(0xff999999);
+Color greyBlue = Color.fromRGBO(235, 240, 255, 0.99);
+Color grey = Color.fromRGBO(235, 235, 235, 0.99);

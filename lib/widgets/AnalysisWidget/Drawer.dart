@@ -12,11 +12,27 @@ import 'package:onion/pages/Settings.dart';
 import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
-import 'package:onion/provider/auth_provider.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:http/http.dart';
+import 'package:onion/pages/Settings.dart';
+import 'package:onion/pages/request.dart';
 import 'package:onion/services/SimpleHttp.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../pages/Analysis.dart';
+import '../../pages/Home.dart';
+import '../../statemanagment/DrawerScaffold.dart';
+import '../../pages/AnalyticsOne.dart';
+import '../../pages/CustomDrawerPage.dart';
+import '../../pages/F&Q.dart';
+import '../../pages/Idea/MyIdeaId.dart';
+import '../../pages/MyMessagePage.dart';
+import '../../pages/Services.dart';
+import '../../pages/authentication/Login.dart';
+import '../../statemanagment/auth_provider.dart';
+import '../DropdownWidget/Terms%20&%20Conditions.dart';
 import '../../const/Size.dart';
 import '../../const/color.dart';
 
@@ -26,6 +42,8 @@ class MyDrawer extends StatelessWidget {
     IconData icon,
     String routeName,
     BuildContext context,
+    bool justPush = false,
+    bool hasDrawer = false,
   }) {
     return ListTile(
       dense: true,
@@ -38,10 +56,24 @@ class MyDrawer extends StatelessWidget {
           ? null
           : () {
               Navigator.pop(context);
-              Navigator.pushReplacementNamed(
-                context,
-                routeName,
-              );
+              if (routeName == "show dialog") {
+                showTermAndConditions(context);
+              }
+              if (hasDrawer) {
+                Provider.of<DrawerScaffold>(
+                  context,
+                  listen: false,
+                ).scaffoldFunc(mScaffoldType: routeName);
+              } else {
+                if (justPush) {
+                  Navigator.pushNamed(context, routeName);
+                } else {
+                  Navigator.pushReplacementNamed(
+                    context,
+                    routeName,
+                  );
+                }
+              }
             },
     );
   }
@@ -104,7 +136,7 @@ class MyDrawer extends StatelessWidget {
                       ),
                       value.token != null
                           ? Text(
-                              "Mr: Hacker",
+                              value.currentUser.name,
                               textScaleFactor: 1.2,
                               style: TextStyle(color: Colors.white),
                             )
@@ -115,7 +147,8 @@ class MyDrawer extends StatelessWidget {
                                 "click to login..",
                                 textScaleFactor: 1.2,
                                 style: TextStyle(color: Colors.white),
-                              )),
+                              ),
+                            ),
                     ],
                   ),
                 ),
@@ -125,7 +158,9 @@ class MyDrawer extends StatelessWidget {
                 context: context,
                 name: "Analytics List",
                 icon: Icons.person,
-                routeName: CustomDrawerPage.routeName,
+                routeName: HomePage.routeName,
+                justPush: false,
+                hasDrawer: true,
               ),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
@@ -133,6 +168,7 @@ class MyDrawer extends StatelessWidget {
                 name: "Analytics One",
                 icon: Icons.opacity,
                 routeName: AnalyticsOne.routeName,
+                justPush: true,
               ),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
@@ -145,31 +181,44 @@ class MyDrawer extends StatelessWidget {
               myListTile(
                 context: context,
                 name: "Notification Setting",
+                justPush: true,
                 icon: Icons.notifications,
               ),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
                 context: context,
-                name: "Innovator",
-                icon: Icons.lightbulb,
+                name: "My Message",
+                icon: Icons.message,
+                routeName: MyMessagePage.routeName,
+                justPush: true,
               ),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
                 context: context,
                 name: "Service Provider",
                 icon: Icons.person,
+                justPush: true,
               ),
+              Divider(color: Colors.white, height: 0.1),
+              myListTile(
+                  context: context,
+                  name: "Request",
+                  icon: Icons.request_page,
+                  routeName: RequestPage.routeName,
+                  justPush: true),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
                 context: context,
                 name: "Investor",
                 icon: Icons.person,
+                justPush: true,
               ),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
                 context: context,
                 name: "My Connections",
                 icon: Icons.connect_without_contact,
+                justPush: true,
               ),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
@@ -197,12 +246,14 @@ class MyDrawer extends StatelessWidget {
                 context: context,
                 name: "Completed Projects",
                 icon: Icons.sticky_note_2_rounded,
+                justPush: true,
               ),
               Divider(color: Colors.white, height: 0.1),
               myListTile(
                 context: context,
                 name: "My Analysis",
                 icon: Icons.help,
+                justPush: true,
               ),
               Divider(color: Colors.white, height: 0.1),
               InkWell(
@@ -225,17 +276,41 @@ class MyDrawer extends StatelessWidget {
                 name: "FAQ",
                 icon: Icons.help,
                 routeName: FandQ.routeName,
+                justPush: true,
+              ),
+              Divider(color: Colors.white, height: 0.1),
+              myListTile(
+                context: context,
+                name: "My Idea List",
+                icon: Icons.help,
+                routeName: MyIdeaId.routeName,
+                justPush: true,
               ),
               value.token != null
-                  ? RaisedButton(
-                      child: Text("logout"),
-                      onPressed: () {
-                        value.logout();
-                      })
-                  : RaisedButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, Login.routeName),
-                      child: Text("login"),
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: deviceSize(context).width * 0.07,
+                      ),
+                      child: RaisedButton(
+                        child: Text("logout"),
+                        elevation: 0,
+                        onPressed: () {
+                          value.logout();
+                        },
+                      ),
+                    )
+                  : Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: deviceSize(context).width * 0.07,
+                      ),
+                      child: RaisedButton(
+                        elevation: 0,
+                        onPressed: () => Navigator.pushNamed(
+                          context,
+                          Login.routeName,
+                        ),
+                        child: Text("login"),
+                      ),
                     ),
             ],
           ),
@@ -253,6 +328,7 @@ class TandCDialog extends StatelessWidget {
   }) : super(key: key);
 
   ScrollController _controller = new ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Dialog(

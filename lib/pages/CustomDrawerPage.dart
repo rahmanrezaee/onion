@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
-import 'package:onion/pages/Home.dart';
-
+import 'package:onion/pages/Services.dart';
+import 'package:provider/provider.dart';
+import '../pages/Home.dart';
+import '../statemanagment/DrawerScaffold.dart';
 import '../const/color.dart';
 import './Analysis.dart';
 import '../widgets/AnalysisWidget/Drawer.dart';
 
 class CustomDrawerPage extends StatefulWidget {
   static const routeName = "custom_drawer";
-CustomDrawerPage();
+
+  CustomDrawerPage();
+
   @override
   _CustomDrawerPageState createState() => _CustomDrawerPageState();
 }
@@ -60,7 +64,16 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
       innerDrawerCallback: (a) => print(a),
       // return  true (open) or false (close)
       leftChild: MyDrawer(),
-      scaffold: HomePage(openDrawer: openCustomDrawer),
+      scaffold: Consumer<DrawerScaffold>(
+        builder: (context, value, Widget child) {
+          if (value.scaffoldType == HomePage.routeName) {
+            return HomePage(openDrawer: openCustomDrawer);
+          } else if (value.scaffoldType == Services.routeName) {
+            return Services(openDrawer: openCustomDrawer);
+          }
+          return null;
+        },
+      ),
     );
   }
 
@@ -72,6 +85,4 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
       direction: InnerDrawerDirection.end,
     );
   }
-
-
 }
