@@ -1,6 +1,6 @@
 import 'dart:io';
 
-class SetupIdea {
+class SetupIdeaModel {
   String typeIdea;
   String category;
   String experienceYear;

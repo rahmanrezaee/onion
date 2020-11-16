@@ -148,55 +148,57 @@ class MyChatItems extends StatelessWidget {
                 ),
               ),
               SizedBox(width: deviceSize(context).width * 0.02),
-              Container(
-                decoration: BoxDecoration(
-                  color: isMe ? greyBlue : grey,
-                  borderRadius: BorderRadius.only(
-                    topRight: isMe ? Radius.circular(0) : Radius.circular(15),
-                    bottomRight: Radius.circular(15),
-                    bottomLeft: Radius.circular(15),
-                    topLeft: !isMe ? Radius.circular(0) : Radius.circular(15),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: deviceSize(context).width * 0.03,
-                        right: deviceSize(context).width * 0.03,
-                        top: deviceSize(context).height * 0.03,
-                        bottom: deviceSize(context).width * 0.02,
-                      ),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: deviceSize(context).height * 0.1,
-                          maxHeight: deviceSize(context).height,
-                          minWidth: deviceSize(context).width * 0.6,
-                          maxWidth: deviceSize(context).width * 0.7,
-                        ),
-                        child: AutoSizeText(
-                          lormIpsum,
-                          textDirection: TextDirection.ltr,
-                          textScaleFactor: 1.1,
-                          maxLines: 10,
-                        ),
-                      ),
+              Expanded(
+                              child: Container(
+                  decoration: BoxDecoration(
+                    color: isMe ? greyBlue : grey,
+                    borderRadius: BorderRadius.only(
+                      topRight: isMe ? Radius.circular(0) : Radius.circular(15),
+                      bottomRight: Radius.circular(15),
+                      bottomLeft: Radius.circular(15),
+                      topLeft: !isMe ? Radius.circular(0) : Radius.circular(15),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: deviceSize(context).width * 0.01,
-                        right: deviceSize(context).width * 0.02,
-                        bottom: deviceSize(context).width * 0.02,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: deviceSize(context).width * 0.03,
+                          right: deviceSize(context).width * 0.03,
+                          top: deviceSize(context).height * 0.03,
+                          bottom: deviceSize(context).width * 0.02,
+                        ),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: deviceSize(context).height * 0.1,
+                            maxHeight: deviceSize(context).height,
+                            minWidth: deviceSize(context).width * 0.6,
+                            maxWidth: deviceSize(context).width * 0.7,
+                          ),
+                          child: AutoSizeText(
+                            lormIpsum,
+                            textDirection: TextDirection.ltr,
+                            textScaleFactor: 1.1,
+                            maxLines: 10,
+                          ),
+                        ),
                       ),
-                      child: Text(
-                        "06:45",
-                        textAlign: TextAlign.end,
-                        textScaleFactor: 0.9,
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    )
-                  ],
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: deviceSize(context).width * 0.01,
+                          right: deviceSize(context).width * 0.02,
+                          bottom: deviceSize(context).width * 0.02,
+                        ),
+                        child: Text(
+                          "06:45",
+                          textAlign: TextAlign.end,
+                          textScaleFactor: 0.9,
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               )
             ],
