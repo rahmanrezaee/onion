@@ -1,7 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:onion/const/color.dart';
+import 'package:onion/const/values.dart';
 import 'package:onion/models/users.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/widgets/AuthenticationWidget/OvalBottomBorderClipper.dart';
@@ -32,6 +37,9 @@ class _SignUpState extends State<SignUp> {
   bool _isLoading = false;
   bool _obscureText = true;
   PlatformFile profileImage;
+
+  File _imageFile;
+  bool _isUploadingImage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -107,32 +115,30 @@ class _SignUpState extends State<SignUp> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 10),
                           GestureDetector(
-                            onTap: () async {
-                              FilePickerResult result = await FilePicker
-                                  .platform
-                                  .pickFiles(type: FileType.image);
-                              setState(() {
-                                profileImage = result.files.first;
-                              });
-                            },
+                            onTap: () => _openImagePickerModal(context),
                             child: new Container(
-                              width: 50,
-                              height: 50,
-                              decoration: new BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: new BorderRadius.all(
-                                    new Radius.circular(50.0)),
-                                border: new Border.all(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 4.0,
+                                width: 70,
+                                height: 70,
+                                decoration: new BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: new BorderRadius.all(
+                                      new Radius.circular(70.0)),
+                                  border: new Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 4.0,
+                                  ),
                                 ),
-                              ),
-                              child: profileImage != null
-                                  ? Image.memory(profileImage.bytes)
-                                  : Image.asset("assets/images/user.png"),
-                            ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(70.0),
+                                  child: _isUploadingImage
+                                      ? CircularProgressIndicator()
+                                      : user.profile != null
+                                          ? Image.network(
+                                              BASE_URL + user.profile)
+                                          : Icon(Icons.add_a_photo),
+                                )),
                           ),
                           SizedBox(height: 10),
                           TextFormField(
@@ -471,17 +477,17 @@ class _SignUpState extends State<SignUp> {
   }
 
   bool isValidPhoneNumber(String string) {
-    // Null or empty string is invalid phone number
     if (string == null || string.isEmpty) {
       return false;
     }
 
-    // You may need to change this pattern to fit your requirement.
-    // I just copied the pattern from here: https://regexr.com/3c53v
     const pattern = r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$';
     final regExp = RegExp(pattern);
 
     if (!regExp.hasMatch(string)) {
+      return false;
+    }
+    if (string.length < 9 || string.length > 13) {
       return false;
     }
     return true;
@@ -535,5 +541,130 @@ class _SignUpState extends State<SignUp> {
         _isLoading = false;
       });
     }
+  }
+
+  void _getImage(BuildContext context, ImageSource source) async {
+    File image = await ImagePicker.pickImage(
+      source: source,
+      imageQuality: 85,
+    );
+
+    setState(() {
+      _imageFile = image;
+    });
+
+    Navigator.pop(context);
+
+    if (_imageFile != null) {
+      await _cropImage();
+    }
+
+    setState(() {
+      _isUploadingImage = true;
+    });
+
+    try {
+      String result = await Auth().uploadImage(_imageFile, "profile");
+      user.profile = result;
+    } on UploadException catch ( e) {
+       _scaffoldKey.currentState.showSnackBar(
+          showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+    }
+
+    setState(() {
+      _isUploadingImage = false;
+    });
+  }
+
+  Future<Null> _cropImage() async {
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: _imageFile.path,
+        aspectRatioPresets: Platform.isAndroid
+            ? [
+                CropAspectRatioPreset.square,
+              ]
+            : [
+                CropAspectRatioPreset.square,
+              ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Edit Image',
+            toolbarColor: Theme.of(context).primaryColor,
+            cropFrameColor: Theme.of(context).primaryColor,
+            statusBarColor: Theme.of(context).primaryColor,
+            activeControlsWidgetColor: Theme.of(context).primaryColor,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          title: 'Edit Image',
+        ));
+    if (croppedFile != null) {
+      setState(() {
+        _imageFile = croppedFile;
+      });
+    }
+  }
+
+  void _openImagePickerModal(BuildContext context) {
+    final flatButtonColor = Theme.of(context).primaryColor;
+
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 150.0,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: 50,
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.all(0),
+                  padding: EdgeInsets.all(0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(0)),
+                  ),
+                  width: double.infinity,
+                  child: Text(
+                    'Choice Image',
+                  ),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    FlatButton(
+                      textColor: flatButtonColor,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          FaIcon(FontAwesomeIcons.camera),
+                          Text('Comara'),
+                        ],
+                      ),
+                      onPressed: () {
+                        _getImage(context, ImageSource.camera);
+                      },
+                    ),
+                    FlatButton(
+                      textColor: flatButtonColor,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          FaIcon(FontAwesomeIcons.images),
+                          Text('Gallary'),
+                        ],
+                      ),
+                      onPressed: () {
+                        _getImage(context, ImageSource.gallery);
+                      },
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        });
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -44,6 +45,7 @@ class Auth with ChangeNotifier {
         'phone': user.phone,
         'email': user.email,
         'password': user.password,
+        'profile': user.profile != null ? user.profile : "",
       };
       var userData = json.encode(userDataField);
       prefs.setString('userData', userData);
@@ -73,13 +75,13 @@ class Auth with ChangeNotifier {
     token = extractedUserData['token'];
     currentUser.name = extractedUserData['username'];
     currentUser.email = extractedUserData['email'];
+    currentUser.profile = extractedUserData['profile'];
 
     notifyListeners();
     return true;
   }
 
   Future<String> getToken() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString('userData') == null) {
       return Future.value(null);
@@ -115,12 +117,14 @@ class Auth with ChangeNotifier {
           'phone': responseData['data']['phone'],
           'email': username,
           'password': password,
+          'profile':  responseData['data']['avatar'],
         },
       );
 
       currentUser.name = responseData['data']['username'];
       currentUser.email = responseData['data']['email'];
       currentUser.country = responseData['data']['country'];
+      currentUser.profile = responseData['data']['avatar'];
 
       prefs.setString('userData', userData);
       notifyListeners();
@@ -219,9 +223,52 @@ class Auth with ChangeNotifier {
     String email = result.email;
     print(result.uid);
   }
+
+  Future<String> uploadImage(File imageFile, String category) async {
+    final StringBuffer url = new StringBuffer(BASE_URL + "/upload");
+    Dio dio = new Dio();
+
+    print("file image");
+
+    print(await MultipartFile.fromFile(imageFile.path));
+
+    try {
+      FormData formData = FormData.fromMap(
+        {
+          "uploadFile": await MultipartFile.fromFile(imageFile.path),
+          "token": UNTOKEN,
+          "category": category
+        },
+      );
+
+      print(url.toString());
+      var response = await dio.post(
+        url.toString(),
+        data: formData,
+      );
+
+      print(response);
+
+      if (response.data['status']) {
+        var respon = response.data["data"]["name"];
+        return Future.value(respon);
+      } else {
+        throw UploadException(response.data["message"]);
+      }
+    } on DioError catch (e) {
+      print("errors");
+      print(e.response);
+      // throw UploadException(e.response.data["message"]);
+    }
+  }
 }
 
 class LoginException implements Exception {
   String cause;
   LoginException(this.cause);
+}
+
+class UploadException implements Exception {
+  String cause;
+  UploadException(this.cause);
 }

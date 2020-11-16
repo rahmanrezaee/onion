@@ -36,7 +36,7 @@ dependencies:
   flutter_echarts: ^1.4.0
   syncfusion_flutter_maps: ^18.3.47-beta
   syncfusion_flutter_charts: ^18.3.47
-  # flutter_facebook_auth: "^1.0.0"
+  flutter_facebook_auth: "^1.0.0"
   carousel_slider: ^2.3.1
   # http: ^0.12.2
   image_picker: ^0.6.7+12

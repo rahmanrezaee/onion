@@ -112,7 +112,7 @@ class _ComplateProfileState extends State<ComplateProfile> {
                             borderRadius: BorderRadius.circular(25.0),
                             child: FadeInImage.assetNetwork(
                               image: widget.user.profile != null
-                                  ? widget.user.profile.url
+                                  ? widget.user.profile
                                   : null,
                               placeholder: "assets/images/user.png",
                             ),

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:onion/const/values.dart';
 import 'package:onion/pages/Analysis.dart';
 import 'package:onion/pages/AnalyticsOne.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
@@ -106,8 +107,10 @@ class MyDrawer extends StatelessWidget {
                                 height: 100,
                                 width: 100,
                                 child: CircleAvatar(
-                                  backgroundImage: AssetImage(
-                                      'assets/images/empty_profile.jpg'),
+                                  backgroundImage: value.token != null && value.currentUser.profile != null
+                                      ? NetworkImage(BASE_URL+value.currentUser.profile)
+                                      : AssetImage(
+                                          'assets/images/empty_profile.jpg'),
                                 ),
                               ),
                               Positioned(
