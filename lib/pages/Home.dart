@@ -9,21 +9,26 @@ import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
 import 'package:onion/widgets/Home/MyPopup.dart';
-// import 'package:syncfusion_flutter_charts/charts.dart';
-// import 'package:syncfusion_flutter_maps/maps.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:onion/widgets/Snanckbar.dart';
-// import 'package:syncfusion_flutter_charts/charts.dart';
-// import 'package:syncfusion_flutter_maps/maps.dart';
 
 import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
 import 'package:provider/provider.dart';
 
-// import 'gl_script.dart' show glScript;
 import '../statemanagment/dropDownItem/CategoryProvider.dart';
 import '../widgets/AnalysisWidget/MyAlert.dart';
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyAppBarContainer.dart';
+
+class Model {
+  Model(this.state, this.color, this.stateCode);
+
+  String state;
+  Color color;
+  String stateCode;
+}
 
 class HomePage extends StatefulWidget {
   static const routeName = "home_page";
@@ -37,11 +42,28 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // Future<void> categoryProvider;
+  List<Model> data;
+  MapZoomPanBehavior _zoomPanBehavior;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     // TODO: implement initState
+    _zoomPanBehavior = MapZoomPanBehavior();
+    data = <Model>[
+      Model('New South Wales', Color.fromRGBO(255, 215, 0, 1.0),
+          '       New\nSouth Wales'),
+      Model('Queensland', Color.fromRGBO(72, 209, 204, 1.0), 'Queensland'),
+      Model('Northern Territory', Colors.red.withOpacity(0.85),
+          'Northern\nTerritory'),
+      Model('Victoria', Color.fromRGBO(171, 56, 224, 0.75), 'Victoria'),
+      Model('South Australia', Color.fromRGBO(126, 247, 74, 0.75),
+          'South Australia'),
+      Model('Western Australia', Color.fromRGBO(79, 60, 201, 0.7),
+          'Western Australia'),
+      Model('Tasmania', Color.fromRGBO(99, 164, 230, 1), 'Tasmania'),
+      Model('Australian Capital Territory', Colors.teal, 'ACT')
+    ];
     super.initState();
     // categoryProvider = Provider.of<CategoryProvider>(context, listen: false)
     //     .fetchCategoryItem();
@@ -77,9 +99,50 @@ class _HomePageState extends State<HomePage> {
               children: [
                 // EChartMap(),
                 Container(
-                  color: Colors.blue,
                   width: double.infinity,
                   height: deviceSize(context).width * 0.5,
+                  child: Padding(
+                    padding: EdgeInsets.all(15),
+                    child: SfMaps(
+                      title: const MapTitle(text: 'Australia map'),
+                      layers: <MapShapeLayer>[
+                        MapShapeLayer(
+                          zoomPanBehavior: _zoomPanBehavior,
+                          delegate: MapShapeLayerDelegate(
+                            shapeFile: 'assets/australia.json',
+                            shapeDataField: 'STATE_NAME',
+                            dataCount: data.length,
+                            primaryValueMapper: (int index) =>
+                                data[index].state,
+                            dataLabelMapper: (int index) =>
+                                data[index].stateCode,
+                            shapeColorValueMapper: (int index) =>
+                                data[index].color,
+                            shapeTooltipTextMapper: (int index) =>
+                                data[index].stateCode,
+                          ),
+                          showDataLabels: true,
+                          // showLegend: true,
+                          enableShapeTooltip: true,
+                          tooltipSettings: MapTooltipSettings(
+                            color: Colors.grey[700],
+                            strokeColor: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                          strokeColor: Colors.white,
+                          strokeWidth: 0.5,
+                          dataLabelSettings: MapDataLabelSettings(
+                            textStyle: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                                  Theme.of(context).textTheme.caption.fontSize,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 SizedBox(
                   width: deviceSize(context).width * 0.9,
@@ -140,14 +203,18 @@ class _HomePageState extends State<HomePage> {
                 ),
                 MyCardListItem(
                   callBack: () {
-                    _scaffoldKey.currentState.showSnackBar(showSnackbar(
-                        "add other", Icon(Icons.alarm), Colors.green));
+                    _scaffoldKey.currentState.showSnackBar(
+                      showSnackbar(
+                          "add other", Icon(Icons.alarm), Colors.green),
+                    );
                   },
                 ),
                 MyCardListItem(
                   callBack: () {
-                    _scaffoldKey.currentState.showSnackBar(showSnackbar(
-                        "add Second", Icon(Icons.alarm), Colors.green));
+                    _scaffoldKey.currentState.showSnackBar(
+                      showSnackbar(
+                          "add Second", Icon(Icons.alarm), Colors.green),
+                    );
                   },
                 ),
               ],

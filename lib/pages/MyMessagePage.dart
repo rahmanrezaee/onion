@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onion/widgets/MRaiseButton.dart';
 
 import './NotificationsList.dart';
 import '../const/color.dart';
@@ -115,36 +116,12 @@ class _MyTextFieldMessageState extends State<MyTextFieldMessage> {
               ),
             ),
           ),
-          InkWell(
-            onTap: () => _selectDate(context),
-            // onTap: () {
-            //   print("Mahdi");
-            // },
-            child: Container(
-              width: deviceSize(context).width * 0.4,
-              height: deviceSize(context).height * 0.06,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: <Color>[firstPurple, thirdPurple],
-                ),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    "Choose Date",
-                    style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  ),
-                  Icon(
-                    Icons.date_range,
-                    color: Colors.white.withOpacity(0.7),
-                  )
-                ],
-              ),
-            ),
+          MRaiseButton(
+            mFunc: _selectDate,
+            mTxtBtn: "Choose Date",
+            isIcon: true,
+            mWidth: deviceSize(context).width * 0.4,
+            mHeight: deviceSize(context).height * 0.06,
           ),
         ],
       ),

@@ -25,6 +25,11 @@ class CategoryProvider with ChangeNotifier {
   List<CategoryModel> _items = [];
   String dropDownFilter;
   IndustryProvider industryProvider;
+  bool isLoading = true;
+
+  bool catIsLoading() {
+    return isLoading;
+  }
 
   updateIndustryItem(String name, BuildContext context) {
     // CategoryModel categoryModel = _items.firstWhere((element) => element.name == name);
@@ -61,12 +66,15 @@ class CategoryProvider with ChangeNotifier {
   Future<void> fetchItems(BuildContext context) async {
     try {
       // final response = await http.get("${baseDropDownItemsUrl}0");
+      isLoading = false;
+
       final response =
           await APIRequest().get(myUrl: "${baseDropDownItemsUrl}0");
       // print("Mahdi: ${response.body}");
 
       final extractedData = response.data;
       if (extractedData == null) {
+        _items = [];
         return;
       }
       final List<CategoryModel> loadedProducts = [];
@@ -91,14 +99,20 @@ class CategoryProvider with ChangeNotifier {
       //   loadedProducts.add(CategoryModel(id: i, val: extractedData['$i']));
       // }
 
+      _items = [];
       _items = loadedProducts;
-      Provider.of<IndustryProvider>(context, listen: false).fetchItems(
+      isLoading = true;
+      notifyListeners();
+
+      await Provider.of<IndustryProvider>(context, listen: false).fetchItems(
         name: _items[0].name,
         context: context,
       );
-      notifyListeners();
       // print("Mahdi: ${_items[1].name}: 5h");
     } catch (e) {
+      isLoading = false;
+      _items = [];
+      notifyListeners();
       print("Mahdi Error $e");
     }
   }
