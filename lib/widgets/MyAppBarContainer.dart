@@ -96,7 +96,7 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                               iconColor: Colors.white,
                               txtColor: Colors.white,
                               futureType: "category",
-                              firstVal: value.firstItem.name,
+                              firstVal: value.items[0].name,
                             );
                           }
                         },
@@ -131,7 +131,7 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                               iconColor: Colors.white,
                               txtColor: Colors.white,
                               futureType: "industry",
-                              firstVal: value.firstItem.name,
+                              firstVal: value.items[0].name,
                             );
                           }
                         }
@@ -191,12 +191,12 @@ class MyEmptyText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(deviceSize(context).width * 0.01),
+      padding: EdgeInsets.all(deviceSize(context).width * 0.02),
       margin: EdgeInsets.symmetric(
         horizontal: deviceSize(context).width * 0.01,
       ),
       decoration: BoxDecoration(
-        border: Border.all(color: middlePurple),
+        border: Border.all(color: Colors.white),
         borderRadius: BorderRadius.circular(5),
       ),
       child: SizedBox(
