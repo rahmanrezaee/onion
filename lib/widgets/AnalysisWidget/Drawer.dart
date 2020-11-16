@@ -38,8 +38,26 @@ import '../DropdownWidget/Terms%20&%20Conditions.dart';
 import '../../const/Size.dart';
 import '../../const/color.dart';
 
-class MyDrawer extends StatelessWidget {
-  ListTile myListTile({
+class MyDrawer extends StatefulWidget {
+  @override
+  _MyDrawerState createState() => _MyDrawerState();
+}
+
+class _MyDrawerState extends State<MyDrawer> {
+  bool _isAuth;
+
+  __isAuth() async {
+    _isAuth = await Auth().isAuth();
+    setState(() {});
+    print("_isAuth $_isAuth");
+  }
+
+  initState() {
+    __isAuth();
+    super.initState();
+  }
+
+  Column myListTile({
     String name,
     IconData icon,
     String routeName,
@@ -47,36 +65,41 @@ class MyDrawer extends StatelessWidget {
     bool justPush = false,
     bool hasDrawer = false,
   }) {
-    return ListTile(
-      dense: true,
-      title: Text(
-        name,
-        style: TextStyle(color: Colors.white),
-      ),
-      leading: Icon(icon, color: Colors.white),
-      onTap: routeName == null
-          ? null
-          : () {
-              Navigator.pop(context);
-              if (routeName == "show dialog") {
-                showTermAndConditions(context);
-              }
-              if (hasDrawer) {
-                Provider.of<DrawerScaffold>(
-                  context,
-                  listen: false,
-                ).scaffoldFunc(mScaffoldType: routeName);
-              } else {
-                if (justPush) {
-                  Navigator.pushNamed(context, routeName);
-                } else {
-                  Navigator.pushReplacementNamed(
-                    context,
-                    routeName,
-                  );
-                }
-              }
-            },
+    return Column(
+      children: [
+        ListTile(
+          dense: true,
+          title: Text(
+            name,
+            style: TextStyle(color: Colors.white),
+          ),
+          leading: Icon(icon, color: Colors.white),
+          onTap: routeName == null
+              ? null
+              : () {
+                  Navigator.pop(context);
+                  if (routeName == "show dialog") {
+                    showTermAndConditions(context);
+                  }
+                  if (hasDrawer) {
+                    Provider.of<DrawerScaffold>(
+                      context,
+                      listen: false,
+                    ).scaffoldFunc(mScaffoldType: routeName);
+                  } else {
+                    if (justPush) {
+                      Navigator.pushNamed(context, routeName);
+                    } else {
+                      Navigator.pushReplacementNamed(
+                        context,
+                        routeName,
+                      );
+                    }
+                  }
+                },
+        ),
+        Divider(color: Colors.white, height: 0.1),
+      ],
     );
   }
 
@@ -157,7 +180,6 @@ class MyDrawer extends StatelessWidget {
                   ),
                 ),
               ),
-              Divider(color: Colors.white, height: 0.1),
               myListTile(
                 context: context,
                 name: "Analytics List",
@@ -166,7 +188,6 @@ class MyDrawer extends StatelessWidget {
                 justPush: false,
                 hasDrawer: true,
               ),
-              Divider(color: Colors.white, height: 0.1),
               myListTile(
                 context: context,
                 name: "Analytics One",
@@ -174,92 +195,95 @@ class MyDrawer extends StatelessWidget {
                 routeName: AnalyticsOne.routeName,
                 justPush: true,
               ),
-              Divider(color: Colors.white, height: 0.1),
-              myListTile(
-                context: context,
-                name: "Settings",
-                icon: Icons.settings,
-                routeName: Settings.routeName,
-              ),
-              Divider(color: Colors.white, height: 0.1),
-              myListTile(
-                context: context,
-                name: "Notification Setting",
-                justPush: true,
-                icon: Icons.notifications,
-              ),
-              Divider(color: Colors.white, height: 0.1),
-              myListTile(
-                context: context,
-                name: "My Message",
-                icon: Icons.message,
-                routeName: MyMessagePage.routeName,
-                justPush: true,
-              ),
-              Divider(color: Colors.white, height: 0.1),
+              _isAuth == true
+                  ? myListTile(
+                      context: context,
+                      name: "Settings",
+                      icon: Icons.settings,
+                      routeName: Settings.routeName,
+                    )
+                  : Container(),
+
+              // _isAuth == true
+              //     ? myListTile(
+              //         context: context,
+              //         name: "Notification Setting",
+              //         justPush: true,
+              //         icon: Icons.notifications,
+              //       )
+              //     : Container(),
+              _isAuth == true
+                  ? myListTile(
+                      context: context,
+                      name: "My Message",
+                      icon: Icons.message,
+                      routeName: MyMessagePage.routeName,
+                      justPush: true,
+                    )
+                  : Container(),
               myListTile(
                 context: context,
                 name: "Service Provider",
                 icon: Icons.person,
                 justPush: true,
               ),
-              Divider(color: Colors.white, height: 0.1),
-              myListTile(
-                  context: context,
-                  name: "Request",
-                  icon: Icons.request_page,
-                  routeName: RequestPage.routeName,
-                  justPush: true),
-              Divider(color: Colors.white, height: 0.1),
+              _isAuth == true
+                  ? myListTile(
+                      context: context,
+                      name: "Request",
+                      icon: Icons.request_page,
+                      routeName: RequestPage.routeName,
+                      justPush: true)
+                  : Container(),
               myListTile(
                 context: context,
                 name: "Investor",
                 icon: Icons.person,
                 justPush: true,
               ),
-              Divider(color: Colors.white, height: 0.1),
-              myListTile(
-                context: context,
-                name: "My Connections",
-                icon: Icons.connect_without_contact,
-                justPush: true,
-              ),
-              Divider(color: Colors.white, height: 0.1),
+              _isAuth == true
+                  ? myListTile(
+                      context: context,
+                      name: "My Connections",
+                      icon: Icons.connect_without_contact,
+                      justPush: true,
+                    )
+                  : Container(),
               myListTile(
                 context: context,
                 name: "Services",
                 icon: Icons.person,
                 routeName: Services.routeName,
               ),
-              Divider(color: Colors.white, height: 0.1),
-              myListTile(
-                context: context,
-                name: "My Idea Id",
-                icon: Icons.ac_unit,
-                routeName: MyIdeaId.routeName,
-              ),
-              Divider(color: Colors.white, height: 0.1),
-              myListTile(
-                context: context,
-                name: "My Idea detail",
-                icon: Icons.ac_unit,
-                routeName: MyIdeaDetails.routeName,
-              ),
-              Divider(color: Colors.white, height: 0.1),
-              myListTile(
-                context: context,
-                name: "Completed Projects",
-                icon: Icons.sticky_note_2_rounded,
-                justPush: true,
-              ),
-              Divider(color: Colors.white, height: 0.1),
-              myListTile(
-                context: context,
-                name: "My Analysis",
-                icon: Icons.help,
-                justPush: true,
-              ),
-              Divider(color: Colors.white, height: 0.1),
+              // myListTile(
+              //   context: context,
+              //   name: "My Idea Id",
+              //   icon: Icons.ac_unit,
+              //   routeName: MyIdeaId.routeName,
+              // ),
+
+              // myListTile(
+              //   context: context,
+              //   name: "My Idea detail",
+              //   icon: Icons.ac_unit,
+              //   routeName: MyIdeaDetails.routeName,
+              // ),
+              _isAuth == true
+                  ? myListTile(
+                      context: context,
+                      name: "Completed Projects",
+                      icon: Icons.sticky_note_2_rounded,
+                      justPush: true,
+                    )
+                  : Container(),
+              _isAuth == true
+                  ? myListTile(
+                      context: context,
+                      name: "My Analysis",
+                      icon: Icons.help,
+                      justPush: true,
+                    )
+                  : Container(),
               InkWell(
                 onTap: () {
                   showDialog(
@@ -274,7 +298,6 @@ class MyDrawer extends StatelessWidget {
                   icon: Icons.help,
                 ),
               ),
-              Divider(color: Colors.white, height: 0.1),
               myListTile(
                 context: context,
                 name: "FAQ",
@@ -282,14 +305,15 @@ class MyDrawer extends StatelessWidget {
                 routeName: FandQ.routeName,
                 justPush: true,
               ),
-              Divider(color: Colors.white, height: 0.1),
-              myListTile(
-                context: context,
-                name: "My Idea List",
-                icon: Icons.help,
-                routeName: MyIdeaId.routeName,
-                justPush: true,
-              ),
+              _isAuth == true
+                  ? myListTile(
+                      context: context,
+                      name: "My Idea List",
+                      icon: Icons.help,
+                      routeName: MyIdeaId.routeName,
+                      justPush: true,
+                    )
+                  : Container(),
               value.token != null
                   ? Padding(
                       padding: EdgeInsets.symmetric(

@@ -41,13 +41,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool _isAuth;
   // Future<void> categoryProvider;
   List<Model> data;
   MapZoomPanBehavior _zoomPanBehavior;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  __isAuth() async {
+    _isAuth = await Auth().isAuth();
+    setState(() {});
+    print("_isAuth $_isAuth");
+  }
 
   @override
   void initState() {
+    __isAuth();
     // TODO: implement initState
     _zoomPanBehavior = MapZoomPanBehavior();
     data = <Model>[
@@ -147,40 +154,44 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   width: deviceSize(context).width * 0.9,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: deviceSize(context).width * 0.56,
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        "Want to Subscribe to Selected options Analysis, ",
-                                  ),
-                                  TextSpan(
-                                    text: "Sign Up",
-                                    style: TextStyle(
-                                      color: firstPurple,
-                                      decoration: TextDecoration.underline,
-                                      fontWeight: FontWeight.bold,
+                      _isAuth == false
+                          ? Row(
+                              children: [
+                                SizedBox(
+                                  width: deviceSize(context).width * 0.56,
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              "Want to Subscribe to Selected options Analysis, ",
+                                        ),
+                                        TextSpan(
+                                          text: "Sign Up",
+                                          style: TextStyle(
+                                            color: firstPurple,
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              print('You clicked on me!');
+                                            },
+                                        ),
+                                        TextSpan(
+                                          text: " Here!",
+                                        ),
+                                      ],
+                                      style: TextStyle(color: Colors.black),
                                     ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        print('You clicked on me!');
-                                      },
                                   ),
-                                  TextSpan(
-                                    text: " Here!",
-                                  ),
-                                ],
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                                )
+                              ],
+                            )
+                          : Container(),
                       Consumer<Auth>(
                         builder: (consumerContext, val, child) {
                           return RaisedButton(
