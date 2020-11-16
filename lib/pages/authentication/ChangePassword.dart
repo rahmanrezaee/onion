@@ -50,6 +50,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 height: MediaQuery.of(context).size.height / 1.7,
                 width: MediaQuery.of(context).size.width,
               ),
+              
             ),
           ),
           Align(
