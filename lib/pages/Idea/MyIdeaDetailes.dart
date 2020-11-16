@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
+import 'package:onion/pages/Idea/MyIdeaId.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
@@ -40,8 +41,7 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context)
-                .pushReplacementNamed(CustomDrawerPage.routeName);
+            Navigator.of(context).pushReplacementNamed(MyIdeaId.routeName);
           },
         ),
         actions: [

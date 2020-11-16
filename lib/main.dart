@@ -113,6 +113,8 @@ class MyApp extends StatelessWidget {
               ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(),
               MyIdeaId.routeName: (context) => MyIdeaId(),
               MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
+              MyMessagePage.routeName: (context) => MyMessagePage(),
+              ProjectChat.routeName: (context) => ProjectChat(),
             },
           ),
         ),
