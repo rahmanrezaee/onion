@@ -31,37 +31,37 @@ class CategoryProvider with ChangeNotifier {
     return isLoading;
   }
 
-  updateIndustryItem(String name, BuildContext context) {
-    // CategoryModel categoryModel = _items.firstWhere((element) => element.name == name);
-    industryProvider = Provider.of<IndustryProvider>(context, listen: false);
-    print("Mahdi: test $name");
+  // updateIndustryItem(String name, BuildContext context) {
+  //   // CategoryModel categoryModel = _items.firstWhere((element) => element.name == name);
+  //   industryProvider = Provider.of<IndustryProvider>(context, listen: false);
+  //   print("Mahdi: test $name");
+  //
+  //   // industryProvider.clearDate();
+  //   industryProvider.fetchItems(name: name, context: context);
+  //   notifyListeners();
+  // }
 
-    // industryProvider.clearDate();
-    industryProvider.fetchItems(name: name, context: context);
-    notifyListeners();
-  }
-
-  boolDropDownFilter(String nameParam) {
-    dropDownFilter = nameParam;
-  }
+  // boolDropDownFilter(String nameParam) {
+  //   dropDownFilter = nameParam;
+  // }
 
   List<CategoryModel> get items {
     return _items;
   }
 
-  CategoryModel filterItems({String id}) {
-    return _items.firstWhere((element) => element.id == id);
-  }
+  // CategoryModel filterItems({String id}) {
+  //   return _items.firstWhere((element) => element.id == id);
+  // }
 
-  CategoryModel get firstItem {
-    if (_items.isNotEmpty) {
-      notifyListeners();
-      return _items[0];
-    } else {
-      notifyListeners();
-      return null;
-    }
-  }
+  // CategoryModel get firstItem {
+  //   if (_items.isNotEmpty) {
+  //     notifyListeners();
+  //     return _items[0];
+  //   } else {
+  //     notifyListeners();
+  //     return null;
+  //   }
+  // }
 
   Future<void> fetchItems(BuildContext context) async {
     try {

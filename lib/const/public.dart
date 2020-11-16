@@ -1,0 +1,16 @@
+List allowedDocumnetsFormat = [
+  'doc',
+  'docx',
+  'pdf',
+  'txt',
+  'ppt',
+  'pptx',
+  'htm',
+  'html',
+  'odt',
+  'rtf',
+  'png',
+  'jpg',
+  'jpeg',
+  'gif',
+];

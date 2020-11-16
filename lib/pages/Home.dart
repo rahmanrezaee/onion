@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -9,9 +10,9 @@ import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
 import 'package:onion/widgets/Home/MyPopup.dart';
-import 'package:onion/widgets/Snanckbar.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
+import 'package:onion/widgets/Snanckbar.dart';
 
 import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
@@ -23,11 +24,10 @@ import '../widgets/MyAppBar.dart';
 import '../widgets/MyAppBarContainer.dart';
 
 class Model {
-  Model(this.state, this.color, this.stateCode);
+  const Model(this.country, this.count);
 
-  String state;
-  Color color;
-  String stateCode;
+  final String country;
+  final double count;
 }
 
 class HomePage extends StatefulWidget {
@@ -41,30 +41,74 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool _isAuth;
+
   // Future<void> categoryProvider;
   List<Model> data;
   MapZoomPanBehavior _zoomPanBehavior;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  __isAuth() async {
+    _isAuth = await Auth().isAuth();
+    setState(() {});
+    print("_isAuth $_isAuth");
+  }
+
+  List<Map<String, Object>> _data1 = [
+    {'name': 'Please wait', 'value': 0}
+  ];
+
+  getData1() async {
+    await Future.delayed(Duration(seconds: 4));
+
+    const dataObj = [
+      {
+        'name': 'Jan',
+        'value': 8726.2453,
+      },
+      {
+        'name': 'Feb',
+        'value': 2445.2453,
+      },
+      {
+        'name': 'Mar',
+        'value': 6636.2400,
+      },
+      {
+        'name': 'Apr',
+        'value': 4774.2453,
+      },
+      {
+        'name': 'May',
+        'value': 1066.2453,
+      },
+      {
+        'name': 'Jun',
+        'value': 4576.9932,
+      },
+      {
+        'name': 'Jul',
+        'value': 8926.9823,
+      }
+    ];
+
+    this.setState(() {
+      this._data1 = dataObj;
+    });
+  }
+
   @override
   void initState() {
+    __isAuth();
     // TODO: implement initState
     _zoomPanBehavior = MapZoomPanBehavior();
     data = <Model>[
-      Model('New South Wales', Color.fromRGBO(255, 215, 0, 1.0),
-          '       New\nSouth Wales'),
-      Model('Queensland', Color.fromRGBO(72, 209, 204, 1.0), 'Queensland'),
-      Model('Northern Territory', Colors.red.withOpacity(0.85),
-          'Northern\nTerritory'),
-      Model('Victoria', Color.fromRGBO(171, 56, 224, 0.75), 'Victoria'),
-      Model('South Australia', Color.fromRGBO(126, 247, 74, 0.75),
-          'South Australia'),
-      Model('Western Australia', Color.fromRGBO(79, 60, 201, 0.7),
-          'Western Australia'),
-      Model('Tasmania', Color.fromRGBO(99, 164, 230, 1), 'Tasmania'),
-      Model('Australian Capital Territory', Colors.teal, 'ACT')
+      Model('India', 280),
+      Model('United States of America', 190),
+      Model('Kazakhstan', 37),
     ];
     super.initState();
+    this.getData1();
     // categoryProvider = Provider.of<CategoryProvider>(context, listen: false)
     //     .fetchCategoryItem();
   }
@@ -113,13 +157,13 @@ class _HomePageState extends State<HomePage> {
                             shapeDataField: 'STATE_NAME',
                             dataCount: data.length,
                             primaryValueMapper: (int index) =>
-                                data[index].state,
-                            dataLabelMapper: (int index) =>
-                                data[index].stateCode,
+                                data[index].country,
+                            // dataLabelMapper: (int index) =>
+                            //     data[index].stateCode,
                             shapeColorValueMapper: (int index) =>
-                                data[index].color,
-                            shapeTooltipTextMapper: (int index) =>
-                                data[index].stateCode,
+                                data[index].count,
+                            // shapeTooltipTextMapper: (int index) =>
+                            //     data[index].stateCode,
                           ),
                           showDataLabels: true,
                           // showLegend: true,
@@ -147,50 +191,56 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   width: deviceSize(context).width * 0.9,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: deviceSize(context).width * 0.56,
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        "Want to Subscribe to Selected options Analysis, ",
-                                  ),
-                                  TextSpan(
-                                    text: "Sign Up",
-                                    style: TextStyle(
-                                      color: firstPurple,
-                                      decoration: TextDecoration.underline,
-                                      fontWeight: FontWeight.bold,
+                      _isAuth == false
+                          ? Row(
+                              children: [
+                                SizedBox(
+                                  width: deviceSize(context).width * 0.56,
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              "Want to Subscribe to Selected options Analysis, ",
+                                        ),
+                                        TextSpan(
+                                          text: "Sign Up",
+                                          style: TextStyle(
+                                            color: firstPurple,
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              print('You clicked on me!');
+                                            },
+                                        ),
+                                        TextSpan(
+                                          text: " Here!",
+                                        ),
+                                      ],
+                                      style: TextStyle(color: Colors.black),
                                     ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        print('You clicked on me!');
-                                      },
                                   ),
-                                  TextSpan(
-                                    text: " Here!",
-                                  ),
-                                ],
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                                )
+                              ],
+                            )
+                          : Container(),
                       Consumer<Auth>(
                         builder: (consumerContext, val, child) {
                           return RaisedButton(
                             color: middlePurple,
                             child: Text("See Analysis"),
                             textColor: Colors.white,
-                            onPressed: () => val.isAuth().then((token) => token
-                                ? showMyDialog(context: context)
-                                : Navigator.pushNamed(
-                                    context, Login.routeName)),
+                            onPressed: () => val.isAuth().then(
+                                  (token) => token
+                                      ? showMyDialog(context: context)
+                                      : Navigator.pushNamed(
+                                          context, Login.routeName),
+                                ),
                           );
                         },
                       ),

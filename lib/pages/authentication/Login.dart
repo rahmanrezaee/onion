@@ -387,9 +387,8 @@ class _LoginState extends State<Login> {
         newUser.name = result.displayName;
         newUser.email = result.email;
         newUser.phone = result.phoneNumber;
-        ImageModel image = new ImageModel();
-        image.url = result.photoURL;
-        newUser.profile = image;
+
+        newUser.profile = result.photoURL;
         Navigator.pushNamed(context, ComplateProfile.routeName,
             arguments: newUser);
       }
@@ -421,9 +420,8 @@ class _LoginState extends State<Login> {
         newUser.name = auserDatasd["name"];
         newUser.email = auserDatasd["email"];
         newUser.phone = "";
-        ImageModel image = new ImageModel();
-        image.url = auserDatasd['picture']['data']['url'];
-        newUser.profile = image;
+    
+        newUser.profile = auserDatasd['picture']['data']['url'];
         Navigator.pushNamed(context, ComplateProfile.routeName,
             arguments: newUser);
       }

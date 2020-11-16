@@ -21,8 +21,8 @@ class ProjectChat extends StatelessWidget {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: deviceSize(context).height * 0.75,
+          Expanded(
+            // height: deviceSize(context).height * 0.75,
             child: ListView(
               padding: EdgeInsets.only(
                 left: deviceSize(context).width * 0.04,
@@ -36,9 +36,10 @@ class ProjectChat extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(child: MyBottomNavigation()),
+          MyBottomNavigation(),
         ],
       ),
+      // bottomNavigationBar: MyBottomNavigation(),
     );
   }
 }
@@ -53,8 +54,7 @@ class MyBottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: deviceSize(context).width,
-      height: deviceSize(context).height * 0.1,
+      width: deviceSize(context).width - deviceSize(context).width * 0.05,
       margin: EdgeInsets.symmetric(
         horizontal: deviceSize(context).width * 0.01,
         vertical: deviceSize(context).height * 0.01,
@@ -62,31 +62,32 @@ class MyBottomNavigation extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            width: deviceSize(context).width * 0.7,
-            height: deviceSize(context).height * 0.06,
-            child: TextFormField(
-              onFieldSubmitted: (_) => submitForm,
-              decoration: InputDecoration(
-                border: new OutlineInputBorder(
-                  borderSide: new BorderSide(color: grey),
-                  borderRadius: const BorderRadius.horizontal(
-                    left: Radius.circular(5.0),
+          Expanded(
+            child: SizedBox(
+              height: deviceSize(context).height * 0.05,
+              child: TextFormField(
+                onFieldSubmitted: (_) => submitForm,
+                decoration: InputDecoration(
+                  border: new OutlineInputBorder(
+                    borderSide: new BorderSide(color: grey),
+                    borderRadius: const BorderRadius.horizontal(
+                      left: Radius.circular(5.0),
+                    ),
                   ),
+                  contentPadding: EdgeInsets.only(
+                    top: deviceSize(context).height * 0.01,
+                    left: deviceSize(context).width * 0.02,
+                  ),
+                  fillColor: grey,
+                  hintText: "Type your message",
+                  filled: true,
                 ),
-                contentPadding: EdgeInsets.only(
-                  top: deviceSize(context).height * 0.01,
-                  left: deviceSize(context).width * 0.02,
-                ),
-                fillColor: grey,
-                hintText: "Type your message",
-                filled: true,
               ),
             ),
           ),
           Container(
             width: deviceSize(context).width * 0.25,
-            height: deviceSize(context).height * 0.06,
+             height: deviceSize(context).height * 0.05,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -143,59 +144,61 @@ class MyChatItems extends StatelessWidget {
                 width: deviceSize(context).height * 0.08,
                 child: CircleAvatar(
                   backgroundImage:
-                  AssetImage("assets/images/empty_profile.jpg"),
+                      AssetImage("assets/images/empty_profile.jpg"),
                 ),
               ),
               SizedBox(width: deviceSize(context).width * 0.02),
-              Container(
-                decoration: BoxDecoration(
-                  color: isMe ? greyBlue : grey,
-                  borderRadius: BorderRadius.only(
-                    topRight: isMe ? Radius.circular(0) : Radius.circular(15),
-                    bottomRight: Radius.circular(15),
-                    bottomLeft: Radius.circular(15),
-                    topLeft: !isMe ? Radius.circular(0) : Radius.circular(15),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: deviceSize(context).width * 0.03,
-                        right: deviceSize(context).width * 0.03,
-                        top: deviceSize(context).height * 0.03,
-                        bottom: deviceSize(context).width * 0.02,
-                      ),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: deviceSize(context).height * 0.1,
-                          maxHeight: deviceSize(context).height,
-                          minWidth: deviceSize(context).width * 0.6,
-                          maxWidth: deviceSize(context).width * 0.7,
-                        ),
-                        child: AutoSizeText(
-                          lormIpsum,
-                          textDirection: TextDirection.ltr,
-                          textScaleFactor: 1.1,
-                          maxLines: 10,
-                        ),
-                      ),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isMe ? greyBlue : grey,
+                    borderRadius: BorderRadius.only(
+                      topRight: isMe ? Radius.circular(0) : Radius.circular(15),
+                      bottomRight: Radius.circular(15),
+                      bottomLeft: Radius.circular(15),
+                      topLeft: !isMe ? Radius.circular(0) : Radius.circular(15),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: deviceSize(context).width * 0.01,
-                        right: deviceSize(context).width * 0.02,
-                        bottom: deviceSize(context).width * 0.02,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: deviceSize(context).width * 0.03,
+                          right: deviceSize(context).width * 0.03,
+                          top: deviceSize(context).height * 0.03,
+                          bottom: deviceSize(context).width * 0.02,
+                        ),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: deviceSize(context).height * 0.1,
+                            maxHeight: deviceSize(context).height,
+                            minWidth: deviceSize(context).width * 0.6,
+                            maxWidth: deviceSize(context).width * 0.7,
+                          ),
+                          child: AutoSizeText(
+                            lormIpsum,
+                            textDirection: TextDirection.ltr,
+                            textScaleFactor: 1.1,
+                            maxLines: 10,
+                          ),
+                        ),
                       ),
-                      child: Text(
-                        "06:45",
-                        textAlign: TextAlign.end,
-                        textScaleFactor: 0.9,
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    )
-                  ],
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: deviceSize(context).width * 0.01,
+                          right: deviceSize(context).width * 0.02,
+                          bottom: deviceSize(context).width * 0.02,
+                        ),
+                        child: Text(
+                          "06:45",
+                          textAlign: TextAlign.end,
+                          textScaleFactor: 0.9,
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               )
             ],
