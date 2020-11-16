@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import "package:flutter/material.dart";
 import 'package:onion/pages/Home.dart';
+import 'package:onion/pages/Idea/setupIdea.dart';
 import 'package:onion/services/ServicesPage.dart';
 import 'package:provider/provider.dart';
 import 'package:lottie/lottie.dart';
@@ -73,6 +74,8 @@ class _ServicesState extends State<Services> {
                         child: LinearProgressIndicator())
                     : CarouselSlider(
                         options: CarouselOptions(
+                            autoPlay: true,
+                            // autoPlayAnimationDuration: Duration(milliseconds: 200),
                             viewportFraction: .9,
                             height: 150.0,
                             onPageChanged: (index, reason) {
@@ -193,11 +196,18 @@ class _ServicesState extends State<Services> {
                                               right: 20, top: 10),
                                           child: Align(
                                             alignment: Alignment.centerRight,
-                                            child: Text("Post an Idea Now",
-                                                style: TextStyle(
-                                                    decoration: TextDecoration
-                                                        .underline,
-                                                    color: middlePurple)),
+                                            child: InkWell(
+                                              onTap: () {
+                                                Navigator.of(context).pushNamed(
+                                                  SetupIdea.routeName,
+                                                );
+                                              },
+                                              child: Text("Post an Idea Now",
+                                                  style: TextStyle(
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                      color: middlePurple)),
+                                            ),
                                           ),
                                         ),
                                       ]),

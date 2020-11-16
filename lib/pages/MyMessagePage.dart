@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:onion/widgets/MRaiseButton.dart';
 
 import './NotificationsList.dart';
@@ -44,12 +45,12 @@ class MyTextFieldMessage extends StatefulWidget {
 }
 
 class _MyTextFieldMessageState extends State<MyTextFieldMessage> {
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
+      initialDate: DateTime.now(),
       firstDate: DateTime(2015, 8),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget child) {
@@ -118,7 +119,9 @@ class _MyTextFieldMessageState extends State<MyTextFieldMessage> {
           ),
           MRaiseButton(
             mFunc: _selectDate,
-            mTxtBtn: "Choose Date",
+            mTxtBtn: selectedDate == null
+                ? "Choose Date"
+                : DateFormat("yyy-M-dd").format(selectedDate),
             isIcon: true,
             mWidth: deviceSize(context).width * 0.4,
             mHeight: deviceSize(context).height * 0.06,

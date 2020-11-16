@@ -21,8 +21,8 @@ class ProjectChat extends StatelessWidget {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: deviceSize(context).height * 0.75,
+          Expanded(
+            // height: deviceSize(context).height * 0.75,
             child: ListView(
               padding: EdgeInsets.only(
                 left: deviceSize(context).width * 0.04,
@@ -36,9 +36,10 @@ class ProjectChat extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(child: MyBottomNavigation()),
+          MyBottomNavigation(),
         ],
       ),
+      // bottomNavigationBar: MyBottomNavigation(),
     );
   }
 }
@@ -143,7 +144,7 @@ class MyChatItems extends StatelessWidget {
                 width: deviceSize(context).height * 0.08,
                 child: CircleAvatar(
                   backgroundImage:
-                  AssetImage("assets/images/empty_profile.jpg"),
+                      AssetImage("assets/images/empty_profile.jpg"),
                 ),
               ),
               SizedBox(width: deviceSize(context).width * 0.02),

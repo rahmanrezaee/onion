@@ -10,9 +10,9 @@ import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
 import 'package:onion/widgets/Home/MyPopup.dart';
-import 'package:onion/widgets/Snanckbar.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
+import 'package:onion/widgets/Snanckbar.dart';
 
 import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
@@ -41,10 +41,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool _isAuth;
+
   // Future<void> categoryProvider;
   List<Model> data;
   MapZoomPanBehavior _zoomPanBehavior;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  __isAuth() async {
+    _isAuth = await Auth().isAuth();
+    setState(() {});
+    print("_isAuth $_isAuth");
+  }
 
   List<Map<String, Object>> _data1 = [
     {'name': 'Please wait', 'value': 0}
@@ -91,6 +99,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    __isAuth();
     // TODO: implement initState
     _zoomPanBehavior = MapZoomPanBehavior();
     data = <Model>[
@@ -136,99 +145,90 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   width: double.infinity,
                   height: deviceSize(context).width * 0.5,
-                  child: Echarts(
-                    captureAllGestures: true,
-                    option: '''
-                    {
-                        visualMap: {
-                            max: 20,
-                            inRange: {
-                                color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
-                            }
-                        },
-                    }
-                  ''',
+                  child: Padding(
+                    padding: EdgeInsets.all(15),
+                    child: SfMaps(
+                      title: const MapTitle(text: 'Australia map'),
+                      layers: <MapShapeLayer>[
+                        MapShapeLayer(
+                          zoomPanBehavior: _zoomPanBehavior,
+                          delegate: MapShapeLayerDelegate(
+                            shapeFile: 'assets/australia.json',
+                            shapeDataField: 'STATE_NAME',
+                            dataCount: data.length,
+                            primaryValueMapper: (int index) =>
+                                data[index].country,
+                            // dataLabelMapper: (int index) =>
+                            //     data[index].stateCode,
+                            shapeColorValueMapper: (int index) =>
+                                data[index].count,
+                            // shapeTooltipTextMapper: (int index) =>
+                            //     data[index].stateCode,
+                          ),
+                          showDataLabels: true,
+                          // showLegend: true,
+                          enableShapeTooltip: true,
+                          tooltipSettings: MapTooltipSettings(
+                            color: Colors.grey[700],
+                            strokeColor: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                          strokeColor: Colors.white,
+                          strokeWidth: 0.5,
+                          dataLabelSettings: MapDataLabelSettings(
+                            textStyle: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                                  Theme.of(context).textTheme.caption.fontSize,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.all(15),
-                  //     child: SfMaps(
-                  //       title: const MapTitle(text: 'Australia map'),
-                  //       layers: <MapShapeLayer>[
-                  //         MapShapeLayer(
-                  //           zoomPanBehavior: _zoomPanBehavior,
-                  //           delegate: MapShapeLayerDelegate(
-                  //             shapeFile: 'assets/australia.json',
-                  //             shapeDataField: 'STATE_NAME',
-                  //             dataCount: data.length,
-                  //             primaryValueMapper: (int index) =>
-                  //                 data[index].country,
-                  //             // dataLabelMapper: (int index) =>
-                  //             //     data[index].stateCode,
-                  //             shapeColorValueMapper: (int index) =>
-                  //                 data[index].count,
-                  //             // shapeTooltipTextMapper: (int index) =>
-                  //             //     data[index].stateCode,
-                  //           ),
-                  //           showDataLabels: true,
-                  //           // showLegend: true,
-                  //           enableShapeTooltip: true,
-                  //           tooltipSettings: MapTooltipSettings(
-                  //             color: Colors.grey[700],
-                  //             strokeColor: Colors.white,
-                  //             strokeWidth: 2,
-                  //           ),
-                  //           strokeColor: Colors.white,
-                  //           strokeWidth: 0.5,
-                  //           dataLabelSettings: MapDataLabelSettings(
-                  //             textStyle: TextStyle(
-                  //               color: Colors.black,
-                  //               fontWeight: FontWeight.bold,
-                  //               fontSize:
-                  //                   Theme.of(context).textTheme.caption.fontSize,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
                 ),
                 SizedBox(
                   width: deviceSize(context).width * 0.9,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: deviceSize(context).width * 0.56,
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        "Want to Subscribe to Selected options Analysis, ",
-                                  ),
-                                  TextSpan(
-                                    text: "Sign Up",
-                                    style: TextStyle(
-                                      color: firstPurple,
-                                      decoration: TextDecoration.underline,
-                                      fontWeight: FontWeight.bold,
+                      _isAuth == false
+                          ? Row(
+                              children: [
+                                SizedBox(
+                                  width: deviceSize(context).width * 0.56,
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              "Want to Subscribe to Selected options Analysis, ",
+                                        ),
+                                        TextSpan(
+                                          text: "Sign Up",
+                                          style: TextStyle(
+                                            color: firstPurple,
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              print('You clicked on me!');
+                                            },
+                                        ),
+                                        TextSpan(
+                                          text: " Here!",
+                                        ),
+                                      ],
+                                      style: TextStyle(color: Colors.black),
                                     ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        print('You clicked on me!');
-                                      },
                                   ),
-                                  TextSpan(
-                                    text: " Here!",
-                                  ),
-                                ],
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                                )
+                              ],
+                            )
+                          : Container(),
                       Consumer<Auth>(
                         builder: (consumerContext, val, child) {
                           return RaisedButton(
@@ -236,7 +236,7 @@ class _HomePageState extends State<HomePage> {
                             child: Text("See Analysis"),
                             textColor: Colors.white,
                             onPressed: () => val.isAuth().then(
-                                  (token) => !token
+                                  (token) => token
                                       ? showMyDialog(context: context)
                                       : Navigator.pushNamed(
                                           context, Login.routeName),

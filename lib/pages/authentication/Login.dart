@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onion/models/Image.dart';
 import 'package:onion/pages/authentication/ComplateProfile.dart';
@@ -408,39 +408,39 @@ class _LoginState extends State<Login> {
       _isloadingFacebook = true;
     });
 
-    try {
-      // by default the login method has the next permissions ['email','public_profile']
-      await FacebookAuth.instance.login();
-      final auserDatasd = await FacebookAuth.instance.getUserData();
-      print(auserDatasd);
-      if (auserDatasd != null) {
-        user.User newUser = new user.User();
+    // try {
+    // by default the login method has the next permissions ['email','public_profile']
+    //   await FacebookAuth.instance.login();
+    //   final auserDatasd = await FacebookAuth.instance.getUserData();
+    //   print(auserDatasd);
+    //   if (auserDatasd != null) {
+    //     user.User newUser = new user.User();
 
-        newUser.name = auserDatasd["name"];
-        newUser.email = auserDatasd["email"];
-        newUser.phone = "";
-        ImageModel image = new ImageModel();
-        image.url = auserDatasd['picture']['data']['url'];
-        newUser.profile = image;
-        Navigator.pushNamed(context, ComplateProfile.routeName,
-            arguments: newUser);
-      }
-    } catch (e, s) {
-      if (e is FacebookAuthException) {
-        print(e.message);
-        switch (e.errorCode) {
-          case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
-            print("You have a previous login operation in progress");
-            break;
-          case FacebookAuthErrorCode.CANCELLED:
-            print("login cancelled");
-            break;
-          case FacebookAuthErrorCode.FAILED:
-            print("login failed");
-            break;
-        }
-      }
-    }
+    //     newUser.name = auserDatasd["name"];
+    //     newUser.email = auserDatasd["email"];
+    //     newUser.phone = "";
+    //     ImageModel image = new ImageModel();
+    //     image.url = auserDatasd['picture']['data']['url'];
+    //     newUser.profile = image;
+    //     Navigator.pushNamed(context, ComplateProfile.routeName,
+    //         arguments: newUser);
+    //   }
+    // } catch (e, s) {
+    //   if (e is FacebookAuthException) {
+    //     print(e.message);
+    //     switch (e.errorCode) {
+    //       case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
+    //         print("You have a previous login operation in progress");
+    //         break;
+    //       case FacebookAuthErrorCode.CANCELLED:
+    //         print("login cancelled");
+    //         break;
+    //       case FacebookAuthErrorCode.FAILED:
+    //         print("login failed");
+    //         break;
+    // }
+    // }
+    // }
 
     // } catch (e) {
     //   _scaffoldKey.currentState

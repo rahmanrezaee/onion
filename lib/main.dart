@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:onion/pages/franchises/RequestOnFranchise.dart';
 import 'package:provider/provider.dart';
 
 import './pages/Home.dart';
-import 'pages/Franchise/RequestOnFranchise.dart';
 import './pages/Idea/postIdea.dart';
 import './pages/Idea/MyIdeaId.dart';
 import './pages/authentication/ComplateProfile.dart';
@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: MyTestPage(),
+        home: HomePage(),
         routes: {
           Login.routeName: (context) => auth.token != null
               ? CustomDrawerPage()
