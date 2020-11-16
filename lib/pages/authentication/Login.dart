@@ -394,9 +394,11 @@ class _LoginState extends State<Login> {
             arguments: newUser);
       }
     } catch (e) {
-      _scaffoldKey.currentState
-          .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
-      // print(e.cause);
+      print("google Error");
+      print(e);
+      // _scaffoldKey.currentState
+      //     .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+      // // print(e.cause);
     }
     setState(() {
       _isloadingGoogle = false;

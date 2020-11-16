@@ -123,7 +123,6 @@ class MyDrawer extends StatelessWidget {
                       ),
                       value.token != null
                           ? Text(
-                          
                               value.currentUser.name,
                               textScaleFactor: 1.2,
                               style: TextStyle(color: Colors.white),
@@ -159,13 +158,19 @@ class MyDrawer extends StatelessWidget {
                 justPush: true,
               ),
               Divider(color: Colors.white, height: 0.1),
-              myListTile(
-                context: context,
-                name: "Settings",
-                icon: Icons.settings,
-                routeName: Settings.routeName,
-              ),
-              Divider(color: Colors.white, height: 0.1),
+              value.token != null
+                  ? Column(
+                      children: [
+                        myListTile(
+                          context: context,
+                          name: "Settings",
+                          icon: Icons.settings,
+                          routeName: Settings.routeName,
+                        ),
+                        Divider(color: Colors.white, height: 0.1),
+                      ],
+                    )
+                  : SizedBox(),
               myListTile(
                 context: context,
                 name: "Notification Setting",

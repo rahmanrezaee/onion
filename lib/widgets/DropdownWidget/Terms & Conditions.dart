@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../const/values.dart';
 import '../../const/color.dart';
-import '../../widgets/MyLittleAppbar.dart';
 
 showTermAndConditions(BuildContext context) {
   return showDialog(
@@ -24,6 +23,7 @@ showTermAndConditions(BuildContext context) {
             ),
             bottomNavigationBar: MyBottomBtn(),
             body: SingleChildScrollView(
+              
               padding: EdgeInsets.all(10),
               child: Text(
                 lormIpsum,
