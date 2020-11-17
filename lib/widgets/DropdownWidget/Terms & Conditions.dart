@@ -26,7 +26,7 @@ showTermAndConditions(BuildContext context) {
             body: SingleChildScrollView(
               padding: EdgeInsets.all(10),
               child: Text(
-                lormIpsum,
+                loremIpsum,
                 textScaleFactor: 1.1,
                 style: TextStyle(height: 1.3),
               ),

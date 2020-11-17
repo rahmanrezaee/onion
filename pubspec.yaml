@@ -32,11 +32,8 @@ dependencies:
   flutter_rating_bar: ^3.1.0
   auto_size_text: ^2.1.0
   http: ^0.12.2
+  google_maps_flutter: ^1.0.6
   flutter_splash_screen:
-  flutter_echarts: ^1.4.0
-  syncfusion_flutter_maps: ^18.3.47-beta
-  syncfusion_flutter_charts: ^18.3.47
-  # flutter_facebook_auth: "^1.0.0"
   carousel_slider: ^2.3.1
   # http: ^0.12.2
   image_picker: ^0.6.7+12
@@ -54,7 +51,6 @@ dependencies:
   progressive_image: ^1.0.1
   lottie: ^0.7.0+1
   shared_preferences:
-  #Intle package for format date
   intl: ^0.16.1
   animated_bottom_navigation_bar: ^0.1.2+2
   # The following adds the Cupertino Icons font to your application.

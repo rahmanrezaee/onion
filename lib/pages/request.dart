@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+// import 'package:syncfusion_flutter_charts/charts.dart';
 import 'CustomDrawerPage.dart';
 
 class RequestPage extends StatelessWidget {

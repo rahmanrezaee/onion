@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/pages/franchises/RequestOnFranchise.dart';
 import 'package:provider/provider.dart';
 
+import './pages/franchises/RequestOnFranchise.dart';
 import './pages/Home.dart';
 import './pages/Idea/postIdea.dart';
 import './pages/Idea/MyIdeaId.dart';
@@ -44,6 +44,7 @@ import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
 import './test.dart';
 import './pages/request.dart';
+import 'pages/franchises/ViewMyRequestFranchise.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,7 +76,7 @@ class MyApp extends StatelessWidget {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: HomePage(),
+        home: CustomDrawerPage(),
         routes: {
           Login.routeName: (context) => auth.token != null
               ? CustomDrawerPage()
@@ -91,6 +92,7 @@ class MyApp extends StatelessWidget {
                           : Login(),
                 ),
           MyIdeaId.routeName: (context) => MyIdeaId(),
+          ViewMyRequestFranchise.routeName: (context) => ViewMyRequestFranchise(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) => auth.token != null
               ? CustomDrawerPage()

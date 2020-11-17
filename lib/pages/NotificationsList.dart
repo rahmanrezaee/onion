@@ -108,7 +108,7 @@ class MyCardItem extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: AutoSizeText(
-                            lormIpsum,
+                            loremIpsum,
                             textScaleFactor: 1.1,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 3,
