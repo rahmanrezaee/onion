@@ -194,14 +194,17 @@ class _HomePageState extends State<HomePage> {
                           : Container(),
                       Consumer<Auth>(
                         builder: (consumerContext, val, child) {
-                          return RaisedButton(
-                            color: middlePurple,
-                            child: Text("See Analysis"),
-                            textColor: Colors.white,
-                            onPressed: () => val.isAuth().then((token) => token
-                                ? showMyDialog(context: context)
-                                : Navigator.pushNamed(
-                                    context, Login.routeName)),
+                          return Expanded(
+                            child: RaisedButton(
+                              color: middlePurple,
+                              child: Text("See Analysis"),
+                              textColor: Colors.white,
+                              onPressed: () => val.isAuth().then((token) =>
+                                  token
+                                      ? showMyDialog(context: context)
+                                      : Navigator.pushNamed(
+                                          context, Login.routeName)),
+                            ),
                           );
                         },
                       ),

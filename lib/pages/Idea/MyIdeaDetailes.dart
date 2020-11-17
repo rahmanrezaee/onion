@@ -3,7 +3,7 @@ import 'package:onion/const/color.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/pages/Idea/MyIdeaId.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+// import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
 class MyIdeaDetails extends StatefulWidget {
   static String routeName = "MyIdeaDetail";
@@ -16,18 +16,18 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
   final String urlToStreamVideo =
       'https://r2---sn-4g5ednee.googlevideo.com/videoplayback?expire=1605463581&ei=vRmxX7DfAcKbgAePpoXICA&ip=37.221.178.103&id=o-AHc-Un2QpnxIK_yr5ahI2qLgHl1jtN748zoYpC1Fx3Dg&itag=18&source=youtube&requiressl=yes&vprv=1&mime=video%2Fmp4&ns=8xYGWk6pA7ySGtJGCqzIbQoF&gir=yes&clen=14052630&ratebypass=yes&dur=213.646&lmt=1604178388266477&fvip=2&c=WEB&txp=6210222&n=O3rg87s6HFzvVIzxy&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRgIhAIQeJRA5WKm9CBo-8f005v97prRzBO9vgWgXPFrbgzwDAiEA1FgnJ0c6t2DFPl2bUINAK7_wUTXy2q2uK5mgkSL8rbg%3D&rm=sn-huxaqvv-ubqe7l,sn-nv4sl7l&req_id=3eb1e345c455a3ee&redirect_counter=2&cms_redirect=yes&ipbypass=yes&mh=As&mip=103.119.24.113&mm=29&mn=sn-4g5ednee&ms=rdu&mt=1605441888&mv=m&mvi=2&pl=24&lsparams=ipbypass,mh,mip,mm,mn,ms,mv,mvi,pl&lsig=AG3C_xAwRgIhAJfCrypp6O3zAYnK5560-x8bFbhVMx4TaggU5Bgr42zAAiEAhH8tLbW2Xr6qtsD5Lm1b1OMFKSTCMMMbdk6O777bIP4%3D';
 
-  VlcPlayerController _videoController;
+  // VlcPlayerController _videoController;
 
   final double playerWidth = 640.0;
 
   final double playerHeight = 360.0;
   bool _isPlaying = false;
   initState() {
-    _videoController = new VlcPlayerController(
-        // Start playing as soon as the video is loaded.
-        onInit: () {
-      // _videoController.play();
-    });
+    // _videoController = new VlcPlayerController(
+    //     // Start playing as soon as the video is loaded.
+    //     onInit: () {
+    //   // _videoController.play();
+    // });
     super.initState();
   }
 
@@ -145,21 +145,21 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  _videoController.pause();
+                                  // _videoController.pause();
                                   _isPlaying = false;
                                   print("ALi Azad");
                                 });
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
-                                child: new VlcPlayer(
-                                  options: [],
-                                  aspectRatio: 16 / 9,
-                                  url: urlToStreamVideo,
-                                  controller: _videoController,
-                                  placeholder: Center(
-                                      child: CircularProgressIndicator()),
-                                ),
+                                // child: new VlcPlayer(
+                                //   options: [],
+                                //   aspectRatio: 16 / 9,
+                                //   url: urlToStreamVideo,
+                                //   controller: _videoController,
+                                //   placeholder: Center(
+                                //       child: CircularProgressIndicator()),
+                                // ),
                               ),
                             ),
                           ),
@@ -174,7 +174,7 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                                     ),
                                     onPressed: () {
                                       setState(() {
-                                        _videoController.play();
+                                        // _videoController.play();
                                         _isPlaying = true;
                                       });
                                     },
