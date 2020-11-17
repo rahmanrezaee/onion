@@ -117,29 +117,29 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Column(
               children: [
-                Container(
-                  width: double.infinity,
-                  height: deviceSize(context).width * 0.5,
-                  child: GoogleMap(
-                    polygons: polygon,
-                    mapType: MapType.terrain,
-                    // polygons: myPolygon(),
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(34.543896, 69.160652),
-                      zoom: 5,
-                    ),
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    scrollGesturesEnabled: true,
-                    tiltGesturesEnabled: true,
-                    trafficEnabled: false,
-                    compassEnabled: true,
-                    rotateGesturesEnabled: true,
-                    myLocationEnabled: true,
-                    zoomGesturesEnabled: true,
-                  ),
-                ),
+                // Container(
+                //   width: double.infinity,
+                //   height: deviceSize(context).width * 0.5,
+                //   child: GoogleMap(
+                //     polygons: polygon,
+                //     mapType: MapType.terrain,
+                //     // polygons: myPolygon(),
+                //     initialCameraPosition: CameraPosition(
+                //       target: LatLng(34.543896, 69.160652),
+                //       zoom: 5,
+                //     ),
+                //     onMapCreated: (GoogleMapController controller) {
+                //       _controller.complete(controller);
+                //     },
+                //     scrollGesturesEnabled: true,
+                //     tiltGesturesEnabled: true,
+                //     trafficEnabled: false,
+                //     compassEnabled: true,
+                //     rotateGesturesEnabled: true,
+                //     myLocationEnabled: true,
+                //     zoomGesturesEnabled: true,
+                //   ),
+                // ),
                 SizedBox(
                   width: deviceSize(context).width * 0.9,
                   child: Row(
@@ -147,54 +147,54 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       _isAuth == false
                           ? Row(
-                              children: [
-                                SizedBox(
-                                  width: deviceSize(context).width * 0.56,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text:
-                                              "Want to Subscribe to Selected options Analysis, ",
-                                        ),
-                                        TextSpan(
-                                          text: "Sign Up",
-                                          style: TextStyle(
-                                            color: firstPurple,
-                                            decoration:
-                                                TextDecoration.underline,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          recognizer: TapGestureRecognizer()
-                                            ..onTap = () {
-                                              print('You clicked on me!');
-                                            },
-                                        ),
-                                        TextSpan(
-                                          text: " Here!",
-                                        ),
-                                      ],
-                                      style: TextStyle(color: Colors.black),
-                                    ),
+                        children: [
+                          SizedBox(
+                            width: deviceSize(context).width * 0.56,
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text:
+                                    "Want to Subscribe to Selected options Analysis, ",
                                   ),
-                                )
-                              ],
-                            )
+                                  TextSpan(
+                                    text: "Sign Up",
+                                    style: TextStyle(
+                                      color: firstPurple,
+                                      decoration:
+                                      TextDecoration.underline,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        print('You clicked on me!');
+                                      },
+                                  ),
+                                  TextSpan(
+                                    text: " Here!",
+                                  ),
+                                ],
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
                           : Container(width: deviceSize(context).width * 0.56),
                       Consumer<Auth>(
                         builder: (consumerContext, val, child) {
-                          return RaisedButton(
-                            color: middlePurple,
-                            child: Text("See Analysis"),
-                            textColor: Colors.white,
-                            onPressed: () => val.isAuth().then(
-                                  (token) => token
+                          return Expanded(
+                            child: RaisedButton(
+                              color: middlePurple,
+                              child: Text("See Analysis"),
+                              textColor: Colors.white,
+                              onPressed: () =>
+                                  val.isAuth().then((token) =>
+                                  token
                                       ? showMyDialog(context: context)
                                       : Navigator.pushNamed(
-                                          context,
-                                          Login.routeName,
-                                        ),
-                                ),
+                                      context, Login.routeName)),
+                            ),
                           );
                         },
                       ),
@@ -321,7 +321,8 @@ class _MyCardListItemState extends State<MyCardListItem> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    onTap: () => val.token != null
+                    onTap: () =>
+                    val.token != null
                         ? widget.callBack()
                         : Navigator.pushNamed(context, Login.routeName),
                   ),
