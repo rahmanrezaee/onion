@@ -150,7 +150,7 @@ class _SendInvRequestState extends State<SendInvRequest> {
                       ),
                       children: [
                         TextSpan(
-                          text: lormIpsum,
+                          text: loremIpsum,
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
@@ -210,7 +210,7 @@ class _SendInvRequestState extends State<SendInvRequest> {
                 AgreementTxt(),
                 MRaiseButton(
                   isIcon: false,
-                  mWidth: double.infinity,
+                  mWidth: deviceSize(context).width * 0.85,
                   mHeight: deviceSize(context).height * 0.05,
                   mFunc: _sendFunc,
                   mTxtBtn: "Send",

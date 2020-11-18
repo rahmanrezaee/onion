@@ -177,7 +177,7 @@ class MyChatItems extends StatelessWidget {
                             maxWidth: deviceSize(context).width * 0.7,
                           ),
                           child: AutoSizeText(
-                            lormIpsum,
+                            loremIpsum,
                             textDirection: TextDirection.ltr,
                             textScaleFactor: 1.1,
                             maxLines: 10,

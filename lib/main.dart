@@ -1,8 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/validation/postIdea.dart';
+import 'package:onion/validation/signup_validation.dart';
+import 'package:onion/pages/franchises/requestFranchisesUser.dart';
+import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:provider/provider.dart';
 
+import './pages/franchises/RequestOnFranchise.dart';
 import './pages/Home.dart';
 import './pages/Idea/postIdea.dart';
 import './pages/Idea/MyIdeaId.dart';
@@ -18,32 +24,21 @@ import './pages/authentication/ForgetPassword.dart';
 import './pages/authentication/Login.dart';
 import './pages/authentication/signup.dart';
 import './statemanagment/auth_provider.dart';
-import './pages/Idea/MyIdeaId.dart';
-import './pages/Settings.dart';
 import './pages/invest/SendInvRequest.dart';
 import './statemanagment/DrawerScaffold.dart';
 import './pages/MyMessagePage.dart';
 import './pages/NotificationsList.dart';
 import './pages/ProjectChat.dart';
-import './statemanagment/dropDownItem/MyFlagState.dart';
 import './pages/Home.dart';
-import './pages/Idea/postIdea.dart';
-import './pages/F&Q.dart';
-import './pages/Services.dart';
-import './pages/Idea/setupIdea.dart';
-import './pages/RequestedIdeaPage.dart';
-import './pages/authentication/ChangePassword.dart';
-import './pages/authentication/ForgetPassword.dart';
-import './pages/authentication/Login.dart';
-import './pages/authentication/signup.dart';
 import './statemanagment/dropDownItem/AnalyticsProvider.dart';
 import './statemanagment/dropDownItem/CategoryProvider.dart';
 import './statemanagment/dropDownItem/IndustryProvider.dart';
 import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
-import './test.dart';
 import './pages/request.dart';
+import 'pages/franchises/ViewMyRequestFranchise.dart';
+import './widgets/bottom_nav.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,6 +51,9 @@ void main() async {
       ChangeNotifierProvider(create: (_) => AnalyticsProvider()),
       ChangeNotifierProvider(create: (_) => DrawerScaffold()),
       ChangeNotifierProvider(create: (_) => Auth()),
+      ChangeNotifierProvider(create: (_) => SignupValidation()),
+      ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
+      
     ],
     child: MyApp(),
   ));

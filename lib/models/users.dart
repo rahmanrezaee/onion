@@ -1,4 +1,4 @@
-import 'package:onion/models/Image.dart';
+import 'package:flutter/cupertino.dart';
 
 class User {
   int id;

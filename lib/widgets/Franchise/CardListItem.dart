@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/const/Size.dart';
+import 'package:onion/const/color.dart';
 import 'package:onion/const/values.dart';
+
+import '../MRaiseButton.dart';
 
 enum WhyFarther { harder, smarter, selfStarter, tradingCharter }
 
@@ -18,67 +21,43 @@ class _CardListItemState extends State<CardListItem> {
   final GlobalKey _menuKey = new GlobalKey();
   var _selection;
 
-  Widget _childPopup() => PopupMenuButton<int>(
-        itemBuilder: (context) => [
-          PopupMenuItem(
-            value: 1,
-            child: Text(
-              "Earth",
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          PopupMenuItem(
-            value: 2,
-            child: Text(
-              "Moon",
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          PopupMenuItem(
-            value: 3,
-            child: Text(
-              "Sun",
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
-        child: Container(
-          height: 50,
-          width: 200,
-          decoration: ShapeDecoration(
-            color: Colors.green,
-            shape: StadiumBorder(
-              side: BorderSide(color: Colors.black, width: 2),
-            ),
-          ),
-          child: Icon(Icons.airplanemode_active),
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
     final button = new PopupMenuButton(
       key: _menuKey,
       padding: EdgeInsets.zero,
-      color: Colors.grey,
+      color: Colors.white,
+
       itemBuilder: (_) => <PopupMenuItem<String>>[
         PopupMenuItem<String>(
-          child: const Text('Doge'),
+          child: Container(
+            width: deviceSize(context).width * 0.23,
+            height: deviceSize(context).height * 0.04,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: <Color>[firstPurple, thirdPurple],
+              ),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Text(
+              "View Profile",
+              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+            ),
+          ),
           value: 'Doge',
         ),
-        PopupMenuItem<String>(
-          child: const Text('Lion'),
-          value: 'Lion',
-        ),
+        // PopupMenuItem<String>(
+        //   child: MRaiseButton(
+        //     isIcon: false,
+        //     mFunc: null,
+        //     mHeight: deviceSize(context).height * 0.06,
+        //     mWidth: deviceSize(context).width * 0.07,
+        //     mTxtBtn: "View Profile",
+        //   ),
+        //   value: 'Lion',
+        // ),
       ],
       onSelected: (_) {},
     );
@@ -154,7 +133,7 @@ class _CardListItemState extends State<CardListItem> {
                   ),
                   children: [
                     TextSpan(
-                      text: lormIpsum,
+                      text: loremIpsum,
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 13,

@@ -39,7 +39,7 @@ class Description extends StatelessWidget {
                     ),
                     children: [
                       TextSpan(
-                        text: lormIpsum,
+                        text: loremIpsum,
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 13,
@@ -59,6 +59,7 @@ class Description extends StatelessWidget {
 
 class MyTxtRow extends StatelessWidget {
   final String firstTxt;
+  final Color firstColor;
   final String secondTxt;
   final bool isIcon;
 
@@ -67,6 +68,7 @@ class MyTxtRow extends StatelessWidget {
     this.firstTxt,
     this.secondTxt,
     this.isIcon = false,
+    this.firstColor = null,
   }) : super(key: key);
 
   @override
@@ -77,7 +79,9 @@ class MyTxtRow extends StatelessWidget {
         Text(
           "$firstTxt",
           textScaleFactor: 0.9,
-          style: TextStyle(color: Colors.grey),
+          style: TextStyle(
+            color: firstColor == null ? Colors.grey : firstColor,
+          ),
         ),
         Spacer(),
         isIcon

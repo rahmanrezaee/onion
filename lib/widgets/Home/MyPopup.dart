@@ -12,9 +12,6 @@ import '../AnalysisWidget/MySmallDropdown.dart';
 import '../MyAppBarContainer.dart';
 
 Future<void> showMyDialog({@required BuildContext context}) async {
-  bool isCatLoading = true;
-  bool isAnaLoading = true;
-
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
@@ -25,14 +22,6 @@ Future<void> showMyDialog({@required BuildContext context}) async {
         ),
         titlePadding: EdgeInsets.zero,
         content: DialogContent(),
-        // actions: <Widget>[
-        //   TextButton(
-        //     child: Text('Approve'),
-        //     onPressed: () {
-        //       Navigator.of(context).pop();
-        //     },
-        //   ),
-        // ],
       );
     },
   );
@@ -49,6 +38,32 @@ class DialogContent extends StatefulWidget {
 
 class _DialogContentState extends State<DialogContent> {
   Future<void> fetchCategory;
+  List<CategoryModel> countryList = [
+    CategoryModel(
+      name: "USA",
+      parent: "Hello",
+      createdAt: "1398/9/9",
+      id: "1",
+    ),
+    CategoryModel(
+      name: "Iraq",
+      parent: "Hello",
+      createdAt: "1398/9/9",
+      id: "2",
+    ),
+    CategoryModel(
+      name: "Iran",
+      parent: "Hello",
+      createdAt: "1398/9/9",
+      id: "3",
+    ),
+    CategoryModel(
+      name: "Afghanistan",
+      parent: "Hello",
+      createdAt: "1398/9/9",
+      id: "4",
+    ),
+  ];
   bool isCatLoading = true;
   bool isAnaLoading = true;
 
@@ -158,8 +173,7 @@ class _DialogContentState extends State<DialogContent> {
                     Widget child,
                   ) {
                     if (value.items.isEmpty) {
-                      print("Mahdia IF ");
-                      return MyEmptyText(
+                      return MyPopTxt(
                         myTxt: value.isLoading ? "loading..." : "Empty",
                       );
                     } else {
@@ -179,32 +193,15 @@ class _DialogContentState extends State<DialogContent> {
                   },
                 ),
                 SizedBox(height: deviceSize(context).height * 0.03),
-                Consumer<AnalyticsProvider>(
-                  builder: (
-                    BuildContext consContext,
-                    value,
-                    Widget child,
-                  ) {
-                    if (value.items.isEmpty) {
-                      print("Mahdi IF ");
-                      return MyEmptyText(
-                        myTxt: value.isLoading ? "loading..." : "Empty",
-                      );
-                    } else {
-                      print("Mahdi Else ");
-                      // return Text("Mahdi");
-                      return MySmallDropdown(
-                        iconColor: Colors.black,
-                        myisExpanded: true,
-                        myDropDownList: value.items,
-                        dropDownAroundColor: Colors.grey,
-                        txtColor: Colors.grey,
-                        dropDownColor: Colors.white,
-                        firstVal: value.items[0].name,
-                        futureType: "analytics",
-                      );
-                    }
-                  },
+                MySmallDropdown(
+                  iconColor: Colors.black,
+                  myisExpanded: true,
+                  myDropDownList: countryList,
+                  dropDownAroundColor: Colors.grey,
+                  txtColor: Colors.grey,
+                  dropDownColor: Colors.white,
+                  firstVal: countryList[0].name,
+                  futureType: "country",
                 ),
                 SizedBox(height: deviceSize(context).height * 0.01),
                 SizedBox(
@@ -241,6 +238,38 @@ class _DialogContentState extends State<DialogContent> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class MyPopTxt extends StatelessWidget {
+  final String myTxt;
+
+  const MyPopTxt({
+    Key key,
+    this.myTxt,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: deviceSize(context).width * 0.8,
+      padding: EdgeInsets.all(deviceSize(context).width * 0.02),
+      margin: EdgeInsets.symmetric(
+        horizontal: deviceSize(context).width * 0.01,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: SizedBox(
+        width: deviceSize(context).width * 0.19,
+        child: Text(
+          myTxt,
+          textScaleFactor: 0.8,
+          style: TextStyle(color: Colors.grey),
+        ),
       ),
     );
   }

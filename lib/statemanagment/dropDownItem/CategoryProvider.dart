@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
+import './IndustryProvider.dart';
 import '../../const/MyUrl.dart';
 import '../../myHttpGlobal/MyHttpGlobal.dart';
 
@@ -68,9 +69,14 @@ class CategoryProvider with ChangeNotifier {
       // final response = await http.get("${baseDropDownItemsUrl}0");
       isLoading = false;
 
-      final response =
-          await APIRequest().get(myUrl: "${baseDropDownItemsUrl}0");
-      // print("Mahdi: ${response.body}");
+      final response = await APIRequest().get(
+        myUrl: "$baseDropDownItemsUrl?type=category",
+        token: null,
+      );
+      // final response = await http.get(
+      //   "http://3.138.186.196:3000/public/categories/?type=category",
+      // );
+      print("Mahdi: ${response.data}");
 
       final extractedData = response.data;
       if (extractedData == null) {
@@ -80,9 +86,11 @@ class CategoryProvider with ChangeNotifier {
       final List<CategoryModel> loadedProducts = [];
       print("Mahdi: title $extractedData");
 
+      final lastExtract = extractedData;
+
       // loadedProducts.add(extractedData.forEach());
 
-      extractedData.forEach((netItems) {
+      lastExtract.forEach((netItems) {
         loadedProducts.add(
           CategoryModel(
             id: netItems['_id'],

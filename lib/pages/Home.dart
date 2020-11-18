@@ -1,33 +1,32 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_echarts/flutter_echarts.dart';
-import 'package:onion/pages/Idea/setupIdea.dart';
-import 'package:onion/pages/authentication/Login.dart';
-import 'package:onion/statemanagment/auth_provider.dart';
-import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
-import 'package:onion/widgets/Home/MyPopup.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_maps/maps.dart';
-import 'package:onion/widgets/Snanckbar.dart';
-
-import 'package:onion/const/Size.dart';
-import 'package:onion/const/color.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_maps/maps.dart';
 
+import '../GeoJson.dart';
+import './Idea/setupIdea.dart';
+import './authentication/Login.dart';
+import '../statemanagment/auth_provider.dart';
+import '../statemanagment/dropDownItem/IndustryProvider.dart';
+import '../widgets/Home/MyPopup.dart';
+import '../widgets/Snanckbar.dart';
+import '../const/Size.dart';
+import '../const/color.dart';
 import '../statemanagment/dropDownItem/CategoryProvider.dart';
 import '../widgets/AnalysisWidget/MyAlert.dart';
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyAppBarContainer.dart';
 
 class Model {
-  const Model(this.country, this.count);
+  const Model(this.country, this.density);
 
   final String country;
-  final double count;
+  final double density;
 }
 
 class HomePage extends StatefulWidget {
@@ -42,11 +41,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _isAuth;
-
-  // Future<void> categoryProvider;
   List<Model> data;
-  MapZoomPanBehavior _zoomPanBehavior;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  Completer<GoogleMapController> _controller = Completer();
+  List<LatLng> point = List<LatLng>();
+
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(34.543896, 69.160652),
+    zoom: 5,
+  );
+
+  static final CameraPosition _kLake = CameraPosition(
+    bearing: 192.8334901395799,
+    target: LatLng(37.43296265331129, -122.08832357078792),
+    tilt: 59.440717697143555,
+    zoom: 19.151926040649414,
+  );
 
   __isAuth() async {
     _isAuth = await Auth().isAuth();
@@ -54,46 +64,14 @@ class _HomePageState extends State<HomePage> {
     print("_isAuth $_isAuth");
   }
 
-  List<Map<String, Object>> _data1 = [
-    {'name': 'Please wait', 'value': 0}
-  ];
-
-  getData1() async {
-    await Future.delayed(Duration(seconds: 4));
-
-    const dataObj = [
-      {
-        'name': 'Jan',
-        'value': 8726.2453,
-      },
-      {
-        'name': 'Feb',
-        'value': 2445.2453,
-      },
-      {
-        'name': 'Mar',
-        'value': 6636.2400,
-      },
-      {
-        'name': 'Apr',
-        'value': 4774.2453,
-      },
-      {
-        'name': 'May',
-        'value': 1066.2453,
-      },
-      {
-        'name': 'Jun',
-        'value': 4576.9932,
-      },
-      {
-        'name': 'Jul',
-        'value': 8926.9823,
-      }
-    ];
-
-    this.setState(() {
-      this._data1 = dataObj;
+  void addPoints() {
+    // for (var i = 0; i < GeoJson.IN.length; i++) {
+    // LatLng latLng = LatLng(GeoJson.IN[i][0], GeoJson.IN[i][1]);
+    // print("Mahdi: GeoJson $latLng");
+    // point.add(LatLng(GeoJson.IN[i][0], GeoJson.IN[i][1]));
+    // }
+    GeoJson.IN.forEach((element) {
+      point.add(MapLatLng(element[0], element[1]));
     });
   }
 
@@ -101,16 +79,26 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     __isAuth();
     // TODO: implement initState
-    _zoomPanBehavior = MapZoomPanBehavior();
-    data = <Model>[
-      Model('India', 280),
-      Model('United States of America', 190),
-      Model('Kazakhstan', 37),
-    ];
     super.initState();
-    this.getData1();
-    // categoryProvider = Provider.of<CategoryProvider>(context, listen: false)
-    //     .fetchCategoryItem();
+  }
+
+  Set<Polygon> myPolygon() {
+    addPoints();
+
+    Set<Polygon> polygonSet = new Set();
+    polygonSet.add(
+      Polygon(
+        polygonId: PolygonId('test'),
+        points: point,
+        consumeTapEvents: true,
+        strokeWidth: 1,
+        fillColor: Colors.redAccent,
+      ),
+    );
+
+    print("Mahdi: polygonSet ${polygonSet.first.points.first}");
+
+    return polygonSet;
   }
 
   @override
@@ -122,7 +110,6 @@ class _HomePageState extends State<HomePage> {
       body: ListView(
         children: [
           MyAppBarContainer(),
-          // return Text(value.items[2].val);
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: deviceSize(context).width * 0.06,
@@ -141,51 +128,27 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Column(
               children: [
-                // EChartMap(),
                 Container(
                   width: double.infinity,
                   height: deviceSize(context).width * 0.5,
-                  child: Padding(
-                    padding: EdgeInsets.all(15),
-                    child: SfMaps(
-                      title: const MapTitle(text: 'Australia map'),
-                      layers: <MapShapeLayer>[
-                        MapShapeLayer(
-                          zoomPanBehavior: _zoomPanBehavior,
-                          delegate: MapShapeLayerDelegate(
-                            shapeFile: 'assets/australia.json',
-                            shapeDataField: 'STATE_NAME',
-                            dataCount: data.length,
-                            primaryValueMapper: (int index) =>
-                                data[index].country,
-                            // dataLabelMapper: (int index) =>
-                            //     data[index].stateCode,
-                            shapeColorValueMapper: (int index) =>
-                                data[index].count,
-                            // shapeTooltipTextMapper: (int index) =>
-                            //     data[index].stateCode,
-                          ),
-                          showDataLabels: true,
-                          // showLegend: true,
-                          enableShapeTooltip: true,
-                          tooltipSettings: MapTooltipSettings(
-                            color: Colors.grey[700],
-                            strokeColor: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                          strokeColor: Colors.white,
-                          strokeWidth: 0.5,
-                          dataLabelSettings: MapDataLabelSettings(
-                            textStyle: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize:
-                                  Theme.of(context).textTheme.caption.fontSize,
-                            ),
-                          ),
-                        ),
-                      ],
+                  child: GoogleMap(
+                    polygons: myPolygon(),
+                    mapType: MapType.terrain,
+                    // polygons: myPolygon(),
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(34.543896, 69.160652),
+                      zoom: 5,
                     ),
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                    scrollGesturesEnabled: true,
+                    tiltGesturesEnabled: true,
+                    trafficEnabled: false,
+                    compassEnabled: true,
+                    rotateGesturesEnabled: true,
+                    myLocationEnabled: true,
+                    zoomGesturesEnabled: true,
                   ),
                 ),
                 SizedBox(
@@ -228,19 +191,20 @@ class _HomePageState extends State<HomePage> {
                                 )
                               ],
                             )
-                          : Container(),
+                          : Container(width: deviceSize(context).width * 0.56),
                       Consumer<Auth>(
                         builder: (consumerContext, val, child) {
-                          return RaisedButton(
-                            color: middlePurple,
-                            child: Text("See Analysis"),
-                            textColor: Colors.white,
-                            onPressed: () => val.isAuth().then(
-                                  (token) => token
+                          return Expanded(
+                            child: RaisedButton(
+                              color: middlePurple,
+                              child: Text("See Analysis"),
+                              textColor: Colors.white,
+                              onPressed: () => val.isAuth().then((token) =>
+                                  token
                                       ? showMyDialog(context: context)
                                       : Navigator.pushNamed(
-                                          context, Login.routeName),
-                                ),
+                                          context, Login.routeName)),
+                            ),
                           );
                         },
                       ),
