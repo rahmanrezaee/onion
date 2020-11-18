@@ -58,8 +58,8 @@ class MyCardItem extends StatelessWidget {
     return GestureDetector(
       onTap: clickType == "message"
           ? () {
-        Navigator.pushNamed(context, ProjectChat.routeName);
-      }
+              Navigator.pushNamed(context, ProjectChat.routeName);
+            }
           : null,
       child: Card(
         elevation: 3,
@@ -77,50 +77,52 @@ class MyCardItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 myImageType == "rectangle" ? RectangleImage() : MyCircleImage(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: deviceSize(context).width * 0.65,
-                      child: Row(
-                        children: [
-                          Text(
-                            "James H. Matt",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Spacer(),
-                          Text(
-                            "28-Sep, 10:40",
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: deviceSize(context).height * 0.1,
-                          maxHeight: deviceSize(context).height,
-                          minWidth: deviceSize(context).width * 0.4,
-                          maxWidth: deviceSize(context).width * 0.6,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: deviceSize(context).width * 0.65,
+                        child: Row(
+                          children: [
+                            Text(
+                              "James H. Matt",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Spacer(),
+                            Text(
+                              "28-Sep, 10:40",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
                         ),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: AutoSizeText(
-                            loremIpsum,
-                            textScaleFactor: 1.1,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 3,
-                            style: TextStyle(
-                              color: Colors.black,
-                              height: 1.3,
+                      ),
+                      Expanded(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: deviceSize(context).height * 0.1,
+                            maxHeight: deviceSize(context).height,
+                            minWidth: deviceSize(context).width * 0.4,
+                            maxWidth: deviceSize(context).width * 0.6,
+                          ),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: AutoSizeText(
+                              loremIpsum,
+                              textScaleFactor: 1.1,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                              style: TextStyle(
+                                color: Colors.black,
+                                height: 1.3,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 )
               ],
             ),

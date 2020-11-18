@@ -1,4 +1,4 @@
-import 'package:onion/models/Image.dart';
+import 'package:flutter/cupertino.dart';
 
 class User {
   int id;
@@ -11,7 +11,7 @@ class User {
   String interst;
   String country;
   String state;
-  ImageModel profile;
+  String profile;
 
   Map<String, String> toMap() {
     return {
@@ -23,6 +23,7 @@ class User {
       'interestedin': interst != null ? '$interst' : null,
       'country': country != null ? '$country' : null,
       'state': state != null ? '$state' : null,
+      'avatar': profile != null ? '$profile' : null,
     };
   }
 }

@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/validation/postIdea.dart';
+import 'package:onion/validation/signup_validation.dart';
 import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:provider/provider.dart';
@@ -50,6 +52,8 @@ void main() async {
       ChangeNotifierProvider(create: (_) => AnalyticsProvider()),
       ChangeNotifierProvider(create: (_) => DrawerScaffold()),
       ChangeNotifierProvider(create: (_) => Auth()),
+      ChangeNotifierProvider(create: (_) => SignupValidation()),
+      ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
     ],
     child: MyApp(),
   ));

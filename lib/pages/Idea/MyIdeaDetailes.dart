@@ -144,11 +144,11 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                             height: 120,
                             child: GestureDetector(
                               onTap: () {
-                                setState(() {
-                                  // _videoController.pause();
-                                  _isPlaying = false;
-                                  print("ALi Azad");
-                                });
+                                // setState(() {
+                                //   _videoController.pause();
+                                //   _isPlaying = false;
+                                //   print("ALi Azad");
+                                // });
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),

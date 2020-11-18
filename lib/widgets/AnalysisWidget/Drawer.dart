@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:onion/const/values.dart';
 import 'package:onion/pages/Analysis.dart';
 import 'package:onion/pages/AnalyticsOne.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
@@ -132,8 +133,12 @@ class _MyDrawerState extends State<MyDrawer> {
                                 height: 100,
                                 width: 100,
                                 child: CircleAvatar(
-                                  backgroundImage: AssetImage(
-                                      'assets/images/empty_profile.jpg'),
+                                  backgroundImage: value.token != null &&
+                                          value.currentUser.profile != null
+                                      ? NetworkImage(
+                                          BASE_URL + value.currentUser.profile)
+                                      : AssetImage(
+                                          'assets/images/empty_profile.jpg'),
                                 ),
                               ),
                               Positioned(
@@ -209,7 +214,23 @@ class _MyDrawerState extends State<MyDrawer> {
                       icon: Icons.settings,
                       routeName: Settings.routeName,
                     )
-                  : Container(),
+                  : SizedBox(),
+              myListTile(
+                context: context,
+                name: "Notification Setting",
+                justPush: true,
+                icon: Icons.notifications,
+              ),
+
+              Divider(color: Colors.white, height: 0.1),
+              // _isAuth == true
+              //     ? myListTile(
+              //         context: context,
+              //         name: "Settings",
+              //         icon: Icons.settings,
+              //         routeName: Settings.routeName,
+              //       )
+              //     : Container(),
 
               value.token != null
                   ? myListTile(
