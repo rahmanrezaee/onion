@@ -43,6 +43,7 @@ import './widgets/bottom_nav.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
@@ -53,7 +54,6 @@ void main() async {
       ChangeNotifierProvider(create: (_) => Auth()),
       ChangeNotifierProvider(create: (_) => SignupValidation()),
       ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
-      
     ],
     child: MyApp(),
   ));
@@ -62,6 +62,9 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Provider.of<Auth>(
+      context,
+    ).tryAutoLogin();
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
         title: 'Flutter Demo',
@@ -78,8 +81,7 @@ class MyApp extends StatelessWidget {
           Login.routeName: (context) => auth.token != null
               ? CustomDrawerPage()
               : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
                       authResultSnapshot.connectionState ==
                               ConnectionState.waiting
@@ -93,8 +95,7 @@ class MyApp extends StatelessWidget {
           SignUp.routeName: (context) => auth.token != null
               ? CustomDrawerPage()
               : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
                       authResultSnapshot.connectionState ==
                               ConnectionState.waiting
@@ -106,8 +107,7 @@ class MyApp extends StatelessWidget {
           ComplateProfile.routeName: (context) => auth.token != null
               ? CustomDrawerPage()
               : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
                       authResultSnapshot.connectionState ==
                               ConnectionState.waiting
@@ -125,8 +125,7 @@ class MyApp extends StatelessWidget {
           ForgetPassword.routeName: (context) => auth.token != null
               ? CustomDrawerPage()
               : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
                       authResultSnapshot.connectionState ==
                               ConnectionState.waiting
@@ -138,8 +137,7 @@ class MyApp extends StatelessWidget {
           ChangePassword.routeName: (context) => auth.token != null
               ? CustomDrawerPage()
               : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  future: auth.tryAutoLogin(),
                   builder: (ctx, authResultSnapshot) =>
                       authResultSnapshot.connectionState ==
                               ConnectionState.waiting

@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:string_validator/string_validator.dart';
 import './validation_item.dart';
 
 class PostIdeaValidation with ChangeNotifier {
   ValidationItem _year = ValidationItem(null, null);
   ValidationItem _month = ValidationItem(null, null);
   ValidationItem _teamSize = ValidationItem(null, null);
+  ValidationItem _website = ValidationItem(null, null);
   // ValidationItem _dob = ValidationItem(null,null);
 
   //Getters
   ValidationItem get year => _year;
   ValidationItem get month => _month;
   ValidationItem get teamSize => _teamSize;
+  ValidationItem get website => _website;
 
   bool get isValid {
-    if (_year.value != null && _month.value != null) {
+    if (_year.value != null && _month.value != null && _teamSize.value != null && _website.value != null) {
       return true;
     } else {
       return false;
@@ -46,6 +49,16 @@ class PostIdeaValidation with ChangeNotifier {
       _teamSize = ValidationItem(value, null);
     } else {
       _teamSize = ValidationItem(null, "Must Inter Valid Team Size");
+    }
+    notifyListeners();
+  }
+  
+  void changeWebsite(String value) {
+    
+    if (value.length <= 30 && isURL(value)) {
+      _website = ValidationItem(value, null);
+    } else {
+      _website = ValidationItem(null, "Must Inter Valid Website");
     }
     notifyListeners();
   }

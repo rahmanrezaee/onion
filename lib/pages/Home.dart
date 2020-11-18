@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     // point.add(LatLng(GeoJson.IN[i][0], GeoJson.IN[i][1]));
     // }
     GeoJson.IN.forEach((element) {
-      point.add(MapLatLng(element[0], element[1]));
+      point.add(LatLng(element[0], element[1]));
     });
   }
 
