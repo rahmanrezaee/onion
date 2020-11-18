@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
-import 'package:search_place_autocomplete/search_place_autocomplete.dart';
 
 class LocationWidget extends StatelessWidget {
   Function locationRemove;
