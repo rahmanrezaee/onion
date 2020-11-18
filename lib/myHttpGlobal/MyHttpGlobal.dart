@@ -3,16 +3,16 @@ import 'package:flutter/foundation.dart';
 
 class APIRequest {
   Dio dio = new Dio();
+
   Future get({
     @required String myUrl,
     token,
   }) {
-    if(token == null){
-    return dio.get(myUrl);
-    }else{
-    return dio.get(myUrl, options: new Options(headers: {'token': '$token'}));
+    if (token == null) {
+      return dio.get(myUrl);
+    } else {
+      return dio.get(myUrl, options: new Options(headers: {'token': '$token'}));
     }
-
   }
 
   Future post({
@@ -29,8 +29,7 @@ class APIRequest {
     @required Map<String, String> myBody,
     @required Map<String, String> myHeaders,
   }) {
-
-     dio.options.headers = myHeaders;
+    dio.options.headers = myHeaders;
     return dio.put(myUrl, data: myBody);
   }
 }
