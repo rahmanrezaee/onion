@@ -7,6 +7,7 @@ import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:provider/provider.dart';
 
 import './pages/franchises/RequestOnFranchise.dart';
+import './pages/underDevelopment.dart';
 import './pages/Home.dart';
 import './pages/Idea/postIdea.dart';
 import './pages/Idea/MyIdeaId.dart';
@@ -207,6 +208,9 @@ class MyApp extends StatelessWidget {
               MyIdeaId.routeName: (context) => MyIdeaId(),
               MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
               RequestPage.routeName: (context) => RequestPage(),
+            },
+            onUnknownRoute: (settings) {
+              return MaterialPageRoute(builder: (_) => UnderDevelopment());
             },
           ),
         ),
