@@ -8,6 +8,7 @@ import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/pages/F&Q.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/Idea/MyIdeaId.dart';
+import 'package:onion/pages/MainScreen.dart';
 import 'package:onion/pages/Services.dart';
 import 'package:onion/pages/Settings.dart';
 import 'package:onion/pages/authentication/Login.dart';
@@ -185,21 +186,24 @@ class _MyDrawerState extends State<MyDrawer> {
                   ),
                 ),
               ),
-              // myListTile(
-              //   context: context,
-              //   name: "Analytics List",
-              //   icon: Icons.person,
-              //   routeName: HomePage.routeName,
-              //   justPush: false,
-              //   hasDrawer: true,
-              // ),
-              // myListTile(
-              //   context: context,
-              //   name: "Analytics One",
-              //   icon: Icons.opacity,
-              //   routeName: AnalyticsOne.routeName,
-              //   justPush: true,
-              // ),
+              myListTile(
+                context: context,
+                name: "Home",
+                icon: Icons.home,
+                routeName: MainScreen.routeName,
+                justPush: true,
+                hasDrawer: true,
+              ),
+
+              myListTile(
+                context: context,
+                name: "Analytics ",
+                icon: Icons.person,
+                routeName: Analysis.routeName,
+                justPush: false,
+                hasDrawer: true,
+              ),
+
               value.token != null
                   ? myListTile(
                       context: context,
@@ -277,8 +281,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 name: "Services",
                 icon: Icons.done,
                 routeName: Services.routeName,
+                justPush: true,
                 hasDrawer: true,
-                justPush: false,
               ),
               // myListTile(
               //   context: context,

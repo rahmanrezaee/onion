@@ -30,6 +30,12 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
     return _innerDrawerKey.currentState.open();
   }
 
+  Widget _page;
+  initState() {
+    _page = MainScreen(openDrawer: openCustomDrawer);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return InnerDrawer(
@@ -68,17 +74,16 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
       // return  true (open) or false (close)
       leftChild: MyDrawer(),
       scaffold: Scaffold(
-        // body: MainScreen(openDrawer: openCustomDrawer),
-        // body: Consumer<DrawerScaffold>(
-        //   builder: (context, value, Widget child) {
-        //     // if (value.scaffoldType == HomePage.routeName) {
-        //       return ;
-        //     } else if (value.scaffoldType == Services.routeName) {
-        //       return Services(openDrawer: openCustomDrawer);
-        //     }
-        //     return null;
-        //   },
-        // ),
+        body: Consumer<DrawerScaffold>(
+          builder: (context, value, Widget child) {
+            if (value.scaffoldType == MainScreen.routeName) {
+              return _page;
+            } else if (value.scaffoldType == Services.routeName) {
+              return Services(openDrawer: openCustomDrawer);
+            }
+            return null;
+          },
+        ),
       ),
     );
   }

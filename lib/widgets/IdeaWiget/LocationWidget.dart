@@ -22,6 +22,8 @@ class LocationWidget extends StatelessWidget {
         Row(
           children: [
             Expanded(
+              // child: SearchPlaceAutoCompleteWidget(
+              //     apiKey: "AIzaSyANhuhlGahkeWvVIdJvjDu7gfTfMkoTbWk"),
               child: TextFormField(
                 keyboardType: TextInputType.text,
                 controller: controller,

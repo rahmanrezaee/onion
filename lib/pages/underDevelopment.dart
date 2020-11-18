@@ -6,9 +6,9 @@ import 'package:lottie/lottie.dart';
 class UnderDevelopment extends StatelessWidget {
   final List<String> anim = [
     "assets/anim/app-developer.json",
-    "assets/anim/coding-in-office.json",
-    "assets/anim/programming.json",
-    "assets/anim/working-together.json",
+    // "assets/anim/coding-in-office.json",
+    // "assets/anim/programming.json",
+    // "assets/anim/working-together.json",
   ];
   @override
   Widget build(BuildContext context) {

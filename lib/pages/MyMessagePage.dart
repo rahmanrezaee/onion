@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:onion/widgets/MRaiseButton.dart';
+import 'package:onion/widgets/MyAppBar.dart';
 
 import './NotificationsList.dart';
 import '../const/color.dart';
 import '../const/Size.dart';
 import '../widgets/MyLittleAppbar.dart';
 
-class MyMessagePage extends StatelessWidget {
+class MyMessagePage extends StatefulWidget {
   static const routeName = "my_message";
+  Function openDrawer;
 
+  MyMessagePage({Key key, this.openDrawer});
+
+  @override
+  _MyMessagePageState createState() => _MyMessagePageState();
+}
+
+class _MyMessagePageState extends State<MyMessagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size(double.infinity, kToolbarHeight),
-        child: MyLittleAppbar(myTitle: "My Message"),
-      ),
+      appBar: MyAppBar(title: "My Message", openDrawer: widget.openDrawer),
       body: Column(
         children: [
           MyTextFieldMessage(),

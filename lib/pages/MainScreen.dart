@@ -1,48 +1,35 @@
-import 'dart:async';
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:onion/GeoJson.dart';
-import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/pages/Home.dart';
-import 'package:onion/pages/Idea/setupIdea.dart';
 import 'package:onion/pages/MyMessagePage.dart';
-import 'package:onion/pages/authentication/Login.dart';
-import 'package:onion/pages/authentication/signup.dart';
 import 'package:onion/pages/underDevelopment.dart';
-import 'package:onion/statemanagment/auth_provider.dart';
-import 'package:onion/widgets/Home/MyPopup.dart';
-import 'package:onion/widgets/MyAppBar.dart';
-import 'package:onion/widgets/MyAppBarContainer.dart';
-import 'package:onion/widgets/Snanckbar.dart';
 import 'package:onion/widgets/bottom_nav.dart';
-import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
+  static String routeName = "mainScreen";
   Function openDrawer;
 
-  MainScreen({this.openDrawer});
+  MainScreen({Key key, this.openDrawer});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
+  int _page = 0;
+
   @override
   Widget build(BuildContext context) {
-    int _index = 0;
-    List<Widget> list = [
-      HomePage(
-        openDrawer: widget.openDrawer,
-      ),
-      MyMessagePage(),
-      UnderDevelopment(),
-      UnderDevelopment(),
+    List<Widget> pageWidget = [
+      HomePage(openDrawer: widget.openDrawer),
+      MyMessagePage(openDrawer: widget.openDrawer),
+      Center(child: Text("under development")),
+      Center(child: Text("under development")),
+      Center(child: Text("under development"))
     ];
 
     return Scaffold(
-      body: list[_index],
+      body: pageWidget[_page],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.white,
         color: middlePurple,
@@ -73,15 +60,15 @@ class _MainScreenState extends State<MainScreen> {
         ],
         onTap: (index) {
           setState(() {
-            _index = index;
+            _page = index;
           });
           // if (index == 0) {
           //   setState(() {
-          //     _indext = HomePage();
+          //     _page = HomePage(openDrawer: openCustomDrawer);
           //   });
           // } else if (index == 1) {
           //   setState(() {
-          //     _page = MyMessagePage();
+          //
           //   });
           // } else {
           //   setState(() {
