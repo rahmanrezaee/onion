@@ -84,43 +84,7 @@ class MyApp extends StatelessWidget {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
               }),
             ),
-            // home: CustomDrawerPage(),
-            home: PostIdea(),
-            // routes: {
-            //   Login.routeName: (context) => auth.token != null
-            //       ? CustomDrawerPage()
-            //       : FutureBuilder(
-            //           future: Provider.of<Auth>(context, listen: false)
-            //               .tryAutoLogin(),
-            //           builder: (ctx, authResultSnapshot) =>
-            //               authResultSnapshot.connectionState ==
-            //                       ConnectionState.waiting
-            //                   ? Scaffold(
-            //                       body: Center(child: Text("Loading...")),
-            //                     )
-            //                   : Login()),
-            //   SignUp.routeName: (context) => SignUp(),
-            //   CustomDrawerPage.routeName: (context) => CustomDrawerPage(),
-            //   AnalyticsOne.routeName: (context) => AnalyticsOne(),
-            //   Analysis.routerName: (context) => Analysis(),
-            //   RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-            //   ForgetPassword.routeName: (context) => ForgetPassword(),
-            //   SetupIdea.routeName: (context) => SetupIdea(),
-            //   PostIdea.routeName: (context) => PostIdea(),
-            //   ChangePassword.routeName: (context) => ChangePassword(
-            //         ModalRoute.of(context).settings.arguments,
-            //       ),
-            //   FandQ.routeName: (context) => FandQ(),
-            //   Services.routeName: (context) => Services(),
-            //   Settings.routeName: (context) => Settings(),
-            //   RequestFranchisesUser.routeName: (context) =>
-            //       RequestFranchisesUser(),
-            //   ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(),
-            //   MyIdeaId.routeName: (context) => MyIdeaId(),
-            //   MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
-            //   MyMessagePage.routeName: (context) => MyMessagePage(),
-            //   ProjectChat.routeName: (context) => ProjectChat(),
-            // },
+            home: CustomDrawerPage(),
             routes: {
               Login.routeName: (context) => auth.token != null
                   ? CustomDrawerPage()

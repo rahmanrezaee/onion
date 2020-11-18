@@ -399,11 +399,9 @@ class _ListSuggestionState extends State<ListSuggestion> {
 
   @override
   void initState() {
-    
     String apiKey = "AIzaSyAG6Pl3KRM6kC89xnzV38UUxyryp0MGDoI";
     googlePlace = GooglePlace(apiKey);
     super.initState();
-
   }
 
   @override

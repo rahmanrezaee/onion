@@ -11,6 +11,7 @@ import 'package:onion/widgets/Checkbox/GlowCheckbox.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/IdeaWiget/LocationWidget.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
+import 'package:search_place_autocomplete/search_place_autocomplete.dart';
 
 class PostIdea extends StatefulWidget {
   static final routeName = "/postIdea";
@@ -164,7 +165,7 @@ class _PostIdeaState extends State<PostIdea> {
                             ),
                           ),
                           Row(
-                             crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Expanded(
@@ -365,7 +366,7 @@ class _PostIdeaState extends State<PostIdea> {
                             height: 10,
                           ),
                           Row(
-                             crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Expanded(
@@ -504,10 +505,9 @@ class _PostIdeaState extends State<PostIdea> {
                             height: 10,
                           ),
                           Row(
-                             crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              
                               Expanded(
                                 child: TextFormField(
                                   keyboardType: TextInputType.url,

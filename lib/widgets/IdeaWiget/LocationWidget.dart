@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
+import 'package:search_place_autocomplete/search_place_autocomplete.dart';
 
 class LocationWidget extends StatelessWidget {
   Function locationRemove;
@@ -22,6 +23,8 @@ class LocationWidget extends StatelessWidget {
         Row(
           children: [
             Expanded(
+              // child: SearchPlaceAutoCompleteWidget(
+              //     apiKey: "AIzaSyANhuhlGahkeWvVIdJvjDu7gfTfMkoTbWk"),
               child: TextFormField(
                 keyboardType: TextInputType.text,
                 controller: controller,

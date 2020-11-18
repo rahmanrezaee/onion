@@ -33,7 +33,7 @@ dependencies:
   flutter_rating_bar: ^3.1.0
   auto_size_text: ^2.1.0
   http: ^0.12.2
-  google_maps_flutter: ^1.0.6
+  google_maps_flutter: ^0.5.31
   flutter_splash_screen:
   flutter_echarts: ^1.4.0
   syncfusion_flutter_maps: ^18.3.47-beta
