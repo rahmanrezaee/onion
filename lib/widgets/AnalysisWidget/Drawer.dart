@@ -277,6 +277,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 name: "Services",
                 icon: Icons.done,
                 routeName: Services.routeName,
+                hasDrawer: true,
+                justPush: false,
               ),
               // myListTile(
               //   context: context,

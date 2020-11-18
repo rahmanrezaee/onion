@@ -283,7 +283,7 @@ class _SignUpState extends State<SignUp> {
                                     ),
                                     inputFormatters: [
                                       new LengthLimitingTextInputFormatter(
-                                          11), // for mobile
+                                          14), // for mobile
                                     ],
                                     validator: (String value) {
                                       // if (value.isEmpty) return "Your phone is empty";

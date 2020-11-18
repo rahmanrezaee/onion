@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
     ).tryAutoLogin();
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Onion.ai',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Color(0xFF7B3C8A),
