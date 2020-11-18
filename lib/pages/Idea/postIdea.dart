@@ -3,15 +3,17 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/models/Idea.dart';
 import 'package:onion/pages/Home.dart';
 import 'package:onion/pages/Idea/setupIdea.dart';
+import 'package:onion/validation/postIdea.dart';
 import 'package:onion/widgets/Checkbox/GlowCheckbox.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/IdeaWiget/LocationWidget.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
-import 'package:search_place_autocomplete/search_place_autocomplete.dart';
+import 'package:provider/provider.dart';
 
 class PostIdea extends StatefulWidget {
   static final routeName = "/postIdea";
@@ -46,6 +48,8 @@ class _PostIdeaState extends State<PostIdea> {
 
   @override
   Widget build(BuildContext context) {
+    final validationService = Provider.of<PostIdeaValidation>(context);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, kToolbarHeight),
@@ -165,11 +169,14 @@ class _PostIdeaState extends State<PostIdea> {
                             ),
                           ),
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
                                 child: TextFormField(
+                                  inputFormatters: [
+                                    new LengthLimitingTextInputFormatter(
+                                        4), // for mobile
+                                  ],
                                   keyboardType: TextInputType.number,
                                   style: TextStyle(
                                     color: Colors.purple,
@@ -183,8 +190,12 @@ class _PostIdeaState extends State<PostIdea> {
                                   onSaved: (value) {
                                     // user.occupation = value;
                                   },
+                                  onChanged: (value) {
+                                    validationService.changeYear(value);
+                                  },
                                   decoration: InputDecoration(
                                     hintText: "Year",
+                                    errorText: validationService.year.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -207,10 +218,17 @@ class _PostIdeaState extends State<PostIdea> {
                               ),
                               Expanded(
                                 child: TextFormField(
+                                  inputFormatters: [
+                                    new LengthLimitingTextInputFormatter(
+                                        2), // for mobile
+                                  ],
                                   keyboardType: TextInputType.number,
                                   style: TextStyle(
                                     color: Colors.purple,
                                   ),
+                                  onChanged: (value) {
+                                    validationService.changeMonth(value);
+                                  },
                                   validator: (value) {
                                     if (value.isEmpty)
                                       return "Your Month is empty";
@@ -222,6 +240,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   },
                                   decoration: InputDecoration(
                                     hintText: "Month",
+                                    errorText: validationService.month.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -253,11 +272,19 @@ class _PostIdeaState extends State<PostIdea> {
                               if (value.isEmpty)
                                 return "Your Team Size is empty";
                             },
+                            inputFormatters: [
+                              new LengthLimitingTextInputFormatter(
+                                  5), // for mobile
+                            ],
                             onSaved: (value) {
                               // user.occupation = value;
                             },
+                            onChanged: (value) {
+                              validationService.changeTeamSize(value);
+                            },
                             decoration: InputDecoration(
                               hintText: "Team Size",
+                              errorText: validationService.teamSize.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 0,
                                 horizontal: 10,
@@ -274,7 +301,6 @@ class _PostIdeaState extends State<PostIdea> {
                               ),
                             ),
                           ),
-
                           SizedBox(
                             height: 10,
                           ),
@@ -371,19 +397,19 @@ class _PostIdeaState extends State<PostIdea> {
                             children: [
                               Expanded(
                                 child: TextFormField(
-                                  keyboardType: TextInputType.url,
+                                  keyboardType: TextInputType.text,
                                   style: TextStyle(
                                     color: Colors.purple,
                                   ),
                                   validator: (value) {
                                     if (value.isEmpty)
-                                      return "Your WebSite is empty";
+                                      return "Your Document is empty";
                                   },
                                   onSaved: (value) {
                                     // user.occupation = value;
                                   },
                                   decoration: InputDecoration(
-                                    hintText: "WebSite",
+                                    hintText: "Document",
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -405,7 +431,7 @@ class _PostIdeaState extends State<PostIdea> {
                                 width: 10,
                               ),
                               InkWell(
-                                onTap: () {},
+                                onTap: () => loadAssetsDocument(),
                                 child: Container(
                                   padding: EdgeInsets.all(15),
                                   color: Theme.of(context).primaryColor,
@@ -546,7 +572,7 @@ class _PostIdeaState extends State<PostIdea> {
                               RaisedButton(
                                 padding: EdgeInsets.all(13),
                                 color: Theme.of(context).primaryColor,
-                                onPressed: () {},
+                                onPressed: () => loadAssetsVideo(),
                                 child: Text("Upload",
                                     style: TextStyle(color: Colors.white)),
                               )
@@ -604,11 +630,18 @@ class _PostIdeaState extends State<PostIdea> {
                               if (value.isEmpty)
                                 return "Your No of estimated people is empty";
                             },
+                            inputFormatters: [
+                              new LengthLimitingTextInputFormatter(
+                                  5), // for mobile
+                            ],
+                            onChanged: (value) =>
+                                validationService.changeTeamSize(value),
                             onSaved: (value) {
                               // user.occupation = value;
                             },
                             decoration: InputDecoration(
                               hintText: "No of estimated people",
+                              errorText: validationService.teamSize.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 0,
                                 horizontal: 10,
@@ -670,7 +703,7 @@ class _PostIdeaState extends State<PostIdea> {
                               RaisedButton(
                                 padding: EdgeInsets.all(13),
                                 color: Theme.of(context).primaryColor,
-                                onPressed: () {},
+                                onPressed: () => loadAssetsDocument(),
                                 child: Text("Upload",
                                     style: TextStyle(color: Colors.white)),
                               )
@@ -797,44 +830,57 @@ class _PostIdeaState extends State<PostIdea> {
     } else {
       // User canceled the picker
     }
-    // try {
-    //   if (gallaryimages.length < 5) {
-    //     File imagesPick = await ImagePicker.pickImage(
-    //       source: ImageSource.gallery,
-    //     );
+  }
 
-    //     imagesPick = await UtilClass().cropImage(imagesPick, context);
-    //     if (imagesPick != null) {
-    //       setState(() {
-    //         if (gallaryimages.length >= 4) {
-    //           _addImageToGallary = false;
-    //         }
-    //         // gallaryimages.add(imagesPick);
-    //       });
-    //     }
+  Future<void> loadAssetsDocument() async {
+    // FilePickerResult result = await FilePicker.platform.pickFiles();
 
-    //     setState(() {
-    //       _isUploadingImage = true;
-    //     });
+    FilePickerResult result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'docs'],
+    );
 
-    //     // int indexFile = gallaryimages.length;
+    if (result != null) {
+      List<PlatformFile> file = result.files;
 
-    //     PropertyProvider()
-    //         .uploadImage(imagesPick, (int a, int b) {})
-    //         .then((data) {
-    //       if (data != null) {
-    //         ImageProperty image = data;
-    //         setState(() {
-    //           _isUploadingImage = false;
-    //           property.gallary.add(image);
-    //           indexLoadingImage = null;
-    //         });
-    //       }
-    //     });
-    //   }
-    // } on Exception catch (e) {
-    //   error = e.toString();
-    // }
+      file.forEach((element) {
+        print(element);
+      });
+    }
+  }
+
+  Future<void> loadAssetsVideo() async {
+    // FilePickerResult result = await FilePicker.platform.pickFiles();
+
+    FilePickerResult result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: [
+      'WEBM',
+      "MPG",
+      "MP2",
+      "MPEG",
+      "MPE",
+      "MPV",
+      "OGG",
+      "MP4",
+      "M4P",
+      "M4V",
+      "AVI",
+      "WMV",
+      "MOV",
+      "QT",
+      "FLV",
+      "SWF",
+      "AVCHD"
+    ]);
+
+    if (result != null) {
+      List<PlatformFile> file = result.files;
+
+      file.forEach((element) {
+        print(element);
+      });
+    }
   }
 
   final _formKey = new GlobalKey<FormState>();

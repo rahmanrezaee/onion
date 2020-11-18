@@ -13,7 +13,7 @@ import '../widgets/AnalysisWidget/MySmallDropdown.dart';
 import '../const/Size.dart';
 
 class Analysis extends StatelessWidget {
-  static const routerName = "analysis";
+  static const routeName = "analysis";
   final Function openDrawer;
 
   const Analysis({Key key, this.openDrawer});

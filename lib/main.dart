@@ -44,6 +44,7 @@ import './widgets/bottom_nav.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
@@ -62,6 +63,9 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Provider.of<Auth>(
+      context,
+    ).tryAutoLogin();
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
         title: 'Flutter Demo',
@@ -131,7 +135,7 @@ class MyApp extends StatelessWidget {
                     ),
               CustomDrawerPage.routeName: (context) => CustomDrawerPage(),
               AnalyticsOne.routeName: (context) => AnalyticsOne(),
-              Analysis.routerName: (context) => Analysis(),
+              Analysis.routeName: (context) => Analysis(),
               RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
               ForgetPassword.routeName: (context) => auth.token != null
                   ? CustomDrawerPage()
