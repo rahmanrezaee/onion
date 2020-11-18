@@ -43,8 +43,7 @@ class _HomePageState extends State<HomePage> {
   List<Model> data;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Completer<GoogleMapController> _controller = Completer();
-  List<LatLng> point;
-  List<Polygon> polygon;
+  List<LatLng> point = List<LatLng>();
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(34.543896, 69.160652),
@@ -65,10 +64,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void addPoints() {
-    for (var i = 0; i < GeoJson.IN.length; i++) {
-      var ltlng = LatLng(GeoJson.IN[i][1], GeoJson.IN[i][0]);
-      point.add(ltlng);
-    }
+    // for (var i = 0; i < GeoJson.IN.length; i++) {
+    // LatLng latLng = LatLng(GeoJson.IN[i][0], GeoJson.IN[i][1]);
+    // print("Mahdi: GeoJson $latLng");
+    // point.add(LatLng(GeoJson.IN[i][0], GeoJson.IN[i][1]));
+    // }
+    GeoJson.IN.forEach((element) {
+      point.add(LatLng(element[0], element[1]));
+    });
   }
 
   @override
@@ -76,18 +79,25 @@ class _HomePageState extends State<HomePage> {
     __isAuth();
     // TODO: implement initState
     super.initState();
+  }
+
+  Set<Polygon> myPolygon() {
     addPoints();
-    List<Polygon> addPolygon = [
+
+    Set<Polygon> polygonSet = new Set();
+    polygonSet.add(
       Polygon(
-        polygonId: PolygonId('India'),
+        polygonId: PolygonId('test'),
         points: point,
         consumeTapEvents: true,
-        strokeColor: Colors.grey,
         strokeWidth: 1,
         fillColor: Colors.redAccent,
       ),
-    ];
-    polygon.addAll(addPolygon);
+    );
+
+    print("Mahdi: polygonSet ${polygonSet.first.points.first}");
+
+    return polygonSet;
   }
 
   @override
@@ -117,29 +127,29 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Column(
               children: [
-                // Container(
-                //   width: double.infinity,
-                //   height: deviceSize(context).width * 0.5,
-                //   child: GoogleMap(
-                //     polygons: polygon,
-                //     mapType: MapType.terrain,
-                //     // polygons: myPolygon(),
-                //     initialCameraPosition: CameraPosition(
-                //       target: LatLng(34.543896, 69.160652),
-                //       zoom: 5,
-                //     ),
-                //     onMapCreated: (GoogleMapController controller) {
-                //       _controller.complete(controller);
-                //     },
-                //     scrollGesturesEnabled: true,
-                //     tiltGesturesEnabled: true,
-                //     trafficEnabled: false,
-                //     compassEnabled: true,
-                //     rotateGesturesEnabled: true,
-                //     myLocationEnabled: true,
-                //     zoomGesturesEnabled: true,
-                //   ),
-                // ),
+                Container(
+                  width: double.infinity,
+                  height: deviceSize(context).width * 0.5,
+                  child: GoogleMap(
+                    polygons: myPolygon(),
+                    mapType: MapType.terrain,
+                    // polygons: myPolygon(),
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(34.543896, 69.160652),
+                      zoom: 5,
+                    ),
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                    scrollGesturesEnabled: true,
+                    tiltGesturesEnabled: true,
+                    trafficEnabled: false,
+                    compassEnabled: true,
+                    rotateGesturesEnabled: true,
+                    myLocationEnabled: true,
+                    zoomGesturesEnabled: true,
+                  ),
+                ),
                 SizedBox(
                   width: deviceSize(context).width * 0.9,
                   child: Row(
@@ -147,39 +157,39 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       _isAuth == false
                           ? Row(
-                        children: [
-                          SizedBox(
-                            width: deviceSize(context).width * 0.56,
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text:
-                                    "Want to Subscribe to Selected options Analysis, ",
-                                  ),
-                                  TextSpan(
-                                    text: "Sign Up",
-                                    style: TextStyle(
-                                      color: firstPurple,
-                                      decoration:
-                                      TextDecoration.underline,
-                                      fontWeight: FontWeight.bold,
+                              children: [
+                                SizedBox(
+                                  width: deviceSize(context).width * 0.56,
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              "Want to Subscribe to Selected options Analysis, ",
+                                        ),
+                                        TextSpan(
+                                          text: "Sign Up",
+                                          style: TextStyle(
+                                            color: firstPurple,
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              print('You clicked on me!');
+                                            },
+                                        ),
+                                        TextSpan(
+                                          text: " Here!",
+                                        ),
+                                      ],
+                                      style: TextStyle(color: Colors.black),
                                     ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        print('You clicked on me!');
-                                      },
                                   ),
-                                  TextSpan(
-                                    text: " Here!",
-                                  ),
-                                ],
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          )
-                        ],
-                      )
+                                )
+                              ],
+                            )
                           : Container(width: deviceSize(context).width * 0.56),
                       Consumer<Auth>(
                         builder: (consumerContext, val, child) {
@@ -188,12 +198,11 @@ class _HomePageState extends State<HomePage> {
                               color: middlePurple,
                               child: Text("See Analysis"),
                               textColor: Colors.white,
-                              onPressed: () =>
-                                  val.isAuth().then((token) =>
+                              onPressed: () => val.isAuth().then((token) =>
                                   token
                                       ? showMyDialog(context: context)
                                       : Navigator.pushNamed(
-                                      context, Login.routeName)),
+                                          context, Login.routeName)),
                             ),
                           );
                         },
@@ -321,8 +330,7 @@ class _MyCardListItemState extends State<MyCardListItem> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    onTap: () =>
-                    val.token != null
+                    onTap: () => val.token != null
                         ? widget.callBack()
                         : Navigator.pushNamed(context, Login.routeName),
                   ),

@@ -46,8 +46,10 @@ class IndustryProvider with ChangeNotifier {
   Future<void> fetchItems({@required String name, BuildContext context}) async {
     try {
       isLoading = true;
-      final response =
-          await APIRequest().get(myUrl: "$baseDropDownItemsUrl$name");
+      final response = await APIRequest().get(
+        myUrl: "$baseDropDownItemsUrl?type=category&parent=$name",
+        token: null,
+      );
       print("Mahdi: $response");
 
       final extractedData = response.data;

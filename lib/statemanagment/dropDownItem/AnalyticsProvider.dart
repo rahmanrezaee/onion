@@ -17,7 +17,6 @@ class AnalyticsProvider with ChangeNotifier {
     dropDownFilter = nameParam;
   }
 
-  
   List<CategoryModel> get items {
     return _items;
   }
@@ -35,8 +34,10 @@ class AnalyticsProvider with ChangeNotifier {
   Future<void> fetchItems({@required String name, BuildContext context}) async {
     try {
       isLoading = true;
-      final response =
-          await APIRequest().get(myUrl: "$baseDropDownItemsUrl?type=$name");
+      final response = await APIRequest().get(
+        myUrl: "$baseDropDownItemsUrl?type=category&parent=$name",
+        token: null,
+      );
       print("Mahdi: $response");
 
       final extractedData = response.data;
