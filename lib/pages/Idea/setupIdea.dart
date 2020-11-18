@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_place/google_place.dart';
 import 'package:onion/models/SetupIdea.dart';
 import 'package:onion/pages/Idea/postIdea.dart';
+import 'package:onion/validation/postIdea.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/IdeaWiget/LocationWidget.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
+import 'package:provider/provider.dart';
 
 class SetupIdea extends StatefulWidget {
   static final routeName = "setupIdea";
@@ -27,6 +31,8 @@ class _SetupIdeaState extends State<SetupIdea> {
     });
   }
 
+  TextEditingController yearController = TextEditingController();
+
   @override
   void initState() {
     addField();
@@ -35,6 +41,8 @@ class _SetupIdeaState extends State<SetupIdea> {
 
   @override
   Widget build(BuildContext context) {
+    final validationService = Provider.of<PostIdeaValidation>(context);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, kToolbarHeight),
@@ -107,10 +115,16 @@ class _SetupIdeaState extends State<SetupIdea> {
                             ),
                           ),
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
                                 child: TextFormField(
+                                  inputFormatters: [
+                                    new LengthLimitingTextInputFormatter(
+                                        4), // for mobile
+                                  ],
                                   keyboardType: TextInputType.number,
+                                  controller: yearController,
                                   style: TextStyle(
                                     color: Colors.purple,
                                   ),
@@ -123,8 +137,12 @@ class _SetupIdeaState extends State<SetupIdea> {
                                   onSaved: (value) {
                                     // user.occupation = value;
                                   },
+                                  onChanged: (value) {
+                                    validationService.changeYear(value);
+                                  },
                                   decoration: InputDecoration(
                                     hintText: "Year",
+                                    errorText: validationService.year.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -147,10 +165,17 @@ class _SetupIdeaState extends State<SetupIdea> {
                               ),
                               Expanded(
                                 child: TextFormField(
+                                  inputFormatters: [
+                                    new LengthLimitingTextInputFormatter(
+                                        2), // for mobile
+                                  ],
                                   keyboardType: TextInputType.number,
                                   style: TextStyle(
                                     color: Colors.purple,
                                   ),
+                                  onChanged: (value) {
+                                    validationService.changeMonth(value);
+                                  },
                                   validator: (value) {
                                     if (value.isEmpty)
                                       return "Your Month is empty";
@@ -162,6 +187,7 @@ class _SetupIdeaState extends State<SetupIdea> {
                                   },
                                   decoration: InputDecoration(
                                     hintText: "Month",
+                                    errorText: validationService.month.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -193,11 +219,19 @@ class _SetupIdeaState extends State<SetupIdea> {
                               if (value.isEmpty)
                                 return "Your Team Size is empty";
                             },
+                            inputFormatters: [
+                              new LengthLimitingTextInputFormatter(
+                                  5), // for mobile
+                            ],
                             onSaved: (value) {
                               // user.occupation = value;
                             },
+                            onChanged: (value) {
+                              validationService.changeTeamSize(value);
+                            },
                             decoration: InputDecoration(
                               hintText: "Team Size",
+                              errorText: validationService.teamSize.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 0,
                                 horizontal: 10,
@@ -217,6 +251,7 @@ class _SetupIdeaState extends State<SetupIdea> {
                           SizedBox(
                             height: 10,
                           ),
+                          ListSuggestion(),
                           Column(
                             children: [
                               ListView.builder(
@@ -348,6 +383,104 @@ class _SetupIdeaState extends State<SetupIdea> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       Navigator.pushNamed(context, PostIdea.routeName);
+    }
+  }
+}
+
+class ListSuggestion extends StatefulWidget {
+  @override
+  _ListSuggestionState createState() => _ListSuggestionState();
+}
+
+class _ListSuggestionState extends State<ListSuggestion> {
+  GooglePlace googlePlace;
+
+  List<AutocompletePrediction> predictions = [];
+
+  @override
+  void initState() {
+    
+    String apiKey = "AIzaSyAG6Pl3KRM6kC89xnzV38UUxyryp0MGDoI";
+    googlePlace = GooglePlace(apiKey);
+    super.initState();
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 300,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          TextField(
+            decoration: InputDecoration(
+              labelText: "Search",
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.blue,
+                  width: 2.0,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.black54,
+                  width: 2.0,
+                ),
+              ),
+            ),
+            onChanged: (value) {
+              if (value.isNotEmpty) {
+                autoCompleteSearch(value);
+              } else {
+                if (predictions.length > 0 && mounted) {
+                  setState(() {
+                    predictions = [];
+                  });
+                }
+              }
+            },
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: predictions.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: CircleAvatar(
+                    child: Icon(
+                      Icons.pin_drop,
+                      color: Colors.white,
+                    ),
+                  ),
+                  title: Text(predictions[index].description),
+                  onTap: () {
+                    debugPrint(predictions[index].placeId);
+                    print(googlePlace);
+                  },
+                );
+              },
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 10, bottom: 10),
+            child: Image.asset("assets/powered_by_google.png"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void autoCompleteSearch(String value) async {
+    var result = await googlePlace.autocomplete.get(value);
+    // print("suggestion");
+    // print(result);
+    if (result != null && result.predictions != null && mounted) {
+      setState(() {
+        predictions = result.predictions;
+      });
     }
   }
 }

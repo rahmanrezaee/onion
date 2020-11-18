@@ -28,7 +28,8 @@ dependencies:
   webview_flutter: 
   font_awesome_flutter:
   flutter_inner_drawer: ^0.5.7+2
-  provider: ^4.3.2+2
+  provider: ^3.0.0
+  google_place: ^0.3.3
   flutter_rating_bar: ^3.1.0
   auto_size_text: ^2.1.0
   http: ^0.12.2
@@ -48,11 +49,18 @@ dependencies:
   google_sign_in: ^4.5.6
   firebase_core: ^0.5.2
   # video_player: ^1.0.0
-  flutter_vlc_player: ^4.0.2
+
   dio: ^3.0.10
   shimmer: ^1.1.2
   progressive_image: ^1.0.1
   lottie: ^0.7.0+1
+# flutter_bloc ^0.21.0
+  # form validation plugin  ## add by rahman
+  # flutter_form_bloc: ^0.3.0
+
+  flutter_form_bloc: ^0.0.1
+
+
   shared_preferences:
   #Intle package for format date
   intl: ^0.16.1

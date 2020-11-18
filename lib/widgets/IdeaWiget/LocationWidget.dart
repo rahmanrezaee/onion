@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_place/google_place.dart';
 
 class LocationWidget extends StatelessWidget {
   Function locationRemove;
