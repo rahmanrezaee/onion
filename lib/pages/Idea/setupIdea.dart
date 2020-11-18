@@ -55,6 +55,7 @@ class _SetupIdeaState extends State<SetupIdea> {
           FocusScope.of(context).requestFocus(new FocusNode());
         },
         child: SingleChildScrollView(
+          reverse: true,
           child: Form(
             key: _formKey,
             child: Container(

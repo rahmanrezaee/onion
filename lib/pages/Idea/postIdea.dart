@@ -703,7 +703,7 @@ class _PostIdeaState extends State<PostIdea> {
                               RaisedButton(
                                 padding: EdgeInsets.all(13),
                                 color: Theme.of(context).primaryColor,
-                                onPressed: () {},
+                                onPressed: () => loadAssetsDocument(),
                                 child: Text("Upload",
                                     style: TextStyle(color: Colors.white)),
                               )
@@ -837,6 +837,8 @@ class _PostIdeaState extends State<PostIdea> {
 
     FilePickerResult result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'docs'],
     );
 
     if (result != null) {
@@ -851,9 +853,26 @@ class _PostIdeaState extends State<PostIdea> {
   Future<void> loadAssetsVideo() async {
     // FilePickerResult result = await FilePicker.platform.pickFiles();
 
-    FilePickerResult result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-    );
+    FilePickerResult result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: [
+      'WEBM',
+      "MPG",
+      "MP2",
+      "MPEG",
+      "MPE",
+      "MPV",
+      "OGG",
+      "MP4",
+      "M4P",
+      "M4V",
+      "AVI",
+      "WMV",
+      "MOV",
+      "QT",
+      "FLV",
+      "SWF",
+      "AVCHD"
+    ]);
 
     if (result != null) {
       List<PlatformFile> file = result.files;
