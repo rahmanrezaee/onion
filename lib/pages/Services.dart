@@ -10,6 +10,8 @@ import '../pages/CustomDrawerPage.dart';
 import '../statemanagment/DrawerScaffold.dart';
 import '../utilities/CustomScrollBehavior.dart';
 import '../widgets/MyAppBar.dart';
+import './authentication/Login.dart';
+import '../statemanagment/auth_provider.dart';
 
 class Services extends StatefulWidget {
   static String routeName = "Services";
@@ -191,25 +193,79 @@ class _ServicesState extends State<Services> {
                                                 ]),
                                           ),
                                         ]),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              right: 20, top: 10),
-                                          child: Align(
-                                            alignment: Alignment.centerRight,
-                                            child: InkWell(
-                                              onTap: () {
-                                                Navigator.of(context).pushNamed(
-                                                  SetupIdea.routeName,
-                                                );
-                                              },
-                                              child: Text("Post an Idea Now",
-                                                  style: TextStyle(
-                                                      decoration: TextDecoration
-                                                          .underline,
-                                                      color: middlePurple)),
-                                            ),
-                                          ),
+                                        Consumer<Auth>(
+                                          builder:
+                                              (consumerContext, val, child) {
+                                            return Padding(
+                                              padding: EdgeInsets.only(
+                                                  right: 20, top: 10),
+                                              child: Align(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    val.token != null
+                                                        ? Navigator.of(context)
+                                                            .pushNamed(
+                                                            SetupIdea.routeName,
+                                                          )
+                                                        : Navigator.pushNamed(
+                                                            context,
+                                                            Login.routeName);
+                                                  },
+                                                  child: Text(
+                                                      "Post an Idea Now",
+                                                      style: TextStyle(
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .underline,
+                                                          color: middlePurple)),
+                                                ),
+                                              ),
+                                            );
+                                            // return Expanded(
+                                            //   child: GestureDetector(
+                                            //     child: Text(
+                                            //       "Post an Idea Now",
+                                            //       textAlign: TextAlign.end,
+                                            //       style: TextStyle(
+                                            //         color: firstPurple,
+                                            //         decoration: TextDecoration
+                                            //             .underline,
+                                            //         fontWeight: FontWeight.bold,
+                                            //       ),
+                                            //     ),
+                                            //     onTap: () => val.token != null
+                                            //         ? Navigator.of(context)
+                                            //             .pushNamed(
+                                            //             SetupIdea.routeName,
+                                            //           )
+                                            //         : Navigator.pushNamed(
+                                            //             context,
+                                            //             Login.routeName),
+                                            //   ),
+                                            // );
+                                          },
                                         ),
+                                        // Padding(
+                                        //   padding: EdgeInsets.only(
+                                        //       right: 20, top: 10),
+                                        //   child: Align(
+                                        //     alignment: Alignment.centerRight,
+                                        //     child: InkWell(
+                                        //       onTap: () {
+                                        //         Navigator.of(context).pushNamed(
+                                        //           SetupIdea.routeName,
+                                        //         );
+                                        //       },
+                                        //       child: Text("Post an Idea Now",
+                                        //           style: TextStyle(
+                                        //               decoration: TextDecoration
+                                        //                   .underline,
+                                        //               color: middlePurple)),
+                                        //     ),
+                                        //   ),
+                                        // ),
                                       ]),
                                 ),
                                 //The horizontal List part//////////////////////////////////////////////////////////////

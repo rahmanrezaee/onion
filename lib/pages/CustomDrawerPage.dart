@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:onion/pages/MyMessagePage.dart';
 import 'package:onion/pages/Services.dart';
+import 'package:onion/pages/underDevelopment.dart';
 import 'package:provider/provider.dart';
 import '../pages/Home.dart';
 import '../statemanagment/DrawerScaffold.dart';
@@ -119,6 +120,10 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
             } else if (index == 1) {
               setState(() {
                 _page = MyMessagePage();
+              });
+            } else {
+              setState(() {
+                _page = UnderDevelopment();
               });
             }
           },

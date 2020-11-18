@@ -18,10 +18,26 @@ class SignupValidation with ChangeNotifier {
     }
   }
 
+  bool isValidPhoneNumber(String string) {
+    if (string == null || string.isEmpty) {
+      return false;
+    }
+
+    const pattern = r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$';
+    final regExp = RegExp(pattern);
+
+    if (!regExp.hasMatch(string)) {
+      return false;
+    }
+    if (string.length < 9 || string.length > 13) {
+      return false;
+    }
+    return true;
+  }
+
   //Setters
   void changeEmail(String value) {
-    if (value.length >= 7 &&  value.contains("@")) {
-      
+    if (value.length >= 7 && value.contains("@")) {
       _email = ValidationItem(value, null);
     } else {
       _email = ValidationItem(null, "Must Inter Valid Email");
@@ -31,10 +47,10 @@ class SignupValidation with ChangeNotifier {
   }
 
   void changePhone(String value) {
-    if (value.length >= 9) {
+    if (isValidPhoneNumber(value)) {
       _phone = ValidationItem(value, null);
     } else {
-      _phone = ValidationItem(null, "Must be at least 9 characters");
+      _phone = ValidationItem(null, "Must be valid Phone Number");
     }
     notifyListeners();
   }

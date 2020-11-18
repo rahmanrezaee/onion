@@ -105,6 +105,9 @@ class _MyDrawerState extends State<MyDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    Auth().isAuth().then((auth) {
+      _isAuth = auth;
+    });
     return Consumer<Auth>(builder: (BuildContext context, value, Widget child) {
       return Drawer(
         elevation: 0,
@@ -130,8 +133,10 @@ class _MyDrawerState extends State<MyDrawer> {
                                 height: 100,
                                 width: 100,
                                 child: CircleAvatar(
-                                  backgroundImage: value.token != null && value.currentUser.profile != null
-                                      ? NetworkImage(BASE_URL+value.currentUser.profile)
+                                  backgroundImage: value.token != null &&
+                                          value.currentUser.profile != null
+                                      ? NetworkImage(
+                                          BASE_URL + value.currentUser.profile)
                                       : AssetImage(
                                           'assets/images/empty_profile.jpg'),
                                 ),
@@ -180,43 +185,38 @@ class _MyDrawerState extends State<MyDrawer> {
                   ),
                 ),
               ),
-              myListTile(
-                context: context,
-                name: "Analytics List",
-                icon: Icons.person,
-                routeName: HomePage.routeName,
-                justPush: false,
-                hasDrawer: true,
-              ),
-              myListTile(
-                context: context,
-                name: "Analytics One",
-                icon: Icons.opacity,
-                routeName: AnalyticsOne.routeName,
-                justPush: true,
-              ),
-              Divider(color: Colors.white, height: 0.1),
+              // myListTile(
+              //   context: context,
+              //   name: "Analytics List",
+              //   icon: Icons.person,
+              //   routeName: HomePage.routeName,
+              //   justPush: false,
+              //   hasDrawer: true,
+              // ),
+              // myListTile(
+              //   context: context,
+              //   name: "Analytics One",
+              //   icon: Icons.opacity,
+              //   routeName: AnalyticsOne.routeName,
+              //   justPush: true,
+              // ),
               value.token != null
-                  ? Column(
-                      children: [
-                        myListTile(
-                          context: context,
-                          name: "Settings",
-                          icon: Icons.settings,
-                          routeName: Settings.routeName,
-                        ),
-                        Divider(color: Colors.white, height: 0.1),
-                      ],
+                  ? myListTile(
+                      context: context,
+                      name: "My Profile",
+                      icon: Icons.person,
+                    )
+                  : Container(),
+              value.token != null
+                  ? myListTile(
+                      context: context,
+                      name: "Setting",
+                      icon: Icons.settings,
+                      routeName: Settings.routeName,
                     )
                   : SizedBox(),
-              myListTile(
-                context: context,
-                name: "Notification Setting",
-                justPush: true,
-                icon: Icons.notifications,
-              ),
-             
-              Divider(color: Colors.white, height: 0.1),
+
+              // Divider(color: Colors.white, height: 0.1),
               // _isAuth == true
               //     ? myListTile(
               //         context: context,
@@ -226,55 +226,56 @@ class _MyDrawerState extends State<MyDrawer> {
               //       )
               //     : Container(),
 
-              // _isAuth == true
-              //     ? myListTile(
-              //         context: context,
-              //         name: "Notification Setting",
-              //         justPush: true,
-              //         icon: Icons.notifications,
-              //       )
-              //     : Container(),
-              _isAuth == true
+              value.token != null
                   ? myListTile(
                       context: context,
-                      name: "My Message",
-                      icon: Icons.message,
-                      routeName: MyMessagePage.routeName,
+                      name: "Notification Setting",
                       justPush: true,
+                      icon: Icons.notifications,
+                      routeName: Settings.routeName,
                     )
                   : Container(),
-              myListTile(
-                context: context,
-                name: "Service Provider",
-                icon: Icons.person,
-                justPush: true,
-              ),
-              _isAuth == true
+              value.token != null
                   ? myListTile(
                       context: context,
-                      name: "Request",
-                      icon: Icons.request_page,
-                      routeName: RequestPage.routeName,
-                      justPush: true)
+                      name: "Innovator",
+                      icon: Icons.lightbulb,
+                      routeName: "Under Development")
                   : Container(),
+              myListTile(
+                  context: context,
+                  name: "Service Provider",
+                  icon: Icons.person_outline,
+                  justPush: true,
+                  routeName: "Uder Development"),
               myListTile(
                 context: context,
                 name: "Investor",
-                icon: Icons.person,
+                icon: Icons.attach_money,
                 justPush: true,
+                routeName: "Under Development",
               ),
-              _isAuth == true
+              value.token != null
                   ? myListTile(
                       context: context,
                       name: "My Connections",
                       icon: Icons.connect_without_contact,
                       justPush: true,
+                      routeName: "Under Development",
                     )
                   : Container(),
+              // value.token != null
+              //     ? myListTile(
+              //         context: context,
+              //         name: "Request",
+              //         icon: Icons.request_page,
+              //         routeName: RequestPage.routeName,
+              //         justPush: true)
+              //     : Container(),
               myListTile(
                 context: context,
                 name: "Services",
-                icon: Icons.person,
+                icon: Icons.done,
                 routeName: Services.routeName,
               ),
               // myListTile(
@@ -290,19 +291,21 @@ class _MyDrawerState extends State<MyDrawer> {
               //   icon: Icons.ac_unit,
               //   routeName: MyIdeaDetails.routeName,
               // ),
-              _isAuth == true
+              value.token != null
                   ? myListTile(
                       context: context,
                       name: "Completed Projects",
-                      icon: Icons.sticky_note_2_rounded,
+                      icon: Icons.done_all,
+                      routeName: "Under Development",
                       justPush: true,
                     )
                   : Container(),
-              _isAuth == true
+              value.token != null
                   ? myListTile(
                       context: context,
                       name: "My Analysis",
-                      icon: Icons.help,
+                      icon: Icons.multiline_chart,
+                      routeName: "Under Development",
                       justPush: true,
                     )
                   : Container(),
@@ -317,25 +320,25 @@ class _MyDrawerState extends State<MyDrawer> {
                 child: myListTile(
                   context: context,
                   name: "Term and Condition",
-                  icon: Icons.help,
+                  icon: Icons.assignment,
                 ),
               ),
               myListTile(
                 context: context,
                 name: "FAQ",
-                icon: Icons.help,
+                icon: Icons.question_answer_rounded,
                 routeName: FandQ.routeName,
                 justPush: true,
               ),
-              _isAuth == true
-                  ? myListTile(
-                      context: context,
-                      name: "My Idea List",
-                      icon: Icons.help,
-                      routeName: MyIdeaId.routeName,
-                      justPush: true,
-                    )
-                  : Container(),
+              // value.token != null
+              //     ? myListTile(
+              //         context: context,
+              //         name: "My Idea List",
+              //         icon: Icons.help,
+              //         routeName: MyIdeaId.routeName,
+              //         justPush: true,
+              //       )
+              //     : Container(),
               value.token != null
                   ? Padding(
                       padding: EdgeInsets.symmetric(

@@ -16,6 +16,7 @@ import '../statemanagment/dropDownItem/IndustryProvider.dart';
 import '../widgets/Home/MyPopup.dart';
 import '../widgets/Snanckbar.dart';
 import '../const/Size.dart';
+import './authentication/signup.dart';
 import '../const/color.dart';
 import '../statemanagment/dropDownItem/CategoryProvider.dart';
 import '../widgets/AnalysisWidget/MyAlert.dart';
@@ -59,9 +60,7 @@ class _HomePageState extends State<HomePage> {
   );
 
   __isAuth() async {
-    _isAuth = await Auth().isAuth();
-    setState(() {});
-    print("_isAuth $_isAuth");
+    return await Auth().isAuth();
   }
 
   void addPoints() {
@@ -126,113 +125,111 @@ class _HomePageState extends State<HomePage> {
               horizontal: deviceSize(context).width * 0.06,
               vertical: deviceSize(context).height * 0.01,
             ),
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: deviceSize(context).width * 0.5,
-                  child: GoogleMap(
-                    polygons: myPolygon(),
-                    mapType: MapType.terrain,
-                    // polygons: myPolygon(),
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(34.543896, 69.160652),
-                      zoom: 5,
-                    ),
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    scrollGesturesEnabled: true,
-                    tiltGesturesEnabled: true,
-                    trafficEnabled: false,
-                    compassEnabled: true,
-                    rotateGesturesEnabled: true,
-                    myLocationEnabled: true,
-                    zoomGesturesEnabled: true,
-                  ),
-                ),
-                SizedBox(
-                  width: deviceSize(context).width * 0.9,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _isAuth == false
-                          ? Row(
-                              children: [
-                                SizedBox(
-                                  width: deviceSize(context).width * 0.56,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text:
-                                              "Want to Subscribe to Selected options Analysis, ",
-                                        ),
-                                        TextSpan(
-                                          text: "Sign Up",
-                                          style: TextStyle(
-                                            color: firstPurple,
-                                            decoration:
-                                                TextDecoration.underline,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          recognizer: TapGestureRecognizer()
-                                            ..onTap = () {
-                                              print('You clicked on me!');
-                                            },
-                                        ),
-                                        TextSpan(
-                                          text: " Here!",
-                                        ),
-                                      ],
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
-                          : Container(width: deviceSize(context).width * 0.56),
-                      Consumer<Auth>(
-                        builder: (consumerContext, val, child) {
-                          return Expanded(
-                            child: RaisedButton(
-                              color: middlePurple,
-                              child: Text("See Analysis"),
-                              textColor: Colors.white,
-                              onPressed: () => val.isAuth().then((token) =>
-                                  token
-                                      ? showMyDialog(context: context)
-                                      : Navigator.pushNamed(
-                                          context, Login.routeName)),
-                            ),
-                          );
-                        },
+            child: Consumer<Auth>(builder: (consumerContext, val, child) {
+              return Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: deviceSize(context).width * 0.5,
+                    child: GoogleMap(
+                      polygons: myPolygon(),
+                      mapType: MapType.terrain,
+                      // polygons: myPolygon(),
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(34.543896, 69.160652),
+                        zoom: 5,
                       ),
-                    ],
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller.complete(controller);
+                      },
+                      scrollGesturesEnabled: true,
+                      tiltGesturesEnabled: true,
+                      trafficEnabled: false,
+                      compassEnabled: true,
+                      rotateGesturesEnabled: true,
+                      myLocationEnabled: true,
+                      zoomGesturesEnabled: true,
+                    ),
                   ),
-                ),
-                MyCardListItem(
-                  callBack: () =>
-                      Navigator.pushNamed(context, SetupIdea.routeName),
-                ),
-                MyCardListItem(
-                  callBack: () {
-                    _scaffoldKey.currentState.showSnackBar(
-                      showSnackbar(
-                          "add other", Icon(Icons.alarm), Colors.green),
-                    );
-                  },
-                ),
-                MyCardListItem(
-                  callBack: () {
-                    _scaffoldKey.currentState.showSnackBar(
-                      showSnackbar(
-                          "add Second", Icon(Icons.alarm), Colors.green),
-                    );
-                  },
-                ),
-              ],
-            ),
+                  SizedBox(
+                    width: deviceSize(context).width * 0.9,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        val.token == null
+                            ? Row(
+                                children: [
+                                  SizedBox(
+                                    width: deviceSize(context).width * 0.56,
+                                    child: RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                "Want to Subscribe to Selected options Analysis, ",
+                                          ),
+                                          TextSpan(
+                                            text: "Sign Up",
+                                            style: TextStyle(
+                                              color: firstPurple,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () {
+                                                Navigator.pushNamed(
+                                                    context, SignUp.routeName);
+                                              },
+                                          ),
+                                          TextSpan(
+                                            text: " Here!",
+                                          ),
+                                        ],
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            : Container(),
+                        Expanded(
+                          child: RaisedButton(
+                            color: middlePurple,
+                            child: Text("See Analysis"),
+                            textColor: Colors.white,
+                            onPressed: () => val.isAuth().then((token) => token
+                                ? showMyDialog(context: context)
+                                : Navigator.pushNamed(
+                                    context, Login.routeName)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  MyCardListItem(
+                    callBack: () =>
+                        Navigator.pushNamed(context, SetupIdea.routeName),
+                  ),
+                  MyCardListItem(
+                    callBack: () {
+                      _scaffoldKey.currentState.showSnackBar(
+                        showSnackbar(
+                            "add other", Icon(Icons.alarm), Colors.green),
+                      );
+                    },
+                  ),
+                  MyCardListItem(
+                    callBack: () {
+                      _scaffoldKey.currentState.showSnackBar(
+                        showSnackbar(
+                            "add Second", Icon(Icons.alarm), Colors.green),
+                      );
+                    },
+                  ),
+                ],
+              );
+            }),
           ),
         ],
       ),
