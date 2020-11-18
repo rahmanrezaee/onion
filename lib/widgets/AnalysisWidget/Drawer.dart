@@ -215,14 +215,8 @@ class _MyDrawerState extends State<MyDrawer> {
                       routeName: Settings.routeName,
                     )
                   : SizedBox(),
-              myListTile(
-                context: context,
-                name: "Notification Setting",
-                justPush: true,
-                icon: Icons.notifications,
-              ),
 
-              Divider(color: Colors.white, height: 0.1),
+              // Divider(color: Colors.white, height: 0.1),
               // _isAuth == true
               //     ? myListTile(
               //         context: context,

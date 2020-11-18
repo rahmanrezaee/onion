@@ -84,7 +84,8 @@ class MyApp extends StatelessWidget {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
               }),
             ),
-            home: CustomDrawerPage(),
+            // home: CustomDrawerPage(),
+            home: PostIdea(),
             // routes: {
             //   Login.routeName: (context) => auth.token != null
             //       ? CustomDrawerPage()
