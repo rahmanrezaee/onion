@@ -32,8 +32,9 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: pageWidget[_page],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         color: middlePurple,
+        
         itemTitles: [
           Text("Home",
               textAlign: TextAlign.center,
@@ -63,19 +64,7 @@ class _MainScreenState extends State<MainScreen> {
           setState(() {
             _page = index;
           });
-          // if (index == 0) {
-          //   setState(() {
-          //     _page = HomePage(openDrawer: openCustomDrawer);
-          //   });
-          // } else if (index == 1) {
-          //   setState(() {
-          //
-          //   });
-          // } else {
-          //   setState(() {
-          //     _page = UnderDevelopment();
-          //   });
-          // }
+        
         },
       ),
     );

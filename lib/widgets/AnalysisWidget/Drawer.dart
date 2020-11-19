@@ -143,7 +143,7 @@ class _MyDrawerState extends State<MyDrawer> {
                                           'assets/images/empty_profile.jpg'),
                                 ),
                               ),
-                              Positioned(
+                              value.token != null ? Positioned(
                                 right: 8,
                                 bottom: 8,
                                 child: Container(
@@ -163,7 +163,7 @@ class _MyDrawerState extends State<MyDrawer> {
                                     ),
                                   ),
                                 ),
-                              )
+                              ) : SizedBox()
                             ],
                           ),
                         ),

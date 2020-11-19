@@ -100,7 +100,7 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
         alignment: Alignment.bottomCenter,
         children: <Widget>[
           Positioned(
-            bottom: -30 - (75.0 - widget.height),
+            bottom: -40 - (75.0 - widget.height),
             left: Directionality.of(context) == TextDirection.rtl
                 ? null
                 : _pos * size.width,
@@ -138,53 +138,137 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
             ),
           ),
           Positioned(
-            left: 0,
-            right: 0,
+            left: -10,
+            right: -10,
             bottom: 5 - (75.0 - widget.height),
             child: SizedBox(
                 height: 50.0,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: widget.items.map((item) {
-                        int index = widget.items.indexOf(item);
-                        return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             NavButton(
                               onTap: _buttonTap,
                               position: _pos,
                               length: _length,
-                              index: widget.items.indexOf(item),
-                              child: Center(child: item),
+                              index: widget.items.indexOf(widget.items[0]),
+                              child: Center(child: widget.items[0]),
                             ),
                             Padding(
                               padding: EdgeInsets.only(
                                   bottom: widget.titleMarginBottom),
-                              child: widget.itemTitles[index],
+                              child: widget.itemTitles[0],
                             ),
                           ],
-                        );
-                      }).toList()),
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            NavButton(
+                              onTap: _buttonTap,
+                              position: _pos,
+                              length: _length,
+                              index: widget.items.indexOf(widget.items[1]),
+                              child: Center(child: widget.items[1]),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  bottom: widget.titleMarginBottom),
+                              child: widget.itemTitles[1],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            NavButton(
+                              onTap: _buttonTap,
+                              position: _pos,
+                              length: _length,
+                              index: widget.items.indexOf(widget.items[2]),
+                              child: Center(child: widget.items[2]),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  bottom: widget.titleMarginBottom),
+                              child: widget.itemTitles[2],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            NavButton(
+                              onTap: _buttonTap,
+                              position: _pos,
+                              length: _length,
+                              index: widget.items.indexOf(widget.items[3]),
+                              child: Center(child: widget.items[3]),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  bottom: widget.titleMarginBottom),
+                              child: widget.itemTitles[3],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            NavButton(
+                              onTap: _buttonTap,
+                              position: _pos,
+                              length: _length,
+                              index: widget.items.indexOf(widget.items[4]),
+                              child: Center(child: widget.items[4]),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  bottom: widget.titleMarginBottom),
+                              child: widget.itemTitles[4],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  //   child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //       children: widget.items.map((item) {
+                  //         int index = widget.items.indexOf(item);
+                  //         return Column(
+                  //           crossAxisAlignment: CrossAxisAlignment.center,
+                  //           children: [
+                  //             NavButton(
+                  //               onTap: _buttonTap,
+                  //               position: _pos,
+                  //               length: _length,
+                  //               index: widget.items.indexOf(item),
+                  //               child: Center(child: item),
+                  //             ),
+                  //             Padding(
+                  //               padding: EdgeInsets.only(
+                  //                   bottom: widget.titleMarginBottom),
+                  //               child: widget.itemTitles[index],
+                  //             ),
+                  //           ],
+                  //         );
+                  //       }).toList()),
                 )),
           ),
-          // Positioned(
-          //   bottom: 0,
-          //   left: 0,
-          //   right: 0,
-          //   child: Container(
-          //     padding: EdgeInsets.only(bottom: widget.titleMarginBottom),
-          //     child: Row(
-          //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //         mainAxisSize: MainAxisSize.max,
-          //         children: widget.itemTitles == null
-          //             ? []
-          //             : widget.itemTitles.map((title) {
-          //                 return title;
-          //               }).toList()),
-          //   ),
-          // ),
         ],
       ),
     );
@@ -198,7 +282,9 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
     if (widget.onTap != null) {
       widget.onTap(index);
     }
-    final newPosition = index / _length;
+
+    double newPosition = index / _length;
+
     setState(() {
       _startingPos = _pos;
       _endingIndex = index;

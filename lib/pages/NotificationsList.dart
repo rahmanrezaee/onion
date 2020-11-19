@@ -23,7 +23,7 @@ class _NotificationsListState extends State<NotificationsList> {
         title: Text("Notification"),
         actions: [
           IconButton(
-            icon: Icon(Icons.clear_all),
+            icon: Icon(Icons.delete_sweep),
             onPressed: () {
               setState(() {
                 count = 0;
