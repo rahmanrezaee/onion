@@ -1,11 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
-import 'package:onion/pages/franchises/RequestOnFranchise.dart';
-import 'package:onion/pages/franchises/requestFranchisesUser.dart';
-import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:provider/provider.dart';
 
+import './pages/Idea/MyIdeaDetailes.dart';
+import './pages/franchises/RequestOnFranchise.dart';
+import './pages/franchises/requestFranchisesUser.dart';
+import './pages/franchises/viewFranchisesUser.dart';
+import './statemanagment/MyDropDownState.dart';
+import './test.dart';
 import './pages/franchises/RequestOnFranchise.dart';
 import './pages/Home.dart';
 import './pages/Idea/postIdea.dart';
@@ -49,6 +51,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => AnalyticsProvider()),
       ChangeNotifierProvider(create: (_) => DrawerScaffold()),
       ChangeNotifierProvider(create: (_) => Auth()),
+      ChangeNotifierProvider(create: (_) => MyDropDownState()),
     ],
     child: MyApp(),
   ));
@@ -68,148 +71,100 @@ class MyApp extends StatelessWidget {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: Consumer<Auth>(
-          builder: (ctx, auth, _) => MaterialApp(
-            title: 'Flutter Demo',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              primaryColor: Color(0xFF7B3C8A),
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-              pageTransitionsTheme: PageTransitionsTheme(builders: {
-                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-              }),
-            ),
-            home: CustomDrawerPage(),
-            // routes: {
-            //   Login.routeName: (context) => auth.token != null
-            //       ? CustomDrawerPage()
-            //       : FutureBuilder(
-            //           future: Provider.of<Auth>(context, listen: false)
-            //               .tryAutoLogin(),
-            //           builder: (ctx, authResultSnapshot) =>
-            //               authResultSnapshot.connectionState ==
-            //                       ConnectionState.waiting
-            //                   ? Scaffold(
-            //                       body: Center(child: Text("Loading...")),
-            //                     )
-            //                   : Login()),
-            //   SignUp.routeName: (context) => SignUp(),
-            //   CustomDrawerPage.routeName: (context) => CustomDrawerPage(),
-            //   AnalyticsOne.routeName: (context) => AnalyticsOne(),
-            //   Analysis.routerName: (context) => Analysis(),
-            //   RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-            //   ForgetPassword.routeName: (context) => ForgetPassword(),
-            //   SetupIdea.routeName: (context) => SetupIdea(),
-            //   PostIdea.routeName: (context) => PostIdea(),
-            //   ChangePassword.routeName: (context) => ChangePassword(
-            //         ModalRoute.of(context).settings.arguments,
-            //       ),
-            //   FandQ.routeName: (context) => FandQ(),
-            //   Services.routeName: (context) => Services(),
-            //   Settings.routeName: (context) => Settings(),
-            //   RequestFranchisesUser.routeName: (context) =>
-            //       RequestFranchisesUser(),
-            //   ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(),
-            //   MyIdeaId.routeName: (context) => MyIdeaId(),
-            //   MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
-            //   MyMessagePage.routeName: (context) => MyMessagePage(),
-            //   ProjectChat.routeName: (context) => ProjectChat(),
-            // },
-            routes: {
-              Login.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage()
-                  : FutureBuilder(
-                      future: Provider.of<Auth>(context, listen: false)
-                          .tryAutoLogin(),
-                      builder: (ctx, authResultSnapshot) =>
-                          authResultSnapshot.connectionState ==
-                                  ConnectionState.waiting
-                              ? Scaffold(
-                                  body: Center(child: Text("Loading...")),
-                                )
-                              : Login(),
-                    ),
-              MyIdeaId.routeName: (context) => MyIdeaId(),
-              RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
-              SignUp.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage()
-                  : FutureBuilder(
-                      future: Provider.of<Auth>(context, listen: false)
-                          .tryAutoLogin(),
-                      builder: (ctx, authResultSnapshot) =>
-                          authResultSnapshot.connectionState ==
-                                  ConnectionState.waiting
-                              ? Scaffold(
-                                  body: Center(child: Text("Loading...")),
-                                )
-                              : SignUp(),
-                    ),
-              ComplateProfile.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage()
-                  : FutureBuilder(
-                      future: Provider.of<Auth>(context, listen: false)
-                          .tryAutoLogin(),
-                      builder: (ctx, authResultSnapshot) =>
-                          authResultSnapshot.connectionState ==
-                                  ConnectionState.waiting
-                              ? Scaffold(
-                                  body: Center(child: Text("Loading...")),
-                                )
-                              : ComplateProfile(
-                                  ModalRoute.of(context).settings.arguments,
-                                ),
-                    ),
-              CustomDrawerPage.routeName: (context) => CustomDrawerPage(),
-              AnalyticsOne.routeName: (context) => AnalyticsOne(),
-              Analysis.routerName: (context) => Analysis(),
-              RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-              ForgetPassword.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage()
-                  : FutureBuilder(
-                      future: Provider.of<Auth>(context, listen: false)
-                          .tryAutoLogin(),
-                      builder: (ctx, authResultSnapshot) =>
-                          authResultSnapshot.connectionState ==
-                                  ConnectionState.waiting
-                              ? Scaffold(
-                                  body: Center(child: Text("Loading...")),
-                                )
-                              : ForgetPassword(),
-                    ),
-              ChangePassword.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage()
-                  : FutureBuilder(
-                      future: Provider.of<Auth>(context, listen: false)
-                          .tryAutoLogin(),
-                      builder: (ctx, authResultSnapshot) =>
-                          authResultSnapshot.connectionState ==
-                                  ConnectionState.waiting
-                              ? Scaffold(
-                                  body: Center(child: Text("Loading...")),
-                                )
-                              : ChangePassword(
-                                  ModalRoute.of(context).settings.arguments,
-                                ),
-                    ),
-              SendInvRequest.routeName: (context) => SendInvRequest(),
-              SetupIdea.routeName: (context) => SetupIdea(),
-              PostIdea.routeName: (context) => PostIdea(),
-              ProjectChat.routeName: (context) => ProjectChat(),
-              MyMessagePage.routeName: (context) => MyMessagePage(),
-              NotificationsList.routeName: (context) => NotificationsList(),
-              PostIdea.routeName: (context) => PostIdea(),
-              FandQ.routeName: (context) => FandQ(),
-              Services.routeName: (context) => Services(),
-              Settings.routeName: (context) => Settings(),
-              RequestFranchisesUser.routeName: (context) =>
-                  RequestFranchisesUser(),
-              ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(),
-              MyIdeaId.routeName: (context) => MyIdeaId(),
-              MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
-              RequestPage.routeName: (context) => RequestPage(),
-            },
-          ),
-        ),
+        home: CustomDrawerPage(key),
+        routes: {
+          Login.routeName: (context) => auth.token != null
+              ? CustomDrawerPage(key)
+              : FutureBuilder(
+                  future:
+                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(child: Text("Loading...")),
+                            )
+                          : Login(),
+                ),
+          MyIdeaId.routeName: (context) => MyIdeaId(),
+          'range_color_mapping': (context) => MapRangeColorMappingPage(key),
+          RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
+          SignUp.routeName: (context) => auth.token != null
+              ? CustomDrawerPage(key)
+              : FutureBuilder(
+                  future:
+                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(child: Text("Loading...")),
+                            )
+                          : SignUp(),
+                ),
+          ComplateProfile.routeName: (context) => auth.token != null
+              ? CustomDrawerPage(key)
+              : FutureBuilder(
+                  future:
+                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(child: Text("Loading...")),
+                            )
+                          : ComplateProfile(
+                              ModalRoute.of(context).settings.arguments,
+                            ),
+                ),
+          CustomDrawerPage.routeName: (context) => CustomDrawerPage(key),
+          AnalyticsOne.routeName: (context) => AnalyticsOne(),
+          Analysis.routerName: (context) => Analysis(),
+          RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
+          ForgetPassword.routeName: (context) => auth.token != null
+              ? CustomDrawerPage(key)
+              : FutureBuilder(
+                  future:
+                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(child: Text("Loading...")),
+                            )
+                          : ForgetPassword(),
+                ),
+          ChangePassword.routeName: (context) => auth.token != null
+              ? CustomDrawerPage(key)
+              : FutureBuilder(
+                  future:
+                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(child: Text("Loading...")),
+                            )
+                          : ChangePassword(
+                              ModalRoute.of(context).settings.arguments,
+                            ),
+                ),
+          SendInvRequest.routeName: (context) => SendInvRequest(),
+          SetupIdea.routeName: (context) => SetupIdea(),
+          PostIdea.routeName: (context) => PostIdea(),
+          ProjectChat.routeName: (context) => ProjectChat(),
+          MyMessagePage.routeName: (context) => MyMessagePage(),
+          NotificationsList.routeName: (context) => NotificationsList(),
+          PostIdea.routeName: (context) => PostIdea(),
+          FandQ.routeName: (context) => FandQ(),
+          Services.routeName: (context) => Services(),
+          Settings.routeName: (context) => Settings(),
+          RequestFranchisesUser.routeName: (context) => RequestFranchisesUser(),
+          ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(),
+          MyIdeaId.routeName: (context) => MyIdeaId(),
+          MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
+          RequestPage.routeName: (context) => RequestPage(),
+        },
       ),
     );
   }

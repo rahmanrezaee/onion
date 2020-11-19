@@ -1,4 +1,3 @@
-///Flutter package imports
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 
@@ -9,19 +8,16 @@ import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Local import
-import './models/sample_view.dart';
+import '../../models/sample_view.dart';
 
-/// Renders the map widget with range color mapping
-class MapRangeColorMappingPage extends SampleView {
-  /// Creates the map widget with range color mapping
-  const MapRangeColorMappingPage(Key key) : super(key: key);
+class MyGoogleMap extends StatefulWidget {
+  const MyGoogleMap(Key key);
 
   @override
-  _MapRangeColorMappingPageState createState() =>
-      _MapRangeColorMappingPageState();
+  _MyGoogleMapState createState() => _MyGoogleMapState();
 }
 
-class _MapRangeColorMappingPageState extends SampleViewState {
+class _MyGoogleMapState extends State<MyGoogleMap> {
   List<_CountryDensityModel> _worldPopulationDensityDetails;
 
   // The format which is used for formatting the tooltip text.
@@ -295,29 +291,25 @@ class _MapRangeColorMappingPageState extends SampleViewState {
 
   Widget _getMapsWidget() {
     return FutureBuilder<dynamic>(
-      future: Future<dynamic>.delayed(
-          Duration(milliseconds: model.isWeb ? 0 : 500), () => 'Loaded'),
+      future:
+          Future<dynamic>.delayed(Duration(milliseconds: 500), () => 'Loaded'),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         return snapshot.hasData
             ? Center(
                 child: Padding(
-                  padding: MediaQuery.of(context).orientation ==
-                              Orientation.portrait ||
-                          model.isWeb
-                      ? EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.05,
-                          bottom: MediaQuery.of(context).size.height * 0.05,
-                          right: 10,
-                        )
-                      : const EdgeInsets.only(right: 10, bottom: 15),
+                  padding: EdgeInsets.only(
+                    top: 3,
+                    bottom: 3,
+                    right: 3,
+                    left: 3,
+                  ),
                   child: SfMapsTheme(
                     data: SfMapsThemeData(
                       shapeHoverColor: Color.fromRGBO(176, 237, 131, 1),
                     ),
                     child: SfMaps(
                       title: const MapTitle(
-                        text: 'World Population Density (per sq. km.)',
-                        padding: EdgeInsets.only(top: 15, bottom: 30),
+                        text: '',
                       ),
                       layers: <MapLayer>[
                         MapShapeLayer(
@@ -427,7 +419,7 @@ class _MapRangeColorMappingPageState extends SampleViewState {
                             ],
                           ),
                           enableShapeTooltip: true,
-                          legendSource: MapElement.shape,
+                          // legendSource: MapElement.shape,
                           strokeColor: Colors.white30,
                           legendSettings: const MapLegendSettings(
                               position: MapLegendPosition.bottom,
@@ -435,7 +427,7 @@ class _MapRangeColorMappingPageState extends SampleViewState {
                               overflowMode: MapLegendOverflowMode.wrap,
                               padding: EdgeInsets.only(top: 15)),
                           tooltipSettings: MapTooltipSettings(
-                            color: const Color.fromRGBO(100, 26, 102, 1)
+                            color: const Color.fromRGBO(100, 26, 102, 1),
                             // model.themeData.brightness == Brightness.light
                             //     ? const Color.fromRGBO(0, 32, 128, 1)
                             //     : const Color.fromRGBO(226, 233, 255, 1),
@@ -443,7 +435,6 @@ class _MapRangeColorMappingPageState extends SampleViewState {
                             // model.themeData.brightness == Brightness.light
                             //     ? Colors.white
                             //     : Colors.black
-                            ,
                           ),
                         ),
                       ],

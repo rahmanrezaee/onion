@@ -1,3 +1,4 @@
+import 'package:onion/pages/Analysis.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
@@ -217,6 +218,7 @@ class _DialogContentState extends State<DialogContent> {
                     ),
                     onPressed: () {
                       Navigator.pop(context);
+                      Navigator.pushNamed(context, Analysis.routerName);
                     },
                   ),
                 ),
