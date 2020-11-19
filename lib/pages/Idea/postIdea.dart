@@ -8,7 +8,7 @@ import 'package:onion/const/color.dart';
 import 'package:onion/models/Idea.dart';
 import 'package:onion/pages/Home.dart';
 import 'package:onion/pages/Idea/setupIdea.dart';
-import 'package:onion/validation/postIdea.dart';
+import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/widgets/Checkbox/GlowCheckbox.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/IdeaWiget/LocationWidget.dart';
@@ -45,11 +45,11 @@ class _PostIdeaState extends State<PostIdea> {
 
   bool checkboxSelectedNeedSerive = true;
   bool checkboxSelectedNeedInvestor = false;
-
+  bool _autoValidate = false;
   @override
   Widget build(BuildContext context) {
     final validationService = Provider.of<PostIdeaValidation>(context);
-
+  
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, kToolbarHeight),
@@ -61,6 +61,7 @@ class _PostIdeaState extends State<PostIdea> {
         },
         child: SingleChildScrollView(
           child: Form(
+            autovalidate: _autoValidate,
             key: _formKey,
             child: Container(
               padding: EdgeInsets.all(15),
@@ -313,12 +314,16 @@ class _PostIdeaState extends State<PostIdea> {
                               if (value.isEmpty)
                                 return "Your About Your Business is empty";
                             },
+                            onChanged: (value) {
+                              validationService.changeAbout(value);
+                            },
                             onSaved: (value) {
                               // user.occupation = value;
                             },
                             maxLines: 5,
                             decoration: InputDecoration(
                               hintText: "About Your Business",
+                              errorText: validationService.about.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 10,
                                 horizontal: 10,
@@ -392,7 +397,7 @@ class _PostIdeaState extends State<PostIdea> {
                             height: 10,
                           ),
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Expanded(
@@ -405,11 +410,15 @@ class _PostIdeaState extends State<PostIdea> {
                                     if (value.isEmpty)
                                       return "Your Document is empty";
                                   },
+                                  onChanged: (value) {
+                                    validationService.changeDocument(value);
+                                  },
                                   onSaved: (value) {
                                     // user.occupation = value;
                                   },
                                   decoration: InputDecoration(
                                     hintText: "Document",
+                                    errorText: validationService.document.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -531,7 +540,7 @@ class _PostIdeaState extends State<PostIdea> {
                             height: 10,
                           ),
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Expanded(
@@ -540,6 +549,8 @@ class _PostIdeaState extends State<PostIdea> {
                                   style: TextStyle(
                                     color: Colors.purple,
                                   ),
+                                  onChanged: (value) =>
+                                      validationService.changeVideo(value),
                                   validator: (value) {
                                     if (value.isEmpty)
                                       return "Your Upload Video is empty";
@@ -549,6 +560,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   },
                                   decoration: InputDecoration(
                                     hintText: "Upload Video",
+                                    errorText: validationService.video.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -662,7 +674,7 @@ class _PostIdeaState extends State<PostIdea> {
                             height: 10,
                           ),
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Expanded(
@@ -671,6 +683,9 @@ class _PostIdeaState extends State<PostIdea> {
                                   style: TextStyle(
                                     color: Colors.purple,
                                   ),
+                                  onChanged: (value) {
+                                    validationService.changeWhitePaper(value);
+                                  },
                                   validator: (value) {
                                     if (value.isEmpty)
                                       return "Your Upload White Paper is empty";
@@ -680,6 +695,8 @@ class _PostIdeaState extends State<PostIdea> {
                                   },
                                   decoration: InputDecoration(
                                     hintText: "Upload White Paper",
+                                    errorText:
+                                        validationService.whitePaper.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -888,6 +905,10 @@ class _PostIdeaState extends State<PostIdea> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       Navigator.pushNamed(context, "/");
+    } else {
+      setState(() {
+        _autoValidate = true;
+      });
     }
   }
 }

@@ -6,39 +6,56 @@ import 'package:onion/pages/ProjectChat.dart';
 
 import '../const/values.dart';
 
-class NotificationsList extends StatelessWidget {
+class NotificationsList extends StatefulWidget {
   static const routeName = "notification_list";
+
+  @override
+  _NotificationsListState createState() => _NotificationsListState();
+}
+
+class _NotificationsListState extends State<NotificationsList> {
+  int count = 6;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Notification"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.clear_all),
+            onPressed: () {
+              setState(() {
+                count = 0;
+              });
+            },
+          )
+        ],
         centerTitle: true,
       ),
-      bottomNavigationBar: SizedBox(
-        height: deviceSize(context).height * 0.08,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 5),
-          child: Text(
-            "Clear Notification",
-            textScaleFactor: 1.1,
-            textAlign: TextAlign.end,
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-      ),
-      body: ListView(
+      // bottomNavigationBar: SizedBox(
+      //   height: deviceSize(context).height * 0.08,
+      //   child: Padding(
+      //     padding: const EdgeInsets.only(right: 5),
+      //     child: Text(
+      //       "Clear Notification",
+      //       textScaleFactor: 1.1,
+      //       textAlign: TextAlign.right,
+      //       style: TextStyle(color: Colors.black),
+      //     ),
+      //   ),
+      // ),
+      body: count > 0 ? ListView.builder(
+        itemCount: count,
         padding: EdgeInsets.symmetric(
           horizontal: deviceSize(context).width * 0.03,
           vertical: deviceSize(context).height * 0.01,
         ),
-        children: [
-          MyCardItem(myImageType: "rectangle"),
-          MyCardItem(myImageType: "rectangle"),
-          MyCardItem(myImageType: "rectangle"),
-        ],
-      ),
+        itemBuilder: (BuildContext context, int index) {
+          
+          return  MyCardItem(myImageType: "rectangle") ;
+        },
+      ): Center(child:Text("List is Empty")),
     );
   }
 }
@@ -64,7 +81,7 @@ class MyCardItem extends StatelessWidget {
       child: Card(
         elevation: 3,
         margin: EdgeInsets.symmetric(
-          vertical: deviceSize(context).height * 0.01,
+          vertical: deviceSize(context).height * 0.005,
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
@@ -160,14 +177,14 @@ class RectangleImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.blue,
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(4.0),
       ),
       margin: EdgeInsets.only(
         right: deviceSize(context).width * 0.03,
       ),
       child: Image.asset(
-        "assets/images/logo-before.png",
+        "assets/images/logo.png",
         width: deviceSize(context).height * 0.11,
       ),
     );

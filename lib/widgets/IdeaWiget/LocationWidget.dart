@@ -6,6 +6,7 @@ class LocationWidget extends StatelessWidget {
   TextEditingController controller;
   Function valided;
   Function change;
+  String errorText;
   Function save;
 
   LocationWidget(
@@ -35,6 +36,7 @@ class LocationWidget extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: "Location",
                   suffixIcon: Icon(Icons.location_on),
+                  errorText: errorText,
                   contentPadding: const EdgeInsets.symmetric(
                     vertical: 0,
                     horizontal: 10,

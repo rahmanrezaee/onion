@@ -136,13 +136,13 @@ class _LoginState extends State<Login> {
                                     return "Your password is empty";
                                 },
                                 decoration: InputDecoration(
-                                  suffix: IconButton(
-                                    onPressed: () {
+                                  suffix: InkWell(
+                                    onTap: () {
                                       setState(() {
                                         _obscureText = !_obscureText;
                                       });
                                     },
-                                    icon: _obscureText
+                                    child: _obscureText
                                         ? Icon(Icons.visibility_off)
                                         : Icon(Icons.visibility),
                                   ),
@@ -315,15 +315,19 @@ class _LoginState extends State<Login> {
                     "Don't have an account?",
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
-                  FlatButton(
-                    onPressed: () =>
+                  InkWell(
+                    
+                    onTap: () =>
                         Navigator.pushNamed(context, SignUp.routeName),
-                    child: Text(
-                      "Sign Up",
-                      style: TextStyle(
-                          fontSize: 18,
-                          decoration: TextDecoration.underline,
-                          color: Colors.purple),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top:4.0,bottom: 10),
+                      child: Text(
+                        "Sign Up",
+                        style: TextStyle(
+                            fontSize: 18,
+                            decoration: TextDecoration.underline,
+                            color: Colors.purple),
+                      ),
                     ),
                   ),
                 ],
@@ -420,7 +424,7 @@ class _LoginState extends State<Login> {
         newUser.name = auserDatasd["name"];
         newUser.email = auserDatasd["email"];
         newUser.phone = "";
-    
+
         newUser.profile = auserDatasd['picture']['data']['url'];
         Navigator.pushNamed(context, ComplateProfile.routeName,
             arguments: newUser);

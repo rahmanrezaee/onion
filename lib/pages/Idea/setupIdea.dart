@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_place/google_place.dart';
 import 'package:onion/models/SetupIdea.dart';
 import 'package:onion/pages/Idea/postIdea.dart';
-import 'package:onion/validation/postIdea.dart';
+import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/IdeaWiget/LocationWidget.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
@@ -41,9 +41,10 @@ class _SetupIdeaState extends State<SetupIdea> {
     super.initState();
   }
 
+  bool _autoValidate = false;
   @override
   Widget build(BuildContext context) {
-    final validationService = Provider.of<PostIdeaValidation>(context);
+    final validationService = Provider.of<SetupIdeaValidation>(context);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -55,8 +56,8 @@ class _SetupIdeaState extends State<SetupIdea> {
           FocusScope.of(context).requestFocus(new FocusNode());
         },
         child: SingleChildScrollView(
-          reverse: true,
           child: Form(
+            autovalidate: _autoValidate,
             key: _formKey,
             child: Container(
               padding: EdgeInsets.all(15),
@@ -295,12 +296,16 @@ class _SetupIdeaState extends State<SetupIdea> {
                               if (value.isEmpty)
                                 return "Your About Your Business is empty";
                             },
+                            onChanged: (value) {
+                              validationService.changeAbout(value);
+                            },
                             onSaved: (value) {
                               // user.occupation = value;
                             },
                             maxLines: 5,
                             decoration: InputDecoration(
                               hintText: "About Your Business",
+                              errorText: validationService.about.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 10,
                                 horizontal: 10,
@@ -393,6 +398,10 @@ class _SetupIdeaState extends State<SetupIdea> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       Navigator.pushNamed(context, PostIdea.routeName);
+    } else {
+      setState(() {
+        _autoValidate = true;
+      });
     }
   }
 }

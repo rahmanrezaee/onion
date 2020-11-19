@@ -73,40 +73,42 @@ class _SignUpState extends State<SignUp> {
     super.initState();
   }
 
+  bool _autovalidate = false;
+
   @override
   Widget build(BuildContext context) {
     final validationService = Provider.of<SignupValidation>(context);
 
     return Scaffold(
       key: _scaffoldKey,
-      body: FutureBuilder(
-        future: fetchDataForSignup,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              if (snapshot.data == null) {
-                return Center(
-                    child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.replay),
-                      onPressed: getInitData,
-                    ),
-                    Text("Problem in connection plase try again"),
-                  ],
-                ));
-              }
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: FutureBuilder(
+          future: fetchDataForSignup,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                if (snapshot.data == null) {
+                  return Center(
+                      child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.replay),
+                        onPressed: getInitData,
+                      ),
+                      Text("Problem in connection plase try again"),
+                    ],
+                  ));
+                }
 
-              interstedList = snapshot.data[0];
-              locationList = snapshot.data[1];
-              state = snapshot.data[2];
+                interstedList = snapshot.data[0];
+                locationList = snapshot.data[1];
+                state = snapshot.data[2];
 
-              return GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                },
-                child: Stack(
+                return Stack(
                   alignment: Alignment.center,
                   children: [
                     Container(color: Colors.transparent),
@@ -163,6 +165,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             child: Form(
                               key: _formKey,
+                              autovalidate: _autovalidate,
                               child: Column(
                                 children: [
                                   SizedBox(height: 25),
@@ -332,13 +335,13 @@ class _SignUpState extends State<SignUp> {
                                       user.password = value;
                                     },
                                     decoration: InputDecoration(
-                                      suffix: IconButton(
-                                        onPressed: () {
+                                      suffix: InkWell(
+                                        onTap: () {
                                           setState(() {
                                             _obscureText = !_obscureText;
                                           });
                                         },
-                                        icon: _obscureText
+                                        child: _obscureText
                                             ? Icon(Icons.visibility_off)
                                             : Icon(Icons.visibility),
                                       ),
@@ -400,6 +403,8 @@ class _SignUpState extends State<SignUp> {
                                       setState(() {
                                         user.interst = value;
                                       });
+                                      FocusScope.of(context)
+                                          .requestFocus(new FocusNode());
                                     },
                                     value: user.interst != null
                                         ? user.interst
@@ -440,9 +445,12 @@ class _SignUpState extends State<SignUp> {
                                         ? user.country
                                         : locationList[0]['name'],
                                     onChanged: (value) async {
+                                      user.state = null;
                                       setState(() {
                                         user.country = value;
                                       });
+                                      FocusScope.of(context)
+                                          .requestFocus(new FocusNode());
                                       await getStateData(value);
                                     },
                                     onSaved: (value) {
@@ -475,6 +483,8 @@ class _SignUpState extends State<SignUp> {
                                             setState(() {
                                               user.state = value;
                                             });
+                                            FocusScope.of(context)
+                                                .requestFocus(new FocusNode());
                                           },
                                           dataSource: state != null
                                               ? state.map((data) {
@@ -573,20 +583,20 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                   ],
-                ),
-              );
-            case ConnectionState.waiting:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+                );
+              case ConnectionState.waiting:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
 
-            case ConnectionState.none:
-              return Text("Problem occur in fetch data");
+              case ConnectionState.none:
+                return Text("Problem occur in fetch data");
 
-            case ConnectionState.active:
-              break;
-          }
-        },
+              case ConnectionState.active:
+                break;
+            }
+          },
+        ),
       ),
     );
   }

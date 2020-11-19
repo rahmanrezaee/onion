@@ -265,11 +265,13 @@ class Auth with ChangeNotifier {
   Future getDataSignup() async {
     final StringBuffer url = new StringBuffer(BASE_URL + "/public/categories");
     Dio dio = new Dio();
-
+    print(url.toString());
     try {
-      Response inter = await dio
-          .get(url.toString(), queryParameters: {"type": "interested"});
-     Response locat = await dio.get(url.toString(), queryParameters: {"type": "location"});
+      Response inter = await dio.get(url.toString(), queryParameters: {"type": "interested"});
+
+      print(inter.data);
+      Response locat =
+          await dio.get(url.toString(), queryParameters: {"type": "location"});
       List state = await getDataState(locat.data[0]['name']);
 
       return Future.value([inter.data, locat.data, state]);
@@ -288,7 +290,7 @@ class Auth with ChangeNotifier {
       print({"type": "location", "parent": parent});
       Response state = await dio.get(url.toString(),
           queryParameters: {"type": "location", "parent": parent});
-     
+
       return state.data;
     } on DioError catch (e) {
       print("errors");

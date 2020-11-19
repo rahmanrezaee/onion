@@ -6,9 +6,7 @@ import 'package:lottie/lottie.dart';
 class UnderDevelopment extends StatelessWidget {
   final List<String> anim = [
     "assets/anim/app-developer.json",
-    // "assets/anim/coding-in-office.json",
-    // "assets/anim/programming.json",
-    // "assets/anim/working-together.json",
+  
   ];
   @override
   Widget build(BuildContext context) {
@@ -19,7 +17,7 @@ class UnderDevelopment extends StatelessWidget {
         centerTitle: true,
       ),
       body: Container(
-        child: Lottie.asset(anim[index], fit: BoxFit.cover),
+        child: Lottie.asset(anim[0], fit: BoxFit.cover),
       ),
     );
   }
