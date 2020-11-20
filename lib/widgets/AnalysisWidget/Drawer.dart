@@ -135,6 +135,7 @@ class _MyDrawerState extends State<MyDrawer> {
                                 height: 100,
                                 width: 100,
                                 child: CircleAvatar(
+                                  
                                   backgroundImage: value.token != null &&
                                           value.currentUser.profile != null
                                       ? NetworkImage(
