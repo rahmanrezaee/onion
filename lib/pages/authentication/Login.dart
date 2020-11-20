@@ -136,13 +136,13 @@ class _LoginState extends State<Login> {
                                     return "Your password is empty";
                                 },
                                 decoration: InputDecoration(
-                                  suffix: IconButton(
-                                    onPressed: () {
+                                  suffix: InkWell(
+                                    onTap: () {
                                       setState(() {
                                         _obscureText = !_obscureText;
                                       });
                                     },
-                                    icon: _obscureText
+                                    child: _obscureText
                                         ? Icon(Icons.visibility_off)
                                         : Icon(Icons.visibility),
                                   ),
@@ -315,15 +315,19 @@ class _LoginState extends State<Login> {
                     "Don't have an account?",
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
-                  FlatButton(
-                    onPressed: () =>
+                  InkWell(
+
+                    onTap: () =>
                         Navigator.pushNamed(context, SignUp.routeName),
-                    child: Text(
-                      "Sign Up",
-                      style: TextStyle(
-                          fontSize: 18,
-                          decoration: TextDecoration.underline,
-                          color: Colors.purple),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top:4.0,bottom: 10),
+                      child: Text(
+                        "Sign Up",
+                        style: TextStyle(
+                            fontSize: 18,
+                            decoration: TextDecoration.underline,
+                            color: Colors.purple),
+                      ),
                     ),
                   ),
                 ],
@@ -387,16 +391,17 @@ class _LoginState extends State<Login> {
         newUser.name = result.displayName;
         newUser.email = result.email;
         newUser.phone = result.phoneNumber;
-        ImageModel image = new ImageModel();
-        image.url = result.photoURL;
-        newUser.profile = image;
+
+        newUser.profile = result.photoURL;
         Navigator.pushNamed(context, ComplateProfile.routeName,
             arguments: newUser);
       }
     } catch (e) {
-      _scaffoldKey.currentState
-          .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
-      // print(e.cause);
+      print("google Error");
+      print(e);
+      // _scaffoldKey.currentState
+      //     .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+      // // print(e.cause);
     }
     setState(() {
       _isloadingGoogle = false;
@@ -409,37 +414,36 @@ class _LoginState extends State<Login> {
     });
 
     // try {
-    // by default the login method has the next permissions ['email','public_profile']
-    //   await FacebookAuth.instance.login();
-    //   final auserDatasd = await FacebookAuth.instance.getUserData();
+      // by default the login method has the next permissions ['email','public_profile']
+      // await FacebookAuth.instance.login();
+      // final auserDatasd = await FacebookAuth.instance.getUserData();
     //   print(auserDatasd);
     //   if (auserDatasd != null) {
     //     user.User newUser = new user.User();
-
+    //
     //     newUser.name = auserDatasd["name"];
     //     newUser.email = auserDatasd["email"];
     //     newUser.phone = "";
-    //     ImageModel image = new ImageModel();
-    //     image.url = auserDatasd['picture']['data']['url'];
-    //     newUser.profile = image;
+    //
+    //     newUser.profile = auserDatasd['picture']['data']['url'];
     //     Navigator.pushNamed(context, ComplateProfile.routeName,
     //         arguments: newUser);
     //   }
     // } catch (e, s) {
-    //   if (e is FacebookAuthException) {
-    //     print(e.message);
-    //     switch (e.errorCode) {
-    //       case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
-    //         print("You have a previous login operation in progress");
-    //         break;
-    //       case FacebookAuthErrorCode.CANCELLED:
-    //         print("login cancelled");
-    //         break;
-    //       case FacebookAuthErrorCode.FAILED:
-    //         print("login failed");
-    //         break;
-    // }
-    // }
+      // if (e is FacebookAuthException) {
+      //   print(e.message);
+      //   switch (e.errorCode) {
+      //     case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
+      //       print("You have a previous login operation in progress");
+      //       break;
+      //     case FacebookAuthErrorCode.CANCELLED:
+      //       print("login cancelled");
+      //       break;
+      //     case FacebookAuthErrorCode.FAILED:
+      //       print("login failed");
+      //       break;
+      //   }
+      // }
     // }
 
     // } catch (e) {
@@ -447,8 +451,8 @@ class _LoginState extends State<Login> {
     //       .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
     //   // print(e.cause);
     // }
-    setState(() {
-      _isloadingFacebook = false;
-    });
+    // setState(() {
+    //   _isloadingFacebook = false;
+    // });
   }
 }

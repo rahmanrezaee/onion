@@ -218,7 +218,7 @@ class _DialogContentState extends State<DialogContent> {
                     ),
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.pushNamed(context, Analysis.routerName);
+                      Navigator.pushNamed(context, Analysis.routeName);
                     },
                   ),
                 ),
@@ -276,3 +276,32 @@ class MyPopTxt extends StatelessWidget {
     );
   }
 }
+
+// E:\Project\Flutter\Sobhan\NewRepositoryLast\mobile-app\android\app\src\debug\AndroidManifest.xml:24:9-31:50 Warning:
+// [   +3 ms]      activity#com.google.firebase.auth.internal.FederatedSignInActivity@android:launchMode was tagged at
+// AndroidManifest.xml:24 to replace other declarations but no other declaration present
+// [   +6 ms] Note: Some input files use unchecked or unsafe operations.
+// [   +4 ms] Note: Recompile with -Xlint:unchecked for details.
+// [        ] Note: Some input files use or override a deprecated API.
+// [        ] Note: Recompile with -Xlint:deprecation for details.
+// [        ] WARNING: Compatible side by side NDK version was not found. Default is 21.0.6113669.
+// [        ] Compatible side by side NDK version was not found. Default is 21.0.6113669.
+// [+3299 ms] Unable to strip the following libraries, packaging them as they are: libflutter.so.
+// [  +99 ms] Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
+// [   +1 ms] Use '--warning-mode all' to show the individual deprecation warnings.
+// [        ] See https://docs.gradle.org/6.1.1/userguide/command_line_interface.html#sec:command_line_warnings
+// [        ] BUILD SUCCESSFUL in 3m 4s
+// [        ] 354 actionable tasks: 314 executed, 40 up-to-date
+// [ +424 ms] Running Gradle task 'assembleDebug'... (completed in 186.1s, longer than expected)
+// [ +128 ms] calculateSha: LocalDirectory:
+// 'E:\Project\Flutter\Sobhan\NewRepositoryLast\mobile-app\build\app\outputs\flutter-apk'/app.apk
+// E: queries (line=25)
+// E: intent (line=26)
+// E: action (line=27)
+// [  +15 ms] I/flutter (16716): null
+// [ +242 ms] W/ConnectionTracker(16716): Exception thrown while unbinding
+// [   +3 ms] W/ConnectionTracker(16716): java.lang.IllegalArgumentException: Service not registered: lq@bcff89e
+// [  +11 ms] W/ConnectionTracker(16716):  at android.app.LoadedApk.forgetServiceDispatcher(LoadedApk.java:1490)
+// [  +10 ms] W/ConnectionTracker(16716):  at android.app.ContextImpl.unbindService(ContextImpl.java:1655)
+// [   +1 ms] W/ConnectionTracker(16716):  at android.content.ContextWrapper.unbindService(ContextWrapper.java:716)
+// [   +6 ms] W/ConnectionTracker(16716):  at

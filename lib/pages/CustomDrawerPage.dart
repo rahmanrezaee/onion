@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
+import 'package:onion/pages/MainScreen.dart';
 import 'package:onion/pages/MyMessagePage.dart';
 import 'package:onion/pages/Services.dart';
+import 'package:onion/pages/underDevelopment.dart';
 import 'package:provider/provider.dart';
 import '../pages/Home.dart';
 import '../statemanagment/DrawerScaffold.dart';
@@ -70,59 +72,20 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
         // check if the swipe is to the right or to the left
         print(direction == InnerDrawerDirection.start);
       },
-
       innerDrawerCallback: (a) => print(a),
       // return  true (open) or false (close)
       leftChild: MyDrawer(),
       scaffold: Scaffold(
         body: Consumer<DrawerScaffold>(
           builder: (context, value, Widget child) {
-            if (value.scaffoldType == HomePage.routeName) {
+            if (value.scaffoldType == MainScreen.routeName) {
               return _page;
             } else if (value.scaffoldType == Services.routeName) {
               return Services(openDrawer: openCustomDrawer);
+            } else if (value.scaffoldType == Analysis.routeName) {
+              return Analysis(openDrawer: openCustomDrawer);
             }
             return null;
-          },
-        ),
-        bottomNavigationBar: CurvedNavigationBar(
-          backgroundColor: Colors.white,
-          color: middlePurple,
-          itemTitles: [
-            Text("Home",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 10)),
-            Text("Message",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 10)),
-            Text("Analytics",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 10)),
-            Text("P.Dashboard",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 10)),
-            Text("Search",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 10)),
-          ],
-          titleMarginBottom: 10,
-          items: <Widget>[
-            Icon(Icons.home, color: Colors.white),
-            Icon(Icons.message, color: Colors.white),
-            Icon(Icons.pie_chart, color: Colors.white),
-            Icon(Icons.dashboard, color: Colors.white),
-            Icon(Icons.search, color: Colors.white),
-          ],
-          onTap: (index) {
-            if (index == 0) {
-              setState(() {
-                _page = HomePage(openDrawer: openCustomDrawer);
-              });
-            } else if (index == 1) {
-              setState(() {
-                _page = MyMessagePage();
-              });
-            }
           },
         ),
       ),

@@ -11,8 +11,9 @@ class FandQ extends StatelessWidget {
       appBar: AppBar(
         title: Text("FAQ"),
         centerTitle: true,
+
         leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
+            icon: Icon(Icons.arrow_back_ios,color: Colors.white),
             onPressed: () {
               Navigator.of(context)
                   .pushReplacementNamed(CustomDrawerPage.routeName);
@@ -24,20 +25,23 @@ class FandQ extends StatelessWidget {
           if (snapshot.hasData) {
             List data = snapshot.data as List;
             print("data: $data");
-            return ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (context, i) {
-                print("index: $i");
-                return CustomizeExpansion(
-                  title: Text(data[i]["question"],
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff555555),
-                      )),
-                  content: Text(data[i]["anwser"]),
-                  openedIcon: Icon(Icons.remove, color: Color(0xFF555555)),
-                );
-              },
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (context, i) {
+                  print("index: $i");
+                  return CustomizeExpansion(
+                    title: Text(data[i]["question"],
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff555555),
+                        )),
+                    content: Text(data[i]["anwser"]),
+                    openedIcon: Icon(Icons.remove, color: Color(0xFF555555)),
+                  );
+                },
+              ),
             );
           } else if (snapshot.hasError) {
             print("Something went wrang when loadgin F&Q: ${snapshot.error}");

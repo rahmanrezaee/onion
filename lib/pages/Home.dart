@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                                             ? showMyDialog(context: context)
                                             : Navigator.pushNamed(
                                                 context,
-                                                Analysis.routerName,
+                                                Analysis.routeName,
                                               )
                                         : Navigator.pushNamed(
                                             context,
