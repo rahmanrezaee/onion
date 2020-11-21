@@ -247,7 +247,7 @@ class SampleModel extends Listenable {
 
   /// Contains the output widget of sample
   /// appropriate key and output widget mapped
-  final Map<String, Function> sampleWidget = getSampleWidget();
+  // final Map<String, Function> sampleWidget = getSampleWidget();
   //ignore:prefer_final_fields
   static List<Control> _controlList = <Control>[];
   //ignore:prefer_final_fields
