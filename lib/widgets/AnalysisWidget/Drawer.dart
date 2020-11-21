@@ -135,36 +135,44 @@ class _MyDrawerState extends State<MyDrawer> {
                                 height: 100,
                                 width: 100,
                                 child: CircleAvatar(
-                                  
-                                  backgroundImage: value.token != null &&
-                                          value.currentUser.profile != null
-                                      ? NetworkImage(
-                                          BASE_URL + value.currentUser.profile)
-                                      : AssetImage(
-                                          'assets/images/empty_profile.jpg'),
+                                  radius: 100,
+                                  backgroundColor: Colors.white,
+                                  child: CircleAvatar(
+                                    radius: 48,
+                                    backgroundImage: value.token != null &&
+                                            value.currentUser.profile != null
+                                        ? NetworkImage(BASE_URL +
+                                            value.currentUser.profile)
+                                        : AssetImage(
+                                            'assets/images/empty_profile.jpg'),
+                                  ),
                                 ),
                               ),
-                              value.token != null ? Positioned(
-                                right: 8,
-                                bottom: 8,
-                                child: Container(
-                                  height: deviceSize(context).width * 0.06,
-                                  width: deviceSize(context).width * 0.06,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(
-                                      deviceSize(context).width * 0.03,
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: middlePurple,
-                                      size: deviceSize(context).width * 0.04,
-                                    ),
-                                  ),
-                                ),
-                              ) : SizedBox()
+                              value.token != null
+                                  ? Positioned(
+                                      right: 8,
+                                      bottom: 8,
+                                      child: Container(
+                                        height:
+                                            deviceSize(context).width * 0.06,
+                                        width: deviceSize(context).width * 0.06,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            deviceSize(context).width * 0.03,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.edit,
+                                            color: middlePurple,
+                                            size: deviceSize(context).width *
+                                                0.04,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox()
                             ],
                           ),
                         ),
@@ -211,8 +219,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       context: context,
                       name: "My Profile",
                       icon: Icons.person,
-                     routeName: "Uder Development"
-                    )
+                      routeName: "Uder Development")
                   : Container(),
               value.token != null
                   ? myListTile(
@@ -224,7 +231,6 @@ class _MyDrawerState extends State<MyDrawer> {
                   : SizedBox(),
 
               Divider(color: Colors.white, height: 0.1),
-              
 
               value.token != null
                   ? myListTile(

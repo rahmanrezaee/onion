@@ -69,18 +69,7 @@ class MyApp extends StatelessWidget {
     Provider.of<Auth>(
       context,
     ).tryAutoLogin();
-    return Consumer<Auth>(
-      builder: (ctx, auth, _) => MaterialApp(
-        title: 'Onion.ai',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: Color(0xFF7B3C8A),
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          pageTransitionsTheme: PageTransitionsTheme(builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-          }),
-        ),
-        home: Consumer<Auth>(
+    return  Consumer<Auth>(
           builder: (ctx, auth, _) => MaterialApp(
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
@@ -189,8 +178,8 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(builder: (_) => UnderDevelopment());
             },
           ),
-        ),
-      ),
+       
+      
     );
   }
 }
