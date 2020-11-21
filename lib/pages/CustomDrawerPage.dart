@@ -34,7 +34,7 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
   Widget _page;
 
   initState() {
-    _page = HomePage(openDrawer: openCustomDrawer, key: widget.key);
+    _page = MainScreen(openDrawer: openCustomDrawer, key: widget.key);
     super.initState();
   }
 

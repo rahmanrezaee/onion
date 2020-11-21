@@ -281,13 +281,7 @@ class _MyGoogleMapState extends State<TestMap> {
       appBar: AppBar(),
       body: Container(
       color: Colors.white,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            _getMapsWidget(),
-          ],
-        ),
-      ),
+      child: Text("sd")
     ),
     );
   }

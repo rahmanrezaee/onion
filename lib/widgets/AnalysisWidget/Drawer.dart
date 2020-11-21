@@ -234,35 +234,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       routeName: Settings.routeName,
                     )
                   : Container(),
-              // value.token != null
-              //     ? myListTile(
-              //         context: context,
-              //         name: "Innovator",
-              //         icon: Icons.lightbulb,
-              //         routeName: "Under Development")
-              //     : Container(),
-              // myListTile(
-              //     context: context,
-              //     name: "Service Provider",
-              //     icon: Icons.person_outline,
-              //     justPush: true,
-              //     routeName: "Uder Development"),
-              // myListTile(
-              //   context: context,
-              //   name: "Investor",
-              //   icon: Icons.attach_money,
-              //   justPush: true,
-              //   routeName: "Under Development",
-              // ),
-              // value.token != null
-              //     ? myListTile(
-              //         context: context,
-              //         name: "My Connections",
-              //         icon: Icons.connect_without_contact,
-              //         justPush: true,
-              //         routeName: "Under Development",
-              //       )
-              //     : Container(),
+              
               value.token != null
                   ? myListTile(
                       context: context,
@@ -286,21 +258,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 routeName: MyIdeaId.routeName,
               ),
 
-              // myListTile(
-              //   context: context,
-              //   name: "My Idea detail",
-              //   icon: Icons.ac_unit,
-              //   routeName: MyIdeaDetails.routeName,
-              // ),
-              // value.token != null
-              //     ? myListTile(
-              //         context: context,
-              //         name: "Completed Projects",
-              //         icon: Icons.done_all,
-              //         routeName: "Under Development",
-              //         justPush: true,
-              //       )
-              //     : Container(),
+              
               value.token != null
                   ? myListTile(
                       context: context,
