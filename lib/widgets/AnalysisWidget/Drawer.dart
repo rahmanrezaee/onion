@@ -17,7 +17,6 @@ import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/pages/underDevelopment.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:http/http.dart';
-import 'package:onion/pages/Settings.dart';
 import 'package:onion/pages/request.dart';
 import 'package:onion/services/SimpleHttp.dart';
 import 'package:onion/widgets/T&C_widget.dart';
@@ -143,27 +142,31 @@ class _MyDrawerState extends State<MyDrawer> {
                                           'assets/images/empty_profile.jpg'),
                                 ),
                               ),
-                              value.token != null ? Positioned(
-                                right: 8,
-                                bottom: 8,
-                                child: Container(
-                                  height: deviceSize(context).width * 0.06,
-                                  width: deviceSize(context).width * 0.06,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(
-                                      deviceSize(context).width * 0.03,
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: middlePurple,
-                                      size: deviceSize(context).width * 0.04,
-                                    ),
-                                  ),
-                                ),
-                              ) : SizedBox()
+                              value.token != null
+                                  ? Positioned(
+                                      right: 8,
+                                      bottom: 8,
+                                      child: Container(
+                                        height:
+                                            deviceSize(context).width * 0.06,
+                                        width: deviceSize(context).width * 0.06,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            deviceSize(context).width * 0.03,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.edit,
+                                            color: middlePurple,
+                                            size: deviceSize(context).width *
+                                                0.04,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox()
                             ],
                           ),
                         ),
@@ -210,8 +213,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       context: context,
                       name: "My Profile",
                       icon: Icons.person,
-                     routeName: "Uder Development"
-                    )
+                      routeName: "Uder Development")
                   : Container(),
               value.token != null
                   ? myListTile(
@@ -223,7 +225,6 @@ class _MyDrawerState extends State<MyDrawer> {
                   : SizedBox(),
 
               Divider(color: Colors.white, height: 0.1),
-              
 
               value.token != null
                   ? myListTile(

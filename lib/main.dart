@@ -10,6 +10,12 @@ import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/widgets/test.dart';
 import 'package:provider/provider.dart';
 
+import './pages/Idea/MyIdeaDetailes.dart';
+import './pages/franchises/RequestOnFranchise.dart';
+import './pages/franchises/requestFranchisesUser.dart';
+import './pages/franchises/viewFranchisesUser.dart';
+import './statemanagment/MyDropDownState.dart';
+import './test.dart';
 import './pages/franchises/RequestOnFranchise.dart';
 import './pages/underDevelopment.dart';
 import './pages/Home.dart';
@@ -55,6 +61,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => AnalyticsProvider()),
       ChangeNotifierProvider(create: (_) => DrawerScaffold()),
       ChangeNotifierProvider(create: (_) => Auth()),
+      ChangeNotifierProvider(create: (_) => MyDropDownState()),
       ChangeNotifierProvider(create: (_) => SignupValidation()),
       ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
       ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
@@ -91,10 +98,10 @@ class MyApp extends StatelessWidget {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
               }),
             ),
-            home: CustomDrawerPage(),
+            home: CustomDrawerPage(key),
             routes: {
               Login.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage()
+                  ? CustomDrawerPage(key)
                   : FutureBuilder(
                       future: Provider.of<Auth>(context, listen: false)
                           .tryAutoLogin(),
@@ -109,7 +116,7 @@ class MyApp extends StatelessWidget {
               MyIdeaId.routeName: (context) => MyIdeaId(),
               RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
               SignUp.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage()
+                  ? CustomDrawerPage(key)
                   : FutureBuilder(
                       future: Provider.of<Auth>(context, listen: false)
                           .tryAutoLogin(),
@@ -122,7 +129,7 @@ class MyApp extends StatelessWidget {
                               : SignUp(),
                     ),
               ComplateProfile.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage()
+                  ? CustomDrawerPage(key)
                   : FutureBuilder(
                       future: Provider.of<Auth>(context, listen: false)
                           .tryAutoLogin(),
@@ -136,12 +143,12 @@ class MyApp extends StatelessWidget {
                                   ModalRoute.of(context).settings.arguments,
                                 ),
                     ),
-              CustomDrawerPage.routeName: (context) => CustomDrawerPage(),
+              CustomDrawerPage.routeName: (context) => CustomDrawerPage(key),
               AnalyticsOne.routeName: (context) => AnalyticsOne(),
               Analysis.routeName: (context) => Analysis(),
               RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
               ForgetPassword.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage()
+                  ? CustomDrawerPage(key)
                   : FutureBuilder(
                       future: Provider.of<Auth>(context, listen: false)
                           .tryAutoLogin(),
@@ -154,7 +161,7 @@ class MyApp extends StatelessWidget {
                               : ForgetPassword(),
                     ),
               ChangePassword.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage()
+                  ? CustomDrawerPage(key)
                   : FutureBuilder(
                       future: Provider.of<Auth>(context, listen: false)
                           .tryAutoLogin(),
@@ -177,13 +184,13 @@ class MyApp extends StatelessWidget {
               PostIdea.routeName: (context) => PostIdea(),
               FandQ.routeName: (context) => FandQ(),
               Services.routeName: (context) => Services(),
-              Settings.routeName: (context) => Settings(),
               RequestFranchisesUser.routeName: (context) =>
                   RequestFranchisesUser(),
               ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(),
               MyIdeaId.routeName: (context) => MyIdeaId(),
               MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
               RequestPage.routeName: (context) => RequestPage(),
+              Settings.routeName: (context) => Settings(),
             },
             onUnknownRoute: (settings) {
               return MaterialPageRoute(builder: (_) => UnderDevelopment());

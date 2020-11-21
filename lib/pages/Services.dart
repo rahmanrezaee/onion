@@ -28,9 +28,10 @@ class _ServicesState extends State<Services> {
 
   //DemoImages
   List<String> sliderImages;
-
+  Future _getData;
   @override
   void initState() {
+    _getData = ServicesHttp().getServicesList();
     ServicesHttp().getSliders().then((images) {
       setState(() {
         sliderImages = images;
@@ -146,7 +147,7 @@ class _ServicesState extends State<Services> {
                   child: Text("Our Services", style: TextStyle(fontSize: 20)),
                 ),
                 FutureBuilder(
-                  future: ServicesHttp().getServicesList(),
+                  future: _getData,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var data = snapshot.data;

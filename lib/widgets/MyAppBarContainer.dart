@@ -74,7 +74,7 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                     return MyEmptyText(myTxt: "Loading...");
                   } else {
                     if (snapshot.error != null) {
-                      return MyEmptyText(myTxt: "Error Occurred!");
+                      return MyEmptyText(myTxt: "Error...  ");
                     } else {
                       return Consumer<CategoryProvider>(
                         builder: (
@@ -84,7 +84,8 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                         ) {
                           if (value.items.isEmpty) {
                             return MyEmptyText(
-                              myTxt: value.isLoading ? "loading..." : "Empty",
+                              myTxt:
+                                  value.isLoading ? "loading..." : "Empty     ",
                             );
                           } else {
                             return MySmallDropdown(
@@ -111,14 +112,15 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                   return Consumer<IndustryProvider>(
                     builder: (BuildContext consContext, value, Widget child) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return MyEmptyText(myTxt: "Loading...");
+                        return MyEmptyText(myTxt: "Empty");
                       } else {
                         if (snapshot.error != null) {
-                          return MyEmptyText(myTxt: "Error Occurred!");
+                          return MyEmptyText(myTxt: "Error...  ");
                         } else {
                           if (value.items.isEmpty) {
                             return MyEmptyText(
-                              myTxt: value.isLoading ? "loading..." : "Empty",
+                              myTxt:
+                                  value.isLoading ? "loading..." : "Empty     ",
                             );
                           } else {
                             isAnaLoading = false;
@@ -148,11 +150,12 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                         return MyEmptyText(myTxt: "Loading...");
                       } else {
                         if (snapshot.error != null) {
-                          return MyEmptyText(myTxt: "Error Occurred!");
+                          return MyEmptyText(myTxt: "Error...  ");
                         } else {
                           if (value.items.isEmpty) {
                             return MyEmptyText(
-                              myTxt: value.isLoading ? "loading..." : "Empty",
+                              myTxt:
+                                  value.isLoading ? "loading..." : "Empty     ",
                             );
                           } else {
                             return MySmallDropdown(
@@ -192,17 +195,15 @@ class MyEmptyText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(deviceSize(context).width * 0.02),
-      margin: EdgeInsets.symmetric(
-        horizontal: deviceSize(context).width * 0.01,
-      ),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.white),
         borderRadius: BorderRadius.circular(5),
       ),
       child: SizedBox(
-        width: deviceSize(context).width * 0.19,
+        width: deviceSize(context).width * 0.2,
         child: Text(
           myTxt,
+          textScaleFactor: 1,
           style: TextStyle(color: Colors.white),
         ),
       ),

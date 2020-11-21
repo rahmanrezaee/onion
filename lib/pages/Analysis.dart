@@ -32,11 +32,11 @@ class Analysis extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          color: Colors.white,
-          onPressed: openDrawer,
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.menu),
+        //   color: Colors.white,
+        //   onPressed: openDrawer,
+        // ),
         actions: [
           Padding(
             padding: EdgeInsets.all(15.0),

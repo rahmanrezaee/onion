@@ -49,7 +49,7 @@ class _PostIdeaState extends State<PostIdea> {
   @override
   Widget build(BuildContext context) {
     final validationService = Provider.of<PostIdeaValidation>(context);
-  
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, kToolbarHeight),

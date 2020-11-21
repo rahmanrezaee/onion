@@ -14,8 +14,9 @@ import '../widgets/bottom_nav.dart';
 
 class CustomDrawerPage extends StatefulWidget {
   static const routeName = "custom_drawer";
+  final Key key;
 
-  CustomDrawerPage();
+  CustomDrawerPage(this.key);
 
   @override
   _CustomDrawerPageState createState() => _CustomDrawerPageState();
@@ -31,8 +32,9 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
   }
 
   Widget _page;
+
   initState() {
-    _page = MainScreen(openDrawer: openCustomDrawer);
+    _page = HomePage(openDrawer: openCustomDrawer, key: widget.key);
     super.initState();
   }
 
