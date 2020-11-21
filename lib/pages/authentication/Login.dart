@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onion/models/Image.dart';
 import 'package:onion/pages/authentication/ComplateProfile.dart';
@@ -316,11 +316,9 @@ class _LoginState extends State<Login> {
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
                   InkWell(
-                    
-                    onTap: () =>
-                        Navigator.pushNamed(context, SignUp.routeName),
+                    onTap: () => Navigator.pushNamed(context, SignUp.routeName),
                     child: Padding(
-                      padding: const EdgeInsets.only(top:4.0,bottom: 10),
+                      padding: const EdgeInsets.only(top: 4.0, bottom: 10),
                       child: Text(
                         "Sign Up",
                         style: TextStyle(
@@ -415,44 +413,44 @@ class _LoginState extends State<Login> {
 
     try {
       // by default the login method has the next permissions ['email','public_profile']
-      await FacebookAuth.instance.login();
-      final auserDatasd = await FacebookAuth.instance.getUserData();
-      print(auserDatasd);
-      if (auserDatasd != null) {
-        user.User newUser = new user.User();
+      // await FacebookAuth.instance.login();
+      // final auserDatasd = await FacebookAuth.instance.getUserData();
+      // print(auserDatasd);
+      // if (auserDatasd != null) {
+      //   user.User newUser = new user.User();
 
-        newUser.name = auserDatasd["name"];
-        newUser.email = auserDatasd["email"];
-        newUser.phone = "";
+      //   newUser.name = auserDatasd["name"];
+      //   newUser.email = auserDatasd["email"];
+      //   newUser.phone = "";
 
-        newUser.profile = auserDatasd['picture']['data']['url'];
-        Navigator.pushNamed(context, ComplateProfile.routeName,
-            arguments: newUser);
-      }
+      //   newUser.profile = auserDatasd['picture']['data']['url'];
+      //   Navigator.pushNamed(context, ComplateProfile.routeName,
+      //       arguments: newUser);
+      // }
     } catch (e, s) {
-      if (e is FacebookAuthException) {
-        print(e.message);
-        switch (e.errorCode) {
-          case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
-            print("You have a previous login operation in progress");
-            break;
-          case FacebookAuthErrorCode.CANCELLED:
-            print("login cancelled");
-            break;
-          case FacebookAuthErrorCode.FAILED:
-            print("login failed");
-            break;
-        }
-      }
+      // if (e is FacebookAuthException) {
+      //   print(e.message);
+      //   switch (e.errorCode) {
+      //     case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
+      //       print("You have a previous login operation in progress");
+      //       break;
+      //     case FacebookAuthErrorCode.CANCELLED:
+      //       print("login cancelled");
+      //       break;
+      //     case FacebookAuthErrorCode.FAILED:
+      //       print("login failed");
+      //       break;
+      //   }
     }
-
-    // } catch (e) {
-    //   _scaffoldKey.currentState
-    //       .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
-    //   // print(e.cause);
-    // }
-    setState(() {
-      _isloadingFacebook = false;
-    });
   }
+
+  // } catch (e) {
+  //   _scaffoldKey.currentState
+  //       .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+  //   // print(e.cause);
+  // }
+  // setState(() {
+  //   _isloadingFacebook = false;
+  // });
+  // }
 }
