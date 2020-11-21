@@ -176,7 +176,7 @@ class _MyDrawerState extends State<MyDrawer> {
                             )
                           : FlatButton(
                               onPressed: () =>
-                                  Navigator.pushNamed(context, Login.routeName),
+                                  Navigator.pushReplacementNamed(context, Login.routeName),
                               child: Text(
                                 "click to login..",
                                 textScaleFactor: 1.2,
