@@ -1,6 +1,7 @@
 ///Flutter package imports
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show NumberFormat;
+import 'package:onion/models/sample_view.dart';
 
 ///Map import
 import 'package:syncfusion_flutter_maps/maps.dart';
@@ -9,12 +10,11 @@ import 'package:syncfusion_flutter_maps/maps.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Local import
-import './models/sample_view.dart';
 
 /// Renders the map widget with range color mapping
-class MapRangeColorMappingPage extends SampleView {
+class MyGoogleMap extends SampleView {
   /// Creates the map widget with range color mapping
-  const MapRangeColorMappingPage(Key key) : super(key: key);
+  const MyGoogleMap(Key key) : super(key: key);
 
   @override
   _MapRangeColorMappingPageState createState() =>
@@ -287,10 +287,7 @@ class _MapRangeColorMappingPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: SingleChildScrollView(child: _getMapsWidget()),
-    );
+    return SingleChildScrollView(child: _getMapsWidget());
   }
 
   Widget _getMapsWidget() {
@@ -299,154 +296,125 @@ class _MapRangeColorMappingPageState extends SampleViewState {
           Duration(milliseconds: model.isWeb ? 0 : 500), () => 'Loaded'),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         return snapshot.hasData
-            ? Center(
-                child: Padding(
-                  padding: MediaQuery.of(context).orientation ==
-                              Orientation.portrait ||
-                          model.isWeb
-                      ? EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.05,
-                          bottom: MediaQuery.of(context).size.height * 0.05,
-                          right: 10,
-                        )
-                      : const EdgeInsets.only(right: 10, bottom: 15),
-                  child: SfMapsTheme(
-                    data: SfMapsThemeData(
-                      shapeHoverColor: Color.fromRGBO(176, 237, 131, 1),
-                    ),
-                    child: SfMaps(
-                      title: const MapTitle(
-                        text: 'World Population Density (per sq. km.)',
-                        padding: EdgeInsets.only(top: 15, bottom: 30),
+            ? Container(
+                color: Colors.white,
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 10, bottom: 5),
+                    child: SfMapsTheme(
+                      data: SfMapsThemeData(
+                        shapeHoverColor: Color.fromRGBO(176, 237, 131, 1),
                       ),
-                      layers: <MapLayer>[
-                        MapShapeLayer(
-                          delegate: MapShapeLayerDelegate(
-                            // Path of the GeoJSON file.
-                            shapeFile: 'assets/australia.json',
-                            // Field or group name in the .json file
-                            // to identify the shapes.
-                            //
-                            // Which is used to map the respective
-                            // shape to data source.
-                            //
-                            // On the basis of this value,
-                            // shape tooltip text is rendered.
-                            shapeDataField: 'name',
-                            // The number of data in your data source collection.
-                            //
-                            // The callback for the [primaryValueMapper]
-                            // will be called the number of times equal
-                            // to the [dataCount].
-                            // The value returned in the [primaryValueMapper]
-                            // should be exactly matched with the value of the
-                            // [shapeDataField] in the .json file. This is how
-                            // the mapping between the data source and the shapes
-                            // in the .json file is done.
-                            dataCount: _worldPopulationDensityDetails.length,
-                            primaryValueMapper: (int index) =>
-                                _worldPopulationDensityDetails[index]
-                                    .countryName,
-                            // Used for color mapping.
-                            //
-                            // The value of the [MapColorMapper.from]
-                            // and [MapColorMapper.to]
-                            // will be compared with the value returned in the
-                            // [shapeColorValueMapper] and the respective
-                            // [MapColorMapper.color] will be applied to the shape.
-                            shapeColorValueMapper: (int index) =>
-                                _worldPopulationDensityDetails[index].density,
-                            // Returns the custom tooltip text for each shape.
-                            //
-                            // By default, the value returned in the
-                            //[primaryValueMapper] will be used for tooltip text.
-                            shapeTooltipTextMapper: (int index) =>
-                                _worldPopulationDensityDetails[index]
-                                    .countryName +
-                                ' : ' +
-                                _numberFormat
-                                    .format(
-                                        _worldPopulationDensityDetails[index]
-                                            .density)
-                                    .toString() +
-                                ' per sq. km.',
-                            // Group and differentiate the shapes using the color
-                            // based on [MapColorMapper.from] and
-                            //[MapColorMapper.to] value.
-                            //
-                            // The value of the [MapColorMapper.from] and
-                            // [MapColorMapper.to] will be compared with the value
-                            // returned in the [shapeColorValueMapper] and
-                            // the respective [MapColorMapper.color] will be applied
-                            // to the shape.
-                            //
-                            // [MapColorMapper.text] which is used for the text of
-                            // legend item and [MapColorMapper.color] will be used for
-                            // the color of the legend icon respectively.
-                            shapeColorMappers: const <MapColorMapper>[
-                              MapColorMapper(
-                                  from: 0,
-                                  to: 50,
-                                  color: Color.fromRGBO(100, 100, 100, 0.2),
-                                  text: '<50'),
-                              MapColorMapper(
-                                  from: 50,
-                                  to: 100,
-                                  color: Color.fromRGBO(51, 102, 255, 1),
-                                  text: '50 - 100'),
-                              MapColorMapper(
-                                  from: 100,
-                                  to: 250,
-                                  color: Color.fromRGBO(0, 57, 230, 1),
-                                  text: '100 - 250'),
-                              MapColorMapper(
-                                  from: 250,
-                                  to: 500,
-                                  color: Color.fromRGBO(0, 51, 204, 1),
-                                  text: '250 - 500'),
-                              MapColorMapper(
-                                  from: 500,
-                                  to: 1000,
-                                  color: Color.fromRGBO(0, 45, 179, 1),
-                                  text: '500 - 1k'),
-                              MapColorMapper(
-                                  from: 1000,
-                                  to: 5000,
-                                  color: Color.fromRGBO(0, 38, 153, 1),
-                                  text: '1k - 5k'),
-                              MapColorMapper(
-                                  from: 5000,
-                                  to: 10000,
-                                  color: Color.fromRGBO(0, 32, 128, 1),
-                                  text: '5k - 10k'),
-                              MapColorMapper(
-                                  from: 10000,
-                                  to: 50000,
-                                  color: Color.fromRGBO(0, 26, 102, 1),
-                                  text: '10k - 30k'),
-                            ],
+                      child: SfMaps(
+                        layers: <MapLayer>[
+                          MapShapeLayer(
+                            showBubbles: false,
+                            showDataLabels: false,
+                            delegate: MapShapeLayerDelegate(
+                              shapeFile: 'assets/australia.json',
+
+                              shapeDataField: 'name',
+
+                              dataCount: _worldPopulationDensityDetails.length,
+                              primaryValueMapper: (int index) =>
+                                  _worldPopulationDensityDetails[index]
+                                      .countryName,
+
+                              shapeColorValueMapper: (int index) =>
+                                  _worldPopulationDensityDetails[index].density <= 250 ? Color.fromRGBO(51, 102, 255, 1):Color.fromRGBO(0, 26, 102, 1),
+
+                              // shapeColorMappers: [
+                              //   MapColorMapper(
+                              //       from: 0, to: 100, color: Colors.red),
+                              //   MapColorMapper(
+                              //       from: 101, to: 200, color: Colors.yellow)
+                              // ],
+                              shapeTooltipTextMapper: (int index) =>
+                                  _worldPopulationDensityDetails[index]
+                                      .countryName + ' : ' +
+                                  _numberFormat
+                                      .format(
+                                          _worldPopulationDensityDetails[index]
+                                              .density)
+                                      .toString() +
+                                  ' per sq. km.',
+                              // Group and differentiate the shapes using the color
+                              // based on [MapColorMapper.from] and
+                              //[MapColorMapper.to] value.
+                              //
+                              // The value of the [MapColorMapper.from] and
+                              // [MapColorMapper.to] will be compared with the value
+                              // returned in the [shapeColorValueMapper] and
+                              // the respective [MapColorMapper.color] will be applied
+                              // to the shape.
+                              //
+                              // [MapColorMapper.text] which is used for the text of
+                              // legend item and [MapColorMapper.color] will be used for
+                              // the color of the legend icon respectively.
+                              shapeColorMappers: const <MapColorMapper>[
+                                MapColorMapper(
+                                    from: 0,
+                                    to: 50,
+                                    color: Color.fromRGBO(128, 159, 255, 1),
+                                    text: '<50'),
+                                MapColorMapper(
+                                    from: 50,
+                                    to: 100,
+                                    color: Color.fromRGBO(51, 102, 255, 1),
+                                    text: '50 - 100'),
+                                MapColorMapper(
+                                    from: 100,
+                                    to: 250,
+                                    color: Color.fromRGBO(0, 57, 230, 1),
+                                    text: '100 - 250'),
+                                MapColorMapper(
+                                    from: 250,
+                                    to: 500,
+                                    color: Color.fromRGBO(0, 51, 204, 1),
+                                    text: '250 - 500'),
+                                MapColorMapper(
+                                    from: 500,
+                                    to: 1000,
+                                    color: Color.fromRGBO(0, 45, 179, 1),
+                                    text: '500 - 1k'),
+                                MapColorMapper(
+                                    from: 1000,
+                                    to: 5000,
+                                    color: Color.fromRGBO(0, 38, 153, 1),
+                                    text: '1k - 5k'),
+                                MapColorMapper(
+                                    from: 5000,
+                                    to: 10000,
+                                    color: Color.fromRGBO(0, 32, 128, 1),
+                                    text: '5k - 10k'),
+                                MapColorMapper(
+                                    from: 10000,
+                                    to: 50000,
+                                    color: Color.fromRGBO(0, 26, 102, 1),
+                                    text: '10k - 30k'),
+                              ],
+                            ),
+                            enableShapeTooltip: true,
+                            // legendSource: MapElement.shape,
+                            strokeColor: Colors.white30,
+                            // legendSettings: const MapLegendSettings(
+                            //     position: MapLegendPosition.bottom,
+                            //     iconType: MapIconType.square,
+                            //     overflowMode: MapLegendOverflowMode.wrap,
+                            //     padding: EdgeInsets.only(top: 15)),
+                            tooltipSettings: MapTooltipSettings(
+                              color: const Color.fromRGBO(20, 20, 20, 1),
+                              //     model.themeData.brightness == Brightness.light
+                              //         ? const Color.fromRGBO(0, 32, 128, 1)
+                              //         : const Color.fromRGBO(226, 233, 255, 1),
+                              // strokeColor:
+                              //     model.themeData.brightness == Brightness.light
+                              //         ? Colors.white
+                              //         : Colors.black,
+                            ),
                           ),
-                          enableShapeTooltip: true,
-                          legendSource: MapElement.shape,
-                          strokeColor: Colors.white30,
-                          legendSettings: const MapLegendSettings(
-                              position: MapLegendPosition.bottom,
-                              iconType: MapIconType.square,
-                              overflowMode: MapLegendOverflowMode.wrap,
-                              padding: EdgeInsets.only(top: 15)),
-                          tooltipSettings: MapTooltipSettings(
-                            color: const Color.fromRGBO(100, 26, 102, 1)
-                            // model.themeData.brightness == Brightness.light
-                            //     ? const Color.fromRGBO(0, 32, 128, 1)
-                            //     : const Color.fromRGBO(226, 233, 255, 1),
-                            // strokeColor:
-                            // model.themeData.brightness == Brightness.light
-                            //     ? Colors.white
-                            //     : Colors.black
-                            ,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -470,4 +438,5 @@ class _CountryDensityModel {
 
   final String countryName;
   final double density;
+  
 }

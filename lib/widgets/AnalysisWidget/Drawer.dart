@@ -135,17 +135,12 @@ class _MyDrawerState extends State<MyDrawer> {
                                 height: 100,
                                 width: 100,
                                 child: CircleAvatar(
-                                  radius: 100,
-                                  backgroundColor: Colors.white,
-                                  child: CircleAvatar(
-                                    radius: 48,
-                                    backgroundImage: value.token != null &&
-                                            value.currentUser.profile != null
-                                        ? NetworkImage(BASE_URL +
-                                            value.currentUser.profile)
-                                        : AssetImage(
-                                            'assets/images/empty_profile.jpg'),
-                                  ),
+                                  backgroundImage: value.token != null &&
+                                          value.currentUser.profile != null
+                                      ? NetworkImage(
+                                          BASE_URL + value.currentUser.profile)
+                                      : AssetImage(
+                                          'assets/images/empty_profile.jpg'),
                                 ),
                               ),
                               value.token != null
@@ -210,8 +205,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 name: "Analytics ",
                 icon: Icons.person,
                 routeName: Analysis.routeName,
-                justPush: false,
-                hasDrawer: true,
+                 justPush: true
               ),
 
               value.token != null
@@ -219,7 +213,8 @@ class _MyDrawerState extends State<MyDrawer> {
                       context: context,
                       name: "My Profile",
                       icon: Icons.person,
-                      routeName: "Uder Development")
+                      routeName: "Uder Development",
+                      justPush: true)
                   : Container(),
               value.token != null
                   ? myListTile(
@@ -227,6 +222,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       name: "Setting",
                       icon: Icons.settings,
                       routeName: "Uder Development",
+                      justPush: true
                     )
                   : SizedBox(),
 
@@ -241,35 +237,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       routeName: Settings.routeName,
                     )
                   : Container(),
-              // value.token != null
-              //     ? myListTile(
-              //         context: context,
-              //         name: "Innovator",
-              //         icon: Icons.lightbulb,
-              //         routeName: "Under Development")
-              //     : Container(),
-              // myListTile(
-              //     context: context,
-              //     name: "Service Provider",
-              //     icon: Icons.person_outline,
-              //     justPush: true,
-              //     routeName: "Uder Development"),
-              // myListTile(
-              //   context: context,
-              //   name: "Investor",
-              //   icon: Icons.attach_money,
-              //   justPush: true,
-              //   routeName: "Under Development",
-              // ),
-              // value.token != null
-              //     ? myListTile(
-              //         context: context,
-              //         name: "My Connections",
-              //         icon: Icons.connect_without_contact,
-              //         justPush: true,
-              //         routeName: "Under Development",
-              //       )
-              //     : Container(),
+
               value.token != null
                   ? myListTile(
                       context: context,
@@ -291,32 +259,19 @@ class _MyDrawerState extends State<MyDrawer> {
                 name: "My Ideas Id",
                 icon: Icons.ac_unit,
                 routeName: MyIdeaId.routeName,
+                justPush: true
               ),
 
-              // myListTile(
-              //   context: context,
-              //   name: "My Idea detail",
-              //   icon: Icons.ac_unit,
-              //   routeName: MyIdeaDetails.routeName,
-              // ),
               // value.token != null
               //     ? myListTile(
               //         context: context,
-              //         name: "Completed Projects",
-              //         icon: Icons.done_all,
+              //         name: "My Analysis",
+              //         icon: Icons.multiline_chart,
               //         routeName: "Under Development",
               //         justPush: true,
+              //         hasDrawer: true,
               //       )
               //     : Container(),
-              value.token != null
-                  ? myListTile(
-                      context: context,
-                      name: "My Analysis",
-                      icon: Icons.multiline_chart,
-                      routeName: "Under Development",
-                      justPush: true,
-                    )
-                  : Container(),
               InkWell(
                 onTap: () {
                   showDialog(
@@ -329,6 +284,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   context: context,
                   name: "Term and Condition",
                   icon: Icons.assignment,
+                  justPush: true
                 ),
               ),
               myListTile(
