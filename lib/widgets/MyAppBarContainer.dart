@@ -24,6 +24,7 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
   Future<void> fetchCategory;
   bool isCatLoading = true;
   bool isAnaLoading = true;
+  bool myCountryFlag = true;
 
   // Future<void> fetchAnalytics;
 
@@ -158,6 +159,7 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                                   value.isLoading ? "loading..." : "Empty     ",
                             );
                           } else {
+                            myCountryFlag = !myCountryFlag;
                             return MySmallDropdown(
                               myisExpanded: false,
                               myDropDownList:
@@ -178,7 +180,38 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
               ),
             ],
           ),
-          MyBigDropDown(),
+          MyBigDropDown(
+            myDropDownList: myCountryFlag
+                ? [
+                    CategoryModel(
+                      id: "1",
+                      name: "USA",
+                      createdAt: "2020/11/20",
+                      parent: "country",
+                    ),
+                    CategoryModel(
+                      id: "2",
+                      name: "Afghanistan",
+                      createdAt: "2020/11/21",
+                      parent: "country",
+                    ),
+                  ]
+                : [
+                    CategoryModel(
+                      id: "3",
+                      name: "Canada",
+                      createdAt: "2020/11/18",
+                      parent: "country",
+                    ),
+                    CategoryModel(
+                      id: "4",
+                      name: "Iran",
+                      createdAt: "2020/11/19",
+                      parent: "country",
+                    ),
+                  ],
+            txtColor: Colors.white,
+          ),
         ],
       ),
     );
