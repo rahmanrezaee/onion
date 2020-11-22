@@ -48,8 +48,7 @@ class _SettingsState extends State<Settings> {
   }
 
   initState() {
-    token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWZiNjNhZjRhY2M2MGQwMDExOTEwYTk5In0sImlhdCI6MTYwNTc3ODE2NCwiZXhwIjoxNjA1Nzg4MTY0fQ.UWoQrJob2O2zyrgNT-EZp5sgWorQvjOOahufb3gQmic";
+    token = Provider.of<Auth>(context,listen: false).token;
     getDefaultData();
     super.initState();
   }
