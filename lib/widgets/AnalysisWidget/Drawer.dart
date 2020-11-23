@@ -199,24 +199,18 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
 
               myListTile(
-                context: context,
-                name: "Analytics ",
-                icon: Icons.person,
-                routeName: Analysis.routeName,
-                 justPush: true
-              ),
+                  context: context,
+                  name: "Analytics ",
+                  icon: Icons.person,
+                  routeName: Analysis.routeName,
+                  justPush: true),
 
               value.token != null
                   ? myListTile(
                       context: context,
                       name: "My Profile",
                       icon: Icons.person,
-<<<<<<< HEAD
                       routeName: "Uder Development")
-=======
-                      routeName: "Uder Development",
-                      justPush: true)
->>>>>>> f86cda950c9eb7ac998d6c6369b10b12348921ec
                   : Container(),
               value.token != null
                   ? myListTile(
@@ -224,8 +218,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       name: "Setting",
                       icon: Icons.settings,
                       routeName: "Uder Development",
-                      justPush: true
-                    )
+                      justPush: true)
                   : SizedBox(),
 
               Divider(color: Colors.white, height: 0.1),
@@ -257,12 +250,11 @@ class _MyDrawerState extends State<MyDrawer> {
                 hasDrawer: true,
               ),
               myListTile(
-                context: context,
-                name: "My Ideas Id",
-                icon: Icons.ac_unit,
-                routeName: MyIdeaId.routeName,
-                justPush: true
-              ),
+                  context: context,
+                  name: "My Ideas Id",
+                  icon: Icons.ac_unit,
+                  routeName: MyIdeaId.routeName,
+                  justPush: true),
 
               // value.token != null
               //     ? myListTile(
@@ -283,11 +275,10 @@ class _MyDrawerState extends State<MyDrawer> {
                       });
                 },
                 child: myListTile(
-                  context: context,
-                  name: "Term and Condition",
-                  icon: Icons.assignment,
-                  justPush: true
-                ),
+                    context: context,
+                    name: "Term and Condition",
+                    icon: Icons.assignment,
+                    justPush: true),
               ),
               myListTile(
                 context: context,
