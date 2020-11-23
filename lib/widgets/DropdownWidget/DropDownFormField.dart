@@ -55,8 +55,7 @@ class DropDownFormField extends FormField<dynamic> {
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<dynamic>(
                   value: value == '' ? dataSource[0][valueField] : value,
-                  onChanged: enable
-                      ? (dynamic newValue) {
+                  onChanged: enable  ? (dynamic newValue) {
                           state.didChange(newValue);
 
                           onChanged(newValue);

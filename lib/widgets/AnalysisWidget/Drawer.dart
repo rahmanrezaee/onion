@@ -23,7 +23,6 @@ import 'package:onion/services/SimpleHttp.dart';
 import 'package:onion/widgets/T&C_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../pages/Analysis.dart';
 import '../../pages/Home.dart';
