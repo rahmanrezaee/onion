@@ -142,12 +142,14 @@ class _AnalysisState extends State<Analysis> {
         body: FutureBuilder(
           future: getData,
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            
             switch (snapshot.connectionState) {
               case ConnectionState.done:
                 return ListView(
                   children: [
                     MyAppBarContainer(
                       countyList: lc,
+
                       selectedItem: selectedCC,
                       onChanged: (value) {
                         lc.forEach((element) {
