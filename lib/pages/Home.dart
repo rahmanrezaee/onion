@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:onion/pages/Analysis.dart';
 import 'package:onion/pages/authentication/signup.dart';
 import 'package:onion/statemanagment/MyDropDownState.dart';
+import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
 import 'package:onion/widgets/Home/MyGoogleMap.dart';
 import 'package:provider/provider.dart';
@@ -58,129 +59,162 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: MyAppBar(title: "Home", openDrawer: widget.openDrawer),
-      body: ListView(
-        children: [
-          MyAppBarContainer(),
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: deviceSize(context).width * 0.06,
-              vertical: deviceSize(context).height * 0.02,
-            ),
-            child: Text(
-              "Choose Region on the Map",
-              textScaleFactor: 1.2,
-              style: TextStyle(fontWeight: FontWeight.normal),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: deviceSize(context).width * 0.06,
-              vertical: deviceSize(context).height * 0.01,
-            ),
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: deviceSize(context).width * 0.7,
-                  child: MyGoogleMap(key: widget.key),
-                ),
-                SizedBox(
-                  width: deviceSize(context).width * 0.9,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _isAuth == false
-                          ? Row(
-                              children: [
-                                SizedBox(
-                                  width: deviceSize(context).width * 0.56,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text:
-                                              "Want to Subscribe to Selected options Analysis, ",
-                                        ),
-                                        TextSpan(
-                                          text: "Sign Up",
-                                          style: TextStyle(
-                                            color: firstPurple,
-                                            decoration:
-                                                TextDecoration.underline,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          recognizer: TapGestureRecognizer()
-                                            ..onTap = () {
-                                              Navigator.pushNamed(
-                                                context,
-                                                SignUp.routeName,
-                                              );
-                                            },
-                                        ),
-                                        TextSpan(
-                                          text: " Here!",
-                                        ),
-                                      ],
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
-                          : Container(width: deviceSize(context).width * 0.56),
-                      Consumer2<Auth, MyDropDownState>(
-                        builder:
-                            (consumerContext, authVal, myDropDownVal, child) {
-                          return Expanded(
-                            child: RaisedButton(
-                              color: middlePurple,
-                              child: Text("See Analysis"),
-                              textColor: Colors.white,
-                              onPressed: () => authVal.isAuth().then(
-                                    (token) => token
-                                        ? (!myDropDownVal.myCategorySelected)
-                                            ? showMyDialog(context: context)
-                                            : Navigator.pushNamed(
-                                                context,
-                                                Analysis.routeName,
-                                              )
-                                        : Navigator.pushNamed(
-                                            context,
-                                            Login.routeName,
-                                          ),
-                                  ),
-                            ),
-                          );
-                        },
+      body: FutureBuilder(
+          future: Provider.of<AnalysisProvider>(context, listen: false)
+              .getAnalysisData(),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                return Consumer<AnalysisProvider>(
+                  builder: (BuildContext context, value, Widget child) {
+                    return ListView(children: [
+                      MyAppBarContainer(),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: deviceSize(context).width * 0.06,
+                          vertical: deviceSize(context).height * 0.02,
+                        ),
+                        child: Text(
+                          "Choose Region on the Map",
+                          textScaleFactor: 1.2,
+                          style: TextStyle(fontWeight: FontWeight.normal),
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-                MyCardListItem(
-                  callBack: () =>
-                      Navigator.pushNamed(context, SetupIdea.routeName),
-                ),
-                MyCardListItem(
-                  callBack: () {
-                    _scaffoldKey.currentState.showSnackBar(
-                      showSnackbar(
-                          "add other", Icon(Icons.alarm), Colors.green),
-                    );
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                          horizontal: deviceSize(context).width * 0.06,
+                          vertical: deviceSize(context).height * 0.01,
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              height: deviceSize(context).width * 0.7,
+                              child: MyGoogleMap(key: widget.key),
+                            ),
+                            SizedBox(
+                              width: deviceSize(context).width * 0.9,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  _isAuth == false
+                                      ? Row(
+                                          children: [
+                                            SizedBox(
+                                              width: deviceSize(context).width *
+                                                  0.56,
+                                              child: RichText(
+                                                text: TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text:
+                                                          "Want to Subscribe to Selected options Analysis, ",
+                                                    ),
+                                                    TextSpan(
+                                                      text: "Sign Up",
+                                                      style: TextStyle(
+                                                        color: firstPurple,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                      recognizer:
+                                                          TapGestureRecognizer()
+                                                            ..onTap = () {
+                                                              Navigator
+                                                                  .pushNamed(
+                                                                context,
+                                                                SignUp
+                                                                    .routeName,
+                                                              );
+                                                            },
+                                                    ),
+                                                    TextSpan(
+                                                      text: " Here!",
+                                                    ),
+                                                  ],
+                                                  style: TextStyle(
+                                                      color: Colors.black),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : Container(
+                                          width:
+                                              deviceSize(context).width * 0.56),
+                                  Consumer2<Auth, MyDropDownState>(
+                                    builder: (consumerContext, authVal,
+                                        myDropDownVal, child) {
+                                      return Expanded(
+                                        child: RaisedButton(
+                                          color: middlePurple,
+                                          child: Text("See Analysis"),
+                                          textColor: Colors.white,
+                                          onPressed: () => authVal
+                                              .isAuth()
+                                              .then(
+                                                (token) => token
+                                                    ? (!myDropDownVal
+                                                            .myCategorySelected)
+                                                        ? showMyDialog(
+                                                            context: context)
+                                                        : Navigator.pushNamed(
+                                                            context,
+                                                            Analysis.routeName,
+                                                          )
+                                                    : Navigator.pushNamed(
+                                                        context,
+                                                        Login.routeName,
+                                                      ),
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            MyCardListItem(
+                              callBack: () => Navigator.pushNamed(
+                                  context, SetupIdea.routeName),
+                            ),
+                            MyCardListItem(
+                              callBack: () {
+                                _scaffoldKey.currentState.showSnackBar(
+                                  showSnackbar("add other", Icon(Icons.alarm),
+                                      Colors.green),
+                                );
+                              },
+                            ),
+                            MyCardListItem(
+                              callBack: () {
+                                _scaffoldKey.currentState.showSnackBar(
+                                  showSnackbar("add Second", Icon(Icons.alarm),
+                                      Colors.green),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ]);
                   },
-                ),
-                MyCardListItem(
-                  callBack: () {
-                    _scaffoldKey.currentState.showSnackBar(
-                      showSnackbar(
-                          "add Second", Icon(Icons.alarm), Colors.green),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+                );
+              case ConnectionState.waiting:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+
+              case ConnectionState.none:
+                return Text("Problem occur in fetch data");
+
+              case ConnectionState.active:
+                break;
+            }
+          }),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/validation/signup_validation.dart';
@@ -66,6 +67,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => SignupValidation()),
       ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
       ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
+      ChangeNotifierProvider(create: (_) => AnalysisProvider()),
     ],
     child: MyApp(),
   ));
@@ -88,7 +90,7 @@ class MyApp extends StatelessWidget {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: Analysis(),
+        home: CustomDrawerPage(key),
         routes: {
           Login.routeName: (context) => auth.token != null
               ? CustomDrawerPage(key)
