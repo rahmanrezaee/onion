@@ -34,10 +34,8 @@ class AnalyticsProvider with ChangeNotifier {
   Future<void> fetchItems({@required String name, BuildContext context}) async {
     try {
       isLoading = true;
-      final response = await APIRequest().get(
-        myUrl: "$baseDropDownItemsUrl?type=category&parent=$name",
-        token: null,
-      );
+      final response = await APIRequest()
+          .get(myUrl: "$baseDropDownItemsUrl?type=category&parent=$name");
       print("Mahdi: $response");
 
       final extractedData = response.data;

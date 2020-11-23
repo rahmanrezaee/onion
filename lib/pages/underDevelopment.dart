@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class UnderDevelopment extends StatelessWidget {
+
+
   final List<String> anim = [
     "assets/anim/app-developer.json",
   
@@ -15,6 +17,7 @@ class UnderDevelopment extends StatelessWidget {
       appBar: AppBar(
         title: Text("Under Development"),
         centerTitle: true,
+        
       ),
       body: Container(
         child: Lottie.asset(anim[0], fit: BoxFit.cover),

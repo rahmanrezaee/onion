@@ -1,12 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/const/Size.dart';
-import 'package:onion/const/color.dart';
-import 'package:onion/const/values.dart';
+
+import '../../const/Size.dart';
+import '../../const/color.dart';
+import '../../const/values.dart';
 
 import '../MRaiseButton.dart';
-
-enum WhyFarther { harder, smarter, selfStarter, tradingCharter }
 
 class CardListItem extends StatefulWidget {
   const CardListItem({
@@ -27,12 +26,11 @@ class _CardListItemState extends State<CardListItem> {
       key: _menuKey,
       padding: EdgeInsets.zero,
       color: Colors.white,
-
       itemBuilder: (_) => <PopupMenuItem<String>>[
         PopupMenuItem<String>(
           child: Container(
-            width: deviceSize(context).width * 0.23,
-            height: deviceSize(context).height * 0.04,
+            width: deviceSize(context).width * 0.5,
+            height: deviceSize(context).height * 0.06,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -47,6 +45,12 @@ class _CardListItemState extends State<CardListItem> {
             ),
           ),
           value: 'Doge',
+        ),
+        PopupMenuItem(
+          child: RaisedButton(
+            child: Text("data"),
+            onPressed: () {},
+          ),
         ),
         // PopupMenuItem<String>(
         //   child: MRaiseButton(
@@ -95,26 +99,29 @@ class _CardListItemState extends State<CardListItem> {
                     ],
                   ),
                   Spacer(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        child: button,
-                        onTap: () {
-                          dynamic state = _menuKey.currentState;
-                          state.showButtonMenu();
-                        },
-                      ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(right: 3.0),
-                      //   child: Text(
-                      //     "30/08/2020-11:00AM",
-                      //     textScaleFactor: 0.8,
-                      //     style: TextStyle(color: Colors.grey),
-                      //   ),
-                      // )
-                    ],
+                  Container(
+                    color: Colors.blue,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          child: button,
+                          onTap: () {
+                            dynamic state = _menuKey.currentState;
+                            state.showButtonMenu();
+                          },
+                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(right: 3.0),
+                        //   child: Text(
+                        //     "30/08/2020-11:00AM",
+                        //     textScaleFactor: 0.8,
+                        //     style: TextStyle(color: Colors.grey),
+                        //   ),
+                        // )
+                      ],
+                    ),
                   )
                 ],
               ),

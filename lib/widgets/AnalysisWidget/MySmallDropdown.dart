@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:onion/statemanagment/MyDropDownState.dart';
 import 'package:provider/provider.dart';
 
 import '../../statemanagment/dropDownItem/CategoryProvider.dart';
@@ -41,9 +42,12 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
   String _value;
   Future<void> myFuture;
   String name;
+  String hintTxt = "country";
   AnalyticsProvider analyticsProvider;
   IndustryProvider industryProvider;
   CategoryProvider categoryProvider;
+  bool isOpened = false;
+  final List<String> items = [];
 
   @override
   void initState() {
@@ -51,21 +55,22 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
     super.initState();
     // print("Mahdi Object ${widget.myDropDownList}");
     // // _value = widget.firstVal;
+    items.clear();
+    widget.myDropDownList.map((e) => items.add("1"));
     if (widget.futureType == "category") {
-      _value = widget.firstVal;
+      hintTxt = "category";
     } else if (widget.futureType == "industry") {
-      _value = widget.firstVal;
+      hintTxt = "industry";
     } else if (widget.futureType == "analytics") {
-      _value = widget.firstVal;
+      hintTxt = "analytics";
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    analyticsProvider = Provider.of<AnalyticsProvider>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     industryProvider = Provider.of<IndustryProvider>(context, listen: false);
-
+    analyticsProvider = Provider.of<AnalyticsProvider>(context, listen: false);
     return Container(
       padding: EdgeInsets.all(deviceSize(context).width * 0.01),
       margin: EdgeInsets.symmetric(
@@ -83,37 +88,54 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
             iconDisabledColor: widget.iconColor,
             iconEnabledColor: widget.iconColor,
             dropdownColor: widget.dropDownColor,
+            hint: Text(
+              hintTxt,
+              style: TextStyle(color: Colors.white),
+            ),
             onChanged: (value) async {
               setState(() {
                 _value = value;
               });
               if (widget.futureType == "category") {
-                industryProvider.clearDate();
+                Provider.of<MyDropDownState>(context, listen: false)
+                    .setCategorySelected(true);
                 await industryProvider.fetchItems(
                   name: value,
                   context: context,
                 );
               } else if (widget.futureType == "industry") {
-                analyticsProvider.clearDate();
+                Provider.of<MyDropDownState>(context, listen: false)
+                    .setIndustrySelected(true);
                 await analyticsProvider.fetchItems(
                   name: value,
                   context: context,
                 );
+              } else if (widget.futureType == "analysis") {
+                Provider.of<MyDropDownState>(context, listen: false)
+                    .setAnalyticsSelected(true);
               }
             },
             isDense: true,
+            // selectedItemBuilder: (BuildContext selectedContext) {
+            //   return items
+            //       .map<Widget>(
+            //         (e) => Text(
+            //           "$_value",
+            //           maxLines: 1,
+            //           overflow: TextOverflow.ellipsis,
+            //         ),
+            //       )
+            //       .toList();
+            // },
             items: widget.myDropDownList.isNotEmpty
                 ? widget.myDropDownList.map((e) {
                     print("Mahdi: ${e.id}");
                     print("Mahdi: ${e.name}");
-
                     return DropdownMenuItem(
                       child: SizedBox(
-                        width: deviceSize(context).width * 0.19,
-                        child: AutoSizeText(
+                        width: deviceSize(context).width * 0.17,
+                        child: Text(
                           "${e.name}",
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
                           textScaleFactor: 0.7,
                           style: TextStyle(color: widget.txtColor),
                         ),

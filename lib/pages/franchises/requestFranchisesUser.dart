@@ -1,6 +1,7 @@
 // import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/const/public.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
@@ -20,6 +21,7 @@ class RequestFranchisesUser extends StatefulWidget {
 class _RequestFranchisesUserState extends State<RequestFranchisesUser> {
   String _message;
   List _documents;
+
   // PlatformFile _video;
   DateTime _selectedDate;
   String _references;
@@ -199,18 +201,24 @@ class _RequestFranchisesUserState extends State<RequestFranchisesUser> {
                 SizedBox(height: 20),
                 _documents == null
                     ? Container()
-                    : Wrap(children: [
-                        ..._documents.map(
-                          (doc) => ChoosedFile(
-                            () {
-                              int index = _documents.indexOf(doc);
-                              setState(() {
-                                _documents.removeAt(index);
-                              });
-                            },
+                    : Wrap(
+                        children: [
+                          ..._documents.map(
+                            (doc) => SizedBox(
+                              height: deviceSize(context).height,
+                              width: deviceSize(context).width,
+                              child: ChoosedFile(
+                                () {
+                                  int index = _documents.indexOf(doc);
+                                  setState(() {
+                                    _documents.removeAt(index);
+                                  });
+                                },
+                              ),
+                            ),
                           ),
-                        ),
-                      ]),
+                        ],
+                      ),
                 SizedBox(height: 20),
                 Text("Upload Video",
                     style: TextStyle(fontSize: 20, color: deepBlue)),
@@ -372,7 +380,9 @@ class _RequestFranchisesUserState extends State<RequestFranchisesUser> {
 
 class ChoosedFile extends StatelessWidget {
   ChoosedFile(this.onClose);
+
   final Function onClose;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
