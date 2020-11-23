@@ -10,6 +10,7 @@ import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/widgets/test.dart';
 import 'package:provider/provider.dart';
+// import 'package:cloud_messaging/cloud_messaging.dart';
 
 import './pages/Idea/MyIdeaDetailes.dart';
 import './pages/franchises/RequestOnFranchise.dart';
@@ -53,6 +54,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
@@ -75,42 +77,27 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+  print("data: ${message.data}");
+}
+
 class _MyAppState extends State<MyApp> {
-  String _homeScreenText = "Waiting for token...";
-  String _messageText = "Waiting for message...";
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
   @override
   void initState() {
     super.initState();
-    _firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-      setState(() {
-        _messageText = "Push Messaging message: $message";
-      });
-      print("onMessage: $message");
-    }, onLaunch: (Map<String, dynamic> message) async {
-      setState(() {
-        _messageText = "Push Messaging message: $message";
-      });
-      print("onLaunch: $message");
-    }, onResume: (Map<String, dynamic> message) async {
-      setState(() {
-        _messageText = "Push Messaging message: $message";
-      });
-      print("onResume: $message");
-    });
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
-    _firebaseMessaging.getToken().then((String token) {
-      assert(token != null);
-      setState(() {
-        _homeScreenText = "Push Messaging token: $token";
-      });
-      print(_homeScreenText);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
     });
   }
 

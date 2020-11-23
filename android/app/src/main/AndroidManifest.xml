@@ -86,8 +86,8 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <service
-            android:name=".YourFirebaseMessagingService" 
+            android:name="FirebaseMessagingService" 
             android:exported="false">
- </service>
+        </service>
     </application>
 </manifest>
