@@ -47,10 +47,11 @@ import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
 import './pages/request.dart';
-import 'pages/franchises/ViewMyRequestFranchise.dart';
+import './pages/franchises/ViewMyRequestFranchise.dart';
 import './widgets/bottom_nav.dart';
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -74,9 +75,9 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Provider.of<Auth>(
-      context,
-    ).tryAutoLogin();
+
+    Provider.of<Auth>(context, listen: false).tryAutoLogin();
+    
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
         title: 'Flutter Demo',
@@ -105,65 +106,23 @@ class MyApp extends StatelessWidget {
                 ),
           MyIdeaId.routeName: (context) => MyIdeaId(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
-          SignUp.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
-              : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
-                          ? Scaffold(
-                              body: Center(child: Text("Loading...")),
-                            )
-                          : SignUp(),
-                ),
+          SignUp.routeName: (context) =>
+              auth.token != null ? CustomDrawerPage(key) : SignUp(),
           ComplateProfile.routeName: (context) => auth.token != null
               ? CustomDrawerPage(key)
-              : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
-                          ? Scaffold(
-                              body: Center(child: Text("Loading...")),
-                            )
-                          : ComplateProfile(
-                              ModalRoute.of(context).settings.arguments,
-                            ),
+              : ComplateProfile(
+                  ModalRoute.of(context).settings.arguments,
                 ),
           CustomDrawerPage.routeName: (context) => CustomDrawerPage(key),
           AnalyticsOne.routeName: (context) => AnalyticsOne(),
           Analysis.routeName: (context) => Analysis(),
           RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-          ForgetPassword.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
-              : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
-                          ? Scaffold(
-                              body: Center(child: Text("Loading...")),
-                            )
-                          : ForgetPassword(),
-                ),
+          ForgetPassword.routeName: (context) =>
+              auth.token != null ? CustomDrawerPage(key) : ForgetPassword(),
           ChangePassword.routeName: (context) => auth.token != null
               ? CustomDrawerPage(key)
-              : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
-                          ? Scaffold(
-                              body: Center(child: Text("Loading...")),
-                            )
-                          : ChangePassword(
-                              ModalRoute.of(context).settings.arguments,
-                            ),
+              : ChangePassword(
+                  ModalRoute.of(context).settings.arguments,
                 ),
           SendInvRequest.routeName: (context) => SendInvRequest(),
           SetupIdea.routeName: (context) => SetupIdea(),

@@ -3,8 +3,21 @@ import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/services/SimpleHttp.dart';
 import 'package:shimmer/shimmer.dart';
 
-class FandQ extends StatelessWidget {
+class FandQ extends StatefulWidget {
   static String routeName = "FandQ";
+
+  @override
+  _FandQState createState() => _FandQState();
+}
+
+class _FandQState extends State<FandQ> {
+  Future getData;
+
+  @override
+  void initState() {
+    getData = SimpleHttp().getFandQ();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +33,11 @@ class FandQ extends StatelessWidget {
             }),
       ),
       body: FutureBuilder(
-        future: SimpleHttp().getFandQ(),
+        future: getData,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List data = snapshot.data as List;
-            print("data: $data");
+     
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
