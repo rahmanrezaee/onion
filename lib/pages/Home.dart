@@ -46,10 +46,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    for (var i = 0; i < GeoJson.IN.length; i++) {
-      // var ltlng = LatLng(GeoJson.IN[i][1], GeoJson.IN[i][0]);
-      print("Mahdi: afghanistan ${GeoJson.AFG['afghanistan'][0][1]}");
-    }
+    // for (var i = 0; i < GeoJson.IN.length; i++) {
+    //   // var ltlng = LatLng(GeoJson.IN[i][1], GeoJson.IN[i][0]);
+    //   print("Mahdi: afghanistan ${GeoJson.AFG['afghanistan'][0][1]}");
+    // }
   }
 
   @override
@@ -81,8 +81,8 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Container(
                   width: double.infinity,
-                  height: deviceSize(context).width * 0.5,
-                  child: MyGoogleMap(widget.key),
+                  height: deviceSize(context).width * 0.7,
+                  child: MyGoogleMap(key: widget.key),
                 ),
                 SizedBox(
                   width: deviceSize(context).width * 0.9,

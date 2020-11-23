@@ -11,9 +11,17 @@ class FandQ extends StatefulWidget {
 }
 
 class _FandQState extends State<FandQ> {
+<<<<<<< HEAD
   Future _getData;
   initState() {
     _getData = SimpleHttp().getFandQ();
+=======
+  Future getData;
+
+  @override
+  void initState() {
+    getData = SimpleHttp().getFandQ();
+>>>>>>> f86cda950c9eb7ac998d6c6369b10b12348921ec
     super.initState();
   }
 
@@ -31,11 +39,15 @@ class _FandQState extends State<FandQ> {
             }),
       ),
       body: FutureBuilder(
+<<<<<<< HEAD
         future: _getData,
+=======
+        future: getData,
+>>>>>>> f86cda950c9eb7ac998d6c6369b10b12348921ec
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List data = snapshot.data as List;
-            print("data: $data");
+     
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(

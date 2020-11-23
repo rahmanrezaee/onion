@@ -34,7 +34,7 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
   Widget _page;
 
   initState() {
-    _page = HomePage(openDrawer: openCustomDrawer, key: widget.key);
+    _page = MainScreen(openDrawer: openCustomDrawer, key: widget.key);
     super.initState();
   }
 
@@ -83,7 +83,7 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
             } else if (value.scaffoldType == Services.routeName) {
               return Services(openDrawer: openCustomDrawer);
             } else if (value.scaffoldType == Analysis.routeName) {
-              return Analysis(openDrawer: openCustomDrawer);
+              // return Analysis(openDrawer: openCustomDrawer);
             }
             return null;
           },

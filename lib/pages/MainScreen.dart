@@ -24,7 +24,7 @@ class _MainScreenState extends State<MainScreen> {
     List<Widget> pageWidget = [
       HomePage(openDrawer: widget.openDrawer),
       MyMessagePage(openDrawer: widget.openDrawer),
-      Analysis(openDrawer: widget.openDrawer,),
+      // Analysis(openDrawer: widget.openDrawer,),
       Center(child: Text("under development")),
       Center(child: Text("under development"))
     ];

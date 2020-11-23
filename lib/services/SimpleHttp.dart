@@ -3,7 +3,7 @@ import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
 import 'package:dio/dio.dart';
 
 class SimpleHttp{
-  getFandQ()async{
+  getFandQ() async{
     Response result = await APIRequest().get(myUrl: "$baseUrl/faqs");
     return result.data;
   }

@@ -9,10 +9,17 @@ class APIRequest {
     token,
   }) {
     print(token);
-    if (token == null) {
-      return dio.get(myUrl);
-    } else {
-      return dio.get(myUrl, options: new Options(headers: {'token': '$token'}));
+
+    try {
+      
+      if (token == null) {
+        return dio.get(myUrl);
+      } else {
+        return dio.get(myUrl,
+            options: new Options(headers: {'token': '$token'}));
+      }
+    } on DioError catch (e) {
+      print(e.response);
     }
   }
 

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:onion/models/circularChart.dart';
 
 import '../../const/Size.dart';
 import '../../const/color.dart';
 
 class MyBigDropDown extends StatefulWidget {
+  List<CircularChart> countyList;
+
+  MyBigDropDown({this.countyList});
   @override
   _MyBigDropDownState createState() => _MyBigDropDownState();
 }
 
 class _MyBigDropDownState extends State<MyBigDropDown> {
-  int _value = 1;
+  String _value = 'ALL';
 
   @override
   Widget build(BuildContext context) {
@@ -26,184 +30,19 @@ class _MyBigDropDownState extends State<MyBigDropDown> {
           iconEnabledColor: Colors.white,
           dropdownColor: middlePurple,
           isDense: true,
-          items: [
-            DropdownMenuItem(
+          items: widget.countyList.map((e) {
+            return DropdownMenuItem(
               child: Text(
-                "Select Region",
+                e.country,
                 textScaleFactor: 1.4,
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              value: 1,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Second",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 2,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Third",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 3,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Fourth",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 4,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Fourth",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 5,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Fourth",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 6,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Second",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 7,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Third",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 8,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Fourth",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 9,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Fourth",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 10,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Fourth",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 11,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Second",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 12,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Third",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 13,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Fourth",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 14,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Fourth",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 15,
-            ),
-            DropdownMenuItem(
-              child: Text(
-                "Fourth",
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: 16,
-            )
-          ],
+              value: e.countryCode,
+            );
+          }).toList(),
           onChanged: (value) {
             setState(() {
               _value = value;
