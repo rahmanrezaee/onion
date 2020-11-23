@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +48,7 @@ class _PostIdeaState extends State<PostIdea> {
   @override
   Widget build(BuildContext context) {
     final validationService = Provider.of<PostIdeaValidation>(context);
-  
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, kToolbarHeight),
