@@ -4,10 +4,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class SettingsHttp {
-  getDefaultSettings(token) async {
+  Future getDefaultSettings(token) async {
+    print("token $token");
     Response result =
         await APIRequest().get(myUrl: "$baseUrl/user/me", token: token);
-    return result.data['settings'][0];
+
+    print("$baseUrl/user/me");
+    return result.data['settings'] != null && result.data['settings'].length > 0
+        ? result.data['settings']
+        : null;
   }
 
   Future setSettings(
@@ -17,17 +22,22 @@ class SettingsHttp {
       @required update,
       @required website,
       @required token}) async {
-    print("This is SMS " + sms.toString());
-    Response response =
-        await APIRequest().post(myUrl: "$baseUrl/user/settings", myBody: {
-      "sms": sms.toString(),
-      "email": email.toString(),
-      "profile_type": profileType.toString(),
-      "update": update.toString(),
-      "website": website.toString()
-    }, myHeaders: {
-      "token": "$token"
-    });
-    print("Response: ${response.data}");
+    try {
+      print("token $token");
+      Response response =
+          await APIRequest().post(myUrl: "$baseUrl/user/settings", myBody: {
+        "sms": sms.toString(),
+        "email": email.toString(),
+        "profile_type": profileType.toString(),
+        "update": update.toString(),
+        "website": website.toString()
+      }, myHeaders: {
+        "token": "$token"
+      });
+      print("Response: ${response.data}");
+    } on DioError catch (e) {
+      print("errors");
+      print(e.response.data["message"]);
+    }
   }
 }

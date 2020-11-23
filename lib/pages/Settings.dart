@@ -5,6 +5,7 @@ import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/services/SettingsHttp.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
+import 'package:provider/provider.dart';
 
 class Settings extends StatefulWidget {
   static String routeName = "Settings";
@@ -28,7 +29,6 @@ class _SettingsState extends State<Settings> {
   bool _loadingButton = false;
   bool defaultDataLoaded = false;
   getDefaultData() async {
-    token = await Auth().getToken();
     var defaultData = await SettingsHttp().getDefaultSettings(token);
     print("defaultData $defaultData");
     setState(() {
@@ -42,6 +42,7 @@ class _SettingsState extends State<Settings> {
   }
 
   initState() {
+    token = Provider.of<Auth>(context, listen: false).token;
     getDefaultData();
     super.initState();
   }

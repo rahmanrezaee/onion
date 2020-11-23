@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
@@ -16,7 +17,6 @@ import './pages/franchises/requestFranchisesUser.dart';
 import './pages/franchises/viewFranchisesUser.dart';
 import './statemanagment/MyDropDownState.dart';
 import './test.dart';
-import './pages/franchises/RequestOnFranchise.dart';
 import './pages/underDevelopment.dart';
 import './pages/Home.dart';
 import './pages/Idea/postIdea.dart';
@@ -70,11 +70,55 @@ void main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String _homeScreenText = "Waiting for token...";
+  String _messageText = "Waiting for message...";
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  @override
+  void initState() {
+    super.initState();
+    _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+      setState(() {
+        _messageText = "Push Messaging message: $message";
+      });
+      print("onMessage: $message");
+    }, onLaunch: (Map<String, dynamic> message) async {
+      setState(() {
+        _messageText = "Push Messaging message: $message";
+      });
+      print("onLaunch: $message");
+    }, onResume: (Map<String, dynamic> message) async {
+      setState(() {
+        _messageText = "Push Messaging message: $message";
+      });
+      print("onResume: $message");
+    });
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+    _firebaseMessaging.getToken().then((String token) {
+      assert(token != null);
+      setState(() {
+        _homeScreenText = "Push Messaging token: $token";
+      });
+      print(_homeScreenText);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    Provider.of<Auth>(context, listen: false).tryAutoLogin();
-
+    Provider.of<Auth>(
+      context,
+    ).tryAutoLogin();
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
         title: 'Onion.ai',
@@ -97,10 +141,10 @@ class MyApp extends StatelessWidget {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
               }),
             ),
-            home: CustomDrawerPage(key),
+            home: CustomDrawerPage(widget.key),
             routes: {
               Login.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage(key)
+                  ? CustomDrawerPage(widget.key)
                   : FutureBuilder(
                       future: Provider.of<Auth>(context, listen: false)
                           .tryAutoLogin(),
@@ -115,7 +159,7 @@ class MyApp extends StatelessWidget {
               MyIdeaId.routeName: (context) => MyIdeaId(),
               RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
               SignUp.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage(key)
+                  ? CustomDrawerPage(widget.key)
                   : FutureBuilder(
                       future: Provider.of<Auth>(context, listen: false)
                           .tryAutoLogin(),
@@ -128,7 +172,7 @@ class MyApp extends StatelessWidget {
                               : SignUp(),
                     ),
               ComplateProfile.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage(key)
+                  ? CustomDrawerPage(widget.key)
                   : FutureBuilder(
                       future: Provider.of<Auth>(context, listen: false)
                           .tryAutoLogin(),
@@ -142,12 +186,13 @@ class MyApp extends StatelessWidget {
                                   ModalRoute.of(context).settings.arguments,
                                 ),
                     ),
-              CustomDrawerPage.routeName: (context) => CustomDrawerPage(key),
+              CustomDrawerPage.routeName: (context) =>
+                  CustomDrawerPage(widget.key),
               AnalyticsOne.routeName: (context) => AnalyticsOne(),
-              Analysis.routeName: (context) => Analysis(),
+              // Analysis.routeName: (context) => Analysis(),
               RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
               ForgetPassword.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage(key)
+                  ? CustomDrawerPage(widget.key)
                   : FutureBuilder(
                       future: Provider.of<Auth>(context, listen: false)
                           .tryAutoLogin(),
@@ -160,7 +205,7 @@ class MyApp extends StatelessWidget {
                               : ForgetPassword(),
                     ),
               ChangePassword.routeName: (context) => auth.token != null
-                  ? CustomDrawerPage(key)
+                  ? CustomDrawerPage(widget.key)
                   : FutureBuilder(
                       future: Provider.of<Auth>(context, listen: false)
                           .tryAutoLogin(),

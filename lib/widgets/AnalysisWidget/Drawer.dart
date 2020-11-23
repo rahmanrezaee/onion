@@ -202,7 +202,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   context: context,
                   name: "Analytics ",
                   icon: Icons.person,
-                  routeName: Analysis.routeName,
+                  // routeName: Analysis.routeName,
                   justPush: true),
 
               value.token != null
@@ -210,7 +210,8 @@ class _MyDrawerState extends State<MyDrawer> {
                       context: context,
                       name: "My Profile",
                       icon: Icons.person,
-                      routeName: "Uder Development")
+                      routeName: "Uder Development",
+                      justPush: true)
                   : Container(),
               value.token != null
                   ? myListTile(
@@ -249,12 +250,14 @@ class _MyDrawerState extends State<MyDrawer> {
                 justPush: true,
                 hasDrawer: true,
               ),
-              myListTile(
-                  context: context,
-                  name: "My Ideas Id",
-                  icon: Icons.ac_unit,
-                  routeName: MyIdeaId.routeName,
-                  justPush: true),
+              value.token != null
+                  ? myListTile(
+                      context: context,
+                      name: "My Ideas Id",
+                      icon: Icons.ac_unit,
+                      routeName: MyIdeaId.routeName,
+                    )
+                  : Container(),
 
               // value.token != null
               //     ? myListTile(

@@ -139,11 +139,11 @@ class _HomePageState extends State<HomePage> {
                               onPressed: () => authVal.isAuth().then(
                                     (token) => token
                                         ? (!myDropDownVal.myCategorySelected)
-                                            ? showMyDialog(context: context)
-                                            : Navigator.pushNamed(
-                                                context,
-                                                Analysis.routeName,
-                                              )
+                                        // ? showMyDialog(context: context)
+                                        // : Navigator.pushNamed(
+                                        //     context,
+                                        //     Analysis.routeName,
+                                        // )
                                         : Navigator.pushNamed(
                                             context,
                                             Login.routeName,
