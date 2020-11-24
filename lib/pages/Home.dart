@@ -82,7 +82,9 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   width: double.infinity,
                   height: deviceSize(context).width * 0.7,
-                  child: MyGoogleMap(widget.key),
+                  child: InteractiveViewer(
+                    child: MyGoogleMap(widget.key),
+                  ),
                 ),
                 SizedBox(
                   width: deviceSize(context).width * 0.9,

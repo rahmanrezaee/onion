@@ -3,11 +3,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:onion/const/MyUrl.dart';
 import 'package:onion/const/values.dart';
 import 'package:onion/models/users.dart';
 import 'package:flutter/widgets.dart';
+import 'package:onion/statemanagment/ChatManagement/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as fi;
@@ -20,6 +23,7 @@ class Auth with ChangeNotifier {
   String token;
   Map userDataField;
   User currentUser = new User();
+  AuthMethods authMethods = new AuthMethods();
 
   Future<bool> isAuth() async {
     await tryAutoLogin();
@@ -34,6 +38,13 @@ class Auth with ChangeNotifier {
 
       var response = await dio.post(url, data: user.toMap());
       final responseData = response.data;
+      authMethods
+          .signUpWithEmailAndPassword(user.email, user.password)
+          .then((value) {
+        print("Mahdi I am Firebase SignUp: $value");
+      }).catchError((e) {
+        print("Mahdi I am Firebase SignUp: $e");
+      });
 
       var prefs = await SharedPreferences.getInstance();
 
@@ -101,6 +112,12 @@ class Auth with ChangeNotifier {
       final response = await dio.post(url, data: {
         'email': username,
         'password': password,
+      });
+
+      authMethods.signInWithEmailAndPassword(username, password).then((value) {
+        print("Mahdi I am Firebase SignIn: $value");
+      }).catchError((e) {
+        print("Mahdi I am Firebase SignIn: $e");
       });
 
       final responseData = response.data;
@@ -267,7 +284,8 @@ class Auth with ChangeNotifier {
     Dio dio = new Dio();
     print(url.toString());
     try {
-      Response inter = await dio.get(url.toString(), queryParameters: {"type": "interested"});
+      Response inter = await dio
+          .get(url.toString(), queryParameters: {"type": "interested"});
 
       print(inter.data);
       Response locat =
@@ -302,10 +320,12 @@ class Auth with ChangeNotifier {
 
 class LoginException implements Exception {
   String cause;
+
   LoginException(this.cause);
 }
 
 class UploadException implements Exception {
   String cause;
+
   UploadException(this.cause);
 }

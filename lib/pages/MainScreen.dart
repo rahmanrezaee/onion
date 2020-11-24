@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/pages/Analysis.dart';
+import 'package:onion/pages/DashboardPage.dart';
 import 'package:onion/pages/Home.dart';
 import 'package:onion/pages/MyMessagePage.dart';
 import 'package:onion/pages/underDevelopment.dart';
@@ -24,9 +25,9 @@ class _MainScreenState extends State<MainScreen> {
     List<Widget> pageWidget = [
       HomePage(openDrawer: widget.openDrawer),
       MyMessagePage(openDrawer: widget.openDrawer),
-      Analysis(openDrawer: widget.openDrawer,),
+      Analysis(openDrawer: widget.openDrawer),
+      DashboardPage(openDrawer: widget.openDrawer),
       Center(child: Text("under development")),
-      Center(child: Text("under development"))
     ];
 
     return Scaffold(
@@ -34,7 +35,6 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
         color: middlePurple,
-        
         itemTitles: [
           Text("Home",
               textAlign: TextAlign.center,
@@ -64,7 +64,6 @@ class _MainScreenState extends State<MainScreen> {
           setState(() {
             _page = index;
           });
-        
         },
       ),
     );

@@ -26,6 +26,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   syncfusion_flutter_maps: ^18.3.50-beta
+  cached_network_image: ^2.3.3
+  cloud_firestore: ^0.14.3
+  firebase_storage: ^5.0.1
+  fluttertoast: ^7.1.4
   webview_flutter: ^1.0.7
   font_awesome_flutter: ^8.10.0
   flutter_inner_drawer: ^0.5.7+2
