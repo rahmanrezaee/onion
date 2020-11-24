@@ -8,9 +8,36 @@ import 'package:onion/models/globalChart.dart';
 class AnalysisProvider with ChangeNotifier {
   Dio dio = new Dio();
   GlobalChart gc;
+
+  String chartTypeSelected = "pie";
+
+  List<Map> chartTypes = [
+    {
+      "display": "Pie",
+      "value": "pie",
+    },
+    {
+      "display": "Table",
+      "value": "table",
+    },
+    {
+      "display": "Bar",
+      "value": "bar",
+    },
+    {
+      "display": "Date",
+      "value": "date",
+    },
+  ];
+
   List<CircularChart> country;
   CircularChart selectedCountry;
   List<CountryDensityModel> worldPopulationDensityDetails;
+
+ void setchartType(String value) {
+    this.chartTypeSelected = value;
+    notifyListeners();
+  }
 
   Future getAnalysisData() async {
     try {
