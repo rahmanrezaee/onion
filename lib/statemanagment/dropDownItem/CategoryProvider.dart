@@ -27,42 +27,24 @@ class CategoryProvider with ChangeNotifier {
   String dropDownFilter;
   IndustryProvider industryProvider;
   bool isLoading = true;
+  String _catName;
+
+  get catName {
+    return _catName;
+  }
+
+  void setCatName(String catName) {
+    _catName = catName;
+    notifyListeners();
+  }
 
   bool catIsLoading() {
     return isLoading;
   }
 
-  // updateIndustryItem(String name, BuildContext context) {
-  //   // CategoryModel categoryModel = _items.firstWhere((element) => element.name == name);
-  //   industryProvider = Provider.of<IndustryProvider>(context, listen: false);
-  //   print("Mahdi: test $name");
-  //
-  //   // industryProvider.clearDate();
-  //   industryProvider.fetchItems(name: name, context: context);
-  //   notifyListeners();
-  // }
-
-  // boolDropDownFilter(String nameParam) {
-  //   dropDownFilter = nameParam;
-  // }
-
   List<CategoryModel> get items {
     return _items;
   }
-
-  // CategoryModel filterItems({String id}) {
-  //   return _items.firstWhere((element) => element.id == id);
-  // }
-
-  // CategoryModel get firstItem {
-  //   if (_items.isNotEmpty) {
-  //     notifyListeners();
-  //     return _items[0];
-  //   } else {
-  //     notifyListeners();
-  //     return null;
-  //   }
-  // }
 
   Future<void> fetchItems(BuildContext context) async {
     try {
@@ -101,12 +83,6 @@ class CategoryProvider with ChangeNotifier {
         );
       });
 
-      // print("Mahdi: title ${loadedProducts[0].name}");
-
-      // for (int i = 1; i < 6; i++) {
-      //   loadedProducts.add(CategoryModel(id: i, val: extractedData['$i']));
-      // }
-
       _items = [];
       _items = loadedProducts;
       isLoading = true;
@@ -130,3 +106,35 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 }
+// updateIndustryItem(String name, BuildContext context) {
+//   // CategoryModel categoryModel = _items.firstWhere((element) => element.name == name);
+//   industryProvider = Provider.of<IndustryProvider>(context, listen: false);
+//   print("Mahdi: test $name");
+//
+//   // industryProvider.clearDate();
+//   industryProvider.fetchItems(name: name, context: context);
+//   notifyListeners();
+// }
+
+// boolDropDownFilter(String nameParam) {
+//   dropDownFilter = nameParam;
+// }
+// CategoryModel filterItems({String id}) {
+//   return _items.firstWhere((element) => element.id == id);
+// }
+
+// CategoryModel get firstItem {
+//   if (_items.isNotEmpty) {
+//     notifyListeners();
+//     return _items[0];
+//   } else {
+//     notifyListeners();
+//     return null;
+//   }
+// }
+
+// print("Mahdi: title ${loadedProducts[0].name}");
+
+// for (int i = 1; i < 6; i++) {
+//   loadedProducts.add(CategoryModel(id: i, val: extractedData['$i']));
+// }

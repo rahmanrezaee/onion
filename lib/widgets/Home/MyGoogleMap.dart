@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 import 'package:onion/const/color.dart';
 import 'package:onion/statemanagment/MyDropDownState.dart';
+import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
 import 'package:provider/provider.dart';
 import '../../models/sample_view.dart';
 
@@ -290,7 +291,7 @@ class _MapRangeColorMappingPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MyDropDownState>(
+    return Consumer<AnalyticsProvider>(
       builder: (BuildContext context, value, Widget child) {
         // _worldPopulationDensityDetails = value.items;
         // value.items.map((e) {
@@ -322,7 +323,9 @@ class _MapRangeColorMappingPageState extends SampleViewState {
         return Container(
           child: SingleChildScrollView(
             physics: const NeverScrollableScrollPhysics(),
-            child: _getMapsWidget(value.items),
+            child: value.countryItems.isNotEmpty
+                ? _getMapsWidget(value.countryItems)
+                : SizedBox.shrink(),
           ),
         );
       },
@@ -370,7 +373,7 @@ class _MapRangeColorMappingPageState extends SampleViewState {
                               //       from: 101, to: 200, color: Colors.yellow)
                               // ],
                               shapeTooltipTextMapper: (int index) {
-                                Provider.of<MyDropDownState>(
+                                Provider.of<AnalyticsProvider>(
                                   context,
                                   listen: false,
                                 ).selectSingle(name: myList[index].countryName);

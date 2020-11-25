@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onion/statemanagment/MyDropDownState.dart';
+import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
 import 'package:onion/statemanagment/dropDownItem/CategoryProvider.dart';
 import 'package:onion/widgets/Home/MyGoogleMap.dart';
 import 'package:provider/provider.dart';
@@ -35,10 +36,11 @@ class _MyBigDropDownState extends State<MyBigDropDown> {
         left: deviceSize(context).width * 0.03,
         right: deviceSize(context).width * 0.03,
       ),
-      child: Consumer<MyDropDownState>(
+      child: Consumer<AnalyticsProvider>(
         builder: (BuildContext context, val, Widget child) {
           print("Mahdi Executed Bool ${val.myBigDropSelected}");
-          if (val.tempItem != null) {
+          print("Mahdi Executed Bool ${val.countryItems}");
+          if (val.countryItems.isNotEmpty) {
             _value = val.tempItem;
           }
           return DropdownButtonHideUnderline(
@@ -62,8 +64,8 @@ class _MyBigDropDownState extends State<MyBigDropDown> {
                   });
                 },
                 isDense: true,
-                items: val.items.isNotEmpty
-                    ? val.items.map((e) {
+                items: val.countryItems.isNotEmpty
+                    ? val.countryItems.map((e) {
                         return DropdownMenuItem(
                           child: SizedBox(
                             width: deviceSize(context).width * 0.8,

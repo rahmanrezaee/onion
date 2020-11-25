@@ -44,8 +44,6 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
 
   @override
   Widget build(BuildContext context) {
-    print("HIIIIII");
-
     return Container(
       height: deviceSize(context).height * 0.16,
       padding: EdgeInsets.symmetric(
@@ -92,8 +90,9 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                             return MySmallDropdown(
                               myisExpanded: false,
                               myDropDownList:
-                                  value.items == null ? [] : value.items,
+                                  value.items.isEmpty ? [] : value.items,
                               dropDownAroundColor: Colors.white,
+                              // myDropDownAnal: [],
                               dropDownColor: middlePurple,
                               iconColor: Colors.white,
                               txtColor: Colors.white,
@@ -107,79 +106,66 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                   }
                 },
               ),
-              FutureBuilder(
-                future: fetchCategory,
-                builder: (consContext, AsyncSnapshot<dynamic> snapshot) {
-                  return Consumer<IndustryProvider>(
-                    builder: (BuildContext consContext, value, Widget child) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return MyEmptyText(myTxt: "Empty");
-                      } else {
-                        if (snapshot.error != null) {
-                          return MyEmptyText(myTxt: "Error...  ");
-                        } else {
-                          if (value.items.isEmpty) {
-                            return MyEmptyText(
-                              myTxt:
-                                  value.isLoading ? "loading..." : "Empty     ",
-                            );
-                          } else {
-                            isAnaLoading = false;
-                            return MySmallDropdown(
-                              myisExpanded: false,
-                              myDropDownList:
-                                  value.items == null ? [] : value.items,
-                              dropDownAroundColor: Colors.white,
-                              dropDownColor: middlePurple,
-                              iconColor: Colors.white,
-                              txtColor: Colors.white,
-                              futureType: "industry",
-                              firstVal: value.items[0].name,
-                            );
-                          }
-                        }
-                      }
-                    },
-                  );
+              Consumer<IndustryProvider>(
+                builder: (BuildContext consContext, value, Widget child) {
+                  if (value.items.isEmpty) {
+                    return MyEmptyText(
+                      myTxt: value.isLoading ? "loading..." : "Empty     ",
+                    );
+                  } else {
+                    isAnaLoading = false;
+                    return MySmallDropdown(
+                      myisExpanded: false,
+                      myDropDownList: value.items.isEmpty ? [] : value.items,
+                      // myDropDownAnal: [],
+                      dropDownAroundColor: Colors.white,
+                      dropDownColor: middlePurple,
+                      iconColor: Colors.white,
+                      txtColor: Colors.white,
+                      futureType: "industry",
+                      firstVal: value.items[0].name,
+                    );
+                  }
                 },
               ),
-              FutureBuilder(
-                builder: (consContext, AsyncSnapshot<dynamic> snapshot) {
-                  return Consumer<AnalyticsProvider>(
-                    builder: (BuildContext consContext, value, Widget child) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return MyEmptyText(myTxt: "Loading...");
-                      } else {
-                        if (snapshot.error != null) {
-                          return MyEmptyText(myTxt: "Error...  ");
-                        } else {
-                          if (value.items.isEmpty) {
-                            return MyEmptyText(
-                              myTxt:
-                                  value.isLoading ? "loading..." : "Empty     ",
-                            );
-                          } else {
-                            return MySmallDropdown(
-                              myisExpanded: false,
-                              myDropDownList:
-                                  value.items == null ? [] : value.items,
-                              dropDownAroundColor: Colors.white,
-                              dropDownColor: middlePurple,
-                              iconColor: Colors.white,
-                              txtColor: Colors.white,
-                              futureType: "analytics",
-                              firstVal: value.items[0].name,
-                            );
-                          }
-                        }
-                      }
-                    },
-                  );
-                },
-              ),
+              //     FutureBuilder(
+              //       builder: (consContext, AsyncSnapshot<dynamic> snapshot) {
+              //         return Consumer<AnalyticsProvider>(
+              //           builder: (BuildContext consContext, value, Widget child) {
+              //             if (snapshot.connectionState == ConnectionState.waiting) {
+              //               return MyEmptyText(myTxt: "Loading...");
+              //             } else {
+              //               if (snapshot.error != null) {
+              //                 return MyEmptyText(myTxt: "Error...  ");
+              //               } else {
+              //                 if (value.items.isEmpty) {
+              //                   return MyEmptyText(
+              //                     myTxt:
+              //                         value.isLoading ? "loading..." : "Empty     ",
+              //                   );
+              //                 } else {
+              //                   return MySmallDropdown(
+              //                     myisExpanded: false,
+              //                     myDropDownList: [],
+              //                     dropDownAroundColor: Colors.white,
+              //                     myDropDownAnal:
+              //                         value.items == null ? [] : value.items,
+              //                     dropDownColor: middlePurple,
+              //                     iconColor: Colors.white,
+              //                     txtColor: Colors.white,
+              //                     futureType: "analytics",
+              //                     firstVal: value.items[0].title,
+              //                   );
+              //                 }
+              //               }
+              //             }
+              //           },
+              //         );
+              //       },
+              //     ),
             ],
           ),
-          MyBigDropDown(),
+          // MyBigDropDown(),
           // Consumer<MyDropDownState>(
           //   builder: (BuildContext context, value, Widget child) {
           //     print("Mahdi The Best One ${value.analyticsSelected}");

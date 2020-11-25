@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
 import 'package:provider/provider.dart';
 
+import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
+import 'package:onion/widgets/Home/MyGoogleMap.dart';
 import '../../const/MyUrl.dart';
 import '../../myHttpGlobal/MyHttpGlobal.dart';
 import './CategoryProvider.dart';
@@ -51,8 +52,6 @@ class IndustryProvider with ChangeNotifier {
       print("Mahdi: $response");
 
       final extractedData = response.data;
-
-      print("I AM MAHDI");
 
       if (extractedData == null) {
         _items = [];

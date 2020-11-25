@@ -183,27 +183,34 @@ class _DialogContentState extends State<DialogContent> {
                       return MySmallDropdown(
                         iconColor: Colors.black,
                         myisExpanded: true,
-                        myDropDownList: value.items,
+                        myDropDownList: [],
+                        // myDropDownAnal: value.items,
                         dropDownAroundColor: Colors.grey,
                         txtColor: Colors.grey,
                         dropDownColor: Colors.white,
-                        firstVal: value.items[0].name,
+                        firstVal: value.items[0].title,
                         futureType: "analytics",
                       );
                     }
                   },
                 ),
-                SizedBox(height: deviceSize(context).height * 0.03),
-                MySmallDropdown(
-                  iconColor: Colors.black,
-                  myisExpanded: true,
-                  myDropDownList: countryList,
-                  dropDownAroundColor: Colors.grey,
-                  txtColor: Colors.grey,
-                  dropDownColor: Colors.white,
-                  firstVal: countryList[0].name,
-                  futureType: "country",
-                ),
+                // SizedBox(height: deviceSize(context).height * 0.03),
+                // Consumer<AnalyticsProvider>(
+                //   builder: (BuildContext context, value, Widget child) {
+                //     return MySmallDropdown(
+                //       iconColor: Colors.black,
+                //       myisExpanded: true,
+                //       myDropDownList: value.countryItems,
+                //       dropDownAroundColor: Colors.grey,
+                //       txtColor: Colors.grey,
+                //       dropDownColor: Colors.white,
+                //       firstVal: value.countryItems.isNotEmpty
+                //           ? value.countryItems[0].countryName
+                //           : "Country",
+                //       futureType: "country",
+                //     );
+                //   },
+                // ),
                 SizedBox(height: deviceSize(context).height * 0.01),
                 SizedBox(
                   width: double.infinity,
