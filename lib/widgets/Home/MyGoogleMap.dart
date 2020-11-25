@@ -325,7 +325,7 @@ class _MapRangeColorMappingPageState extends SampleViewState {
             physics: const NeverScrollableScrollPhysics(),
             child: value.countryItems.isNotEmpty
                 ? _getMapsWidget(value.countryItems)
-                : SizedBox.shrink(),
+                : Container(color: Colors.blue),
           ),
         );
       },

@@ -59,6 +59,11 @@ class AnalyticsProvider with ChangeNotifier {
   bool _myBigDropSelected = false;
   List<CountryDensityModel> _countryItems = [];
 
+  void clearCountryData() {
+    _countryItems.clear();
+    notifyListeners();
+  }
+
   List<CountryDensityModel> get countryItems {
     return _countryItems;
   }
@@ -67,7 +72,7 @@ class AnalyticsProvider with ChangeNotifier {
     return _myBigDropSelected;
   }
 
-  String selectSingle({String name}) {
+  void selectSingle({String name}) {
     _myBigDropSelected = true;
     List<CountryDensityModel> temp = [];
     for (int i = 0; i < _countryItems.length; i++) {

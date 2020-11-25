@@ -14,7 +14,8 @@ import '../../statemanagment/dropDownItem/MyFlagState.dart';
 
 class MySmallDropdown extends StatefulWidget {
   final List<CategoryModel> myDropDownList;
-  // final List<AnalyticsModel> myDropDownAnal;
+
+  final List<AnalyticsModel> myDropDownAnal;
   final Color dropDownAroundColor;
   final Color txtColor;
   final Color dropDownColor;
@@ -33,7 +34,7 @@ class MySmallDropdown extends StatefulWidget {
     this.iconColor,
     this.futureType,
     this.firstVal,
-    // this.myDropDownAnal,
+    this.myDropDownAnal,
   });
 
   @override
@@ -55,7 +56,6 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
     // TODO: implement initState
     super.initState();
     // print("Mahdi Object ${widget.myDropDownList}");
-    // _value = widget.firstVal;
     if (widget.futureType == "category") {
       hintTxt = "category";
     } else if (widget.futureType == "industry") {
@@ -98,6 +98,7 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
               if (widget.futureType == "category") {
                 // Provider.of<MyDropDownState>(context, listen: false)
                 //     .setCategorySelected(true);
+                industryProvider.clearDate();
                 await industryProvider.fetchItems(
                   name: value,
                   context: context,
@@ -106,6 +107,7 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
               } else if (widget.futureType == "industry") {
                 // Provider.of<MyDropDownState>(context, listen: false)
                 //     .setIndustrySelected(true);
+                analyticsProvider.clearCountryData();
                 await analyticsProvider.fetchItems(
                   name: value,
                   context: context,
@@ -113,26 +115,18 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
               } else if (widget.futureType == "analytics") {
                 // Provider.of<MyDropDownState>(context, listen: false)
                 //     .setAnalyticsSelected();
-                Provider.of<AnalyticsProvider>(context, listen: false)
-                    .setCountryItems(title: value);
+                // analyticsProvider.clearCountryData();
+                // analyticsProvider.setCountryItems(title: value);
+                analyticsProvider.clearCountryData();
+                await Future.delayed(
+                  Duration(seconds: 0),
+                  () => analyticsProvider.setCountryItems(title: value),
+                );
               }
             },
             isDense: true,
-            // selectedItemBuilder: (BuildContext selectedContext) {
-            //   return items
-            //       .map<Widget>(
-            //         (e) => Text(
-            //           "$_value",
-            //           maxLines: 1,
-            //           overflow: TextOverflow.ellipsis,
-            //         ),
-            //       )
-            //       .toList();
-            // },
-
-            items:
-            // widget.futureType != "analytics"    ?
-            widget.myDropDownList.isNotEmpty
+            items: widget.futureType != "analytics"
+                ? widget.myDropDownList.isNotEmpty
                     ? widget.myDropDownList.map((e) {
                         print("Mahdi: ${e.id}");
                         print("Mahdi: ${e.name}");
@@ -149,23 +143,23 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
                         );
                       }).toList()
                     : null
-                // : widget.myDropDownAnal.isNotEmpty
-                //     ? widget.myDropDownAnal.map((e) {
-                //         print("Mahdi: ${e.id}");
-                //         print("Mahdi: ${e.title}");
-                //         return DropdownMenuItem(
-                //           child: SizedBox(
-                //             width: deviceSize(context).width * 0.17,
-                //             child: Text(
-                //               "${e.title}",
-                //               textScaleFactor: 0.7,
-                //               style: TextStyle(color: widget.txtColor),
-                //             ),
-                //           ),
-                //           value: e.title,
-                //         );
-                //       }).toList()
-                //     : null,
+                : widget.myDropDownAnal.isNotEmpty
+                    ? widget.myDropDownAnal.map((e) {
+                        print("Mahdi: ${e.id}");
+                        print("Mahdi: ${e.title}");
+                        return DropdownMenuItem(
+                          child: SizedBox(
+                            width: deviceSize(context).width * 0.17,
+                            child: Text(
+                              "${e.title}",
+                              textScaleFactor: 0.7,
+                              style: TextStyle(color: widget.txtColor),
+                            ),
+                          ),
+                          value: e.title,
+                        );
+                      }).toList()
+                    : null,
           ),
         ),
       ),

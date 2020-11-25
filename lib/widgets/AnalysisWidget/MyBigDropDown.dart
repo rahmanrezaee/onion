@@ -9,8 +9,11 @@ import '../../const/Size.dart';
 import '../../const/color.dart';
 
 class MyBigDropDown extends StatefulWidget {
+  final List<CountryDensityModel> myDropDownAnal;
+
   const MyBigDropDown({
     Key key,
+    this.myDropDownAnal,
   }) : super(key: key);
 
   @override
@@ -19,6 +22,7 @@ class MyBigDropDown extends StatefulWidget {
 
 class _MyBigDropDownState extends State<MyBigDropDown> {
   String _value;
+  AnalyticsProvider analysisProvider;
 
   @override
   void initState() {
@@ -30,59 +34,54 @@ class _MyBigDropDownState extends State<MyBigDropDown> {
   Widget build(BuildContext context) {
     // print("Mahdi: ${widget.myDropDownList}");
     // widget.myDropDownList.map((e) => print("Mahdi: $e"));
+    analysisProvider = Provider.of<AnalyticsProvider>(context, listen: false);
+
     return Padding(
       padding: EdgeInsets.only(
         top: deviceSize(context).height * 0.03,
         left: deviceSize(context).width * 0.03,
         right: deviceSize(context).width * 0.03,
       ),
-      child: Consumer<AnalyticsProvider>(
-        builder: (BuildContext context, val, Widget child) {
-          print("Mahdi Executed Bool ${val.myBigDropSelected}");
-          print("Mahdi Executed Bool ${val.countryItems}");
-          if (val.countryItems.isNotEmpty) {
-            _value = val.tempItem;
-          }
-          return DropdownButtonHideUnderline(
-            child: Center(
-              child: DropdownButton(
-                value: _value,
-                isExpanded: true,
-                iconDisabledColor: Colors.grey,
-                iconEnabledColor: Colors.white,
-                dropdownColor: middlePurple,
-                hint: Text(
-                  "Country",
-                  style: TextStyle(color: Colors.white),
-                ),
-                onChanged: (value) async {
-                  if (value != "Country") {
-                    val.selectSingle(name: value);
-                  }
-                  setState(() {
-                    _value = value;
-                  });
-                },
-                isDense: true,
-                items: val.countryItems.isNotEmpty
-                    ? val.countryItems.map((e) {
-                        return DropdownMenuItem(
-                          child: SizedBox(
-                            width: deviceSize(context).width * 0.8,
-                            child: Text(
-                              "${e.countryName}",
-                              textScaleFactor: 0.8,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          value: e.countryName,
-                        );
-                      }).toList()
-                    : null,
-              ),
+      child:
+          // _value = val.tempItem;
+          DropdownButtonHideUnderline(
+        child: Center(
+          child: DropdownButton(
+            value: _value,
+            isExpanded: true,
+            iconDisabledColor: Colors.grey,
+            iconEnabledColor: Colors.white,
+            dropdownColor: middlePurple,
+            hint: Text(
+              "Country",
+              style: TextStyle(color: Colors.white),
             ),
-          );
-        },
+            onChanged: (value) async {
+              setState(() {
+                _value = value;
+              });
+              if (value != "Country") {
+                analysisProvider.selectSingle(name: value);
+              }
+            },
+            isDense: true,
+            items: widget.myDropDownAnal.isNotEmpty
+                ? widget.myDropDownAnal.map((e) {
+                    return DropdownMenuItem(
+                      child: SizedBox(
+                        width: deviceSize(context).width * 0.8,
+                        child: Text(
+                          "${e.countryName}",
+                          textScaleFactor: 0.8,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      value: e.countryName,
+                    );
+                  }).toList()
+                : null,
+          ),
+        ),
       ),
     );
   }

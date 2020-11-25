@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/statemanagment/MyDropDownState.dart';
@@ -23,6 +25,7 @@ class MyAppBarContainer extends StatefulWidget {
 
 class _MyAppBarContainerState extends State<MyAppBarContainer> {
   Future<void> fetchCategory;
+  Future<void> fetchIndustry;
   bool isCatLoading = true;
   bool isAnaLoading = true;
 
@@ -128,44 +131,47 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                   }
                 },
               ),
-              //     FutureBuilder(
-              //       builder: (consContext, AsyncSnapshot<dynamic> snapshot) {
-              //         return Consumer<AnalyticsProvider>(
-              //           builder: (BuildContext consContext, value, Widget child) {
-              //             if (snapshot.connectionState == ConnectionState.waiting) {
-              //               return MyEmptyText(myTxt: "Loading...");
-              //             } else {
-              //               if (snapshot.error != null) {
-              //                 return MyEmptyText(myTxt: "Error...  ");
-              //               } else {
-              //                 if (value.items.isEmpty) {
-              //                   return MyEmptyText(
-              //                     myTxt:
-              //                         value.isLoading ? "loading..." : "Empty     ",
-              //                   );
-              //                 } else {
-              //                   return MySmallDropdown(
-              //                     myisExpanded: false,
-              //                     myDropDownList: [],
-              //                     dropDownAroundColor: Colors.white,
-              //                     myDropDownAnal:
-              //                         value.items == null ? [] : value.items,
-              //                     dropDownColor: middlePurple,
-              //                     iconColor: Colors.white,
-              //                     txtColor: Colors.white,
-              //                     futureType: "analytics",
-              //                     firstVal: value.items[0].title,
-              //                   );
-              //                 }
-              //               }
-              //             }
-              //           },
-              //         );
-              //       },
-              //     ),
+              Consumer<AnalyticsProvider>(
+                builder: (BuildContext consContext, value, Widget child) {
+                  if (value.items.isEmpty) {
+                    return MyEmptyText(
+                      myTxt: value.isLoading ? "loading..." : "Empty     ",
+                    );
+                  } else {
+                    return MySmallDropdown(
+                      myisExpanded: false,
+                      myDropDownList: [],
+                      dropDownAroundColor: Colors.white,
+                      myDropDownAnal: value.items == null ? [] : value.items,
+                      dropDownColor: middlePurple,
+                      iconColor: Colors.white,
+                      txtColor: Colors.white,
+                      futureType: "analytics",
+                      firstVal: value.items[0].title,
+                    );
+                  }
+                },
+              ),
             ],
           ),
-          // MyBigDropDown(),
+          Consumer<AnalyticsProvider>(
+            builder: (BuildContext context, value, Widget child) {
+              if (value.countryItems.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 20, left: 10),
+                  child: Text(
+                    value.isLoading ? "loading..." : "Empty     ",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                );
+              } else {
+                return MyBigDropDown(
+                  myDropDownAnal:
+                      value.countryItems.isNotEmpty ? value.countryItems : [],
+                );
+              }
+            },
+          ),
           // Consumer<MyDropDownState>(
           //   builder: (BuildContext context, value, Widget child) {
           //     print("Mahdi The Best One ${value.analyticsSelected}");

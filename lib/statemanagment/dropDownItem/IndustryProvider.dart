@@ -76,7 +76,6 @@ class IndustryProvider with ChangeNotifier {
       //   loadedProducts.add(CategoryModel(id: i, val: extractedData['$i']));
       // }
 
-      _items = [];
       _items = loadedProducts;
       isLoading = false;
 
