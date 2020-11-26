@@ -31,6 +31,7 @@ class DropDownFormField extends FormField<dynamic> {
       : super(
           onSaved: onSaved,
           validator: validator,
+          
           autovalidate: autovalidate,
           initialValue: value == '' ? null : value,
           builder: (FormFieldState<dynamic> state) {
@@ -55,8 +56,7 @@ class DropDownFormField extends FormField<dynamic> {
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<dynamic>(
                   value: value == '' ? dataSource[0][valueField] : value,
-                  onChanged: enable
-                      ? (dynamic newValue) {
+                  onChanged: enable  ? (dynamic newValue) {
                           state.didChange(newValue);
 
                           onChanged(newValue);
@@ -65,7 +65,7 @@ class DropDownFormField extends FormField<dynamic> {
                   items: dataSource.map((item) {
                     return DropdownMenuItem<dynamic>(
                       value: item[valueField],
-                      child: Text(item[textField]),
+                      child: Text(item[textField],),
                     );
                   }).toList(),
                 ),

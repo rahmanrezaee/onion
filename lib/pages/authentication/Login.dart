@@ -318,11 +318,9 @@ class _LoginState extends State<Login> {
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
                   InkWell(
-
-                    onTap: () =>
-                        Navigator.pushNamed(context, SignUp.routeName),
+                    onTap: () => Navigator.pushNamed(context, SignUp.routeName),
                     child: Padding(
-                      padding: const EdgeInsets.only(top:4.0,bottom: 10),
+                      padding: const EdgeInsets.only(top: 4.0, bottom: 10),
                       child: Text(
                         "Sign Up",
                         style: TextStyle(
@@ -457,4 +455,14 @@ class _LoginState extends State<Login> {
       _isloadingFacebook = false;
     });
   }
+
+  // } catch (e) {
+  //   _scaffoldKey.currentState
+  //       .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+  //   // print(e.cause);
+  // }
+  // setState(() {
+  //   _isloadingFacebook = false;
+  // });
+  // }
 }

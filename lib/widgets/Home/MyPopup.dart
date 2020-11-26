@@ -211,7 +211,7 @@ class _DialogContentState extends State<DialogContent> {
                     ),
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.pushNamed(context, Analysis.routeName);
+                      // Navigator.pushNamed(context, Analysis.routeName);
                     },
                   ),
                 ),

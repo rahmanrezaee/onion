@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/statemanagment/MyDropDownState.dart';
+import 'package:onion/models/circularChart.dart';
+import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
 import 'package:onion/statemanagment/dropDownItem/CategoryProvider.dart';
 import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
@@ -38,7 +39,6 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.notLoading) {
       Future.delayed(Duration.zero, () {
@@ -164,36 +164,46 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
               ),
             ],
           ),
-          Consumer<AnalyticsProvider>(
-            builder: (BuildContext context, value, Widget child) {
-              if (value.countryItems.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 20, left: 10),
-                  child: Text(
-                    value.isLoading ? "loading..." : "Empty     ",
-                    style: TextStyle(color: Colors.white),
+          Padding(
+            padding: EdgeInsets.only(
+              top: deviceSize(context).height * 0.03,
+              left: deviceSize(context).width * 0.03,
+              right: deviceSize(context).width * 0.03,
+            ),
+            child: Consumer<AnalysisProvider>(
+              builder: (BuildContext context, anavalue, Widget child) {
+                return DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    value: anavalue.selectedCountry.countryCode,
+                    iconDisabledColor: Colors.white,
+                    iconEnabledColor: Colors.white,
+                    dropdownColor: middlePurple,
+                    isDense: true,
+                    items: anavalue.country.map((e) {
+                      return DropdownMenuItem(
+                        child: Text(
+                          e.country,
+                          textScaleFactor: 1.4,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        value: e.countryCode,
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      anavalue.country.forEach((element) {
+                        if (element.countryCode == value) {
+                          anavalue.changeCountryColors(element);
+                        }
+                      });
+                    },
                   ),
                 );
-              } else {
-                return MyBigDropDown(
-                  myDropDownAnal:
-                      value.countryItems.isNotEmpty ? value.countryItems : [],
-                );
-              }
-            },
+              },
+            ),
           ),
-          // Consumer<MyDropDownState>(
-          //   builder: (BuildContext context, value, Widget child) {
-          //     print("Mahdi The Best One ${value.analyticsSelected}");
-          //     return MyBigDropDown(
-          //       firstVal: value.items.isNotEmpty
-          //           ? value.items[0].countryName
-          //           : "Country",
-          //       myDropDownList: value.items == null ? [] : value.items,
-          //       txtColor: Colors.white,
-          //     );
-          //   },
-          // ),
         ],
       ),
     );

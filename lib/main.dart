@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
-import 'package:onion/statemanagment/SaveAnalysis.dart';
-import 'package:onion/statemanagment/dropDownItem/BigDropDownPro.dart';
+import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/validation/signup_validation.dart';
@@ -12,6 +12,7 @@ import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/widgets/test.dart';
 import 'package:provider/provider.dart';
+// import 'package:cloud_messaging/cloud_messaging.dart';
 
 import './pages/Idea/MyIdeaDetailes.dart';
 import './pages/franchises/RequestOnFranchise.dart';
@@ -19,7 +20,6 @@ import './pages/franchises/requestFranchisesUser.dart';
 import './pages/franchises/viewFranchisesUser.dart';
 import './statemanagment/MyDropDownState.dart';
 import './test.dart';
-import './pages/franchises/RequestOnFranchise.dart';
 import './pages/underDevelopment.dart';
 import './pages/Home.dart';
 import './pages/Idea/postIdea.dart';
@@ -49,7 +49,7 @@ import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
 import './pages/request.dart';
-import './pages/franchises/ViewMyRequestFranchise.dart';
+import 'pages/franchises/ViewMyRequestFranchise.dart';
 import './widgets/bottom_nav.dart';
 
 void main() async {
@@ -68,20 +68,31 @@ void main() async {
       ChangeNotifierProvider(create: (_) => SignupValidation()),
       ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
       ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
-      ChangeNotifierProvider(create: (_) => SaveAnalProvider()),
+      ChangeNotifierProvider(create: (_) => AnalysisProvider()),
     ],
     child: MyApp(),
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Provider.of<Auth>(context, listen: false).tryAutoLogin();
-
+    Provider.of<Auth>(
+      context,
+    ).tryAutoLogin();
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Onion.ai',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Color(0xFF7B3C8A),
@@ -90,10 +101,10 @@ class MyApp extends StatelessWidget {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: CustomDrawerPage(key),
+        home: CustomDrawerPage(widget.key),
         routes: {
           Login.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : FutureBuilder(
                   future:
                       Provider.of<Auth>(context, listen: false).tryAutoLogin(),
@@ -108,20 +119,21 @@ class MyApp extends StatelessWidget {
           MyIdeaId.routeName: (context) => MyIdeaId(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) =>
-              auth.token != null ? CustomDrawerPage(key) : SignUp(),
+              auth.token != null ? CustomDrawerPage(widget.key) : SignUp(),
           ComplateProfile.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : ComplateProfile(
                   ModalRoute.of(context).settings.arguments,
                 ),
-          CustomDrawerPage.routeName: (context) => CustomDrawerPage(key),
+          CustomDrawerPage.routeName: (context) => CustomDrawerPage(widget.key),
           AnalyticsOne.routeName: (context) => AnalyticsOne(),
           Analysis.routeName: (context) => Analysis(),
           RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-          ForgetPassword.routeName: (context) =>
-              auth.token != null ? CustomDrawerPage(key) : ForgetPassword(),
+          ForgetPassword.routeName: (context) => auth.token != null
+              ? CustomDrawerPage(widget.key)
+              : ForgetPassword(),
           ChangePassword.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : ChangePassword(
                   ModalRoute.of(context).settings.arguments,
                 ),

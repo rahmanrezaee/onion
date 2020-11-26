@@ -103,7 +103,6 @@ class _SignUpState extends State<SignUp> {
                     ],
                   ));
                 }
-
                 interstedList = snapshot.data[0];
                 locationList = snapshot.data[1];
                 state = snapshot.data[2];

@@ -82,8 +82,8 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
               return _page;
             } else if (value.scaffoldType == Services.routeName) {
               return Services(openDrawer: openCustomDrawer);
-            } else if (value.scaffoldType == Analysis.routeName) {
-              return Analysis(openDrawer: openCustomDrawer);
+              // } else if (value.scaffoldType == Analysis.routeName) {
+              //   // return Analysis(openDrawer: openCustomDrawer);
             }
             return null;
           },

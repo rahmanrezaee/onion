@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/pages/Analysis.dart';
 import 'package:onion/pages/DashboardPage.dart';
+import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Home.dart';
 import 'package:onion/pages/MyMessagePage.dart';
 import 'package:onion/pages/underDevelopment.dart';
@@ -25,7 +26,7 @@ class _MainScreenState extends State<MainScreen> {
     List<Widget> pageWidget = [
       HomePage(openDrawer: widget.openDrawer),
       MyMessagePage(openDrawer: widget.openDrawer),
-      Analysis(openDrawer: widget.openDrawer),
+      Analysis(),
       DashboardPage(openDrawer: widget.openDrawer),
       Center(child: Text("under development")),
     ];
