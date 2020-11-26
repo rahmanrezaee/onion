@@ -63,20 +63,20 @@ class ChartSampleData {
   final dynamic x;
 
   /// Holds y value of the datapoint
-  final num y;
+   num y;
 
   /// Holds x value of the datapoint
-  final dynamic xValue;
+   dynamic xValue;
 
   /// Holds y value of the datapoint
-  final num yValue;
+   num yValue;
 
   /// Holds y value of the datapoint(for 2nd series)
-  final num secondSeriesYValue;
-  final num fourthSeriesYValue;
+   num secondSeriesYValue;
+   num fourthSeriesYValue;
 
   /// Holds y value of the datapoint(for 3nd series)
-  final num thirdSeriesYValue;
+   num thirdSeriesYValue;
 
   /// Holds point color of the datapoint
   final Color pointColor;

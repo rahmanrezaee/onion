@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:number_display/number_display.dart';
 import 'package:onion/const/values.dart';
 import 'package:onion/models/CountryDensityModel.dart';
 import 'package:onion/models/circularChart.dart';
@@ -16,9 +17,7 @@ class AnalysisProvider with ChangeNotifier {
   String chartTypeSelected = "pie";
   String barSelectType = "monthly";
   String pieSelectType = "total";
-
   List<TableSatatis> tableSatatis;
-
   List<Map> chartTypes = [
     {
       "display": "Pie",
@@ -57,15 +56,20 @@ class AnalysisProvider with ChangeNotifier {
       "value": "newest",
     },
   ];
-
   List<CircularChart> country;
-
   List<CircularChart> monthlyDate;
   CircularChart selectedCountry;
-
   List<CountryDensityModel> worldPopulationDensityDetails;
   List<SplineSeries<ChartSampleData, String>> getDefaultSplineSeriesList;
 
+
+   final display = createDisplay(
+    length: 3,
+    decimal: 0,
+  );
+
+
+  
   void setchartType(String value) {
     this.chartTypeSelected = value;
     getDefaultSplineSeriesList = null;
@@ -74,9 +78,7 @@ class AnalysisProvider with ChangeNotifier {
 
   void setbarChartType(String value) {
     getDefaultSplineSeriesList = null;
-
     this.barSelectType = value;
-
     notifyListeners();
   }
 
@@ -90,14 +92,10 @@ class AnalysisProvider with ChangeNotifier {
       final StringBuffer url =
           new StringBuffer("https://api.covid19api.com/summary");
       Response state = await dio.get(url.toString());
-
       Map data = state.data;
-
       GlobalChart gc = GlobalChart.toJson(data['Global']);
       print(data['Global']);
-
       country = new List<CircularChart>();
-
       CircularChart all = CircularChart(
         newConfirmed: gc.newConfirmed,
         newDeaths: gc.newDeaths,
@@ -112,12 +110,10 @@ class AnalysisProvider with ChangeNotifier {
       );
       print("done first stap");
       country.add(all);
-
       for (var item in data['Countries']) {
         country.add(CircularChart.toJson(item));
       }
       print("done second stap");
-
       changeCountryColors(all);
     } on DioError catch (e) {
       print("errors");
@@ -130,7 +126,6 @@ class AnalysisProvider with ChangeNotifier {
     getDefaultSplineSeriesList = null;
     tableSatatis = null;
     notifyListeners();
-    
     worldPopulationDensityDetails = country.map((ele) {
       if (selectedCountry.country == "All Country") {
         return CountryDensityModel(ele.country, ele.totalConfirmed.toDouble());
@@ -142,46 +137,91 @@ class AnalysisProvider with ChangeNotifier {
         }
       }
     }).toList();
-
     getMonthlyReport();
     getTableDailyReport();
   }
 
   Future getMonthlyReport() async {
     final List<ChartSampleData> chartData = <ChartSampleData>[];
-
+    String url = this.barSelectType == "monthly"
+        ? "https://api.covid19api.com/country/${selectedCountry.country}?from=${Jiffy(Jiffy(now).subtract(months: 6)).format("yyy-MM")}-30T00:00:00Z&to=${Jiffy(now).format("yyy-MM")}-01T00:00:00Z"
+        : "https://api.covid19api.com/country/${selectedCountry.country}?from=${Jiffy(Jiffy(now).subtract(days: 6)).format("yyy-MM-d")}T00:00:00Z&to=${Jiffy(now).format("yyy-MM-d")}T00:00:00Z";
     try {
-      for (int i = 6; i > 0; i--) {
-        String url = this.barSelectType == "monthly"
-            ? "https://api.covid19api.com/country/${selectedCountry.country}?from=${Jiffy(Jiffy(now).subtract(months: i)).format("yyy-MM")}-30T00:00:00Z&to=${Jiffy(Jiffy(now).subtract(months: i)).format("yyy-MM")}-30T23:59:00Z"
-            : "https://api.covid19api.com/country/${selectedCountry.country}?from=${Jiffy(Jiffy(now).subtract(days: i)).format("yyy-MM-dd")}T00:00:00Z&to=${Jiffy(Jiffy(now).subtract(days: i)).format("yyy-MM-dd")}T23:59:00Z";
+      Response state = await dio.get(url.toString());
+      print("line $url");
+      List data = state.data;
 
-        Response state = await dio.get(url.toString());
+      for (int i = 0; i < data.length; i++) {
+        if (chartData.length > 0) {
+          if (this.barSelectType == "monthly") {
+            if (Jiffy(chartData.elementAt(chartData.length - 1).x).MMM ==
+                Jiffy(data[i]["Date"]).MMM) {
+              ChartSampleData curr = chartData.elementAt(chartData.length - 1);
 
-        print(url);
-        List data = state.data;
+              chartData.elementAt(chartData.length - 1).y += curr.y;
+              chartData.elementAt(chartData.length - 1).secondSeriesYValue +=
+                  curr.secondSeriesYValue;
+              chartData.elementAt(chartData.length - 1).thirdSeriesYValue +=
+                  curr.thirdSeriesYValue;
+              chartData.elementAt(chartData.length - 1).fourthSeriesYValue +=
+                  curr.fourthSeriesYValue;
+            } else {
+              chartData.add(
+                ChartSampleData(
+                  x: data[i]["Date"],
+                  y: data[i]["Confirmed"],
+                  secondSeriesYValue: data[i]["Active"],
+                  thirdSeriesYValue: data[i]["Recovered"],
+                  fourthSeriesYValue: data[i]["Deaths"],
+                ),
+              );
+            }
+          } else {
 
-        print("done first fetch Data");
-        print(data[0]);
+            if (Jiffy(chartData.elementAt(chartData.length - 1).x).MMMd ==
+                Jiffy(data[i]["Date"]).MMMd) {
+              ChartSampleData curr = chartData.elementAt(chartData.length - 1);
 
-        chartData.add(
-          ChartSampleData(
-            x: (this.barSelectType == "monthly")
-                ? Jiffy(Jiffy(now).subtract(months: i)).MMM
-                : Jiffy(Jiffy(now).subtract(days: i)).MMMd,
-            y: data[0]["Confirmed"],
-            secondSeriesYValue: data[0]["Active"],
-            thirdSeriesYValue: data[0]["Recovered"],
-            fourthSeriesYValue: data[0]["Deaths"],
-          ),
-        );
+              chartData.elementAt(chartData.length - 1).y += curr.y;
+              chartData.elementAt(chartData.length - 1).secondSeriesYValue +=
+                  curr.secondSeriesYValue;
+              chartData.elementAt(chartData.length - 1).thirdSeriesYValue +=
+                  curr.thirdSeriesYValue;
+              chartData.elementAt(chartData.length - 1).fourthSeriesYValue +=
+                  curr.fourthSeriesYValue;
+            } else {
+              chartData.add(
+                ChartSampleData(
+                  x: data[i]["Date"],
+                  y: data[i]["Confirmed"],
+                  secondSeriesYValue: data[i]["Active"],
+                  thirdSeriesYValue: data[i]["Recovered"],
+                  fourthSeriesYValue: data[i]["Deaths"],
+                ),
+              );
+            }
+           
+          }
+        } else {
+          chartData.add(
+            ChartSampleData(
+              x: data[i]["Date"],
+              y: data[i]["Confirmed"],
+              secondSeriesYValue: data[i]["Active"],
+              thirdSeriesYValue: data[i]["Recovered"],
+              fourthSeriesYValue: data[i]["Deaths"],
+            ),
+          );
+        }
       }
-
       getDefaultSplineSeriesList = <SplineSeries<ChartSampleData, String>>[
         SplineSeries<ChartSampleData, String>(
           dataSource: chartData,
           color: Color(0xff0000),
-          xValueMapper: (ChartSampleData sales, _) => sales.x,
+          xValueMapper: (ChartSampleData sales, _) =>
+              (this.barSelectType == "monthly")
+                  ? Jiffy(sales.x).MMM
+                  : Jiffy(sales.x).MMMd,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
           markerSettings: MarkerSettings(isVisible: true),
           name: 'Confirmed',
@@ -191,7 +231,10 @@ class AnalysisProvider with ChangeNotifier {
           name: 'Actived',
           color: Color(0x0088f8),
           markerSettings: MarkerSettings(isVisible: true),
-          xValueMapper: (ChartSampleData sales, _) => sales.x,
+          xValueMapper: (ChartSampleData sales, _) =>
+              (this.barSelectType == "monthly")
+                  ? Jiffy(sales.x).MMM
+                  : Jiffy(sales.x).MMMd,
           yValueMapper: (ChartSampleData sales, _) => sales.secondSeriesYValue,
         ),
         SplineSeries<ChartSampleData, String>(
@@ -199,7 +242,10 @@ class AnalysisProvider with ChangeNotifier {
           name: 'Recovered',
           color: Color(0x00e58c),
           markerSettings: MarkerSettings(isVisible: true),
-          xValueMapper: (ChartSampleData sales, _) => sales.x,
+          xValueMapper: (ChartSampleData sales, _) =>
+              (this.barSelectType == "monthly")
+                  ? Jiffy(sales.x).MMM
+                  : Jiffy(sales.x).MMMd,
           yValueMapper: (ChartSampleData sales, _) => sales.thirdSeriesYValue,
         ),
         SplineSeries<ChartSampleData, String>(
@@ -207,13 +253,14 @@ class AnalysisProvider with ChangeNotifier {
           name: 'Deaths',
           color: Color(0x030301),
           markerSettings: MarkerSettings(isVisible: true),
-          xValueMapper: (ChartSampleData sales, _) => sales.x,
+          xValueMapper: (ChartSampleData sales, _) =>
+              (this.barSelectType == "monthly")
+                  ? Jiffy(sales.x).MMM
+                  : Jiffy(sales.x).MMMd,
           yValueMapper: (ChartSampleData sales, _) => sales.fourthSeriesYValue,
         )
       ];
-
       notifyListeners();
-
       return true;
     } on DioError catch (e) {
       print("errors");
@@ -225,14 +272,11 @@ class AnalysisProvider with ChangeNotifier {
     tableSatatis = List<TableSatatis>();
     String url =
         "https://api.covid19api.com/country/${selectedCountry.country}?from=${Jiffy(Jiffy(now).subtract(days: 6)).format("yyy-MM-dd")}T00:00:00Z&to=${Jiffy(now).format("yyy-MM-dd")}T00:00:00Z";
-
     try {
       print("print $url");
       Response state = await dio.get(url.toString());
-
       List data = state.data;
       print("list of $data");
-
       for (int i = 0; i < data.length; i++) {
         if (tableSatatis.length > 0 &&
             tableSatatis.elementAt(tableSatatis.length - 1).date ==
@@ -240,7 +284,6 @@ class AnalysisProvider with ChangeNotifier {
           var last = tableSatatis.elementAt(tableSatatis.length - 1);
           print(last);
           last.actived = last.actived + data[i]["Active"];
-
           last.actived = last.confiromed + data[i]["Confirmed"];
           last.actived = last.death + data[i]["Deaths"];
           last.actived = last.recovered + data[i]["Recovered"];
@@ -253,9 +296,7 @@ class AnalysisProvider with ChangeNotifier {
               date: data[i]["Date"]));
         }
       }
-
       notifyListeners();
-
       return true;
     } on DioError catch (e) {
       print("errors");

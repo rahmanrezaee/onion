@@ -25,7 +25,7 @@ class SplineDefault extends SampleView {
 /// State class of the default spline chart.
 class _SplineDefaultState extends SampleViewState {
   _SplineDefaultState();
-
+ 
   @override
   Widget build(BuildContext context) {
     return Consumer<AnalysisProvider>(
@@ -46,7 +46,6 @@ class _SplineDefaultState extends SampleViewState {
                 tooltipBehavior: TooltipBehavior(enable: true),
               )
             : FutureBuilder(
-              
                 future: value.getMonthlyReport(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
