@@ -340,10 +340,10 @@ class _AnalysisState extends State<Analysis> {
                       },
                     ),
                     Container(
-                      child: AnimationSplineDefault(widget.key),
+                      child: SplineDefault(widget.key),
                     ),
 
-                    
+
                   ],
                 );
 

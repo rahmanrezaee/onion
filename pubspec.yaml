@@ -26,6 +26,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   webview_flutter: 
+  jiffy: ^3.0.1
   font_awesome_flutter:
   flutter_inner_drawer: ^0.5.7+2
   provider: ^3.0.0

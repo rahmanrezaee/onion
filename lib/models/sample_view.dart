@@ -49,6 +49,7 @@ class ChartSampleData {
       this.yValue,
       this.secondSeriesYValue,
       this.thirdSeriesYValue,
+      this.fourthSeriesYValue,
       this.pointColor,
       this.size,
       this.text,
@@ -72,6 +73,7 @@ class ChartSampleData {
 
   /// Holds y value of the datapoint(for 2nd series)
   final num secondSeriesYValue;
+  final num fourthSeriesYValue;
 
   /// Holds y value of the datapoint(for 3nd series)
   final num thirdSeriesYValue;
