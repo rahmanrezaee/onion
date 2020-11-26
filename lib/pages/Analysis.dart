@@ -60,13 +60,7 @@ class _AnalysisState extends State<Analysis> {
     decimal: 0,
   );
 
-  final List<SalesData> chartData = [
-    SalesData(2010, 35, 23, 45, 65, 78),
-    SalesData(2011, 38, 49, 56, 7, 88),
-    SalesData(2012, 34, 12, 34, 54, 6),
-    SalesData(2013, 52, 33, 32, 36, 7),
-    SalesData(2014, 40, 30, 90, 89, 6)
-  ];
+  
 
   @override
   Widget build(BuildContext context) {

@@ -129,23 +129,23 @@ class _DashboardState extends State<Dashboard> {
                                 SizedBox(
                                   width: 10,
                                 ),
-                                Visibility(
-                                  visible:
-                                      analysisValue.chartTypeSelected == "line",
-                                  child: Expanded(
-                                    child: DropDownFormField(
-                                      onChanged: (value) {
-                                        analysisValue.setbarChartType(value);
-                                        FocusScope.of(context)
-                                            .requestFocus(new FocusNode());
-                                      },
-                                      value: analysisValue.barSelectType,
-                                      dataSource: analysisValue.barType,
-                                      textField: 'display',
-                                      valueField: 'value',
-                                    ),
-                                  ),
-                                ),
+                                // Visibility(
+                                //   visible:
+                                //       analysisValue.chartTypeSelected == "line",
+                                //   child: Expanded(
+                                //     child: DropDownFormField(
+                                //       onChanged: (value) {
+                                //         analysisValue.setbarChartType(value);
+                                //         FocusScope.of(context)
+                                //             .requestFocus(new FocusNode());
+                                //       },
+                                //       value: analysisValue.barSelectType,
+                                //       dataSource: analysisValue.barType,
+                                //       textField: 'display',
+                                //       valueField: 'value',
+                                //     ),
+                                //   ),
+                                // ),
                                 Visibility(
                                   visible:
                                       analysisValue.chartTypeSelected == "pie",
@@ -423,16 +423,16 @@ class _DashboardState extends State<Dashboard> {
                           ],
                         ),
                       ),
-                      Visibility(
-                        visible: analysisValue.chartTypeSelected == "line",
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          child:
-                              analysisValue.selectedCountry.countryCode != "ALL"
-                                  ? SplineDefault(widget.key)
-                                  : Text("Please Select A country to analysis"),
-                        ),
-                      ),
+                      // Visibility(
+                      //   visible: analysisValue.chartTypeSelected == "line",
+                      //   child: Container(
+                      //     padding: const EdgeInsets.all(8.0),
+                      //     child:
+                      //         analysisValue.selectedCountry.countryCode != "ALL"
+                      //             ? SplineDefault(widget.key)
+                      //             : Text("Please Select A country to analysis"),
+                      //   ),
+                      // ),
                       Visibility(
                         visible: analysisValue.chartTypeSelected == "table",
                         child: Column(
