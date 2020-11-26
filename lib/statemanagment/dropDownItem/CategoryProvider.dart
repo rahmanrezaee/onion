@@ -92,7 +92,6 @@ class CategoryProvider with ChangeNotifier {
         name: _items[0].name,
         context: context,
       );
-      // print("Mahdi: ${_items[1].name}: 5h");
     } catch (e) {
       isLoading = false;
       _items = [];
@@ -109,7 +108,6 @@ class CategoryProvider with ChangeNotifier {
 // updateIndustryItem(String name, BuildContext context) {
 //   // CategoryModel categoryModel = _items.firstWhere((element) => element.name == name);
 //   industryProvider = Provider.of<IndustryProvider>(context, listen: false);
-//   print("Mahdi: test $name");
 //
 //   // industryProvider.clearDate();
 //   industryProvider.fetchItems(name: name, context: context);
@@ -133,7 +131,6 @@ class CategoryProvider with ChangeNotifier {
 //   }
 // }
 
-// print("Mahdi: title ${loadedProducts[0].name}");
 
 // for (int i = 1; i < 6; i++) {
 //   loadedProducts.add(CategoryModel(id: i, val: extractedData['$i']));

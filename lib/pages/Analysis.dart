@@ -32,11 +32,6 @@ class Analysis extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        // leading: IconButton(
-        //   icon: Icon(Icons.menu),
-        //   color: Colors.white,
-        //   onPressed: openDrawer,
-        // ),
         actions: [
           Padding(
             padding: EdgeInsets.all(15.0),
@@ -64,13 +59,7 @@ class Analysis extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          MyAppBarContainer(),
-          Container(
-            margin: EdgeInsets.symmetric(
-                vertical: deviceSize(context).height * 0.01),
-            height: deviceSize(context).height,
-            child: MyWebView(),
-          ),
+          MyAppBarContainer(notLoading: false),
         ],
       ),
     );

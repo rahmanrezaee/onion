@@ -23,6 +23,8 @@ class MySmallDropdown extends StatefulWidget {
   final bool myisExpanded;
   final String futureType;
   String firstVal;
+  final Color hintColor;
+  final double dropDownWidth;
 
   MySmallDropdown({
     Key key,
@@ -35,6 +37,8 @@ class MySmallDropdown extends StatefulWidget {
     this.futureType,
     this.firstVal,
     this.myDropDownAnal,
+    this.dropDownWidth,
+    this.hintColor = Colors.white,
   });
 
   @override
@@ -57,11 +61,11 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
     super.initState();
     // print("Mahdi Object ${widget.myDropDownList}");
     if (widget.futureType == "category") {
-      hintTxt = "category";
+      hintTxt = "Category";
     } else if (widget.futureType == "industry") {
-      hintTxt = "industry";
+      hintTxt = "Industry";
     } else if (widget.futureType == "analytics") {
-      hintTxt = "analytics";
+      hintTxt = "Analytics";
     }
   }
 
@@ -89,7 +93,8 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
             dropdownColor: widget.dropDownColor,
             hint: Text(
               hintTxt,
-              style: TextStyle(color: Colors.white),
+              textScaleFactor: 0.7,
+              style: TextStyle(color: widget.hintColor),
             ),
             onChanged: (value) async {
               setState(() {
@@ -99,6 +104,7 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
                 // Provider.of<MyDropDownState>(context, listen: false)
                 //     .setCategorySelected(true);
                 industryProvider.clearDate();
+                analyticsProvider.clearCountryData();
                 await industryProvider.fetchItems(
                   name: value,
                   context: context,
@@ -117,9 +123,11 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
                 //     .setAnalyticsSelected();
                 // analyticsProvider.clearCountryData();
                 // analyticsProvider.setCountryItems(title: value);
+                analyticsProvider.setAnalysisId(analysisName: value);
                 analyticsProvider.clearCountryData();
+                analyticsProvider.setBigDropSelected(false);
                 await Future.delayed(
-                  Duration(seconds: 0),
+                  Duration(seconds: 1),
                   () => analyticsProvider.setCountryItems(title: value),
                 );
               }
@@ -132,7 +140,7 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
                         print("Mahdi: ${e.name}");
                         return DropdownMenuItem(
                           child: SizedBox(
-                            width: deviceSize(context).width * 0.17,
+                            width: widget.dropDownWidth,
                             child: Text(
                               "${e.name}",
                               textScaleFactor: 0.7,
@@ -149,7 +157,7 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
                         print("Mahdi: ${e.title}");
                         return DropdownMenuItem(
                           child: SizedBox(
-                            width: deviceSize(context).width * 0.17,
+                            width: widget.dropDownWidth,
                             child: Text(
                               "${e.title}",
                               textScaleFactor: 0.7,

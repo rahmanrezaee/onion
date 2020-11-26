@@ -70,7 +70,6 @@ class IndustryProvider with ChangeNotifier {
         );
       });
 
-      // print("Mahdi: title ${loadedProducts[0].name}");
 
       // for (int i = 1; i < 6; i++) {
       //   loadedProducts.add(CategoryModel(id: i, val: extractedData['$i']));

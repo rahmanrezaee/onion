@@ -23,7 +23,7 @@ class Auth with ChangeNotifier {
   String token;
   Map userDataField;
   User currentUser = new User();
-  AuthMethods authMethods = new AuthMethods();
+  // AuthMethods authMethods = new AuthMethods();
 
   Future<bool> isAuth() async {
     await tryAutoLogin();
@@ -38,13 +38,13 @@ class Auth with ChangeNotifier {
 
       var response = await dio.post(url, data: user.toMap());
       final responseData = response.data;
-      authMethods
-          .signUpWithEmailAndPassword(user.email, user.password)
-          .then((value) {
-        print("Mahdi I am Firebase SignUp: $value");
-      }).catchError((e) {
-        print("Mahdi I am Firebase SignUp: $e");
-      });
+      // authMethods
+      //     .signUpWithEmailAndPassword(user.email, user.password)
+      //     .then((value) {
+      //   print("Mahdi I am Firebase SignUp: $value");
+      // }).catchError((e) {
+      //   print("Mahdi I am Firebase SignUp: $e");
+      // });
 
       var prefs = await SharedPreferences.getInstance();
 
@@ -106,7 +106,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> _authenticate(String username, String password) async {
-    final url = '${baseUrl}/user/login';
+    final url = '$baseUrl/user/login';
 
     try {
       final response = await dio.post(url, data: {
@@ -114,11 +114,11 @@ class Auth with ChangeNotifier {
         'password': password,
       });
 
-      authMethods.signInWithEmailAndPassword(username, password).then((value) {
-        print("Mahdi I am Firebase SignIn: $value");
-      }).catchError((e) {
-        print("Mahdi I am Firebase SignIn: $e");
-      });
+      // authMethods.signInWithEmailAndPassword(username, password).then((value) {
+      //   print("Mahdi I am Firebase SignIn: $value");
+      // }).catchError((e) {
+      //   print("Mahdi I am Firebase SignIn: $e");
+      // });
 
       final responseData = response.data;
 

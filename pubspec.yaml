@@ -26,6 +26,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   syncfusion_flutter_maps: ^18.3.50-beta
+  firebase_messaging: ^7.0.3
   cached_network_image: ^2.3.3
   cloud_firestore: ^0.14.3
   firebase_storage: ^5.0.1

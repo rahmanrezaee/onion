@@ -3,8 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
-import 'package:onion/widgets/MRaiseButton.dart';
+import 'package:onion/statemanagment/SaveAnalysis.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:onion/widgets/MyAppBarContainer.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
+import 'package:onion/widgets/temp_popup.dart';
+import 'package:provider/provider.dart';
 
 class DashboardPage extends StatefulWidget {
   Function openDrawer;
@@ -45,6 +49,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    String token = Provider.of<Auth>(context, listen: false).token;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, kToolbarHeight),
@@ -73,7 +78,9 @@ class _DashboardPageState extends State<DashboardPage> {
                     style: TextStyle(color: Colors.black),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      tempShowMyDialog(context: context);
+                    },
                     child: Icon(
                       Icons.add_circle,
                       color: firstPurple,
@@ -83,9 +90,52 @@ class _DashboardPageState extends State<DashboardPage> {
                 ],
               ),
             ),
-            MyCardItem(),
-            MyCardItem(),
-            MyCardItem(),
+            FutureBuilder(
+              future: Provider.of<SaveAnalProvider>(
+                context,
+                listen: false,
+              ).getAnalysis(token: token),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.blueAccent,
+                    ),
+                  );
+                } else {
+                  if (snapshot.error != null) {
+                    return MyEmptyText(myTxt: "Error...  ");
+                  } else {
+                    return Consumer<SaveAnalProvider>(
+                      builder: (consContext, consValue, child) {
+                        print("Mahdi: analList ${consValue.items}");
+                        if (consValue.items.isEmpty) {
+                          return SizedBox.shrink();
+                        }
+                        return SizedBox(
+                          height: deviceSize(context).height * 0.4,
+                          child: Scrollbar(
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: consValue.items.length,
+                              itemBuilder: (listContext, index) {
+                                return MyCardItem(
+                                  id: consValue.items[index].id,
+                                  analysis: consValue.items[index].title,
+                                  category: consValue.items[index].category,
+                                  industry: consValue.items[index].industry,
+                                  region: consValue.items[index].region,
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                }
+              },
+            ),
             Divider(color: Colors.grey),
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
@@ -115,9 +165,15 @@ class _DashboardPageState extends State<DashboardPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          MySocialIcon(myImg: "assets/images/facebook.png"),
-                          MySocialIcon(myImg: "assets/images/linkedin.png"),
-                          MySocialIcon(myImg: "assets/images/google_plus.png"),
+                          MySocialIcon(
+                            myImg: "assets/images/facebook.png",
+                          ),
+                          MySocialIcon(
+                            myImg: "assets/images/linkedin.png",
+                          ),
+                          MySocialIcon(
+                            myImg: "assets/images/google_plus.png",
+                          ),
                         ],
                       ),
                       Padding(
@@ -266,8 +322,19 @@ class MySocialIcon extends StatelessWidget {
 }
 
 class MyCardItem extends StatelessWidget {
+  final String category;
+  final String region;
+  final String industry;
+  final String analysis;
+  final String id;
+
   const MyCardItem({
     Key key,
+    this.category,
+    this.region,
+    this.industry,
+    this.analysis,
+    this.id,
   }) : super(key: key);
 
   @override
@@ -279,9 +346,53 @@ class MyCardItem extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            right: 1,
-            top: 1,
-            child: Icon(Icons.delete, color: Colors.redAccent),
+            right: 0,
+            top: 0,
+            child: GestureDetector(
+              onTap: () async {
+                Widget okButton = FlatButton(
+                  child: Text("OK"),
+                  onPressed: () async {
+                    String token =
+                        Provider.of<Auth>(context, listen: false).token;
+                    Provider.of<SaveAnalProvider>(context, listen: false)
+                        .deleteAnalysis(token: token, id: id);
+
+                    Navigator.pop(context);
+                  },
+                );
+
+                Widget cancelButton = FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                );
+
+                // set up the AlertDialog
+                AlertDialog alert = AlertDialog(
+                  title: Text("Delete"),
+                  content: Text("Do you want to delete this Analysis?"),
+                  actions: [
+                    cancelButton,
+                    okButton,
+                  ],
+                );
+
+                // show the dialog
+                return showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return alert;
+                  },
+                );
+              },
+              child: Icon(
+                Icons.delete_outline,
+                color: Colors.redAccent,
+                size: 20,
+              ),
+            ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(
@@ -291,10 +402,10 @@ class MyCardItem extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                MyColRow(title: "Category", myTxt: "Lorem ipsum"),
-                MyColRow(title: "Region", myTxt: "Lorem"),
-                MyColRow(title: "Industry", myTxt: "Dummy"),
-                MyColRow(title: "Analysis", myTxt: "Covid-19"),
+                MyColRow(title: "Category", myTxt: category),
+                MyColRow(title: "Region", myTxt: region),
+                MyColRow(title: "Industry", myTxt: industry),
+                MyColRow(title: "Analysis", myTxt: analysis),
               ],
             ),
           ),
@@ -321,8 +432,8 @@ class MyColRow extends StatelessWidget {
       children: [
         ConstrainedBox(
           constraints: BoxConstraints(
-            minWidth: deviceSize(context).width * 0.2,
-            maxWidth: deviceSize(context).width * 0.3,
+            minWidth: deviceSize(context).width * 0.18,
+            maxWidth: deviceSize(context).width * 0.25,
           ),
           child: Text(
             "$title",
@@ -338,8 +449,8 @@ class MyColRow extends StatelessWidget {
         SizedBox(height: deviceSize(context).height * 0.01),
         ConstrainedBox(
           constraints: BoxConstraints(
-            minWidth: deviceSize(context).width * 0.2,
-            maxWidth: deviceSize(context).width * 0.3,
+            minWidth: deviceSize(context).width * 0.18,
+            maxWidth: deviceSize(context).width * 0.25,
           ),
           child: Text(
             "$myTxt",

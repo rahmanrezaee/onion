@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/statemanagment/SaveAnalysis.dart';
+import 'package:onion/statemanagment/dropDownItem/BigDropDownPro.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/validation/signup_validation.dart';
@@ -51,7 +53,6 @@ import './pages/franchises/ViewMyRequestFranchise.dart';
 import './widgets/bottom_nav.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -67,6 +68,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => SignupValidation()),
       ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
       ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
+      ChangeNotifierProvider(create: (_) => SaveAnalProvider()),
     ],
     child: MyApp(),
   ));
@@ -75,9 +77,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     Provider.of<Auth>(context, listen: false).tryAutoLogin();
-    
+
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
         title: 'Flutter Demo',

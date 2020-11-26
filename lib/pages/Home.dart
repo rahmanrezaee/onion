@@ -48,8 +48,13 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // for (var i = 0; i < GeoJson.IN.length; i++) {
     //   // var ltlng = LatLng(GeoJson.IN[i][1], GeoJson.IN[i][0]);
-    //   print("Mahdi: afghanistan ${GeoJson.AFG['afghanistan'][0][1]}");
     // }
+    AnalyticsProvider analyticsProvider = Provider.of<AnalyticsProvider>(
+      context,
+      listen: false,
+    );
+    analyticsProvider.clearDate();
+    analyticsProvider.clearCountryData();
   }
 
   @override
@@ -130,9 +135,16 @@ class _HomePageState extends State<HomePage> {
                               ],
                             )
                           : Container(width: deviceSize(context).width * 0.56),
-                      Consumer2<Auth, MyDropDownState>(
-                        builder:
-                            (consumerContext, authVal, myDropDownVal, child) {
+                      Consumer4<Auth, CategoryProvider, IndustryProvider,
+                          AnalyticsProvider>(
+                        builder: (
+                          consumerContext,
+                          authVal,
+                          catVal,
+                          inVal,
+                          analVal,
+                          child,
+                        ) {
                           return Expanded(
                             child: RaisedButton(
                               color: middlePurple,
@@ -140,7 +152,10 @@ class _HomePageState extends State<HomePage> {
                               textColor: Colors.white,
                               onPressed: () => authVal.isAuth().then(
                                     (token) => token
-                                        ? (!myDropDownVal.myCategorySelected)
+                                        ? (catVal.items.isEmpty ||
+                                                inVal.items.isEmpty ||
+                                                analVal.items.isEmpty ||
+                                                analVal.countryItems.isEmpty)
                                             ? showMyDialog(context: context)
                                             : Navigator.pushNamed(
                                                 context,

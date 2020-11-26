@@ -16,8 +16,13 @@ import './AnalysisWidget/MySmallDropdown.dart';
 
 class MyAppBarContainer extends StatefulWidget {
   final String categoryName;
+  final bool notLoading;
 
-  const MyAppBarContainer({Key key, this.categoryName}) : super(key: key);
+  const MyAppBarContainer({
+    Key key,
+    this.categoryName,
+    this.notLoading = true,
+  }) : super(key: key);
 
   @override
   _MyAppBarContainerState createState() => _MyAppBarContainerState();
@@ -35,14 +40,16 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration.zero, () {
-      this.fetchCategory = Provider.of<CategoryProvider>(
-        context,
-        listen: false,
-      ).fetchItems(context).then((value) {
-        isCatLoading = false;
+    if (widget.notLoading) {
+      Future.delayed(Duration.zero, () {
+        this.fetchCategory = Provider.of<CategoryProvider>(
+          context,
+          listen: false,
+        ).fetchItems(context).then((value) {
+          isCatLoading = false;
+        });
       });
-    });
+    }
   }
 
   @override
@@ -101,6 +108,7 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                               txtColor: Colors.white,
                               futureType: "category",
                               firstVal: value.items[0].name,
+                              dropDownWidth: deviceSize(context).width * 0.17,
                             );
                           }
                         },
@@ -126,6 +134,7 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                       iconColor: Colors.white,
                       txtColor: Colors.white,
                       futureType: "industry",
+                      dropDownWidth: deviceSize(context).width * 0.17,
                       firstVal: value.items[0].name,
                     );
                   }
@@ -148,6 +157,7 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                       txtColor: Colors.white,
                       futureType: "analytics",
                       firstVal: value.items[0].title,
+                      dropDownWidth: deviceSize(context).width * 0.17,
                     );
                   }
                 },
@@ -208,7 +218,7 @@ class MyEmptyText extends StatelessWidget {
         width: deviceSize(context).width * 0.2,
         child: Text(
           myTxt,
-          textScaleFactor: 1,
+          textScaleFactor: 0.7,
           style: TextStyle(color: Colors.white),
         ),
       ),
