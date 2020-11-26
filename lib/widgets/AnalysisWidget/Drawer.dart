@@ -202,7 +202,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   context: context,
                   name: "Analytics ",
                   icon: Icons.person,
-                  // routeName: Analysis.routeName,
+                  routeName: Analysis.routeName,
                   justPush: true),
 
               value.token != null

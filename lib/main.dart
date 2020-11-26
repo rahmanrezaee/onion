@@ -55,7 +55,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
@@ -79,28 +79,21 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
-
-  print("Handling a background message: ${message.messageId}");
-  print("data: ${message.data}");
-}
-
 class _MyAppState extends State<MyApp> {
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   @override
   void initState() {
     super.initState();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
-    });
+    _firebaseMessaging.configure(
+      onMessage: (message) async {
+        Navigator.pushNamed(context, NotificationsList.routeName);
+        print("You have a new notification:$message");
+      },
+      onResume: (message) async {
+        Navigator.pushNamed(context, NotificationsList.routeName);
+        print("You have a new notification:$message");
+      },
+    );
   }
 
   @override
