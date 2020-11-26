@@ -37,7 +37,7 @@ class _FandQState extends State<FandQ> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List data = snapshot.data as List;
-     
+
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
@@ -45,6 +45,7 @@ class _FandQState extends State<FandQ> {
                 itemBuilder: (context, i) {
                   print("index: $i");
                   return CustomizeExpansion(
+                    index: i,
                     title: Text(data[i]["question"],
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -57,7 +58,7 @@ class _FandQState extends State<FandQ> {
               ),
             );
           } else if (snapshot.hasError) {
-            print("Something went wrang when loadgin F&Q: ${snapshot.error}");
+            print("Something went wrang while loadgin F&Q: ${snapshot.error}");
             return Text("Something went wrong!! Please try again later.");
           } else {
             return Padding(
@@ -113,16 +114,35 @@ class _FandQState extends State<FandQ> {
 }
 
 //CustomizeExpansion
+// int _activeMeterIndex;
+
+// class ExpantionItem {
+//   ExpantionItem({
+//     this.icon,
+//     this.openedIcon,
+//     this.title,
+//     this.content,
+//     this.index,
+//   });
+//   Icon icon;
+//   Icon openedIcon;
+//   Widget title;
+//   Widget content;
+//   int index;
+// }
+
 class CustomizeExpansion extends StatefulWidget {
   final Icon icon;
   final Icon openedIcon;
   final Widget title;
   final Widget content;
+  final int index;
   CustomizeExpansion({
     this.icon,
     this.openedIcon,
     this.title,
     this.content,
+    this.index,
     Key key,
   }) : super(key: key);
 
@@ -147,6 +167,35 @@ class _CustomizeExpansionState extends State<CustomizeExpansion> {
       children: [
         Theme(
           data: theme,
+          // child: ExpansionPanelList(
+          //   expansionCallback: (int index, bool isExpanded) {},
+          //   children: [
+          //     ExpansionPanel(
+          //       headerBuilder: (BuildContext context, bool isExpanded) {
+          //         return ListTile(
+          //           title: Text('Item 1'),
+          //         );
+          //       },
+          //       body: ListTile(
+          //         title: Text('Item 1 child'),
+          //         subtitle: Text('Details goes here'),
+          //       ),
+          //       isExpanded: true,
+          //     ),
+          //     ExpansionPanel(
+          //       headerBuilder: (BuildContext context, bool isExpanded) {
+          //         return ListTile(
+          //           title: Text('Item 2'),
+          //         );
+          //       },
+          //       body: ListTile(
+          //         title: Text('Item 2 child'),
+          //         subtitle: Text('Details goes here'),
+          //       ),
+          //       isExpanded: false,
+          //     ),
+          //   ],
+          // )
           child: ExpansionTile(
             onExpansionChanged: (bool open) {
               //Chaning Icon

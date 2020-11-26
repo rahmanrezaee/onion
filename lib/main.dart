@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
@@ -11,6 +12,7 @@ import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/widgets/test.dart';
 import 'package:provider/provider.dart';
+// import 'package:cloud_messaging/cloud_messaging.dart';
 
 import './pages/Idea/MyIdeaDetailes.dart';
 import './pages/franchises/RequestOnFranchise.dart';
@@ -18,7 +20,6 @@ import './pages/franchises/requestFranchisesUser.dart';
 import './pages/franchises/viewFranchisesUser.dart';
 import './statemanagment/MyDropDownState.dart';
 import './test.dart';
-import './pages/franchises/RequestOnFranchise.dart';
 import './pages/underDevelopment.dart';
 import './pages/Home.dart';
 import './pages/Idea/postIdea.dart';
@@ -52,10 +53,10 @@ import 'pages/franchises/ViewMyRequestFranchise.dart';
 import './widgets/bottom_nav.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
@@ -74,12 +75,40 @@ void main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+  print("data: ${message.data}");
+}
+
+class _MyAppState extends State<MyApp> {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    Provider.of<Auth>(context, listen: false).tryAutoLogin();
-    
+    Provider.of<Auth>(
+      context,
+    ).tryAutoLogin();
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
         title: 'Onion.ai',
@@ -91,10 +120,10 @@ class MyApp extends StatelessWidget {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: CustomDrawerPage(key),
+        home: CustomDrawerPage(widget.key),
         routes: {
           Login.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : FutureBuilder(
                   future:
                       Provider.of<Auth>(context, listen: false).tryAutoLogin(),
@@ -109,20 +138,21 @@ class MyApp extends StatelessWidget {
           MyIdeaId.routeName: (context) => MyIdeaId(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) =>
-              auth.token != null ? CustomDrawerPage(key) : SignUp(),
+              auth.token != null ? CustomDrawerPage(widget.key) : SignUp(),
           ComplateProfile.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : ComplateProfile(
                   ModalRoute.of(context).settings.arguments,
                 ),
-          CustomDrawerPage.routeName: (context) => CustomDrawerPage(key),
+          CustomDrawerPage.routeName: (context) => CustomDrawerPage(widget.key),
           AnalyticsOne.routeName: (context) => AnalyticsOne(),
           Analysis.routeName: (context) => Analysis(),
           RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-          ForgetPassword.routeName: (context) =>
-              auth.token != null ? CustomDrawerPage(key) : ForgetPassword(),
+          ForgetPassword.routeName: (context) => auth.token != null
+              ? CustomDrawerPage(widget.key)
+              : ForgetPassword(),
           ChangePassword.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : ChangePassword(
                   ModalRoute.of(context).settings.arguments,
                 ),
@@ -139,7 +169,6 @@ class MyApp extends StatelessWidget {
           RequestFranchisesUser.routeName: (context) => RequestFranchisesUser(),
           ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(),
           MyIdeaId.routeName: (context) => MyIdeaId(),
-
           MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
           RequestPage.routeName: (context) => RequestPage(),
         },
