@@ -26,6 +26,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   webview_flutter: 
+  jiffy: ^3.0.1
   font_awesome_flutter:
   flutter_inner_drawer: ^0.5.7+2
   provider: ^3.0.0
@@ -55,6 +56,7 @@ dependencies:
   firebase_messaging: ^6.0.9
   cloud_firestore: ^0.14.3
   syncfusion_flutter_maps: ^18.3.50-beta
+  syncfusion_flutter_charts: ^18.3.50
   curved_navigation_bar: ^0.3.4
   animated_bottom_navigation_bar: ^0.1.2+2
   # search_place_autocomplete:
