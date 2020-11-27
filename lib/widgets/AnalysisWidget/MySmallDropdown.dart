@@ -110,9 +110,9 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
                   name: value,
                   context: context,
                 );
-              } else if (widget.futureType == "analysis") {
+              } else if (widget.futureType == "analytics") {
                 Provider.of<MyDropDownState>(context, listen: false)
-                    .setAnalyticsSelected(true);
+                    .setAnalyticsSelected();
               }
             },
             isDense: true,

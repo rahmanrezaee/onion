@@ -177,8 +177,8 @@ class _MyDrawerState extends State<MyDrawer> {
                               style: TextStyle(color: Colors.white),
                             )
                           : FlatButton(
-                              onPressed: () =>
-                                  Navigator.pushNamed(context, Login.routeName),
+                              onPressed: () => Navigator.pushReplacementNamed(
+                                  context, Login.routeName),
                               child: Text(
                                 "click to login..",
                                 textScaleFactor: 1.2,
@@ -202,7 +202,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   context: context,
                   name: "Analytics ",
                   icon: Icons.person,
-                  // routeName: Analysis.routeName,
+                  routeName: Analysis.routeName,
                   justPush: true),
 
               value.token != null

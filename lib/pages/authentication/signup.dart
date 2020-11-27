@@ -688,8 +688,8 @@ class _SignUpState extends State<SignUp> {
     });
 
     try {
-      String result = await Auth().uploadImage(_imageFile, "profile");
-      user.profile = result;
+      Map result = await Auth().uploadFile(_imageFile, "profile");
+      user.profile = result['name'];
     } on UploadException catch (e) {
       _scaffoldKey.currentState
           .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));

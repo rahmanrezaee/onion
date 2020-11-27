@@ -5,9 +5,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:onion/models/sample_list.dart';
 
 /// Local import
-import './sample_list.dart';
 import 'sample_view.dart';
 
 /// WidgetCategory of the each control as Data Visualization, Editors,etc.,
@@ -247,7 +247,7 @@ class SampleModel extends Listenable {
 
   /// Contains the output widget of sample
   /// appropriate key and output widget mapped
-  final Map<String, Function> sampleWidget = getSampleWidget();
+  // final Map<String, Function> sampleWidget = getSampleWidget();
   //ignore:prefer_final_fields
   static List<Control> _controlList = <Control>[];
   //ignore:prefer_final_fields
