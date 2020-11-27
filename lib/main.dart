@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
@@ -12,6 +13,7 @@ import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/widgets/test.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:cloud_messaging/cloud_messaging.dart';
 
 import './pages/Idea/MyIdeaDetailes.dart';
@@ -49,14 +51,13 @@ import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
 import './pages/request.dart';
-import 'pages/franchises/ViewMyRequestFranchise.dart';
+import './pages/franchises/ViewMyRequestFranchise.dart';
 import './widgets/bottom_nav.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  SharedPreferences.setMockInitialValues({});
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
@@ -104,7 +105,7 @@ class _MyAppState extends State<MyApp> {
     ).tryAutoLogin();
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
-        title: 'Onion.ai',
+        title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Color(0xFF7B3C8A),
