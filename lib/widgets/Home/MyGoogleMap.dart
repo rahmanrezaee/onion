@@ -131,7 +131,9 @@ class _MapRangeColorMappingPageState extends State<MyGoogleMap> {
                                     anavalue.changeCountryColors(element);
                                 });
 
-                                return anavalue.worldPopulationDensityDetails[index].countryName +
+                                return anavalue
+                                        .worldPopulationDensityDetails[index]
+                                        .countryName +
                                     ' ';
                               },
                               // Group and differentiate the shapes using the color

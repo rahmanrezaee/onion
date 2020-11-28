@@ -18,7 +18,11 @@ class SetupIdeaValidation with ChangeNotifier {
   ValidationItem get about => _about;
 
   bool get isValid {
-    if (_year.value != null && _month.value != null && _teamSize.value != null && _website.value != null && _about != null) {
+    if (_year.value != null &&
+        _month.value != null &&
+        _teamSize.value != null &&
+        _website.value != null &&
+        _about != null) {
       return true;
     } else {
       return false;
@@ -27,9 +31,7 @@ class SetupIdeaValidation with ChangeNotifier {
 
   //Setters
   void changeYear(String value) {
-    if (value.length == 4 &&
-        int.parse(value) < 2500 &&
-        int.parse(value) > 1950) {
+    if (value.length > 0) {
       _year = ValidationItem(value, null);
     } else {
       _year = ValidationItem(null, "Must Inter Valid Year");
@@ -56,6 +58,7 @@ class SetupIdeaValidation with ChangeNotifier {
     }
     notifyListeners();
   }
+
   void changeTeamSize(String value) {
     if (value.length <= 4 && int.parse(value) > 0) {
       _teamSize = ValidationItem(value, null);
@@ -64,9 +67,8 @@ class SetupIdeaValidation with ChangeNotifier {
     }
     notifyListeners();
   }
-  
+
   void changeWebsite(String value) {
-    
     if (value.length <= 30 && isURL(value)) {
       _website = ValidationItem(value, null);
     } else {

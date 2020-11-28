@@ -7,10 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/models/Idea.dart';
 import 'package:onion/pages/Home.dart';
-import 'package:onion/pages/Idea/setupIdea.dart';
+import 'package:onion/models/setupIdea.dart' as setupIdeaModel;
+import 'package:onion/services/ideasServices.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/widgets/Checkbox/GlowCheckbox.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
+import 'package:onion/widgets/Home/MyPopup.dart';
 import 'package:onion/widgets/IdeaWiget/LocationWidget.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
 import 'package:provider/provider.dart';
@@ -22,13 +25,15 @@ class PostIdea extends StatefulWidget {
   _PostIdeaState createState() => _PostIdeaState();
 }
 
+SetupIdeaModel postForm = new SetupIdeaModel();
+
 class _PostIdeaState extends State<PostIdea> {
   List<Map> image = [];
   List<String> list = new List<String>();
   List<TextEditingController> _controllers = [];
 
   int addinput = 1;
-
+  bool submited = false;
   void addField() {
     setState(() {
       this.list.add("");
@@ -36,24 +41,47 @@ class _PostIdeaState extends State<PostIdea> {
     });
   }
 
-  SetupIdeaModel postForm = new SetupIdeaModel();
+  String token;
+  Auth authProvider;
   @override
   void initState() {
+    authProvider = Provider.of<Auth>(context, listen: false);
+    token = authProvider.token;
     addField();
     super.initState();
   }
 
+  bool uploadingFile = false;
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool checkboxSelectedNeedSerive = true;
   bool checkboxSelectedNeedInvestor = false;
   bool _autoValidate = false;
+  int stages = 0;
+  // List<File> documents = [];
+  File video;
   @override
   Widget build(BuildContext context) {
+    // Map<String, String> setupIdea = ModalRoute.of(context).settings.arguments;
+    // Map<String, String> setupIdea = ModalRoute.of(context).settings.arguments;
     final validationService = Provider.of<PostIdeaValidation>(context);
+    // print("Setup Idea: ${setupIdea['category']}");
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: PreferredSize(
-        preferredSize: const Size(double.infinity, kToolbarHeight),
-        child: MyLittleAppbar(myTitle: "Add new Idea"),
+        preferredSize: const Size(double.infinity, kToolbarHeight + 5),
+        child: Column(
+          children: [
+            MyLittleAppbar(myTitle: "Post Idea Id"),
+            uploadingFile == true
+                ? Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 5,
+                    child: LinearProgressIndicator(),
+                  )
+                : Container()
+          ],
+        ),
       ),
       body: GestureDetector(
         onTap: () {
@@ -71,12 +99,12 @@ class _PostIdeaState extends State<PostIdea> {
                     children: [
                       Expanded(
                           child: Text(
-                        "Build Your Profile to Post your Idea",
+                        '',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       )),
                       InkWell(
-                        child: Icon(Icons.info),
+                        child: Icon(Icons.info_outline),
                       )
                     ],
                   ),
@@ -97,14 +125,14 @@ class _PostIdeaState extends State<PostIdea> {
                                 activeColor: Theme.of(context).primaryColor,
                                 value: postForm.typeIdea == null
                                     ? 0
-                                    : postForm.typeIdea == "new"
+                                    : postForm.typeIdea == "new idea"
                                         ? 1
                                         : 0,
                                 groupValue: 1,
                                 onChanged: (va) {
                                   print(va);
                                   setState(() {
-                                    postForm.typeIdea = "new";
+                                    postForm.typeIdea = "new idea";
                                   });
                                 },
                               ),
@@ -116,13 +144,13 @@ class _PostIdeaState extends State<PostIdea> {
                                 activeColor: Theme.of(context).primaryColor,
                                 value: postForm.typeIdea == null
                                     ? 1
-                                    : postForm.typeIdea == "imp"
+                                    : postForm.typeIdea == "Implemented Idea"
                                         ? 1
                                         : 0,
                                 groupValue: 1,
                                 onChanged: (va) {
                                   setState(() {
-                                    postForm.typeIdea = "imp";
+                                    postForm.typeIdea = "Implemented Idea";
                                   });
                                 },
                               ),
@@ -140,7 +168,8 @@ class _PostIdeaState extends State<PostIdea> {
                           DropDownFormField(
                             value: postForm.category != null
                                 ? postForm.category
-                                : "none",
+                                : "Industry",
+                            // value: setupIdea['category'],
                             onSaved: (value) {
                               setState(() {
                                 postForm.category = value;
@@ -152,9 +181,9 @@ class _PostIdeaState extends State<PostIdea> {
                               });
                             },
                             dataSource: [
-                              {"display": 'Industry', "value": 'none'},
-                              {"display": 'Technalogy', "value": 'tach'},
-                              {"display": 'Learing', "value": 'learing'},
+                              {"display": 'Industry', "value": 'Industry'},
+                              {"display": 'Technalogy', "value": 'Technalogy'},
+                              {"display": 'Learing', "value": 'Learning'},
                             ],
                             textField: 'display',
                             valueField: 'value',
@@ -174,6 +203,7 @@ class _PostIdeaState extends State<PostIdea> {
                             children: [
                               Expanded(
                                 child: TextFormField(
+                                  // initialValue: setupIdea['experienceYear'],
                                   inputFormatters: [
                                     new LengthLimitingTextInputFormatter(
                                         4), // for mobile
@@ -184,15 +214,16 @@ class _PostIdeaState extends State<PostIdea> {
                                   ),
                                   validator: (value) {
                                     if (value.isEmpty)
-                                      return "Your Yeaer is empty";
-                                    if (value.length != 4)
-                                      return "Your Year is invalid";
+                                      return "Your Year is empty";
+                                    // if (value.length != 4)
+                                    //   return "Your Year is invalid";
                                   },
                                   onSaved: (value) {
                                     // user.occupation = value;
                                   },
                                   onChanged: (value) {
-                                    validationService.changeYear(value);
+                                    // validationService.changeYear(value);
+                                    postForm.experienceYear = value;
                                   },
                                   decoration: InputDecoration(
                                     hintText: "Year",
@@ -219,6 +250,7 @@ class _PostIdeaState extends State<PostIdea> {
                               ),
                               Expanded(
                                 child: TextFormField(
+                                  // initialValue: setupIdea['experienceMonth'],
                                   inputFormatters: [
                                     new LengthLimitingTextInputFormatter(
                                         2), // for mobile
@@ -229,6 +261,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   ),
                                   onChanged: (value) {
                                     validationService.changeMonth(value);
+                                    postForm.experienceMonth = value;
                                   },
                                   validator: (value) {
                                     if (value.isEmpty)
@@ -265,26 +298,28 @@ class _PostIdeaState extends State<PostIdea> {
                             height: 10,
                           ),
                           TextFormField(
-                            keyboardType: TextInputType.number,
+                            // initialValue: setupIdea['teamSize'].toString(),
+                            // keyboardType: TextInputType.number,
                             style: TextStyle(
                               color: Colors.purple,
                             ),
                             validator: (value) {
                               if (value.isEmpty)
-                                return "Your Team Size is empty";
+                                return "Your Idea Headline is empty";
                             },
-                            inputFormatters: [
-                              new LengthLimitingTextInputFormatter(
-                                  5), // for mobile
-                            ],
+                            // inputFormatters: [
+                            //   new LengthLimitingTextInputFormatter(
+                            //       5), // for mobile
+                            // ],
                             onSaved: (value) {
                               // user.occupation = value;
                             },
                             onChanged: (value) {
-                              validationService.changeTeamSize(value);
+                              // validationService.changeTeamSize(value);
+                              postForm.ideaHeadline = value;
                             },
                             decoration: InputDecoration(
-                              hintText: "Team Size",
+                              hintText: "Idea Headline",
                               errorText: validationService.teamSize.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 0,
@@ -306,23 +341,24 @@ class _PostIdeaState extends State<PostIdea> {
                             height: 10,
                           ),
                           TextFormField(
+                            // initialValue: setupIdea['aboutYourBusiness'],
                             keyboardType: TextInputType.text,
                             style: TextStyle(
                               color: Colors.purple,
                             ),
                             validator: (value) {
-                              if (value.isEmpty)
-                                return "Your About Your Business is empty";
+                              if (value.isEmpty) return "Your Idea is empty";
                             },
                             onChanged: (value) {
                               validationService.changeAbout(value);
+                              postForm.ideaText = value;
                             },
                             onSaved: (value) {
                               // user.occupation = value;
                             },
                             maxLines: 5,
                             decoration: InputDecoration(
-                              hintText: "About Your Business",
+                              hintText: "Idea",
                               errorText: validationService.about.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 10,
@@ -356,33 +392,45 @@ class _PostIdeaState extends State<PostIdea> {
                                 activeColor: Theme.of(context).primaryColor,
                                 value: postForm.timeline == null
                                     ? 0
-                                    : postForm.timeline == "stage"
+                                    : postForm.timeline['timelineType'] ==
+                                            "stages"
                                         ? 1
                                         : 0,
                                 groupValue: 1,
                                 onChanged: (va) {
                                   print(va);
                                   setState(() {
-                                    postForm.timeline = "stage";
+                                    postForm.timeline['timelineType'] =
+                                        "stages";
                                   });
+                                  postForm.timeline['details'] = List.generate(
+                                      stages,
+                                      (index) => {
+                                            "start": "0",
+                                            "end": "0",
+                                          }).toList();
+                                  print(postForm.timeline['timelineType']);
                                 },
                               ),
                               new Text(
-                                'Stage',
+                                'Stages',
                                 style: new TextStyle(fontSize: 13),
                               ),
                               new Radio(
                                 activeColor: Theme.of(context).primaryColor,
-                                value: postForm.timeline == null
+                                value: postForm.timeline['timelineType'] == null
                                     ? 1
-                                    : postForm.timeline == "date"
+                                    : postForm.timeline['timelineType'] ==
+                                            "date"
                                         ? 1
                                         : 0,
                                 groupValue: 1,
                                 onChanged: (va) {
                                   setState(() {
-                                    postForm.timeline = "date";
+                                    postForm.timeline['timelineType'] = "date";
                                   });
+                                  postForm.timeline['details'] = {};
+                                  print(postForm.timeline['timelineType']);
                                 },
                               ),
                               new Text(
@@ -393,6 +441,191 @@ class _PostIdeaState extends State<PostIdea> {
                               ),
                             ],
                           ),
+                          postForm.timeline['timelineType'] == 'date'
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                      Text("Enter date"),
+                                      SizedBox(height: 5),
+                                      TextFormField(
+                                        // initialValue: setupIdea['aboutYourBusiness'],
+                                        keyboardType: TextInputType.number,
+                                        style: TextStyle(
+                                          color: Colors.purple,
+                                        ),
+                                        validator: (value) {
+                                          if (value.isEmpty)
+                                            return "Date is empty";
+                                        },
+                                        onChanged: (value) {
+                                          // validationService.changeAbout(value);
+                                          postForm.timeline['details'] = {
+                                            "date": value
+                                          };
+                                        },
+                                        onSaved: (value) {
+                                          // user.occupation = value;
+                                        },
+                                        decoration: InputDecoration(
+                                          hintText: "2019-10-12",
+                                          errorText:
+                                              validationService.about.error,
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                            horizontal: 10,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.purple,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ])
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                      Text("Select Total Stages"),
+                                      SizedBox(height: 5),
+                                      DropDownFormField(
+                                        value: stages != 0 ? "$stages" : "none",
+                                        onSaved: (value) {
+                                          setState(() {
+                                            stages = int.parse(value);
+                                            // postForm.timeline['details'] = [];
+                                          });
+                                        },
+                                        onChanged: (value) {
+                                          setState(() {
+                                            stages = int.parse(value);
+                                            // postForm.timeline['details'] = [];
+                                          });
+                                        },
+                                        dataSource: [
+                                          {"display": ' ', "value": 'none'},
+                                          ...List.generate(12, (index) {
+                                            return {
+                                              "display": "${index + 1}",
+                                              "value": "${index + 1}"
+                                            };
+                                          }).toList(),
+                                        ],
+                                        textField: 'display',
+                                        valueField: 'value',
+                                      ),
+                                      SizedBox(height: 10),
+                                      ...List.generate(stages, (index) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(height: 5),
+                                            Text(
+                                                "Enter Start Date for Stage ${index + 1}"),
+                                            SizedBox(height: 5),
+                                            TextFormField(
+                                              // initialValue: setupIdea['aboutYourBusiness'],
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              style: TextStyle(
+                                                color: Colors.purple,
+                                              ),
+                                              // validator: (value) {
+                                              //   if (value.isEmpty)
+                                              //     return "It's empty";
+                                              //   return null;
+                                              // },
+                                              onChanged: (value) {
+                                                // validationService.changeAbout(value);
+                                                (postForm.timeline['details']
+                                                        as List)[index]
+                                                    ['start'] = value;
+                                              },
+                                              onSaved: (value) {
+                                                // user.occupation = value;
+                                              },
+                                              decoration: InputDecoration(
+                                                hintText: "2019-12-10",
+                                                errorText: validationService
+                                                    .about.error,
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 10,
+                                                  horizontal: 10,
+                                                ),
+                                                border: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.black87,
+                                                  ),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.purple,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 5),
+                                            //End date
+                                            SizedBox(height: 5),
+                                            Text(
+                                                "Enter End Date for Stage ${index + 1}"),
+                                            SizedBox(height: 5),
+                                            TextFormField(
+                                              // initialValue: setupIdea['aboutYourBusiness'],
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              style: TextStyle(
+                                                color: Colors.purple,
+                                              ),
+                                              // validator: (value) {
+                                              //   if (value.isEmpty)
+                                              //     return "It's empty";
+                                              //   return null;
+                                              // },
+                                              onChanged: (value) {
+                                                (postForm.timeline['details']
+                                                        as List)[index]['end'] =
+                                                    value;
+                                              },
+                                              onSaved: (value) {
+                                                // user.occupation = value;
+                                              },
+                                              decoration: InputDecoration(
+                                                hintText: "2020-12-10",
+                                                errorText: validationService
+                                                    .about.error,
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 10,
+                                                  horizontal: 10,
+                                                ),
+                                                border: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.black87,
+                                                  ),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.purple,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 5),
+                                          ],
+                                        );
+                                      }).toList(),
+                                    ]),
+                          SizedBox(height: 10),
                           SizedBox(
                             height: 10,
                           ),
@@ -406,18 +639,20 @@ class _PostIdeaState extends State<PostIdea> {
                                   style: TextStyle(
                                     color: Colors.purple,
                                   ),
-                                  validator: (value) {
-                                    if (value.isEmpty)
-                                      return "Your Document is empty";
-                                  },
-                                  onChanged: (value) {
-                                    validationService.changeDocument(value);
-                                  },
+                                  // validator: (value) {
+                                  //   if (value.isEmpty)
+                                  //     return "Your Document is empty";
+                                  // },
+                                  // onChanged: (value) {
+                                  //   validationService.changeDocument(value);
+                                  // },
                                   onSaved: (value) {
                                     // user.occupation = value;
                                   },
+                                  enableInteractiveSelection: false,
+                                  focusNode: new AlwaysDisabledFocusNode(),
                                   decoration: InputDecoration(
-                                    hintText: "Document",
+                                    hintText: "Upload Documents",
                                     errorText: validationService.document.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
@@ -450,6 +685,16 @@ class _PostIdeaState extends State<PostIdea> {
                               )
                             ],
                           ),
+                          // postForm.documents.length < 1 && submited == true
+                          //     ? Align(
+                          //         alignment: Alignment.centerLeft,
+                          //         child: Text(
+                          //           "select documents",
+                          //           textAlign: TextAlign.center,
+                          //           style: TextStyle(color: Colors.red),
+                          //         ),
+                          //       )
+                          //     : Container(),
                           //  Container(
                           //   padding: EdgeInsets.all(5),
                           //   alignment: Alignment.topLeft,
@@ -470,6 +715,7 @@ class _PostIdeaState extends State<PostIdea> {
                               itemBuilder: (BuildContext context, int index) {
                                 return image.length > index
                                     ? Stack(
+                                        overflow: Overflow.visible,
                                         children: [
                                           Positioned(
                                             bottom: 0,
@@ -498,10 +744,12 @@ class _PostIdeaState extends State<PostIdea> {
                                             alignment: Alignment.center,
                                             child: IconButton(
                                                 icon: Icon(Icons.delete,
-                                                    color: Colors.white),
+                                                    color: Colors.red),
                                                 onPressed: () {
                                                   setState(() {
                                                     image.removeAt(index);
+                                                    postForm.documents
+                                                        .removeAt(index);
                                                   });
                                                 }),
                                           )
@@ -549,15 +797,17 @@ class _PostIdeaState extends State<PostIdea> {
                                   style: TextStyle(
                                     color: Colors.purple,
                                   ),
-                                  onChanged: (value) =>
-                                      validationService.changeVideo(value),
-                                  validator: (value) {
-                                    if (value.isEmpty)
-                                      return "Your Upload Video is empty";
-                                  },
+                                  // onChanged: (value) =>
+                                  //     validationService.changeVideo(value),
+                                  // validator: (value) {
+                                  //   if (value.isEmpty)
+                                  //     return "Your Upload Video is empty";
+                                  // },
                                   onSaved: (value) {
                                     // user.occupation = value;
                                   },
+                                  enableInteractiveSelection: false,
+                                  focusNode: new AlwaysDisabledFocusNode(),
                                   decoration: InputDecoration(
                                     hintText: "Upload Video",
                                     errorText: validationService.video.error,
@@ -590,6 +840,16 @@ class _PostIdeaState extends State<PostIdea> {
                               )
                             ],
                           ),
+                          // postForm.uploadVideo == null && submited == true
+                          //     ? Align(
+                          //         alignment: Alignment.centerLeft,
+                          //         child: Text(
+                          //           "select video",
+                          //           textAlign: TextAlign.center,
+                          //           style: TextStyle(color: Colors.red),
+                          //         ),
+                          //       )
+                          //     : Container(),
                           SizedBox(height: 10),
                           Container(
                             padding: EdgeInsets.all(5),
@@ -600,38 +860,75 @@ class _PostIdeaState extends State<PostIdea> {
                                   fontWeight: FontWeight.bold, fontSize: 14),
                             ),
                           ),
-
-                          Column(
-                            children: [
-                              ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: list.length,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return LocationWidget(
-                                      text: list[index],
-                                      controller: _controllers[index],
-                                      locationRemove: () {
-                                        print(list.toString());
-                                        setState(() {
-                                          _controllers.removeAt(index);
-                                          list.removeAt(index);
-                                        });
-                                      },
-                                    );
-                                  }),
-                              FlatButton(
-                                onPressed: () => addField(),
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Text("Add More"),
+                          TextFormField(
+                            // keyboardType: TextInputType.number,
+                            style: TextStyle(
+                              color: Colors.purple,
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) return "it is empty";
+                            },
+                            // inputFormatters: [
+                            //   new LengthLimitingTextInputFormatter(
+                            //       5), // for mobile
+                            // ],
+                            // onChanged: (value) =>
+                            //     validationService.changeTeamSize(value),
+                            onSaved: (value) {
+                              // user.occupation = value;
+                              postForm.location = value;
+                            },
+                            decoration: InputDecoration(
+                              hintText: "Location",
+                              errorText: validationService.teamSize.error,
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 0,
+                                horizontal: 10,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black87,
                                 ),
                               ),
-                              SizedBox(
-                                height: 10,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.purple,
+                                ),
                               ),
-                            ],
+                            ),
                           ),
+                          SizedBox(height: 10),
+                          // Column(
+                          //   children: [
+                          //     ListView.builder(
+                          //         shrinkWrap: true,
+                          //         itemCount: list.length,
+                          //         physics: NeverScrollableScrollPhysics(),
+                          //         itemBuilder: (context, index) {
+                          //           return LocationWidget(
+                          //             text: list[index],
+                          //             controller: _controllers[index],
+                          //             locationRemove: () {
+                          //               print(list.toString());
+                          //               setState(() {
+                          //                 _controllers.removeAt(index);
+                          //                 list.removeAt(index);
+                          //               });
+                          //             },
+                          //           );
+                          //         }),
+                          //     FlatButton(
+                          //       onPressed: () => addField(),
+                          //       child: Align(
+                          //         alignment: Alignment.topRight,
+                          //         child: Text("Add More"),
+                          //       ),
+                          //     ),
+                          //     SizedBox(
+                          //       height: 10,
+                          //     ),
+                          //   ],
+                          // ),
 
                           TextFormField(
                             keyboardType: TextInputType.number,
@@ -642,14 +939,15 @@ class _PostIdeaState extends State<PostIdea> {
                               if (value.isEmpty)
                                 return "Your No of estimated people is empty";
                             },
-                            inputFormatters: [
-                              new LengthLimitingTextInputFormatter(
-                                  5), // for mobile
-                            ],
-                            onChanged: (value) =>
-                                validationService.changeTeamSize(value),
+                            // inputFormatters: [
+                            //   new LengthLimitingTextInputFormatter(
+                            //       5), // for mobile
+                            // ],
+                            // onChanged: (value) =>
+                            //     validationService.changeTeamSize(value),
                             onSaved: (value) {
                               // user.occupation = value;
+                              postForm.estimatedPeople = value;
                             },
                             decoration: InputDecoration(
                               hintText: "No of estimated people",
@@ -679,20 +977,22 @@ class _PostIdeaState extends State<PostIdea> {
                             children: [
                               Expanded(
                                 child: TextFormField(
+                                  enableInteractiveSelection: false,
+                                  focusNode: new AlwaysDisabledFocusNode(),
                                   keyboardType: TextInputType.url,
                                   style: TextStyle(
                                     color: Colors.purple,
                                   ),
-                                  onChanged: (value) {
-                                    validationService.changeWhitePaper(value);
-                                  },
-                                  validator: (value) {
-                                    if (value.isEmpty)
-                                      return "Your Upload White Paper is empty";
-                                  },
-                                  onSaved: (value) {
-                                    // user.occupation = value;
-                                  },
+                                  // onChanged: (value) {
+                                  //   validationService.changeWhitePaper(value);
+                                  // },
+                                  // validator: (value) {
+                                  //   if (value.isEmpty)
+                                  //     return "Your Upload White Paper is empty";
+                                  // },
+                                  // onSaved: (value) {
+                                  //   // user.occupation = value;
+                                  // },
                                   decoration: InputDecoration(
                                     hintText: "Upload White Paper",
                                     errorText:
@@ -720,7 +1020,9 @@ class _PostIdeaState extends State<PostIdea> {
                               RaisedButton(
                                 padding: EdgeInsets.all(13),
                                 color: Theme.of(context).primaryColor,
-                                onPressed: () => loadAssetsDocument(),
+                                onPressed: () {
+                                  loadWhitePaper();
+                                },
                                 child: Text("Upload",
                                     style: TextStyle(color: Colors.white)),
                               )
@@ -757,28 +1059,30 @@ class _PostIdeaState extends State<PostIdea> {
                                   children: [
                                     GlowCheckbox(
                                       color: Theme.of(context).primaryColor,
-                                      value: checkboxSelectedNeedInvestor,
+                                      value: postForm.needServiceProvider,
                                       enable: true,
                                       onChange: (bool value) {
                                         print(value);
                                         setState(() {
                                           checkboxSelectedNeedInvestor =
                                               !checkboxSelectedNeedInvestor;
+                                          postForm.needServiceProvider = value;
                                         });
                                       },
                                     ),
                                     SizedBox(width: 5),
-                                    Text("Need Serive Provider"),
+                                    Text("Need Service Provider"),
                                     SizedBox(width: 5),
                                     GlowCheckbox(
                                       color: Theme.of(context).primaryColor,
-                                      value: checkboxSelectedNeedSerive,
+                                      value: postForm.needInvestor,
                                       enable: true,
                                       onChange: (bool value) {
                                         print(value);
                                         setState(() {
                                           checkboxSelectedNeedSerive =
                                               !checkboxSelectedNeedSerive;
+                                          postForm.needInvestor = value;
                                         });
                                       },
                                     ),
@@ -796,7 +1100,18 @@ class _PostIdeaState extends State<PostIdea> {
                             width: double.infinity,
                             height: 40,
                             child: RaisedButton(
-                              onPressed: addPostIdeaSetup,
+                              onPressed: uploadingFile == false
+                                  ? () {
+                                      addPostIdeaSetup(context);
+                                    }
+                                  : () {
+                                      _scaffoldKey.currentState.showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                              "Uploading file. Please wait."),
+                                        ),
+                                      );
+                                    },
                               child: Text(
                                 "Add Your Idea Setup",
                                 style: TextStyle(
@@ -829,7 +1144,7 @@ class _PostIdeaState extends State<PostIdea> {
     FilePickerResult result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
-      // allowedExtensions: ['jpg', 'pdf', 'docs', 'png'],
+      allowedExtensions: ['jpg', 'pdf', 'gif', 'jpeg', 'png'],
     );
 
     if (result != null) {
@@ -844,6 +1159,19 @@ class _PostIdeaState extends State<PostIdea> {
           });
         });
       });
+      print("the result is not null and we are uploading files.............");
+      setState(() {
+        uploadingFile = true;
+      });
+      List<File> files = result.paths.map((path) => File(path)).toList();
+      for (int i = 0; i < files.length; i++) {
+        authProvider.uploadFile(files[i], "document").then((value) {
+          postForm.documents.add(value);
+          setState(() {
+            uploadingFile = false;
+          });
+        });
+      }
     } else {
       // User canceled the picker
     }
@@ -851,25 +1179,49 @@ class _PostIdeaState extends State<PostIdea> {
 
   Future<void> loadAssetsDocument() async {
     // FilePickerResult result = await FilePicker.platform.pickFiles();
-
+    postForm.documents = [];
     FilePickerResult result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'docs'],
+      allowedExtensions: ['pdf', 'doc', 'txt', 'docx'],
     );
-
     if (result != null) {
-      List<PlatformFile> file = result.files;
-
-      file.forEach((element) {
-        print(element);
+      setState(() {
+        uploadingFile = true;
       });
+      List<PlatformFile> file = result.files;
+      file.forEach((element) {
+        setState(() {
+          image.add({
+            "name": element.name,
+            "path": element.path,
+            "type": element.extension,
+          });
+        });
+      });
+      print("the result is not null and we are uploading files.............");
+      List<File> files = result.paths.map((path) => File(path)).toList();
+      for (int i = 0; i < files.length; i++) {
+        authProvider.uploadFile(files[i], "document").then((value) {
+          postForm.documents.add(value);
+          setState(() {
+            uploadingFile = false;
+          });
+        });
+      }
     }
+  }
+
+  Future<void> loadWhitePaper() async {
+    FilePickerResult result =
+        await FilePicker.platform.pickFiles(type: FileType.any);
   }
 
   Future<void> loadAssetsVideo() async {
     // FilePickerResult result = await FilePicker.platform.pickFiles();
-
+    setState(() {
+      uploadingFile = true;
+    });
     FilePickerResult result = await FilePicker.platform
         .pickFiles(type: FileType.custom, allowedExtensions: [
       'WEBM',
@@ -892,23 +1244,62 @@ class _PostIdeaState extends State<PostIdea> {
     ]);
 
     if (result != null) {
-      List<PlatformFile> file = result.files;
-
-      file.forEach((element) {
-        print(element);
-      });
+      print("the result is not null and we are uploading files.............");
+      List<File> files = result.paths.map((path) => File(path)).toList();
+      for (int i = 0; i < files.length; i++) {
+        authProvider.uploadFile(files[i], "video").then((value) {
+          postForm.uploadVideo = value;
+          print("Video data $value");
+          setState(() {
+            uploadingFile = false;
+          });
+        });
+      }
     }
   }
 
   final _formKey = new GlobalKey<FormState>();
-  void addPostIdeaSetup() {
+  void addPostIdeaSetup(context) {
+    setState(() {
+      submited = true;
+    });
+    // &&
+    //     postForm.documents.length > 0 &&
+    //     postForm.uploadVideo != null
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      Navigator.pushNamed(context, "/");
+      // Scaffold.of(context).showSnackBar(SnackBar(
+      //   duration: Duration(seconds: 5),
+      //   content: Text("Under Development"),
+      //   // backgroundColor: Colors.red,
+      // ));
+      print("postFOrm: ${postForm.toSendMap()}");
+      IdeasServices().postIdea(postForm.toSendMap(), token).then((status) {
+        if (status == true) {
+          Navigator.pushNamed(context, "/");
+        } else {
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            duration: Duration(seconds: 5),
+            content: Text("Something went wrong. Try again"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      }).catchError((e) {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          duration: Duration(seconds: 5),
+          content: Text("Something went wrong. Try again"),
+          backgroundColor: Colors.red,
+        ));
+      });
     } else {
       setState(() {
         _autoValidate = true;
       });
     }
   }
+}
+
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
 }

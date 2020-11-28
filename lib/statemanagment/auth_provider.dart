@@ -241,7 +241,7 @@ class Auth with ChangeNotifier {
     print(result.uid);
   }
 
-  Future<String> uploadImage(File imageFile, String category) async {
+  Future<Map> uploadFile(File imageFile, String category) async {
     final StringBuffer url = new StringBuffer(BASE_URL + "/upload");
     Dio dio = new Dio();
 
@@ -264,11 +264,11 @@ class Auth with ChangeNotifier {
         data: formData,
       );
 
-      print(response);
+      print("UploadResponse: ${response.data}");
 
       if (response.data['status']) {
-        var respon = response.data["data"]["name"];
-        return Future.value(respon);
+        // var respon = response.data["data"]["name"];
+        return response.data['data'];
       } else {
         throw UploadException(response.data["message"]);
       }
