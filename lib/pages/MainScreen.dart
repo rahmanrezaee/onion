@@ -7,6 +7,7 @@ import 'package:onion/pages/Home.dart';
 import 'package:onion/pages/MyMessagePage.dart';
 import 'package:onion/pages/underDevelopment.dart';
 import 'package:onion/widgets/bottom_nav.dart';
+import 'package:onion/pages/SearchTab/SearchTab.dart';
 
 class MainScreen extends StatefulWidget {
   static String routeName = "mainScreen";
@@ -28,7 +29,7 @@ class _MainScreenState extends State<MainScreen> {
       MyMessagePage(openDrawer: widget.openDrawer),
       Analysis(),
       DashboardPage(openDrawer: widget.openDrawer),
-      Center(child: Text("under development")),
+      SearchTab(openDrawer: widget.openDrawer),
     ];
 
     return Scaffold(
