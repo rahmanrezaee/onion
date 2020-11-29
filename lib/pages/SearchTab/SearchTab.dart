@@ -190,6 +190,12 @@ class SearchTab extends StatelessWidget {
                               elevation: 0,
                               onPressed: () {},
                             ),
+                            RaisedButton(
+                              color: Colors.transparent,
+                              textColor: firstPurple,
+                              child: Text("View Rating"),
+                              onPressed: () {},
+                            )
                           ],
                         )
                       ],
