@@ -4,6 +4,7 @@ import 'package:intl/intl.dart' show NumberFormat;
 import 'package:onion/models/circularChart.dart';
 import 'package:onion/models/sample_view.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
+import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
 import 'package:provider/provider.dart';
 
 ///Map import
@@ -123,15 +124,23 @@ class _MapRangeColorMappingPageState extends State<MyGoogleMap> {
                               },
 
                               shapeTooltipTextMapper: (int index) {
-                                anavalue.country.forEach((element) {
+                                anavalue.countryInList.forEach((element) {
                                   if (element.country ==
                                       anavalue
                                           .worldPopulationDensityDetails[index]
-                                          .countryName)
+                                          .countryName) {
                                     anavalue.changeCountryColors(element);
+                                    Provider.of<AnalyticsProvider>(context,
+                                            listen: false)
+                                        .selectSingle(
+                                            context: context,
+                                            name: element.country);
+                                  }
                                 });
 
-                                return anavalue.worldPopulationDensityDetails[index].countryName +
+                                return anavalue
+                                        .worldPopulationDensityDetails[index]
+                                        .countryName +
                                     ' ';
                               },
                               // Group and differentiate the shapes using the color

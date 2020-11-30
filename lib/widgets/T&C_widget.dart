@@ -7,22 +7,12 @@ import 'package:shimmer/shimmer.dart';
 
 //This is term and conditions Dialog
 //it opens when click in the term and condition menu in the drawer
-class TandCDialog extends StatefulWidget {
+class TandCDialog extends StatelessWidget {
   TandCDialog({
     Key key,
   }) : super(key: key);
 
-  @override
-  _TandCDialogState createState() => _TandCDialogState();
-}
-
-class _TandCDialogState extends State<TandCDialog> {
   ScrollController _controller = new ScrollController();
-  Future _getData;
-  initState() {
-    _getData = SimpleHttp().getTandC();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +59,7 @@ class _TandCDialogState extends State<TandCDialog> {
           ),
           //Content(Body)
           FutureBuilder(
-            future: _getData,
+            future: SimpleHttp().getTandC(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 var content = snapshot.data["body"];

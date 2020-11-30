@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
+import 'package:onion/statemanagment/dropdown_provider.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/validation/signup_validation.dart';
@@ -11,7 +13,6 @@ import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/widgets/test.dart';
 import 'package:provider/provider.dart';
-// import 'package:cloud_messaging/cloud_messaging.dart';
 
 import './pages/Idea/MyIdeaDetailes.dart';
 import './pages/franchises/RequestOnFranchise.dart';
@@ -19,6 +20,7 @@ import './pages/franchises/requestFranchisesUser.dart';
 import './pages/franchises/viewFranchisesUser.dart';
 import './statemanagment/MyDropDownState.dart';
 import './test.dart';
+import './pages/franchises/RequestOnFranchise.dart';
 import './pages/underDevelopment.dart';
 import './pages/Home.dart';
 import './pages/Idea/postIdea.dart';
@@ -40,7 +42,6 @@ import './statemanagment/DrawerScaffold.dart';
 import './pages/MyMessagePage.dart';
 import './pages/NotificationsList.dart';
 import './pages/ProjectChat.dart';
-import './pages/Home.dart';
 import './statemanagment/dropDownItem/AnalyticsProvider.dart';
 import './statemanagment/dropDownItem/CategoryProvider.dart';
 import './statemanagment/dropDownItem/IndustryProvider.dart';
@@ -48,16 +49,20 @@ import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
 import './pages/request.dart';
-import 'pages/franchises/ViewMyRequestFranchise.dart';
-import './widgets/bottom_nav.dart';
+
+
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SharedPreferences.setMockInitialValues ({});
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MultiProvider(
     providers: [
+
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ChangeNotifierProvider(create: (_) => MyFlagState()),
       ChangeNotifierProvider(create: (_) => IndustryProvider()),
@@ -69,45 +74,19 @@ void main() async {
       ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
       ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
       ChangeNotifierProvider(create: (_) => AnalysisProvider()),
+      ChangeNotifierProvider(create: (_) => DropdownProvider()),
+      ChangeNotifierProvider(create: (_) => SaveAnalProvider()),
     ],
     child: MyApp(),
   ));
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
-
-  print("Handling a background message: ${message.messageId}");
-  print("data: ${message.data}");
-}
-
-class _MyAppState extends State<MyApp> {
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  @override
-  void initState() {
-    super.initState();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
-    });
-  }
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Provider.of<Auth>(
-      context,
-    ).tryAutoLogin();
+
+    Provider.of<Auth>(context, listen: false).tryAutoLogin();
+    
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
         title: 'Onion.ai',
@@ -119,10 +98,10 @@ class _MyAppState extends State<MyApp> {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: CustomDrawerPage(widget.key),
+        home: CustomDrawerPage(key),
         routes: {
           Login.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(widget.key)
+              ? CustomDrawerPage(key)
               : FutureBuilder(
                   future:
                       Provider.of<Auth>(context, listen: false).tryAutoLogin(),
@@ -137,21 +116,20 @@ class _MyAppState extends State<MyApp> {
           MyIdeaId.routeName: (context) => MyIdeaId(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) =>
-              auth.token != null ? CustomDrawerPage(widget.key) : SignUp(),
+              auth.token != null ? CustomDrawerPage(key) : SignUp(),
           ComplateProfile.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(widget.key)
+              ? CustomDrawerPage(key)
               : ComplateProfile(
                   ModalRoute.of(context).settings.arguments,
                 ),
-          CustomDrawerPage.routeName: (context) => CustomDrawerPage(widget.key),
+          CustomDrawerPage.routeName: (context) => CustomDrawerPage(key),
           AnalyticsOne.routeName: (context) => AnalyticsOne(),
           Analysis.routeName: (context) => Analysis(),
           RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-          ForgetPassword.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(widget.key)
-              : ForgetPassword(),
+          ForgetPassword.routeName: (context) =>
+              auth.token != null ? CustomDrawerPage(key) : ForgetPassword(),
           ChangePassword.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(widget.key)
+              ? CustomDrawerPage(key)
               : ChangePassword(
                   ModalRoute.of(context).settings.arguments,
                 ),
@@ -168,6 +146,7 @@ class _MyAppState extends State<MyApp> {
           RequestFranchisesUser.routeName: (context) => RequestFranchisesUser(),
           ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(),
           MyIdeaId.routeName: (context) => MyIdeaId(),
+
           MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
           RequestPage.routeName: (context) => RequestPage(),
         },

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:onion/const/MyUrl.dart';
 import 'package:onion/const/values.dart';
 import 'package:onion/models/users.dart';
@@ -20,6 +22,7 @@ class Auth with ChangeNotifier {
   String token;
   Map userDataField;
   User currentUser = new User();
+  // AuthMethods authMethods = new AuthMethods();
 
   Future<bool> isAuth() async {
     await tryAutoLogin();
@@ -34,6 +37,13 @@ class Auth with ChangeNotifier {
 
       var response = await dio.post(url, data: user.toMap());
       final responseData = response.data;
+      // authMethods
+      //     .signUpWithEmailAndPassword(user.email, user.password)
+      //     .then((value) {
+      //   print("Mahdi I am Firebase SignUp: $value");
+      // }).catchError((e) {
+      //   print("Mahdi I am Firebase SignUp: $e");
+      // });
 
       var prefs = await SharedPreferences.getInstance();
 
@@ -95,13 +105,19 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> _authenticate(String username, String password) async {
-    final url = '${baseUrl}/user/login';
+    final url = '$baseUrl/user/login';
 
     try {
       final response = await dio.post(url, data: {
         'email': username,
         'password': password,
       });
+
+      // authMethods.signInWithEmailAndPassword(username, password).then((value) {
+      //   print("Mahdi I am Firebase SignIn: $value");
+      // }).catchError((e) {
+      //   print("Mahdi I am Firebase SignIn: $e");
+      // });
 
       final responseData = response.data;
 
@@ -224,7 +240,7 @@ class Auth with ChangeNotifier {
     print(result.uid);
   }
 
-  Future<String> uploadImage(File imageFile, String category) async {
+  Future<Map> uploadFile(File imageFile, String category) async {
     final StringBuffer url = new StringBuffer(BASE_URL + "/upload");
     Dio dio = new Dio();
 
@@ -247,11 +263,11 @@ class Auth with ChangeNotifier {
         data: formData,
       );
 
-      print(response);
+      print("UploadResponse: ${response.data}");
 
       if (response.data['status']) {
-        var respon = response.data["data"]["name"];
-        return Future.value(respon);
+        // var respon = response.data["data"]["name"];
+        return response.data['data'];
       } else {
         throw UploadException(response.data["message"]);
       }
@@ -267,7 +283,8 @@ class Auth with ChangeNotifier {
     Dio dio = new Dio();
     print(url.toString());
     try {
-      Response inter = await dio.get(url.toString(), queryParameters: {"type": "interested"});
+      Response inter = await dio
+          .get(url.toString(), queryParameters: {"type": "interested"});
 
       print(inter.data);
       Response locat =
@@ -302,10 +319,12 @@ class Auth with ChangeNotifier {
 
 class LoginException implements Exception {
   String cause;
+
   LoginException(this.cause);
 }
 
 class UploadException implements Exception {
   String cause;
+
   UploadException(this.cause);
 }
