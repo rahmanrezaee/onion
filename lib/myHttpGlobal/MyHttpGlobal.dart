@@ -11,7 +11,6 @@ class APIRequest {
     print(token);
 
     try {
-      
       if (token == null) {
         return dio.get(myUrl);
       } else {

@@ -43,6 +43,7 @@ android {
         applicationId "com.example.onion"
         minSdkVersion 19
         targetSdkVersion 28
+        multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -50,6 +51,9 @@ android {
 
     buildTypes {
         release {
+
+            minifyEnabled false
+            shrinkResources false
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug

@@ -14,6 +14,8 @@ import '../../statemanagment/dropDownItem/MyFlagState.dart';
 
 class MySmallDropdown extends StatefulWidget {
   final List<CategoryModel> myDropDownList;
+
+  final List<AnalyticsModel> myDropDownAnal;
   final Color dropDownAroundColor;
   final Color txtColor;
   final Color dropDownColor;
@@ -21,6 +23,8 @@ class MySmallDropdown extends StatefulWidget {
   final bool myisExpanded;
   final String futureType;
   String firstVal;
+  final Color hintColor;
+  final double dropDownWidth;
 
   MySmallDropdown({
     Key key,
@@ -32,6 +36,9 @@ class MySmallDropdown extends StatefulWidget {
     this.iconColor,
     this.futureType,
     this.firstVal,
+    this.myDropDownAnal,
+    this.dropDownWidth,
+    this.hintColor = Colors.white,
   });
 
   @override
@@ -47,22 +54,18 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
   IndustryProvider industryProvider;
   CategoryProvider categoryProvider;
   bool isOpened = false;
-  final List<String> items = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     // print("Mahdi Object ${widget.myDropDownList}");
-    // // _value = widget.firstVal;
-    items.clear();
-    widget.myDropDownList.map((e) => items.add("1"));
     if (widget.futureType == "category") {
-      hintTxt = "category";
+      hintTxt = "Category";
     } else if (widget.futureType == "industry") {
-      hintTxt = "industry";
+      hintTxt = "Industry";
     } else if (widget.futureType == "analytics") {
-      hintTxt = "analytics";
+      hintTxt = "Analytics";
     }
   }
 
@@ -90,60 +93,81 @@ class _MySmallDropdownState extends State<MySmallDropdown> {
             dropdownColor: widget.dropDownColor,
             hint: Text(
               hintTxt,
-              style: TextStyle(color: Colors.white),
+              textScaleFactor: 0.7,
+              style: TextStyle(color: widget.hintColor),
             ),
             onChanged: (value) async {
               setState(() {
                 _value = value;
               });
               if (widget.futureType == "category") {
-                Provider.of<MyDropDownState>(context, listen: false)
-                    .setCategorySelected(true);
+                // Provider.of<MyDropDownState>(context, listen: false)
+                //     .setCategorySelected(true);
+                industryProvider.clearDate();
+                analyticsProvider.clearCountryData();
                 await industryProvider.fetchItems(
                   name: value,
                   context: context,
                 );
+                categoryProvider.setCatName(value);
               } else if (widget.futureType == "industry") {
-                Provider.of<MyDropDownState>(context, listen: false)
-                    .setIndustrySelected(true);
+                // Provider.of<MyDropDownState>(context, listen: false)
+                //     .setIndustrySelected(true);
+                analyticsProvider.clearCountryData();
                 await analyticsProvider.fetchItems(
                   name: value,
                   context: context,
                 );
               } else if (widget.futureType == "analytics") {
-                Provider.of<MyDropDownState>(context, listen: false)
-                    .setAnalyticsSelected();
+                // Provider.of<MyDropDownState>(context, listen: false)
+                //     .setAnalyticsSelected();
+                // analyticsProvider.clearCountryData();
+                // analyticsProvider.setCountryItems(title: value);
+                analyticsProvider.setAnalysisId(analysisName: value);
+                analyticsProvider.clearCountryData();
+                analyticsProvider.setBigDropSelected(false);
+                await Future.delayed(
+                  Duration(seconds: 1),
+                  () => analyticsProvider.setCountryItems(title: value),
+                );
               }
             },
             isDense: true,
-            // selectedItemBuilder: (BuildContext selectedContext) {
-            //   return items
-            //       .map<Widget>(
-            //         (e) => Text(
-            //           "$_value",
-            //           maxLines: 1,
-            //           overflow: TextOverflow.ellipsis,
-            //         ),
-            //       )
-            //       .toList();
-            // },
-            items: widget.myDropDownList.isNotEmpty
-                ? widget.myDropDownList.map((e) {
-                    print("Mahdi: ${e.id}");
-                    print("Mahdi: ${e.name}");
-                    return DropdownMenuItem(
-                      child: SizedBox(
-                        width: deviceSize(context).width * 0.17,
-                        child: Text(
-                          "${e.name}",
-                          textScaleFactor: 0.7,
-                          style: TextStyle(color: widget.txtColor),
-                        ),
-                      ),
-                      value: e.name,
-                    );
-                  }).toList()
-                : null,
+            items: widget.futureType != "analytics"
+                ? widget.myDropDownList.isNotEmpty
+                    ? widget.myDropDownList.map((e) {
+                        print("Mahdi: ${e.id}");
+                        print("Mahdi: ${e.name}");
+                        return DropdownMenuItem(
+                          child: SizedBox(
+                            width: widget.dropDownWidth,
+                            child: Text(
+                              "${e.name}",
+                              textScaleFactor: 0.7,
+                              style: TextStyle(color: widget.txtColor),
+                            ),
+                          ),
+                          value: e.name,
+                        );
+                      }).toList()
+                    : null
+                : widget.myDropDownAnal.isNotEmpty
+                    ? widget.myDropDownAnal.map((e) {
+                        print("Mahdi: ${e.id}");
+                        print("Mahdi: ${e.title}");
+                        return DropdownMenuItem(
+                          child: SizedBox(
+                            width: widget.dropDownWidth,
+                            child: Text(
+                              "${e.title}",
+                              textScaleFactor: 0.7,
+                              style: TextStyle(color: widget.txtColor),
+                            ),
+                          ),
+                          value: e.title,
+                        );
+                      }).toList()
+                    : null,
           ),
         ),
       ),

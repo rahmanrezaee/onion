@@ -1,10 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/pages/franchises/addFranchise.dart';
+import 'package:onion/pages/franchises/myFranchises.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
@@ -51,13 +52,14 @@ import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
 import './pages/request.dart';
-import './pages/franchises/ViewMyRequestFranchise.dart';
+import 'pages/franchises/ViewMyRequestFranchise.dart';
 import './widgets/bottom_nav.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   SharedPreferences.setMockInitialValues({});
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
@@ -105,7 +107,7 @@ class _MyAppState extends State<MyApp> {
     ).tryAutoLogin();
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Onion.ai',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Color(0xFF7B3C8A),
@@ -165,6 +167,8 @@ class _MyAppState extends State<MyApp> {
           MyIdeaId.routeName: (context) => MyIdeaId(),
           MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
           RequestPage.routeName: (context) => RequestPage(),
+          AddFranchise.routeName: (context) => AddFranchise(),
+          MyFranchises.routeName: (context) => MyFranchises(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (_) => UnderDevelopment());

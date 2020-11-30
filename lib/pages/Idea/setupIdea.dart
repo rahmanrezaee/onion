@@ -130,7 +130,7 @@ class _SetupIdeaState extends State<SetupIdea> {
                                 child: TextFormField(
                                   inputFormatters: [
                                     new LengthLimitingTextInputFormatter(
-                                        4), // for mobile
+                                        2), // for mobile
                                   ],
                                   keyboardType: TextInputType.number,
                                   controller: yearController,

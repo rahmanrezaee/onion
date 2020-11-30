@@ -1,6 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/statemanagment/MyDropDownState.dart';
+import 'package:onion/models/circularChart.dart';
+import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
 import 'package:onion/statemanagment/dropDownItem/CategoryProvider.dart';
 import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
@@ -13,8 +17,13 @@ import './AnalysisWidget/MyBigDropDown.dart';
 import './AnalysisWidget/MySmallDropdown.dart';
 
 class MyAppBarContainer extends StatefulWidget {
-  MyAppBarContainer({
+  final String categoryName;
+  final bool notLoading;
+
+  const MyAppBarContainer({
     Key key,
+    this.categoryName,
+    this.notLoading = true,
   }) : super(key: key);
 
   @override
@@ -23,6 +32,7 @@ class MyAppBarContainer extends StatefulWidget {
 
 class _MyAppBarContainerState extends State<MyAppBarContainer> {
   Future<void> fetchCategory;
+  Future<void> fetchIndustry;
   bool isCatLoading = true;
   bool isAnaLoading = true;
 
@@ -31,14 +41,16 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      this.fetchCategory = Provider.of<CategoryProvider>(
-        context,
-        listen: false,
-      ).fetchItems(context).then((value) {
-        isCatLoading = false;
+    if (widget.notLoading) {
+      Future.delayed(Duration.zero, () {
+        this.fetchCategory = Provider.of<CategoryProvider>(
+          context,
+          listen: false,
+        ).fetchItems(context).then((value) {
+          isCatLoading = false;
+        });
       });
-    });
+    }
   }
 
   @override
@@ -89,13 +101,15 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                             return MySmallDropdown(
                               myisExpanded: false,
                               myDropDownList:
-                                  value.items == null ? [] : value.items,
+                                  value.items.isEmpty ? [] : value.items,
                               dropDownAroundColor: Colors.white,
+                              // myDropDownAnal: [],
                               dropDownColor: middlePurple,
                               iconColor: Colors.white,
                               txtColor: Colors.white,
                               futureType: "category",
                               firstVal: value.items[0].name,
+                              dropDownWidth: deviceSize(context).width * 0.17,
                             );
                           }
                         },
@@ -104,74 +118,49 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                   }
                 },
               ),
-              FutureBuilder(
-                future: fetchCategory,
-                builder: (consContext, AsyncSnapshot<dynamic> snapshot) {
-                  return Consumer<IndustryProvider>(
-                    builder: (BuildContext consContext, value, Widget child) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return MyEmptyText(myTxt: "Empty");
-                      } else {
-                        if (snapshot.error != null) {
-                          return MyEmptyText(myTxt: "Error...  ");
-                        } else {
-                          if (value.items.isEmpty) {
-                            return MyEmptyText(
-                              myTxt:
-                                  value.isLoading ? "loading..." : "Empty     ",
-                            );
-                          } else {
-                            isAnaLoading = false;
-                            return MySmallDropdown(
-                              myisExpanded: false,
-                              myDropDownList:
-                                  value.items == null ? [] : value.items,
-                              dropDownAroundColor: Colors.white,
-                              dropDownColor: middlePurple,
-                              iconColor: Colors.white,
-                              txtColor: Colors.white,
-                              futureType: "industry",
-                              firstVal: value.items[0].name,
-                            );
-                          }
-                        }
-                      }
-                    },
-                  );
+              Consumer<IndustryProvider>(
+                builder: (BuildContext consContext, value, Widget child) {
+                  if (value.items.isEmpty) {
+                    return MyEmptyText(
+                      myTxt: value.isLoading ? "loading..." : "Empty     ",
+                    );
+                  } else {
+                    isAnaLoading = false;
+                    return MySmallDropdown(
+                      myisExpanded: false,
+                      myDropDownList: value.items.isEmpty ? [] : value.items,
+                      // myDropDownAnal: [],
+                      dropDownAroundColor: Colors.white,
+                      dropDownColor: middlePurple,
+                      iconColor: Colors.white,
+                      txtColor: Colors.white,
+                      futureType: "industry",
+                      dropDownWidth: deviceSize(context).width * 0.17,
+                      firstVal: value.items[0].name,
+                    );
+                  }
                 },
               ),
-              FutureBuilder(
-                builder: (consContext, AsyncSnapshot<dynamic> snapshot) {
-                  return Consumer<AnalyticsProvider>(
-                    builder: (BuildContext consContext, value, Widget child) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return MyEmptyText(myTxt: "Loading...");
-                      } else {
-                        if (snapshot.error != null) {
-                          return MyEmptyText(myTxt: "Error...  ");
-                        } else {
-                          if (value.items.isEmpty) {
-                            return MyEmptyText(
-                              myTxt:
-                                  value.isLoading ? "loading..." : "Empty     ",
-                            );
-                          } else {
-                            return MySmallDropdown(
-                              myisExpanded: false,
-                              myDropDownList:
-                                  value.items == null ? [] : value.items,
-                              dropDownAroundColor: Colors.white,
-                              dropDownColor: middlePurple,
-                              iconColor: Colors.white,
-                              txtColor: Colors.white,
-                              futureType: "analytics",
-                              firstVal: value.items[0].name,
-                            );
-                          }
-                        }
-                      }
-                    },
-                  );
+              Consumer<AnalyticsProvider>(
+                builder: (BuildContext consContext, value, Widget child) {
+                  if (value.items.isEmpty) {
+                    return MyEmptyText(
+                      myTxt: value.isLoading ? "loading..." : "Empty     ",
+                    );
+                  } else {
+                    return MySmallDropdown(
+                      myisExpanded: false,
+                      myDropDownList: [],
+                      dropDownAroundColor: Colors.white,
+                      myDropDownAnal: value.items == null ? [] : value.items,
+                      dropDownColor: middlePurple,
+                      iconColor: Colors.white,
+                      txtColor: Colors.white,
+                      futureType: "analytics",
+                      firstVal: value.items[0].title,
+                      dropDownWidth: deviceSize(context).width * 0.17,
+                    );
+                  }
                 },
               ),
             ],
@@ -189,6 +178,46 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
           //     );
           //   },
           // ),
+          Padding(
+            padding: EdgeInsets.only(
+              top: deviceSize(context).height * 0.03,
+              left: deviceSize(context).width * 0.03,
+              right: deviceSize(context).width * 0.03,
+            ),
+            child: Consumer<AnalysisProvider>(
+              builder: (BuildContext context, anavalue, Widget child) {
+                return DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    value: anavalue.selectedCountry.countryCode,
+                    iconDisabledColor: Colors.white,
+                    iconEnabledColor: Colors.white,
+                    dropdownColor: middlePurple,
+                    isDense: true,
+                    items: anavalue.country.map((e) {
+                      return DropdownMenuItem(
+                        child: Text(
+                          e.country,
+                          textScaleFactor: 1.4,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        value: e.countryCode,
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      anavalue.country.forEach((element) {
+                        if (element.countryCode == value) {
+                          anavalue.changeCountryColors(element);
+                        }
+                      });
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -213,7 +242,7 @@ class MyEmptyText extends StatelessWidget {
         width: deviceSize(context).width * 0.2,
         child: Text(
           myTxt,
-          textScaleFactor: 1,
+          textScaleFactor: 0.7,
           style: TextStyle(color: Colors.white),
         ),
       ),

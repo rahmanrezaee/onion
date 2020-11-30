@@ -45,7 +45,7 @@ class _MapRangeColorMappingPageState extends State<MyGoogleMap> {
   Widget _getMapsWidget() {
     return FutureBuilder<dynamic>(
       future:
-          Future<dynamic>.delayed(Duration(milliseconds: 500), () => 'Loaded'),
+      Future<dynamic>.delayed(Duration(milliseconds: 500), () => 'Loaded'),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.hasData) {
           return Container(
@@ -70,55 +70,55 @@ class _MapRangeColorMappingPageState extends State<MyGoogleMap> {
                               shapeDataField: 'name',
 
                               dataCount:
-                                  anavalue.worldPopulationDensityDetails.length,
+                              anavalue.worldPopulationDensityDetails.length,
                               primaryValueMapper: (int index) => anavalue
                                   .worldPopulationDensityDetails[index]
                                   .countryName,
 
                               shapeColorValueMapper: (int index) {
                                 if (anavalue
-                                        .worldPopulationDensityDetails[index]
-                                        .density >
+                                    .worldPopulationDensityDetails[index]
+                                    .density >
                                     100000)
                                   return Color.fromRGBO(0, 18, 102, 1);
                                 else if (anavalue
-                                        .worldPopulationDensityDetails[index]
-                                        .density >
+                                    .worldPopulationDensityDetails[index]
+                                    .density >
                                     50000)
                                   return Color.fromRGBO(0, 32, 128, 1);
                                 else if (anavalue
-                                        .worldPopulationDensityDetails[index]
-                                        .density >
+                                    .worldPopulationDensityDetails[index]
+                                    .density >
                                     20000)
                                   return Color.fromRGBO(0, 45, 153, 1);
                                 else if (anavalue
-                                        .worldPopulationDensityDetails[index]
-                                        .density >
+                                    .worldPopulationDensityDetails[index]
+                                    .density >
                                     10000)
                                   return Color.fromRGBO(0, 60, 179, 1);
                                 else if (anavalue
-                                        .worldPopulationDensityDetails[index]
-                                        .density >
+                                    .worldPopulationDensityDetails[index]
+                                    .density >
                                     5000)
                                   return Color.fromRGBO(0, 80, 204, 1);
                                 else if (anavalue
-                                        .worldPopulationDensityDetails[index]
-                                        .density >
+                                    .worldPopulationDensityDetails[index]
+                                    .density >
                                     1000)
                                   return Color.fromRGBO(0, 105, 230, 1);
                                 else if (anavalue
-                                        .worldPopulationDensityDetails[index]
-                                        .density >
+                                    .worldPopulationDensityDetails[index]
+                                    .density >
                                     500)
                                   return Color.fromRGBO(51, 120, 255, 1);
                                 else if (anavalue
-                                        .worldPopulationDensityDetails[index]
-                                        .density >
+                                    .worldPopulationDensityDetails[index]
+                                    .density >
                                     100)
                                   return Color.fromRGBO(128, 159, 255, 1);
                                 else if (anavalue
-                                        .worldPopulationDensityDetails[index]
-                                        .density >
+                                    .worldPopulationDensityDetails[index]
+                                    .density >
                                     50) return Color.fromRGBO(200, 159, 255, 1);
                               },
 

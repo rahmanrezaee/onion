@@ -12,7 +12,6 @@ class MyDropDownState extends ChangeNotifier {
     CountryDensityModel('Spain', 26337),
   ];
   bool _myBigDropSelected = false;
-  bool _analyticsSelected = false;
   bool _categorySelected = false;
   bool _industrySelected = false;
   String tempItem;
@@ -59,28 +58,5 @@ class MyDropDownState extends ChangeNotifier {
     _items = [];
     _items = temp;
     notifyListeners();
-  }
-
-  setAnalyticsSelected() {
-    _analyticsSelected = !_analyticsSelected;
-    _items = !_analyticsSelected
-        ? [
-            CountryDensityModel('Monaco', 26337),
-            CountryDensityModel('Macao', 21717),
-            CountryDensityModel('Singapore', 8350),
-            CountryDensityModel('Afghanistan', 8351),
-            CountryDensityModel('United States of America', 8352),
-          ]
-        : [
-            CountryDensityModel('Hong kong', 7140),
-            CountryDensityModel('Gibraltar', 3369),
-            CountryDensityModel('Canada', 8354),
-            CountryDensityModel('Iran', 8353),
-          ];
-    notifyListeners();
-  }
-
-  get analyticsSelected {
-    return _analyticsSelected;
   }
 }

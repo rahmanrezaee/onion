@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -10,6 +11,7 @@ import 'package:onion/pages/Home.dart';
 import 'package:onion/models/setupIdea.dart' as setupIdeaModel;
 import 'package:onion/services/ideasServices.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:onion/utilities/disabledFocusNode.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/widgets/Checkbox/GlowCheckbox.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
@@ -17,6 +19,7 @@ import 'package:onion/widgets/Home/MyPopup.dart';
 import 'package:onion/widgets/IdeaWiget/LocationWidget.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class PostIdea extends StatefulWidget {
   static final routeName = "/postIdea";
@@ -183,7 +186,7 @@ class _PostIdeaState extends State<PostIdea> {
                             dataSource: [
                               {"display": 'Industry', "value": 'Industry'},
                               {"display": 'Technalogy', "value": 'Technalogy'},
-                              {"display": 'Learing', "value": 'Learning'},
+                              {"display": 'Learn2ing', "value": 'Learning'},
                             ],
                             textField: 'display',
                             valueField: 'value',
@@ -206,7 +209,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   // initialValue: setupIdea['experienceYear'],
                                   inputFormatters: [
                                     new LengthLimitingTextInputFormatter(
-                                        4), // for mobile
+                                        2), // for mobile
                                   ],
                                   keyboardType: TextInputType.number,
                                   style: TextStyle(
@@ -403,12 +406,12 @@ class _PostIdeaState extends State<PostIdea> {
                                     postForm.timeline['timelineType'] =
                                         "stages";
                                   });
-                                  postForm.timeline['details'] = List.generate(
-                                      stages,
-                                      (index) => {
-                                            "start": "0",
-                                            "end": "0",
-                                          }).toList();
+                                  // postForm.timeline['details'] = List.generate(
+                                  //     stages,
+                                  //     (index) => {
+                                  //           "start": "0",
+                                  //           "end": "0",
+                                  //         }).toList();
                                   print(postForm.timeline['timelineType']);
                                 },
                               ),
@@ -447,42 +450,85 @@ class _PostIdeaState extends State<PostIdea> {
                                   children: [
                                       Text("Enter date"),
                                       SizedBox(height: 5),
-                                      TextFormField(
-                                        // initialValue: setupIdea['aboutYourBusiness'],
-                                        keyboardType: TextInputType.number,
-                                        style: TextStyle(
-                                          color: Colors.purple,
-                                        ),
-                                        validator: (value) {
-                                          if (value.isEmpty)
-                                            return "Date is empty";
+                                      InkWell(
+                                        onTap: () async {
+                                          print("Ali Aad");
+                                          DateTime date = await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime.now(),
+                                            lastDate: DateTime(3200),
+                                          );
+                                          if (date != null) {
+                                            setState(() {
+                                              postForm.timeline['details'] = {
+                                                "date": DateFormat.yMMMd()
+                                                    .format(date)
+                                              };
+                                            });
+                                          }
                                         },
-                                        onChanged: (value) {
-                                          // validationService.changeAbout(value);
-                                          postForm.timeline['details'] = {
-                                            "date": value
-                                          };
-                                        },
-                                        onSaved: (value) {
-                                          // user.occupation = value;
-                                        },
-                                        decoration: InputDecoration(
-                                          hintText: "2019-10-12",
-                                          errorText:
-                                              validationService.about.error,
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                            vertical: 10,
-                                            horizontal: 10,
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
+                                        child: AbsorbPointer(
+                                          child: TextFormField(
+                                            enableInteractiveSelection: false,
+                                            focusNode:
+                                                new AlwaysDisabledFocusNode(),
+                                            // initialValue: postForm.timeline[
+                                            //                 'details'] !=
+                                            //             null &&
+                                            //         postForm.timeline['details']
+                                            //                 ['date'] !=
+                                            //             null
+                                            //     ? postForm.timeline['details']
+                                            //         ['date']
+                                            //     : null,
+                                            keyboardType: TextInputType.number,
+                                            style: TextStyle(
                                               color: Colors.purple,
+                                            ),
+                                            // validator: (value) {
+                                            //   if (value.isEmpty)
+                                            //     return "Date is empty";
+                                            // },
+                                            // onChanged: (value) {
+                                            //   // validationService.changeAbout(value);
+                                            //   postForm.timeline['details'] = {
+                                            //     "date": value
+                                            //   };
+                                            // },
+                                            onSaved: (value) {
+                                              // user.occupation = value;
+                                            },
+                                            decoration: InputDecoration(
+                                              hintText: postForm.timeline[
+                                                              'details'] !=
+                                                          null &&
+                                                      postForm.timeline[
+                                                                  'details']
+                                                              ['date'] !=
+                                                          null
+                                                  ? postForm.timeline['details']
+                                                      ['date']
+                                                  : null,
+                                              hintStyle: TextStyle(
+                                                  color: Colors.black),
+                                              errorText:
+                                                  validationService.about.error,
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 10,
+                                                horizontal: 10,
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Colors.purple,
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -498,13 +544,20 @@ class _PostIdeaState extends State<PostIdea> {
                                         onSaved: (value) {
                                           setState(() {
                                             stages = int.parse(value);
-                                            // postForm.timeline['details'] = [];
                                           });
                                         },
                                         onChanged: (value) {
                                           setState(() {
+                                            FocusScope.of(context)
+                                                .requestFocus(new FocusNode());
                                             stages = int.parse(value);
-                                            // postForm.timeline['details'] = [];
+                                            postForm.timeline['details'] =
+                                                List.generate(
+                                              stages,
+                                              (i) {
+                                                return {"start": '', "end": ''};
+                                              },
+                                            );
                                           });
                                         },
                                         dataSource: [
@@ -530,7 +583,38 @@ class _PostIdeaState extends State<PostIdea> {
                                                 "Enter Start Date for Stage ${index + 1}"),
                                             SizedBox(height: 5),
                                             TextFormField(
-                                              // initialValue: setupIdea['aboutYourBusiness'],
+                                              onTap: () async {
+                                                DateTime date =
+                                                    await showDatePicker(
+                                                  context: context,
+                                                  initialDate: DateTime.now(),
+                                                  firstDate: DateTime.now(),
+                                                  lastDate: DateTime(3200),
+                                                );
+                                                if (date != null) {
+                                                  setState(() {
+                                                    (postForm.timeline[
+                                                                    'details']
+                                                                as List)[index]
+                                                            ['start'] =
+                                                        DateFormat.yMMMd()
+                                                            .format(date);
+                                                  });
+                                                }
+                                              },
+                                              enableInteractiveSelection: false,
+                                              focusNode:
+                                                  new AlwaysDisabledFocusNode(),
+                                              // initialValue: postForm.timeline[
+                                              //                 'details'] !=
+                                              //             null &&
+                                              //         postForm.timeline[
+                                              //                     'details']
+                                              //                 ['start'] !=
+                                              //             null
+                                              //     ? postForm.timeline['details']
+                                              //         ['start']
+                                              //     : null,
                                               keyboardType:
                                                   TextInputType.number,
                                               style: TextStyle(
@@ -551,7 +635,21 @@ class _PostIdeaState extends State<PostIdea> {
                                                 // user.occupation = value;
                                               },
                                               decoration: InputDecoration(
-                                                hintText: "2019-12-10",
+                                                hintText: (postForm.timeline[
+                                                                    'details']
+                                                                as List) !=
+                                                            null &&
+                                                        (postForm.timeline[
+                                                                        'details']
+                                                                    as List)[index]
+                                                                ['start'] !=
+                                                            null
+                                                    ? (postForm
+                                                            .timeline['details']
+                                                        as List)[index]['start']
+                                                    : '',
+                                                hintStyle: TextStyle(
+                                                    color: Colors.black),
                                                 errorText: validationService
                                                     .about.error,
                                                 contentPadding:
@@ -579,7 +677,38 @@ class _PostIdeaState extends State<PostIdea> {
                                                 "Enter End Date for Stage ${index + 1}"),
                                             SizedBox(height: 5),
                                             TextFormField(
-                                              // initialValue: setupIdea['aboutYourBusiness'],
+                                              onTap: () async {
+                                                DateTime date =
+                                                    await showDatePicker(
+                                                  context: context,
+                                                  initialDate: DateTime.now(),
+                                                  firstDate: DateTime.now(),
+                                                  lastDate: DateTime(3200),
+                                                );
+                                                if (date != null) {
+                                                  setState(() {
+                                                    (postForm.timeline[
+                                                                    'details']
+                                                                as List)[index]
+                                                            ['end'] =
+                                                        DateFormat.yMMMd()
+                                                            .format(date);
+                                                  });
+                                                }
+                                              },
+                                              enableInteractiveSelection: false,
+                                              focusNode:
+                                                  new AlwaysDisabledFocusNode(),
+                                              // initialValue: postForm.timeline[
+                                              //                 'details'] !=
+                                              //             null &&
+                                              //         postForm.timeline[
+                                              //                     'details']
+                                              //                 ['start'] !=
+                                              //             null
+                                              //     ? postForm.timeline['details']
+                                              //         ['start']
+                                              //     : null,
                                               keyboardType:
                                                   TextInputType.number,
                                               style: TextStyle(
@@ -591,6 +720,7 @@ class _PostIdeaState extends State<PostIdea> {
                                               //   return null;
                                               // },
                                               onChanged: (value) {
+                                                // validationService.changeAbout(value);
                                                 (postForm.timeline['details']
                                                         as List)[index]['end'] =
                                                     value;
@@ -599,7 +729,21 @@ class _PostIdeaState extends State<PostIdea> {
                                                 // user.occupation = value;
                                               },
                                               decoration: InputDecoration(
-                                                hintText: "2020-12-10",
+                                                hintText: (postForm.timeline[
+                                                                    'details']
+                                                                as List) !=
+                                                            null &&
+                                                        (postForm.timeline[
+                                                                        'details']
+                                                                    as List)[
+                                                                index]['end'] !=
+                                                            null
+                                                    ? (postForm
+                                                            .timeline['details']
+                                                        as List)[index]['end']
+                                                    : '',
+                                                hintStyle: TextStyle(
+                                                    color: Colors.black),
                                                 errorText: validationService
                                                     .about.error,
                                                 contentPadding:
@@ -1051,7 +1195,6 @@ class _PostIdeaState extends State<PostIdea> {
                           SizedBox(
                             height: 10,
                           ),
-
                           Row(
                             children: [
                               Expanded(
@@ -1112,16 +1255,17 @@ class _PostIdeaState extends State<PostIdea> {
                                         ),
                                       );
                                     },
-                              child: Text(
-                                "Add Your Idea Setup",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
+                              child: isLoading == true
+                                  ? CircularProgressIndicator()
+                                  : Text(
+                                      "Add Your Idea Setup",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
-
                           SizedBox(
                             height: 10,
                           ),
@@ -1139,6 +1283,7 @@ class _PostIdeaState extends State<PostIdea> {
   }
 
   Future<void> loadAssets() async {
+    FocusScope.of(context).requestFocus(new FocusNode());
     // FilePickerResult result = await FilePicker.platform.pickFiles();
 
     FilePickerResult result = await FilePicker.platform.pickFiles(
@@ -1178,6 +1323,7 @@ class _PostIdeaState extends State<PostIdea> {
   }
 
   Future<void> loadAssetsDocument() async {
+    FocusScope.of(context).requestFocus(new FocusNode());
     // FilePickerResult result = await FilePicker.platform.pickFiles();
     postForm.documents = [];
     FilePickerResult result = await FilePicker.platform.pickFiles(
@@ -1213,6 +1359,7 @@ class _PostIdeaState extends State<PostIdea> {
   }
 
   Future<void> loadWhitePaper() async {
+    FocusScope.of(context).requestFocus(new FocusNode());
     FilePickerResult result =
         await FilePicker.platform.pickFiles(type: FileType.any);
   }
@@ -1258,6 +1405,7 @@ class _PostIdeaState extends State<PostIdea> {
     }
   }
 
+  bool isLoading = false;
   final _formKey = new GlobalKey<FormState>();
   void addPostIdeaSetup(context) {
     setState(() {
@@ -1268,6 +1416,9 @@ class _PostIdeaState extends State<PostIdea> {
     //     postForm.uploadVideo != null
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+      setState(() {
+        isLoading = true;
+      });
       // Scaffold.of(context).showSnackBar(SnackBar(
       //   duration: Duration(seconds: 5),
       //   content: Text("Under Development"),
@@ -1276,7 +1427,16 @@ class _PostIdeaState extends State<PostIdea> {
       print("postFOrm: ${postForm.toSendMap()}");
       IdeasServices().postIdea(postForm.toSendMap(), token).then((status) {
         if (status == true) {
-          Navigator.pushNamed(context, "/");
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text("Your Idea Posted."),
+            duration: Duration(seconds: 4),
+          ));
+          setState(() {
+            isLoading = false;
+          });
+          Timer(Duration(seconds: 4), () {
+            Navigator.pushNamed(context, "/");
+          });
         } else {
           _scaffoldKey.currentState.showSnackBar(SnackBar(
             duration: Duration(seconds: 5),
@@ -1297,9 +1457,4 @@ class _PostIdeaState extends State<PostIdea> {
       });
     }
   }
-}
-
-class AlwaysDisabledFocusNode extends FocusNode {
-  @override
-  bool get hasFocus => false;
 }
