@@ -141,8 +141,8 @@ class _DialogContentState extends State<DialogContent> {
                         txtColor: Colors.grey,
                         dropDownColor: Colors.white,
                         firstVal: value.items[0].name,
-                        futureType: "industry",                        hintColor: Colors.grey,
-
+                        futureType: "industry",
+                        hintColor: Colors.grey,
                         dropDownWidth: deviceSize(context).width * 0.7,
                       );
                     }

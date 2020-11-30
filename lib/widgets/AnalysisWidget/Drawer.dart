@@ -30,7 +30,6 @@ import '../../pages/AnalyticsOne.dart';
 import '../../pages/CustomDrawerPage.dart';
 import '../../pages/F&Q.dart';
 import '../../pages/Idea/MyIdeaId.dart';
-import '../../pages/MyMessagePage.dart';
 import '../../pages/Services.dart';
 import '../../pages/authentication/Login.dart';
 import '../../statemanagment/auth_provider.dart';

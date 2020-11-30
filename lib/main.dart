@@ -4,6 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/Idea/ViewIdeas.dart';
+import 'package:onion/pages/Profile/MyProfile.dart';
+import 'package:onion/pages/SearchTab/SearchTab.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
@@ -83,6 +86,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
   @override
   void initState() {
     super.initState();
@@ -114,7 +118,8 @@ class _MyAppState extends State<MyApp> {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: CustomDrawerPage(widget.key),
+        home: ViewIdeas(),
+        // home: CustomDrawerPage(widget.key),
         routes: {
           Login.routeName: (context) => auth.token != null
               ? CustomDrawerPage(widget.key)
@@ -158,6 +163,7 @@ class _MyAppState extends State<MyApp> {
           NotificationsList.routeName: (context) => NotificationsList(),
           PostIdea.routeName: (context) => PostIdea(),
           FandQ.routeName: (context) => FandQ(),
+          SearchTab.routeName: (context) => SearchTab(),
           Services.routeName: (context) => Services(),
           Settings.routeName: (context) => Settings(),
           RequestFranchisesUser.routeName: (context) => RequestFranchisesUser(),
@@ -165,6 +171,8 @@ class _MyAppState extends State<MyApp> {
           MyIdeaId.routeName: (context) => MyIdeaId(),
           MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
           RequestPage.routeName: (context) => RequestPage(),
+          MyProfile.routeName: (context) => MyProfile(),
+          ViewIdeas.routeName: (context) => ViewIdeas(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (_) => UnderDevelopment());
