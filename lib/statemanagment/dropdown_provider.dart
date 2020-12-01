@@ -15,13 +15,11 @@ class DropdownProvider with ChangeNotifier {
   String categorySelected = "";
   String idustrySelected = "";
   String typeSelected = "";
-  // AnalysisProvider analysis;
-
-  // DropdownProvider(this.analysis);
 
   Future<void> fetchItemsCategory() async {
     try {
       categoryList.clear();
+      // addCategoryFirstElement();
       notifyListeners();
 
       final response = await APIRequest().get(
@@ -57,6 +55,7 @@ class DropdownProvider with ChangeNotifier {
   Future<void> fetchItemsIndustry() async {
     try {
       idustryList.clear();
+      // addIndestyFirstElement();
       final response = await APIRequest().get(
           myUrl:
               "$baseDropDownItemsUrl?type=category&parent=${this.categorySelected}");
@@ -87,6 +86,8 @@ class DropdownProvider with ChangeNotifier {
   Future<bool> fetchItemsType() async {
     try {
       typeList.clear();
+      addTypeFirstElement();
+      typeSelected = typeList[0].title;
       notifyListeners();
       final response = await APIRequest().get(
           myUrl:
@@ -98,7 +99,7 @@ class DropdownProvider with ChangeNotifier {
         typeList = [];
         return false;
       }
-      typeSelected = extractedData[0]['title'];
+     
 
       extractedData.forEach((netItems) {
         var am = AnalyticsModel(
@@ -126,7 +127,6 @@ class DropdownProvider with ChangeNotifier {
     var analysis = Provider.of<AnalysisProvider>(context);
 
     analysis.cleanCountryMerged();
-    
 
     typeList.forEach((element) {
       element.regions.forEach((registion) {
@@ -148,5 +148,25 @@ class DropdownProvider with ChangeNotifier {
     categorySelected = value;
 
     fetchItemsIndustry();
+  }
+
+  void addCategoryFirstElement() {
+    categoryList.add(CategoryModel(id: null, name: "Select Item", parent: "0"));
+  }
+
+  void addIndestyFirstElement() {
+    this
+        .idustryList
+        .add(CategoryModel(id: null, name: "Select Item", parent: "0"));
+  }
+
+  void addTypeFirstElement() {
+    this.typeList.add(AnalyticsModel(
+          id: null,
+          title: "Select Item",
+          regions: [],
+          category: "null",
+          industry: "",
+        ));
   }
 }

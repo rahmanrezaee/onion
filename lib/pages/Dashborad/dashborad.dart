@@ -370,28 +370,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      Container(
-                        color: Colors.transparent,
-                        padding: EdgeInsets.all(15),
-                        child:
-                            analysisValue.selectedCountry.countryCode != "ALL"
-                                ? analysisValue.tableSatatis != null
-                                    ? TableChart(analysisValue.tableSatatis)
-                                    : FutureBuilder(
-                                        future: Provider.of<AnalysisProvider>(
-                                                context,
-                                                listen: false)
-                                            .getTableDailyReport(),
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot<dynamic> snapshot) {
-                                          return Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        },
-                                      )
-                                : Text("Please Select A country to analysis"),
-                      ),
-                      SizedBox(height: 10),
+                      
                     ])
                   : FutureBuilder(
                       future:  analysisValue.getAnalysisData(),
@@ -554,7 +533,7 @@ class _DashboardState extends State<Dashboard> {
                               keyboardType: TextInputType.number,
                               validator: (val) {
                                 if (val.isEmpty) {
-                                  return "خالی است";
+                                  return "Empty";
                                 }
                                 return null;
                               },

@@ -49,7 +49,7 @@ class _MapRangeColorMappingPageState extends State<MyGoogleMap> {
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.hasData) {
           return Container(
-            color: Colors.white,
+            color: Colors.transparent,
             child: Center(
               child: Padding(
                 padding: EdgeInsets.only(right: 10, bottom: 5),

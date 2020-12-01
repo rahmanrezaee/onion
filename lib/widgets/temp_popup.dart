@@ -148,18 +148,18 @@ class _DialogContentState extends State<DialogContent> {
                 Consumer2<AnalysisProvider, DropdownProvider>(
                   builder: (BuildContext context, anavalue, dropdownValue,
                       Widget child) {
-                    if (anavalue.countryInList.isEmpty) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 20, left: 10),
-                        child: Text(
-                          "Empty List",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      );
-                    } else {
+               
                       return Column(
                         children: [
-                          DropDownFormField(
+
+
+                          anavalue.countryInList.isEmpty ? Padding(
+                            padding: const EdgeInsets.only(top: 20, left: 10),
+                            child: Text(
+                              "Empty List",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ) :  DropDownFormField(
                             value: anavalue.selectedCountry.country,
                             onChanged: (value) async {
                               FocusScope.of(context)
@@ -180,7 +180,6 @@ class _DialogContentState extends State<DialogContent> {
                             textField: 'display',
                             valueField: 'value',
                           ),
-                          SizedBox(height: deviceSize(context).height * 0.01),
                           SizedBox(
                             width: double.infinity,
                             child: RaisedButton(
@@ -189,7 +188,8 @@ class _DialogContentState extends State<DialogContent> {
                               elevation: 0,
                               child: isloading
                                   ? SizedBox(
-                                      height: 10,
+                                      height: 20,
+                                      width: 20,
                                       child: CircularProgressIndicator(),
                                     )
                                   : Text("Save Analysis"),
@@ -206,7 +206,7 @@ class _DialogContentState extends State<DialogContent> {
                                         context,
                                         listen: false,
                                       ).saveAnalysis(
-                                          dropdownValue.typeList[0].id,
+                                          dropdownValue.typeList[1].id,
                                           anavalue.selectedCountry.country);
                                             setState(() {
                                               isloading = false;
@@ -216,10 +216,12 @@ class _DialogContentState extends State<DialogContent> {
                                   : () {},
                             ),
                           ),
-                        ],
-                      );
-                      // DropdownButtonFormField(items: null, onChanged: null);
-                    }
+                            
+
+
+                     
+               ] );
+                    
                   },
                 ),
               ],

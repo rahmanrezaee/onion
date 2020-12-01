@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:google_place/google_place.dart';
 import 'package:onion/models/SetupIdea.dart';
 import 'package:onion/pages/Idea/postIdea.dart';
+import 'package:onion/services/ideasServices.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/IdeaWiget/LocationWidget.dart';
@@ -34,19 +36,22 @@ class _SetupIdeaState extends State<SetupIdea> {
   }
 
   TextEditingController yearController = TextEditingController();
-
+  String token;
   @override
   void initState() {
+    token = Provider.of<Auth>(context, listen: false).token;
     addField();
     super.initState();
   }
 
   bool _autoValidate = false;
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     final validationService = Provider.of<SetupIdeaValidation>(context);
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, kToolbarHeight),
         child: MyLittleAppbar(myTitle: "Setup Idea"),
@@ -57,7 +62,7 @@ class _SetupIdeaState extends State<SetupIdea> {
         },
         child: SingleChildScrollView(
           child: Form(
-            autovalidate: _autoValidate,
+            // autovalidate: _autoValidate,
             key: _formKey,
             child: Container(
               padding: EdgeInsets.all(15),
@@ -89,7 +94,7 @@ class _SetupIdeaState extends State<SetupIdea> {
                           DropDownFormField(
                             value: formIdea.category != null
                                 ? formIdea.category
-                                : "none",
+                                : "Industry",
                             onSaved: (value) {
                               setState(() {
                                 formIdea.category = value;
@@ -101,9 +106,9 @@ class _SetupIdeaState extends State<SetupIdea> {
                               });
                             },
                             dataSource: [
-                              {"display": 'Industry', "value": 'none'},
-                              {"display": 'Technalogy', "value": 'tach'},
-                              {"display": 'Learing', "value": 'learing'},
+                              {"display": 'Industry', "value": 'Industry'},
+                              {"display": 'Technalogy', "value": 'Technalogy'},
+                              {"display": 'Learning', "value": 'Learning'},
                             ],
                             textField: 'display',
                             valueField: 'value',
@@ -125,21 +130,22 @@ class _SetupIdeaState extends State<SetupIdea> {
                                 child: TextFormField(
                                   inputFormatters: [
                                     new LengthLimitingTextInputFormatter(
-                                        4), // for mobile
+                                        2), // for mobile
                                   ],
                                   keyboardType: TextInputType.number,
                                   controller: yearController,
                                   style: TextStyle(
                                     color: Colors.purple,
                                   ),
-                                  validator: (value) {
-                                    if (value.isEmpty)
-                                      return "Your Yeaer is empty";
-                                    if (value.length != 4)
-                                      return "Your Year is invalid";
-                                  },
+                                  // validator: (value) {
+                                  //   if (value.isEmpty)
+                                  //     return "Your Yeaer is empty";
+                                  //   if (value.length > 0)
+                                  //     return "Your Year is invalid";
+                                  //   return null;
+                                  // },
                                   onSaved: (value) {
-                                    // user.occupation = value;
+                                    formIdea.experienceYear = value;
                                   },
                                   onChanged: (value) {
                                     validationService.changeYear(value);
@@ -187,7 +193,7 @@ class _SetupIdeaState extends State<SetupIdea> {
                                       return "Your Month is invalid";
                                   },
                                   onSaved: (value) {
-                                    // user.occupation = value;
+                                    formIdea.experienceMonth = value;
                                   },
                                   decoration: InputDecoration(
                                     hintText: "Month",
@@ -228,7 +234,7 @@ class _SetupIdeaState extends State<SetupIdea> {
                                   5), // for mobile
                             ],
                             onSaved: (value) {
-                              // user.occupation = value;
+                              formIdea.teamSize = int.parse(value);
                             },
                             onChanged: (value) {
                               validationService.changeTeamSize(value);
@@ -301,6 +307,7 @@ class _SetupIdeaState extends State<SetupIdea> {
                             },
                             onSaved: (value) {
                               // user.occupation = value;
+                              formIdea.aboutBusinnes = value;
                             },
                             maxLines: 5,
                             decoration: InputDecoration(
@@ -335,6 +342,7 @@ class _SetupIdeaState extends State<SetupIdea> {
                             },
                             onSaved: (value) {
                               // user.occupation = value;
+                              formIdea.website = value;
                             },
                             inputFormatters: [
                               new LengthLimitingTextInputFormatter(
@@ -368,13 +376,21 @@ class _SetupIdeaState extends State<SetupIdea> {
                             width: double.infinity,
                             height: 40,
                             child: RaisedButton(
-                              onPressed: addIdeaSetup,
-                              child: Text(
-                                "Add Your Idea Setup",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
+                              onPressed: () {
+                                addIdeaSetup(context);
+                              },
+                              child: loading == false
+                                  ? Text(
+                                      "Add Your Idea Setup",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : SizedBox(
+                                      width: 30,
+                                      height: 30,
+                                      child: CircularProgressIndicator(),
+                                    ),
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
@@ -394,10 +410,52 @@ class _SetupIdeaState extends State<SetupIdea> {
     );
   }
 
-  void addIdeaSetup() {
+  bool loading = false;
+  void addIdeaSetup(context) {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      Navigator.pushNamed(context, PostIdea.routeName);
+      _controllers.forEach((TextEditingController controller) {
+        formIdea.location.add("${controller.text}");
+      });
+      print(
+          "//////////////////////////////////////////////////////////////////////////////////////////");
+      print(formIdea.sendMap());
+      print(
+          "//////////////////////////////////////////////////////////////////////////////////////////");
+      setState(() {
+        loading = true;
+      });
+      IdeasServices().setupIdea(formIdea.sendMap(), token).then((bool status) {
+        if (status == true) {
+          setState(() {
+            loading = false;
+          });
+          Navigator.pushNamed(
+            context,
+            PostIdea.routeName,
+            // arguments: {
+            //   "category": formIdea.category,
+            //   "experienceYear": formIdea.experienceYear,
+            //   "experienceMonth": formIdea.experienceMonth,
+            //   "teamSize": formIdea.teamSize.toString(),
+            //   "location": formIdea.location.toString(),
+            //   "aboutYourBusiness": formIdea.aboutBusinnes,
+            //   "website": formIdea.website,
+            // },
+          );
+        } else {
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text("Somthing went wrong!! Please try again."),
+            backgroundColor: Colors.red,
+          ));
+        }
+      }).catchError((e) {
+        loading = false;
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text("Somthing went wrong!! Please try again."),
+          backgroundColor: Colors.red,
+        ));
+      });
     } else {
       setState(() {
         _autoValidate = true;

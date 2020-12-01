@@ -21,7 +21,6 @@ import '../widgets/Home/MyPopup.dart';
 import '../widgets/Snanckbar.dart';
 import '../const/Size.dart';
 import '../const/color.dart';
-import '../widgets/AnalysisWidget/MyAlert.dart';
 import '../widgets/MyAppBar.dart';
 import '../widgets/MyAppBarContainer.dart';
 

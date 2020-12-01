@@ -9,6 +9,7 @@ import 'package:onion/models/sample_view.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/LineDefault.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/AnimationSplineDefault.dart';
+import 'package:onion/widgets/AnalysisWidget/Charts/TableChart.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/pie.dart';
 import 'package:onion/widgets/Home/MyGoogleMap.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -51,23 +52,12 @@ class Analysis extends StatefulWidget {
 }
 
 class _AnalysisState extends State<Analysis> {
-  @override
-  void initState() {
-    super.initState();
-  }
+ 
 
   final display = createDisplay(
     length: 3,
     decimal: 0,
   );
-
-  final List<SalesData> chartData = [
-    SalesData(2010, 35, 23, 45, 65, 78),
-    SalesData(2011, 38, 49, 56, 7, 88),
-    SalesData(2012, 34, 12, 34, 54, 6),
-    SalesData(2013, 52, 33, 32, 36, 7),
-    SalesData(2014, 40, 30, 90, 89, 6)
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -91,61 +81,82 @@ class _AnalysisState extends State<Analysis> {
             ),
           ],
         ),
-        // drawer: MyDrawer(),
-        bottomNavigationBar: Container(
-          padding: EdgeInsets.only(
-            right: deviceSize(context).width * 0.04,
-            left: deviceSize(context).width * 0.04,
-            bottom: deviceSize(context).height * 0.01,
-          ),
-          width: deviceSize(context).width,
-          child: RaisedButton(
-            elevation: 0,
-            color: middlePurple,
-            child: Text(
-              "Open Saved Analysis",
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {},
-          ),
-        ),
-        body: ListView(
-          children: [
-            MyAppBarContainer(),
-            Container(
-              margin: EdgeInsets.symmetric(
-                  vertical: deviceSize(context).height * 0.01),
-              height: deviceSize(context).height,
-              child: Column(
-                children: [
-                  MyGoogleMap(
-                    key: widget.key,
-                  ),
-                  Consumer<AnalysisProvider>(
-                    builder:
-                        (BuildContext context, analysisValue, Widget child) {
-                      return analysisValue.country != null
-                          ? PieChartAnalysisWidget(analysisValue)
-                          : FutureBuilder(
-                              future: Provider.of<AnalysisProvider>(context,
-                                      listen: false)
-                                  .getAnalysisData(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<dynamic> snapshot) {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              },
-                            );
-                    },
-                  ),
-                ],
+        // drawer: MyDrawer()
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              MyAppBarContainer(),
+              MyGoogleMap(
+                key: widget.key,
               ),
-            ),
-            Container(
-                // child: AnimationSplineDefault(widget.key),
+              Consumer<AnalysisProvider>(
+                builder: (BuildContext context, analysisValue, Widget child) {
+                  return analysisValue.country != null
+                      ? Column(
+                          children: [
+                            PieChartAnalysisWidget(analysisValue),
+                            SizedBox(height: 10),
+                            Container(
+                              color: Colors.transparent,
+                              padding: EdgeInsets.all(15),
+                              child: analysisValue
+                                          .selectedCountry.countryCode !=
+                                      "ALL"
+                                  ? analysisValue.tableSatatis != null
+                                      ? TableChart(analysisValue.tableSatatis)
+                                      : FutureBuilder(
+                                          future: Provider.of<AnalysisProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .getTableDailyReport(),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<dynamic> snapshot) {
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          },
+                                        )
+                                  : Text("Please Select A country to analysis"),
+                            ),
+                            SizedBox(height: 10),
+                          ],
+                        )
+                      : FutureBuilder(
+                          future: Provider.of<AnalysisProvider>(context,
+                                  listen: false)
+                              .getAnalysisData(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<dynamic> snapshot) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                        );
+                },
+              ),
+              // Container(
+              //     // child: AnimationSplineDefault(widget.key),
+              //     ),
+              Container(
+                padding: EdgeInsets.only(
+                  right: deviceSize(context).width * 0.04,
+                  left: deviceSize(context).width * 0.04,
+                  bottom: deviceSize(context).height * 0.01,
                 ),
-          ],
+                width: deviceSize(context).width,
+                child: RaisedButton(
+                  elevation: 0,
+                  color: middlePurple,
+                  child: Text(
+                    "Open Saved Analysis",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {},
+                ),
+              ),
+            ],
+          ),
         ));
   }
 }
