@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 // import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onion/models/Image.dart';
@@ -364,7 +365,10 @@ class _LoginState extends State<Login> {
 
     try {
       await Provider.of<Auth>(context, listen: false)
-          .login(username.text, passport.text);
+          .login(username.text, passport.text)
+          .then(
+            (value) => print("I LogIn: $value"),
+          );
     } on LoginException catch (e) {
       _scaffoldKey.currentState
           .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
@@ -444,13 +448,13 @@ class _LoginState extends State<Login> {
     }
   }
 
-  // } catch (e) {
-  //   _scaffoldKey.currentState
-  //       .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
-  //   // print(e.cause);
-  // }
-  // setState(() {
-  //   _isloadingFacebook = false;
-  // });
-  // }
+// } catch (e) {
+//   _scaffoldKey.currentState
+//       .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+//   // print(e.cause);
+// }
+// setState(() {
+//   _isloadingFacebook = false;
+// });
+// }
 }

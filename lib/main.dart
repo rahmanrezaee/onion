@@ -8,6 +8,7 @@ import 'package:onion/pages/Idea/ViewIdeas.dart';
 import 'package:onion/pages/Profile/MyProfile.dart';
 import 'package:onion/pages/SearchTab/SearchTab.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/statemanagment/ChatManagement/database.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
@@ -74,6 +75,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
       ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
       ChangeNotifierProvider(create: (_) => AnalysisProvider()),
+      ChangeNotifierProvider(create: (_) => DatabaseMethods()),
     ],
     child: MyApp(),
   ));
@@ -118,22 +120,23 @@ class _MyAppState extends State<MyApp> {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: ViewIdeas(),
+        home: MyMessagePage(),
         // home: CustomDrawerPage(widget.key),
         routes: {
-          Login.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(widget.key)
-              : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
-                          ? Scaffold(
-                              body: Center(child: Text("Loading...")),
-                            )
-                          : Login(),
-                ),
+          Login.routeName: (context) => MyMessagePage(),
+          // (context) => auth.token != null
+          // ? CustomDrawerPage(widget.key)
+          // : FutureBuilder(
+          //     future:
+          //         Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+          //     builder: (ctx, authResultSnapshot) =>
+          //         authResultSnapshot.connectionState ==
+          //                 ConnectionState.waiting
+          //             ? Scaffold(
+          //                 body: Center(child: Text("Loading...")),
+          //               )
+          //             : Login(),
+          //   ),
           MyIdeaId.routeName: (context) => MyIdeaId(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) =>

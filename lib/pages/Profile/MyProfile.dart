@@ -193,12 +193,6 @@ class _MyProfileState extends State<MyProfile> {
                             value: _currency,
                             validator: (value) =>
                                 value == null ? 'field required' : null,
-                            // validator: (_val) {
-                            //   if (_val.isEmpty) {
-                            //     return "Pick valid Industry";
-                            //   }
-                            //   return null;
-                            // },
                             items: _currencies.map((String category) {
                               return new DropdownMenuItem(
                                 value: category,
@@ -263,6 +257,61 @@ class _MyProfileState extends State<MyProfile> {
                             )
                           ],
                         ),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            vertical: deviceSize(context).height * 0.02,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            vertical: deviceSize(context).height * 0.02,
+                            horizontal: deviceSize(context).width * 0.03,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey.withOpacity(0.5),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  MyFiveRating(rateVal: 4),
+                                  SizedBox(
+                                    width: deviceSize(context).width * 0.01,
+                                  ),
+                                  Text(
+                                    "View Rating",
+                                    style: TextStyle(
+                                      color: firstPurple,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                height: deviceSize(context).height * 0.01,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Add an New Idea",
+                                    textScaleFactor: 1.1,
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Icon(
+                                      Icons.add_circle,
+                                      color: firstPurple,
+                                      size: deviceSize(context).height * 0.055,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                         SizedBox(
                           width: deviceSize(context).width,
                           child: Padding(
@@ -275,7 +324,7 @@ class _MyProfileState extends State<MyProfile> {
                               onPressed: _formSubmit,
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),

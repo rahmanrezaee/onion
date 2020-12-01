@@ -11,6 +11,7 @@ import 'package:onion/const/values.dart';
 import 'package:onion/models/users.dart';
 import 'package:flutter/widgets.dart';
 import 'package:onion/statemanagment/ChatManagement/auth.dart';
+import 'package:onion/statemanagment/ChatManagement/database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as fi;
@@ -23,7 +24,8 @@ class Auth with ChangeNotifier {
   String token;
   Map userDataField;
   User currentUser = new User();
-  // AuthMethods authMethods = new AuthMethods();
+  AuthMethods authMethods = new AuthMethods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
 
   Future<bool> isAuth() async {
     await tryAutoLogin();
@@ -38,13 +40,20 @@ class Auth with ChangeNotifier {
 
       var response = await dio.post(url, data: user.toMap());
       final responseData = response.data;
-      // authMethods
-      //     .signUpWithEmailAndPassword(user.email, user.password)
-      //     .then((value) {
-      //   print("Mahdi I am Firebase SignUp: $value");
-      // }).catchError((e) {
-      //   print("Mahdi I am Firebase SignUp: $e");
-      // });
+      authMethods
+          .signUpWithEmailAndPassword(user.email, user.password)
+          .then((value) {
+        print("Mahdi I am Firebase SignUp: $value");
+      }).catchError((e) {
+        print("Mahdi I am Firebase SignUp: $e");
+      });
+
+      Map<String, String> userInfoMap = {
+        "name": user.name,
+        "email": user.email,
+      };
+
+      databaseMethods.uploadUserInfo(userInfoMap);
 
       var prefs = await SharedPreferences.getInstance();
 
@@ -114,16 +123,18 @@ class Auth with ChangeNotifier {
         'password': password,
       });
 
-      // authMethods.signInWithEmailAndPassword(username, password).then((value) {
-      //   print("Mahdi I am Firebase SignIn: $value");
-      // }).catchError((e) {
-      //   print("Mahdi I am Firebase SignIn: $e");
-      // });
 
       final responseData = response.data;
 
       print(responseData);
       print("responseData ${response.data}");
+
+      authMethods.signInWithCustomToken(username, password).then((value) {
+        print("Mahdi I am Firebase SignIn: $value");
+      }).catchError((e) {
+        print("Mahdi I am Firebase SignIn: $e");
+      });
+
       var prefs = await SharedPreferences.getInstance();
       final userData = json.encode(
         {
@@ -141,7 +152,9 @@ class Auth with ChangeNotifier {
       currentUser.name = responseData['data']['username'];
       currentUser.email = responseData['data']['email'];
       currentUser.country = responseData['data']['country'];
+
       currentUser.profile = responseData['data']['avatar'];
+      token = responseData['token'];
 
       prefs.setString('userData', userData);
       notifyListeners();
@@ -185,6 +198,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> logout() async {
+    authMethods.signOut();
     token = null;
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
