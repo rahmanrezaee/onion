@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
+import 'package:onion/statemanagment/dropdown_provider.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/validation/signup_validation.dart';
@@ -16,7 +18,6 @@ import './pages/Idea/MyIdeaDetailes.dart';
 import './pages/franchises/RequestOnFranchise.dart';
 import './pages/franchises/requestFranchisesUser.dart';
 import './pages/franchises/viewFranchisesUser.dart';
-import './statemanagment/MyDropDownState.dart';
 import './test.dart';
 import './pages/franchises/RequestOnFranchise.dart';
 import './pages/underDevelopment.dart';
@@ -25,7 +26,6 @@ import './pages/Idea/postIdea.dart';
 import './pages/Idea/MyIdeaId.dart';
 import './pages/authentication/ComplateProfile.dart';
 import './pages/Settings.dart';
-import './statemanagment/dropDownItem/MyFlagState.dart';
 import './pages/F&Q.dart';
 import './pages/Services.dart';
 import './pages/Idea/setupIdea.dart';
@@ -41,9 +41,6 @@ import './pages/MyMessagePage.dart';
 import './pages/NotificationsList.dart';
 import './pages/ProjectChat.dart';
 import './pages/Home.dart';
-import './statemanagment/dropDownItem/AnalyticsProvider.dart';
-import './statemanagment/dropDownItem/CategoryProvider.dart';
-import './statemanagment/dropDownItem/IndustryProvider.dart';
 import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
@@ -58,17 +55,17 @@ void main() async {
 
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (_) => CategoryProvider()),
-      ChangeNotifierProvider(create: (_) => MyFlagState()),
-      ChangeNotifierProvider(create: (_) => IndustryProvider()),
-      ChangeNotifierProvider(create: (_) => AnalyticsProvider()),
+      
       ChangeNotifierProvider(create: (_) => DrawerScaffold()),
       ChangeNotifierProvider(create: (_) => Auth()),
-      ChangeNotifierProvider(create: (_) => MyDropDownState()),
       ChangeNotifierProvider(create: (_) => SignupValidation()),
       ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
       ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
       ChangeNotifierProvider(create: (_) => AnalysisProvider()),
+      ChangeNotifierProvider(create: (_) => DropdownProvider()),
+      ChangeNotifierProxyProvider<Auth, SaveAnalProvider>(
+      update: (context, auth , previousMessages,) => SaveAnalProvider(auth),
+      create: (BuildContext context, ) => SaveAnalProvider(null)),
     ],
     child: MyApp(),
   ));
@@ -91,7 +88,7 @@ class MyApp extends StatelessWidget {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: Dashboard(),
+        home: CustomDrawerPage(key),
         routes: {
           Login.routeName: (context) => auth.token != null
               ? CustomDrawerPage(key)

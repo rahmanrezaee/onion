@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:onion/models/circularChart.dart';
-
 import '../../const/Size.dart';
 import '../../const/color.dart';
 
-class MyBigDropDown extends StatefulWidget {
-  List<CircularChart> countyList;
+class MyBigDropDown extends StatelessWidget {
+  final List<CircularChart> myDropDownAnal;
+  final Color iconEnabledColor;
+  final Color txtColor;
+  final String firstVal;
+  Function onChange;
 
-  MyBigDropDown({this.countyList});
-  @override
-  _MyBigDropDownState createState() => _MyBigDropDownState();
-}
-
-class _MyBigDropDownState extends State<MyBigDropDown> {
-  String _value = 'ALL';
+   MyBigDropDown({
+    Key key,
+    this.myDropDownAnal,
+    this.iconEnabledColor = Colors.white,
+    this.txtColor = Colors.white,
+    this.firstVal,
+    this.onChange,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,30 +28,35 @@ class _MyBigDropDownState extends State<MyBigDropDown> {
         right: deviceSize(context).width * 0.03,
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          value: _value,
-          iconDisabledColor: Colors.white,
-          iconEnabledColor: Colors.white,
-          dropdownColor: middlePurple,
-          isDense: true,
-          items: widget.countyList.map((e) {
-            return DropdownMenuItem(
-              child: Text(
-                e.country,
-                textScaleFactor: 1.4,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              value: e.countryCode,
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              _value = value;
-            });
-          },
+        child: Center(
+          child: DropdownButton(
+            value: firstVal,
+            isExpanded: true,
+            iconDisabledColor: iconEnabledColor,
+            iconEnabledColor: iconEnabledColor,
+            dropdownColor: middlePurple,
+            hint: Text(
+              "Country",
+              style: TextStyle(color: txtColor),
+            ),
+            onChanged: onChange,
+            isDense: true,
+            items: myDropDownAnal.isNotEmpty
+                ? myDropDownAnal.map((e) {
+                    return DropdownMenuItem(
+                      child: SizedBox(
+                        width: deviceSize(context).width * 0.8,
+                        child: Text(
+                          "${e.country}",
+                          textScaleFactor: 0.7,
+                          style: TextStyle(color: txtColor),
+                        ),
+                      ),
+                      value: e.country,
+                    );
+                  }).toList()
+                : null,
+          ),
         ),
       ),
     );

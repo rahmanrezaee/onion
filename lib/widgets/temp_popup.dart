@@ -1,16 +1,14 @@
-import 'package:onion/pages/Analysis.dart';
+import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
-import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import '../const/Size.dart';
+import '../const/color.dart';
+import './MyAppBarContainer.dart';
+import 'DropdownWidget/DropDownFormField.dart';
 
-import '../../const/Size.dart';
-import '../../const/color.dart';
-
-import '../MyAppBarContainer.dart';
-
-Future<void> showMyDialog({@required BuildContext context}) async {
+Future<void> tempShowMyDialog({@required BuildContext context}) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
@@ -26,11 +24,17 @@ Future<void> showMyDialog({@required BuildContext context}) async {
   );
 }
 
-class DialogContent extends StatelessWidget {
+class DialogContent extends StatefulWidget {
   const DialogContent({
     Key key,
   }) : super(key: key);
 
+  @override
+  _DialogContentState createState() => _DialogContentState();
+}
+
+class _DialogContentState extends State<DialogContent> {
+  bool isloading = false;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -56,7 +60,7 @@ class DialogContent extends StatelessWidget {
             ),
             child: Column(
               children: [
-                 Consumer<DropdownProvider>(
+                Consumer<DropdownProvider>(
                     builder: (BuildContext context, dpvalue, Widget child) {
                   return Column(
                     children: [
@@ -121,6 +125,7 @@ class DialogContent extends StatelessWidget {
                               onChanged: (value) async {
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
+
                                 dpvalue.typeSelected = value;
                                 await dpvalue.fetchCountryType(context);
                               },
@@ -140,8 +145,9 @@ class DialogContent extends StatelessWidget {
                     ],
                   );
                 }),
-                Consumer<AnalysisProvider>(
-                  builder: (BuildContext context, anavalue, Widget child) {
+                Consumer2<AnalysisProvider, DropdownProvider>(
+                  builder: (BuildContext context, anavalue, dropdownValue,
+                      Widget child) {
                     if (anavalue.countryInList.isEmpty) {
                       return Padding(
                         padding: const EdgeInsets.only(top: 20, left: 10),
@@ -164,7 +170,6 @@ class DialogContent extends StatelessWidget {
                                   anavalue.changeCountryColors(element);
                                 }
                               });
-                              
                             },
                             dataSource: anavalue.countryInList.map((data) {
                               return {
@@ -182,18 +187,33 @@ class DialogContent extends StatelessWidget {
                               color: middlePurple,
                               textColor: Colors.white,
                               elevation: 0,
-                              child: Text("See Analysis"),
+                              child: isloading
+                                  ? SizedBox(
+                                      height: 10,
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Text("Save Analysis"),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: BorderSide(color: middlePurple),
                               ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.pushNamed(
-                                  context,
-                                  Analysis.routeName,
-                                );
-                              },
+                              onPressed: !isloading
+                                  ? () async {
+                                      setState(() {
+                                        isloading = true;
+                                      });
+                                     await Provider.of<SaveAnalProvider>(
+                                        context,
+                                        listen: false,
+                                      ).saveAnalysis(
+                                          dropdownValue.typeList[0].id,
+                                          anavalue.selectedCountry.country);
+                                            setState(() {
+                                              isloading = false;
+                                            });
+                                          Navigator.pop(context);
+                                    }
+                                  : () {},
                             ),
                           ),
                         ],
@@ -201,20 +221,6 @@ class DialogContent extends StatelessWidget {
                       // DropdownButtonFormField(items: null, onChanged: null);
                     }
                   },
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: RaisedButton(
-                    color: Colors.white,
-                    elevation: 0,
-                    textColor: middlePurple,
-                    child: Text("Manage Analytics"),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      side: BorderSide(color: middlePurple),
-                    ),
-                    onPressed: () {},
-                  ),
                 ),
               ],
             ),
@@ -227,12 +233,10 @@ class DialogContent extends StatelessWidget {
 
 class MyPopTxt extends StatelessWidget {
   final String myTxt;
-
   const MyPopTxt({
     Key key,
     this.myTxt,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Container(

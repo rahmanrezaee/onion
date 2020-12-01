@@ -362,7 +362,7 @@ class _PostIdeaState extends State<PostIdea> {
                                 onChanged: (va) {
                                   print(va);
                                   setState(() {
-                                    postForm.timeline = "stage";
+                                    // postForm.timeline = "stage";
                                   });
                                 },
                               ),
@@ -380,7 +380,7 @@ class _PostIdeaState extends State<PostIdea> {
                                 groupValue: 1,
                                 onChanged: (va) {
                                   setState(() {
-                                    postForm.timeline = "date";
+                                    // postForm.timeline = "date";
                                   });
                                 },
                               ),

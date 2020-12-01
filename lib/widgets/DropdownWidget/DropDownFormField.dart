@@ -6,6 +6,7 @@ class DropDownFormField extends FormField<dynamic> {
   final bool required;
   final String errorText;
   final dynamic value;
+  final padding;
   final List dataSource;
   final String textField;
   final String valueField;
@@ -24,6 +25,7 @@ class DropDownFormField extends FormField<dynamic> {
       this.value,
       this.dataSource,
       this.textField,
+      this.padding,
       this.valueField,
       this.onChanged,
       this.enable = true,
@@ -36,8 +38,7 @@ class DropDownFormField extends FormField<dynamic> {
           builder: (FormFieldState<dynamic> state) {
             return InputDecorator(
               decoration: InputDecoration(
-               
-                contentPadding: const EdgeInsets.symmetric(
+                contentPadding: padding != null ? padding: const EdgeInsets.symmetric(
                   vertical: 0,
                   horizontal: 10,
                 ),
@@ -55,7 +56,8 @@ class DropDownFormField extends FormField<dynamic> {
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<dynamic>(
                   value: value == '' ? dataSource[0][valueField] : value,
-                  onChanged: enable  ? (dynamic newValue) {
+                  onChanged: enable
+                      ? (dynamic newValue) {
                           state.didChange(newValue);
 
                           onChanged(newValue);
