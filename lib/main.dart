@@ -76,6 +76,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
       ChangeNotifierProvider(create: (_) => AnalysisProvider()),
       ChangeNotifierProvider(create: (_) => DatabaseMethods()),
+      ChangeNotifierProvider(create: (_) => RealtimeData()),
     ],
     child: MyApp(),
   ));
@@ -120,23 +121,23 @@ class _MyAppState extends State<MyApp> {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: MyMessagePage(),
+        home: CustomDrawerPage(widget.key),
         // home: CustomDrawerPage(widget.key),
         routes: {
-          Login.routeName: (context) => MyMessagePage(),
-          // (context) => auth.token != null
-          // ? CustomDrawerPage(widget.key)
-          // : FutureBuilder(
-          //     future:
-          //         Provider.of<Auth>(context, listen: false).tryAutoLogin(),
-          //     builder: (ctx, authResultSnapshot) =>
-          //         authResultSnapshot.connectionState ==
-          //                 ConnectionState.waiting
-          //             ? Scaffold(
-          //                 body: Center(child: Text("Loading...")),
-          //               )
-          //             : Login(),
-          //   ),
+          // Login.routeName: (context) => CustomDrawerPage(widget.key),
+          Login.routeName: (context) => auth.token != null
+          ? CustomDrawerPage(widget.key)
+          : FutureBuilder(
+              future:
+                  Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+              builder: (ctx, authResultSnapshot) =>
+                  authResultSnapshot.connectionState ==
+                          ConnectionState.waiting
+                      ? Scaffold(
+                          body: Center(child: Text("Loading...")),
+                        )
+                      : Login(),
+            ),
           MyIdeaId.routeName: (context) => MyIdeaId(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) =>
