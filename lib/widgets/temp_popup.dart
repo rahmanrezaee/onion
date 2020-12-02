@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../const/Size.dart';
 import '../const/color.dart';
 import './MyAppBarContainer.dart';
+import 'AnalysisWidget/extra/MyEmptyText.dart';
 import 'DropdownWidget/DropDownFormField.dart';
 
 Future<void> tempShowMyDialog({@required BuildContext context}) async {
@@ -148,80 +149,73 @@ class _DialogContentState extends State<DialogContent> {
                 Consumer2<AnalysisProvider, DropdownProvider>(
                   builder: (BuildContext context, anavalue, dropdownValue,
                       Widget child) {
-               
-                      return Column(
-                        children: [
+                    return Column(children: [
+                      anavalue.countryInList.isEmpty
+                          ? DropDownFormField(
+                              value: "no Item",
+                              dataSource: [
+                                {"display": "no Item", "value": "no Item"}
+                              ],
+                              textField: 'display',
+                              valueField: 'value',
+                            )
+                          : DropDownFormField(
+                              value: anavalue.selectedCountry.country,
+                              onChanged: (value) async {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
 
-
-                          anavalue.countryInList.isEmpty ? Padding(
-                            padding: const EdgeInsets.only(top: 20, left: 10),
-                            child: Text(
-                              "Empty List",
-                              style: TextStyle(color: Colors.black),
+                                anavalue.countryInList.forEach((element) {
+                                  if (element.country == value) {
+                                    anavalue.changeCountryColors(element);
+                                  }
+                                });
+                              },
+                              dataSource: anavalue.countryInList.map((data) {
+                                return {
+                                  "display": data.country,
+                                  "value": data.country
+                                };
+                              }).toList(),
+                              textField: 'display',
+                              valueField: 'value',
                             ),
-                          ) :  DropDownFormField(
-                            value: anavalue.selectedCountry.country,
-                            onChanged: (value) async {
-                              FocusScope.of(context)
-                                  .requestFocus(new FocusNode());
-
-                              anavalue.countryInList.forEach((element) {
-                                if (element.country == value) {
-                                  anavalue.changeCountryColors(element);
+                      SizedBox(
+                        width: double.infinity,
+                        child: RaisedButton(
+                          color: middlePurple,
+                          textColor: Colors.white,
+                          elevation: 0,
+                          child: isloading
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(),
+                                )
+                              : Text("Save Analysis"),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            side: BorderSide(color: middlePurple),
+                          ),
+                          onPressed: !isloading
+                              ? () async {
+                                  setState(() {
+                                    isloading = true;
+                                  });
+                                  await Provider.of<SaveAnalProvider>(
+                                    context,
+                                    listen: false,
+                                  ).saveAnalysis(dropdownValue.typeList[1].id,
+                                      anavalue.selectedCountry.country);
+                                  setState(() {
+                                    isloading = false;
+                                  });
+                                  Navigator.pop(context);
                                 }
-                              });
-                            },
-                            dataSource: anavalue.countryInList.map((data) {
-                              return {
-                                "display": data.country,
-                                "value": data.country
-                              };
-                            }).toList(),
-                            textField: 'display',
-                            valueField: 'value',
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: RaisedButton(
-                              color: middlePurple,
-                              textColor: Colors.white,
-                              elevation: 0,
-                              child: isloading
-                                  ? SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : Text("Save Analysis"),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
-                                side: BorderSide(color: middlePurple),
-                              ),
-                              onPressed: !isloading
-                                  ? () async {
-                                      setState(() {
-                                        isloading = true;
-                                      });
-                                     await Provider.of<SaveAnalProvider>(
-                                        context,
-                                        listen: false,
-                                      ).saveAnalysis(
-                                          dropdownValue.typeList[1].id,
-                                          anavalue.selectedCountry.country);
-                                            setState(() {
-                                              isloading = false;
-                                            });
-                                          Navigator.pop(context);
-                                    }
-                                  : () {},
-                            ),
-                          ),
-                            
-
-
-                     
-               ] );
-                    
+                              : () {},
+                        ),
+                      ),
+                    ]);
                   },
                 ),
               ],

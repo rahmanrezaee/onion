@@ -1,6 +1,7 @@
 import 'package:onion/pages/Analysis.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
+import 'package:onion/widgets/AnalysisWidget/extra/MyEmptyText.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -143,13 +144,15 @@ class DialogContent extends StatelessWidget {
                 Consumer<AnalysisProvider>(
                   builder: (BuildContext context, anavalue, Widget child) {
                     if (anavalue.countryInList.isEmpty) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 20, left: 10),
-                        child: Text(
-                          "Empty List",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      );
+                      return DropDownFormField(
+                              value: "no Item",
+                              dataSource: [
+                                {"display": "no Item", "value": "no Item"}
+                              ],
+                              textField: 'display',
+                              valueField: 'value',
+                            )
+                          ;
                     } else {
                       return Column(
                         children: [

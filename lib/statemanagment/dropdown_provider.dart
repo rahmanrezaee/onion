@@ -16,11 +16,13 @@ class DropdownProvider with ChangeNotifier {
   String idustrySelected = "";
   String typeSelected = "";
 
-  Future<void> fetchItemsCategory() async {
+  Future<bool> fetchItemsCategory() async {
     try {
-      categoryList.clear();
-      // addCategoryFirstElement();
-      notifyListeners();
+      if (categoryList.isNotEmpty) {
+        categoryList.clear();
+        // addCategoryFirstElement();
+        notifyListeners();
+      }
 
       final response = await APIRequest().get(
         myUrl: "$baseDropDownItemsUrl?type=category",
@@ -30,7 +32,7 @@ class DropdownProvider with ChangeNotifier {
       final extractedData = response.data;
       if (extractedData == null) {
         categoryList = [];
-        return;
+        return false;
       }
       categorySelected = extractedData[0]['name'];
 
@@ -44,8 +46,10 @@ class DropdownProvider with ChangeNotifier {
           ),
         );
       });
-
+       notifyListeners();
       await fetchItemsIndustry();
+
+      return true;
     } catch (e) {
       notifyListeners();
       print("Rahaman Error $e");
@@ -54,8 +58,10 @@ class DropdownProvider with ChangeNotifier {
 
   Future<void> fetchItemsIndustry() async {
     try {
-      idustryList.clear();
-      // addIndestyFirstElement();
+      if (idustryList.isNotEmpty) {
+        idustryList.clear();
+        notifyListeners();
+      }
       final response = await APIRequest().get(
           myUrl:
               "$baseDropDownItemsUrl?type=category&parent=${this.categorySelected}");
@@ -76,6 +82,7 @@ class DropdownProvider with ChangeNotifier {
           ),
         );
       });
+       notifyListeners();
       await fetchItemsType();
     } catch (e) {
       notifyListeners();
@@ -85,10 +92,13 @@ class DropdownProvider with ChangeNotifier {
 
   Future<bool> fetchItemsType() async {
     try {
-      typeList.clear();
-      addTypeFirstElement();
-      typeSelected = typeList[0].title;
-      notifyListeners();
+      if (typeList.isNotEmpty) {
+        typeList.clear();
+       
+      }
+        addTypeFirstElement();
+        typeSelected = typeList[0].title;
+        notifyListeners();
       final response = await APIRequest().get(
           myUrl:
               "$getAnalysis?category=$categorySelected&industry=$idustrySelected");
@@ -99,7 +109,6 @@ class DropdownProvider with ChangeNotifier {
         typeList = [];
         return false;
       }
-     
 
       extractedData.forEach((netItems) {
         var am = AnalyticsModel(
@@ -115,7 +124,6 @@ class DropdownProvider with ChangeNotifier {
 
       notifyListeners();
 
-      print("list show true");
       return true;
     } catch (e) {
       notifyListeners();

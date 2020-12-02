@@ -11,6 +11,7 @@ import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:onion/statemanagment/dropdown_provider.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/TableChart.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/pie.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
@@ -67,6 +68,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    var auth = Provider.of<Auth>(context, listen: false);
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -91,10 +93,10 @@ class _DashboardState extends State<Dashboard> {
             MyGoogleMap(
               key: widget.key,
             ),
-            Consumer2<AnalysisProvider, Auth>(builder: (BuildContext context, analysisValue, authvale, Widget child) {
-             return analysisValue.country != null
-                  ? 
-                   Column(children: [
+            Consumer<AnalysisProvider>(
+                builder: (BuildContext context, analysisValue, Widget child) {
+              return analysisValue.country != null
+                  ? Column(children: [
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 10,
@@ -190,7 +192,7 @@ class _DashboardState extends State<Dashboard> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       onPressed: () {
-                                        authvale.token != null
+                                        auth.token != null
                                             ? tempShowMyDialog(context: context)
                                             : Navigator.pushNamed(
                                                 context,
@@ -370,11 +372,11 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      
                     ])
                   : FutureBuilder(
-                      future:  analysisValue.getAnalysisData(),
-                      builder: (BuildContext context,  AsyncSnapshot<dynamic> snapshot) {
+                      future: analysisValue.getAnalysisData(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot) {
                         return Center(
                           child: CircularProgressIndicator(),
                         );
@@ -382,8 +384,8 @@ class _DashboardState extends State<Dashboard> {
             }),
             Column(
               children: [
-                Consumer2<SaveAnalProvider, Auth>(
-                  builder: (consContext, consValue, auth, child) {
+                Consumer3<SaveAnalProvider, DropdownProvider, AnalysisProvider>(
+                  builder: (consContext, consValue, drValue, anaValue, child) {
                     return Column(
                       children: [
                         Divider(color: Colors.grey),
@@ -415,52 +417,64 @@ class _DashboardState extends State<Dashboard> {
                             ],
                           ),
                         ),
-                        consValue.items.isNotEmpty
-                            ? Container(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                height: deviceSize(context).height * 0.4,
-                                child: Scrollbar(
-                                  child: ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    itemCount: consValue.items.length,
-                                    itemBuilder: (listContext, index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                              context, Analysis.routeName);
-                                          // var dp = Provider.of<
-                                          //     DropdownProvider>(context);
-                                          // dp.categorySelected = consValue
-                                          //     .items[index].category;
-                                          // dp.idustrySelected = consValue
-                                          //     .items[index].industry;
-                                          // dp.typeSelected = consValue
-                                          //     .items[index].title;
+                        consValue.items != null
+                            ? consValue.items.isEmpty
+                                ? Container(
+                                    height: 80,
+                                    alignment: Alignment.center,
+                                    child: Text("Empty List"),
+                                  )
+                                : Container(
+                                    margin: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 15),
+                                    height: deviceSize(context).height * 0.4,
+                                    child: Scrollbar(
+                                      child: ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        itemCount: consValue.items.length,
+                                        itemBuilder: (listContext, index) {
+                                          return InkWell(
+                                            onTap: () {
+                                              Navigator.pushNamed(
+                                                  context, Analysis.routeName);
 
-                                          // dp.typeSelected = consValue
-                                          //     .items[index].title;
+                                              drValue.categorySelected =
+                                                  consValue
+                                                      .items[index].category;
+                                              drValue.idustrySelected =
+                                                  consValue
+                                                      .items[index].industry;
+                                              drValue.typeSelected =
+                                                  consValue.items[index].title;
+                                              anaValue.country
+                                                  .forEach((element) {
+
+                                                if (element.country == consValue.items[index].region)
+                                                  anaValue.changeCountryColors( element);
+                                              });
+                                              // dp.country = consValue.items[index].title;
+                                            },
+                                            child: MyCardItem(
+                                              onDelete: (value) {
+                                                consValue.deleteAnalysis(
+                                                  id: value,
+                                                );
+                                              },
+                                              id: consValue.items[index].id,
+                                              analysis:
+                                                  consValue.items[index].title,
+                                              category: consValue
+                                                  .items[index].category,
+                                              industry: consValue
+                                                  .items[index].industry,
+                                              region:
+                                                  consValue.items[index].region,
+                                            ),
+                                          );
                                         },
-                                        child: MyCardItem(
-                                          onDelete: (value) {
-                                            consValue.deleteAnalysis(
-                                              id: value,
-                                            );
-                                          },
-                                          id: consValue.items[index].id,
-                                          analysis:
-                                              consValue.items[index].title,
-                                          category:
-                                              consValue.items[index].category,
-                                          industry:
-                                              consValue.items[index].industry,
-                                          region: consValue.items[index].region,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              )
+                                      ),
+                                    ),
+                                  )
                             : FutureBuilder(
                                 future: consValue.getAnalysis(),
                                 builder: (BuildContext context,
@@ -476,7 +490,7 @@ class _DashboardState extends State<Dashboard> {
                                     return Container(
                                       height: 80,
                                       alignment: Alignment.center,
-                                      child: Text("No Record Saved"),
+                                      child: Text("Error In Fetch Data"),
                                     );
                                   }
                                 },
@@ -513,13 +527,25 @@ class _DashboardState extends State<Dashboard> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               MySocialIcon(
-                                myImg: FaIcon(FontAwesomeIcons.facebook,color: Colors.blue,size: 40,),
+                                myImg: FaIcon(
+                                  FontAwesomeIcons.facebook,
+                                  color: Colors.blue,
+                                  size: 40,
+                                ),
                               ),
                               MySocialIcon(
-                                myImg:FaIcon(FontAwesomeIcons.linkedin,color: Colors.blue[600],size: 40,),
+                                myImg: FaIcon(
+                                  FontAwesomeIcons.linkedin,
+                                  color: Colors.blue[600],
+                                  size: 40,
+                                ),
                               ),
                               MySocialIcon(
-                                myImg: FaIcon(FontAwesomeIcons.googlePlus,color: Colors.red,size: 40,),
+                                myImg: FaIcon(
+                                  FontAwesomeIcons.googlePlus,
+                                  color: Colors.red,
+                                  size: 40,
+                                ),
                               ),
                             ],
                           ),

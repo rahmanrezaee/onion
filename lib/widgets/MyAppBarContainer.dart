@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -11,27 +12,12 @@ import '../const/Size.dart';
 import '../const/color.dart';
 import './AnalysisWidget/MyBigDropDown.dart';
 import './AnalysisWidget/MySmallDropdown.dart';
+import './AnalysisWidget/extra/MyEmptyText.dart';
 
-class MyAppBarContainer extends StatefulWidget {
-  final String categoryName;
-  final bool notLoading;
-
-  const MyAppBarContainer({
-    Key key,
-    this.categoryName,
-    this.notLoading = true,
-  }) : super(key: key);
-
-  @override
-  _MyAppBarContainerState createState() => _MyAppBarContainerState();
-}
-
-class _MyAppBarContainerState extends State<MyAppBarContainer> {
- 
-
- 
+class MyAppBarContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // var pro = Provider.of<DropdownProvider>(context, listen: false);
     return Container(
       height: deviceSize(context).height * 0.16,
       padding: EdgeInsets.symmetric(
@@ -60,7 +46,14 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                       ? FutureBuilder(
                           future: dpvalue.fetchItemsCategory(),
                           builder: (futureContext, snapshot) {
-                            return MyEmptyText(myTxt: "Loading...");
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return MyEmptyText(myTxt: "Loading...");
+                            } else {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done)
+                                return MyEmptyText(myTxt: "Done");
+                            }
                           },
                         )
                       : MySmallDropdown(
@@ -138,7 +131,6 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
                   firstVal: anavalue.selectedCountry.country,
                   onChange: (value) {
                     anavalue.countryInList.forEach((element) {
-                     
                       if (element.country == value) {
                         anavalue.changeCountryColors(element);
                       }
@@ -209,32 +201,6 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
           //   ),
           // )
         ],
-      ),
-    );
-  }
-}
-
-class MyEmptyText extends StatelessWidget {
-  final String myTxt;
-  final Color mColor;
-
-  const MyEmptyText({Key key, this.myTxt, this.mColor}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(deviceSize(context).width * 0.02),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: SizedBox(
-        width: deviceSize(context).width * 0.2,
-        child: Text(
-          myTxt,
-          textScaleFactor: 0.7,
-          style: TextStyle(color: Colors.white),
-        ),
       ),
     );
   }

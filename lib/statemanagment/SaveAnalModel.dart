@@ -21,12 +21,12 @@ class SaveAnalModel {
 }
 
 class SaveAnalProvider extends ChangeNotifier {
-  List<SaveAnalModel> _items = [];
+  List<SaveAnalModel> _items;
   Auth auth;
   SaveAnalProvider(this.auth);
 
-  List<SaveAnalModel> get items {
-    return _items;
+  List<SaveAnalModel>  get items {
+    return _items != null ? _items : null;
   }
 
   Future<void> deleteAnalysis({
@@ -92,6 +92,7 @@ class SaveAnalProvider extends ChangeNotifier {
       print("Mahdi an $result");
       final extractedData = result.data;
       if (extractedData == null) {
+        _items = [];
         return false;
       }
       final List<SaveAnalModel> loadedProducts = [];
@@ -107,7 +108,7 @@ class SaveAnalProvider extends ChangeNotifier {
       });
 
       _items = loadedProducts;
-      
+
       notifyListeners();
       return true;
     } on DioError catch (e) {
