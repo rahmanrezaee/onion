@@ -25,7 +25,7 @@ class SaveAnalProvider extends ChangeNotifier {
   Auth auth;
   SaveAnalProvider(this.auth);
 
-  List<SaveAnalModel>  get items {
+  List<SaveAnalModel> get items {
     return _items != null ? _items : null;
   }
 
@@ -82,6 +82,24 @@ class SaveAnalProvider extends ChangeNotifier {
     } on DioError catch (e) {
       print("Mahdi Error: ${e.response}");
     }
+  }
+
+  bool isDeprecated = false;
+
+  void isDerecatedOrNot(country) {
+    isDeprecated = false;
+    notifyListeners();
+    if (_items.isNotEmpty) {
+      _items.forEach((element) {
+        if (element.region == country) {
+          isDeprecated = true;
+        }
+      });
+    } else {
+      isDeprecated = false;
+    }
+
+    notifyListeners();
   }
 
   Future<bool> getAnalysis() async {

@@ -6,7 +6,9 @@ import 'package:number_display/number_display.dart';
 import 'package:onion/models/circularChart.dart';
 import 'package:onion/models/globalChart.dart';
 import 'package:onion/models/sample_view.dart';
+import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
+import 'package:onion/statemanagment/dropdown_provider.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/LineDefault.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/AnimationSplineDefault.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/TableChart.dart';
@@ -52,12 +54,12 @@ class Analysis extends StatefulWidget {
 }
 
 class _AnalysisState extends State<Analysis> {
- 
-
   final display = createDisplay(
     length: 3,
     decimal: 0,
   );
+
+  bool enableAnalysisButton = true;
 
   @override
   Widget build(BuildContext context) {
@@ -89,8 +91,9 @@ class _AnalysisState extends State<Analysis> {
               MyGoogleMap(
                 key: widget.key,
               ),
-              Consumer<AnalysisProvider>(
-                builder: (BuildContext context, analysisValue, Widget child) {
+              Consumer3<SaveAnalProvider, DropdownProvider, AnalysisProvider>(
+                builder:
+                    (consContext, consValue, drValue, analysisValue, child) {
                   return analysisValue.country != null
                       ? Column(
                           children: [
@@ -120,6 +123,61 @@ class _AnalysisState extends State<Analysis> {
                                   : Text("Please Select A country to analysis"),
                             ),
                             SizedBox(height: 10),
+                            consValue.items != null
+                                ? Container(
+                                    padding: EdgeInsets.only(
+                                      right: deviceSize(context).width * 0.04,
+                                      left: deviceSize(context).width * 0.04,
+                                      bottom: deviceSize(context).height * 0.01,
+                                    ),
+                                    width: deviceSize(context).width,
+                                    child: saveAnalysis(
+                                      consValue,
+                                      drValue,
+                                      analysisValue,
+                                    ),
+                                  )
+                                : FutureBuilder(
+                                    future: consValue.getAnalysis(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<dynamic> snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Container(
+                                          height: 80,
+                                          alignment: Alignment.center,
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      } else {
+                                        return Container(
+                                          height: 80,
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                            padding: EdgeInsets.only(
+                                              right: deviceSize(context).width *
+                                                  0.04,
+                                              left: deviceSize(context).width *
+                                                  0.04,
+                                              bottom:
+                                                  deviceSize(context).height *
+                                                      0.01,
+                                            ),
+                                            width: deviceSize(context).width,
+                                            child: RaisedButton(
+                                              elevation: 0,
+                                              color: middlePurple,
+                                              child: Text(
+                                                "Open Saved Analysis",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              onPressed: null,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
                           ],
                         )
                       : FutureBuilder(
@@ -138,25 +196,30 @@ class _AnalysisState extends State<Analysis> {
               // Container(
               //     // child: AnimationSplineDefault(widget.key),
               //     ),
-              Container(
-                padding: EdgeInsets.only(
-                  right: deviceSize(context).width * 0.04,
-                  left: deviceSize(context).width * 0.04,
-                  bottom: deviceSize(context).height * 0.01,
-                ),
-                width: deviceSize(context).width,
-                child: RaisedButton(
-                  elevation: 0,
-                  color: middlePurple,
-                  child: Text(
-                    "Open Saved Analysis",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {},
-                ),
-              ),
             ],
           ),
         ));
+  }
+
+  Widget saveAnalysis(SaveAnalProvider consValue,
+      DropdownProvider dropdownValue, AnalysisProvider anavalue) {
+        
+    consValue.isDerecatedOrNot(anavalue.selectedCountry.country);
+
+    print("is ${consValue.isDeprecated}");
+    return  RaisedButton(
+      elevation: 0,
+      color: middlePurple,
+      child: Text(
+        "Open Saved Analysis",
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: consValue.isDeprecated
+          ? null
+          : () {
+              consValue.saveAnalysis(dropdownValue.typeList[1].id,
+                  anavalue.selectedCountry.country);
+            },
+    );
   }
 }

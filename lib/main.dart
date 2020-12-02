@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/pages/profile/profile_page.dart';
+import 'package:onion/pages/viewRating.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
@@ -49,13 +51,11 @@ import 'pages/franchises/ViewMyRequestFranchise.dart';
 import './widgets/bottom_nav.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
   runApp(MultiProvider(
     providers: [
-      
       ChangeNotifierProvider(create: (_) => DrawerScaffold()),
       ChangeNotifierProvider(create: (_) => Auth()),
       ChangeNotifierProvider(create: (_) => SignupValidation()),
@@ -64,8 +64,16 @@ void main() async {
       ChangeNotifierProvider(create: (_) => AnalysisProvider()),
       ChangeNotifierProvider(create: (_) => DropdownProvider()),
       ChangeNotifierProxyProvider<Auth, SaveAnalProvider>(
-      update: (context, auth , previousMessages,) => SaveAnalProvider(auth),
-      create: (BuildContext context, ) => SaveAnalProvider(null)),
+          update: (
+            context,
+            auth,
+            previousMessages,
+          ) =>
+              SaveAnalProvider(auth),
+          create: (
+            BuildContext context,
+          ) =>
+              SaveAnalProvider(null)),
     ],
     child: MyApp(),
   ));
@@ -74,9 +82,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     Provider.of<Auth>(context, listen: false).tryAutoLogin();
-    
+
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
         title: 'Onion.ai',
@@ -87,6 +94,16 @@ class MyApp extends StatelessWidget {
           pageTransitionsTheme: PageTransitionsTheme(builders: {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
+          textTheme: TextTheme(
+            headline6: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500),
+            headline5: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+            headline4: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w600),
+            headline3: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+            headline2: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w700),
+            headline1: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w800),
+            bodyText2: TextStyle(color: Colors.black54),
+            // : 
+          ),
         ),
         home: CustomDrawerPage(key),
         routes: {
@@ -104,6 +121,7 @@ class MyApp extends StatelessWidget {
                           : Login(),
                 ),
           MyIdeaId.routeName: (context) => MyIdeaId(),
+          ProfilePage.routeName: (context) => ProfilePage(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) =>
               auth.token != null ? CustomDrawerPage(key) : SignUp(),
@@ -136,7 +154,6 @@ class MyApp extends StatelessWidget {
           RequestFranchisesUser.routeName: (context) => RequestFranchisesUser(),
           ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(),
           MyIdeaId.routeName: (context) => MyIdeaId(),
-
           MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
           RequestPage.routeName: (context) => RequestPage(),
         },
