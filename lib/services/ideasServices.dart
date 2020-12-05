@@ -1,6 +1,7 @@
 import 'package:onion/const/MyUrl.dart';
 import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
 import 'package:dio/dio.dart';
+import 'dart:convert';
 
 class IdeasServices {
   Future getIdeaList(String token) async {
@@ -28,5 +29,14 @@ class IdeasServices {
         myHeaders: {"token": "$token"});
     print("This is the response: ${response.data}");
     return response.data['status'];
+  }
+
+  Future deleteIdea(String ideaId, String token) async {
+    Response response = await APIRequest().delete(
+        myUrl: "$baseUrl/innovator/idea/add",
+        myBody: null,
+        myHeaders: {"token": "$token"});
+    print("This is the response: ${response.data}");
+    return response.data;
   }
 }

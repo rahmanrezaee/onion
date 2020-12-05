@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/pages/Idea/MyIdeaId.dart';
+import 'package:onion/services/ideasServices.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:onion/widgets/IdeaWiget/popupMenu.dart' as mypopup;
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
+import 'package:provider/provider.dart';
 // import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import '../../models/Idea.dart';
 //
@@ -21,7 +25,9 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
   final double playerWidth = 640.0;
   final double playerHeight = 360.0;
   bool _isPlaying = false;
+  String token;
   initState() {
+    token = Provider.of<Auth>(context).token;
     //Video player initialize
     _controller = VideoPlayerController.network(
       'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
@@ -80,10 +86,175 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                           children: [
                             Text("Posted On",
                                 style: TextStyle(color: deepGrey)),
-                            InkWell(
-                              onTap: () {},
-                              child: Icon(Icons.more_vert, color: deepGrey),
-                            ),
+                            // InkWell(
+                            //   onTap: () {},
+                            //   child: Icon(Icons.more_vert, color: deepGrey),
+                            // ),
+                            Container(
+                              alignment: Alignment.topLeft,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  mypopup.PopupMenuButton<int>(
+                                    elevation: 20,
+                                    padding: EdgeInsets.all(10),
+                                    onSelected: (value) {},
+                                    offset: Offset(50, 50),
+                                    itemBuilder: (context) => [
+                                      mypopup.PopupMenuItem(
+                                        value: 1,
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            // border:
+                                            //     Border.all(color: Colors.grey[200], width: 2),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text("Edit",
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      mypopup.PopupMenuItem(
+                                        value: 2,
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          decoration: BoxDecoration(
+                                            // color: ,
+                                            border: Border.all(
+                                                color: Colors.grey[200],
+                                                width: 2),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text("View Bids"),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      mypopup.PopupMenuItem(
+                                        value: 2,
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 10),
+                                          decoration: BoxDecoration(
+                                            // color: ,
+                                            border: Border.all(
+                                                color: Colors.grey[200],
+                                                width: 2),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text(
+                                                  "View Interseted Investment"),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      mypopup.PopupMenuItem(
+                                        value: 2,
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          decoration: BoxDecoration(
+                                            // color: ,
+                                            border: Border.all(
+                                                color: Colors.grey[200],
+                                                width: 2),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text("Find Investor"),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      mypopup.PopupMenuItem(
+                                        value: 2,
+                                        onClick: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                    title:
+                                                        Text("Are you sure?"),
+                                                    actions: [
+                                                      FlatButton(
+                                                        child: Text("Yes"),
+                                                        onPressed: () {
+                                                          IdeasServices()
+                                                              .deleteIdea(
+                                                            idea.id,
+                                                            token,
+                                                          );
+                                                        },
+                                                      ),
+                                                      FlatButton(
+                                                        child: Text("Cancel"),
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                    ]);
+                                              });
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 10),
+                                          decoration: BoxDecoration(
+                                            // color: ,
+                                            border: Border.all(
+                                                color: Colors.grey[200],
+                                                width: 2),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text("Delete"),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  // Text(
+                                  //   "Post On",
+                                  //   style: TextStyle(
+                                  //     color: Colors.grey,
+                                  //     fontSize: 12,
+                                  //   ),
+                                  // )
+                                ],
+                              ),
+                            )
                           ],
                         ),
                         SizedBox(height: 10),

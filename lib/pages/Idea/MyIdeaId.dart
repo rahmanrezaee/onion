@@ -24,7 +24,7 @@ class _MyIdeaIdState extends State<MyIdeaId> {
     authProvider = Provider.of<Auth>(context, listen: false);
     token = authProvider.token;
     getIdeasList = IdeasServices().getIdeaList(token);
-}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,24 +68,27 @@ class _MyIdeaIdState extends State<MyIdeaId> {
                   if (snapshot.hasData) {
                     List ideas = snapshot.data;
                     return ListView.builder(
-                      itemCount: ideas.length - 1,
+                      itemCount: ideas.length,
                       itemBuilder: (BuildContext context, int index) {
+                        var months = int.parse(
+                            ideas[index]["industryExperienceInMonth"]);
+                        var year = (months / 12).floor();
+                        var remainderMonths = months % 12;
+                        print("$year year and $remainderMonths months");
                         SetupIdeaModel idea = new SetupIdeaModel();
                         idea.id = ideas[index]["_id"];
                         idea.userId = ideas[index]["userId"];
                         idea.typeIdea = ideas[index]["ideaType"];
                         idea.category = ideas[index]["industry"];
-                        idea.experienceYear =
-                            ideas[index]["industryExperienceInMonth"];
-                        idea.experienceMonth =
-                            ideas[index]["industryExperienceInMonth"];
+                        idea.experienceYear = year.toString();
+                        idea.experienceMonth = remainderMonths.toString();
                         idea.ideaHeadline = ideas[index]["headline"];
                         idea.ideaText = ideas[index]["idea"];
                         idea.estimatedPeople =
                             ideas[index]["estimatedPeople"].toString();
+                        print("Documents ${ideas[index]["uploadDocuments"]}");
                         idea.location = ideas[index]["targetAudience"];
                         idea.documents = ideas[index]["uploadDocuments"];
-
                         // idea.timeline = ideas[index]["timeline"];
                         return Column(
                           children: [

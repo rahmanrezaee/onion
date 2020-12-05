@@ -11,7 +11,6 @@ class APIRequest {
     print(token);
 
     try {
-      
       if (token == null) {
         return dio.get(myUrl);
       } else {
@@ -39,5 +38,14 @@ class APIRequest {
   }) {
     dio.options.headers = myHeaders;
     return dio.put(myUrl, data: myBody);
+  }
+
+  Future delete({
+    @required String myUrl,
+    @required Map<String, String> myBody,
+    @required Map<String, String> myHeaders,
+  }) {
+    dio.options.headers = myHeaders;
+    return dio.delete(myUrl, data: myBody);
   }
 }
