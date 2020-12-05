@@ -13,9 +13,6 @@ import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import 'dropDownItem/AnalyticsProvider.dart';
-import 'dropDownItem/CategoryProvider.dart';
-
 class AnalysisProvider with ChangeNotifier {
   Dio dio = new Dio();
   GlobalChart gc;
@@ -33,12 +30,12 @@ class AnalysisProvider with ChangeNotifier {
       "display": "Table",
       "value": "table",
     },
+    // {
+    //   "display": "Line",
+    //   "value": "line",
+    // },
     {
-      "display": "Line",
-      "value": "line",
-    },
-    {
-      "display": "Date",
+      "display": "Data",
       "value": "date",
     },
   ];
@@ -81,6 +78,14 @@ class AnalysisProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void cleanCountryMerged() {
+    countryInList.clear();
+    // add globle country
+    countryInList.add(country[0]);
+
+    notifyListeners();
+  }
+
   void setchartType(String value) {
     this.chartTypeSelected = value;
     getDefaultSplineSeriesList = null;
@@ -119,12 +124,10 @@ class AnalysisProvider with ChangeNotifier {
         totalRecovered: gc.totalRecovered,
         active: gc.totalConfirmed - gc.totalDeaths,
       );
-      print("done first stap");
       country.add(all);
       for (var item in data['Countries']) {
         country.add(CircularChart.toJson(item));
       }
-      print("done second stap");
       changeCountryColors(all);
     } on DioError catch (e) {
       print("errors");
@@ -280,17 +283,19 @@ class AnalysisProvider with ChangeNotifier {
 
   Future getTableDailyReport() async {
     tableSatatis = List<TableSatatis>();
-    String url = "https://api.covid19api.com/country/${selectedCountry.country}?from=${Jiffy(Jiffy(now).subtract(days: 6)).format("yyy-MM-dd")}T00:00:00Z&to=${Jiffy(now).format("yyy-MM-dd")}T00:00:00Z";
+    String url =
+        "https://api.covid19api.com/country/${selectedCountry.country}?from=${Jiffy(Jiffy(now).subtract(days: 6)).format("yyy-MM-dd")}T00:00:00Z&to=${Jiffy(now).format("yyy-MM-dd")}T00:00:00Z";
     try {
       print("print $url");
       Response state = await dio.get(url.toString());
       List data = state.data;
       print("list of $data");
       for (int i = 0; i < data.length; i++) {
-        
         if (tableSatatis.length > 0 &&
-            Jiffy(DateTime.parse(tableSatatis.elementAt(tableSatatis.length - 1).date)).MMMd  == Jiffy(data[i]["Date"]).MMMd
-                ) {
+            Jiffy(DateTime.parse(
+                        tableSatatis.elementAt(tableSatatis.length - 1).date))
+                    .MMMd ==
+                Jiffy(data[i]["Date"]).MMMd) {
           var last = tableSatatis.elementAt(tableSatatis.length - 1);
           print(last);
           last.actived = last.actived + data[i]["Active"];

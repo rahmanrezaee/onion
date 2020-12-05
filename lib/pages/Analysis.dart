@@ -6,9 +6,13 @@ import 'package:number_display/number_display.dart';
 import 'package:onion/models/circularChart.dart';
 import 'package:onion/models/globalChart.dart';
 import 'package:onion/models/sample_view.dart';
+import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
+import 'package:onion/statemanagment/dropdown_provider.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/LineDefault.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/AnimationSplineDefault.dart';
+import 'package:onion/widgets/AnalysisWidget/Charts/TableChart.dart';
+import 'package:onion/widgets/AnalysisWidget/Charts/pie.dart';
 import 'package:onion/widgets/Home/MyGoogleMap.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -50,23 +54,12 @@ class Analysis extends StatefulWidget {
 }
 
 class _AnalysisState extends State<Analysis> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   final display = createDisplay(
     length: 3,
     decimal: 0,
   );
 
-  final List<SalesData> chartData = [
-    SalesData(2010, 35, 23, 45, 65, 78),
-    SalesData(2011, 38, 49, 56, 7, 88),
-    SalesData(2012, 34, 12, 34, 54, 6),
-    SalesData(2013, 52, 33, 32, 36, 7),
-    SalesData(2014, 40, 30, 90, 89, 6)
-  ];
+  bool enableAnalysisButton = true;
 
   @override
   Widget build(BuildContext context) {
@@ -90,306 +83,142 @@ class _AnalysisState extends State<Analysis> {
             ),
           ],
         ),
-        // drawer: MyDrawer(),
-        bottomNavigationBar: Container(
-          padding: EdgeInsets.only(
-            right: deviceSize(context).width * 0.04,
-            left: deviceSize(context).width * 0.04,
-            bottom: deviceSize(context).height * 0.01,
-          ),
-          width: deviceSize(context).width,
-          child: RaisedButton(
-            elevation: 0,
-            color: middlePurple,
-            child: Text(
-              "Open Saved Analysis",
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {},
-          ),
-        ),
-        body: ListView(
-          children: [
-            MyAppBarContainer(),
-            Consumer<AnalysisProvider>(
-              builder: (BuildContext context, analysisValue, Widget child) {
-                return analysisValue.country != null
-                    ? Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: deviceSize(context).height * 0.01),
-                        height: deviceSize(context).height,
-                        child: Column(
+        // drawer: MyDrawer()
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              MyAppBarContainer(),
+              MyGoogleMap(
+                key: widget.key,
+              ),
+              Consumer3<SaveAnalProvider, DropdownProvider, AnalysisProvider>(
+                builder:
+                    (consContext, consValue, drValue, analysisValue, child) {
+                  return analysisValue.country != null
+                      ? Column(
                           children: [
-                            MyGoogleMap(
-                              key: widget.key,
+                            PieChartAnalysisWidget(analysisValue),
+                            SizedBox(height: 10),
+                            Container(
+                              color: Colors.transparent,
+                              padding: EdgeInsets.all(15),
+                              child: analysisValue
+                                          .selectedCountry.countryCode !=
+                                      "ALL"
+                                  ? analysisValue.tableSatatis != null
+                                      ? TableChart(analysisValue.tableSatatis)
+                                      : FutureBuilder(
+                                          future: Provider.of<AnalysisProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .getTableDailyReport(),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<dynamic> snapshot) {
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          },
+                                        )
+                                  : Text("Please Select A country to analysis"),
                             ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Card(
-                                    elevation: 8,
-                                    margin: EdgeInsets.only(
-                                        left: 20, bottom: 10, right: 5),
-                                    child: Container(
-                                      padding: EdgeInsets.all(15),
-                                      child: new CircularPercentIndicator(
-                                        radius: 120.0,
-                                        lineWidth: 13.0,
-                                        animation: true,
-                                        percent: 1,
-                                        center: Container(
-                                          height: 50,
-                                          width: 50,
-                                          decoration: BoxDecoration(
-                                              color: Colors.red[50],
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(width / 2))),
-                                          child: Align(
-                                            alignment: Alignment.center,
-                                            child: new Text(
-                                              "${100}%",
-                                              style: new TextStyle(
-                                                  color: Colors.red[600],
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 13.0),
+                            SizedBox(height: 10),
+                            consValue.items != null
+                                ? Container(
+                                    padding: EdgeInsets.only(
+                                      right: deviceSize(context).width * 0.04,
+                                      left: deviceSize(context).width * 0.04,
+                                      bottom: deviceSize(context).height * 0.01,
+                                    ),
+                                    width: deviceSize(context).width,
+                                    child: saveAnalysis(
+                                      consValue,
+                                      drValue,
+                                      analysisValue,
+                                    ),
+                                  )
+                                : FutureBuilder(
+                                    future: consValue.getAnalysis(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<dynamic> snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Container(
+                                          height: 80,
+                                          alignment: Alignment.center,
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      } else {
+                                        return Container(
+                                          height: 80,
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                            padding: EdgeInsets.only(
+                                              right: deviceSize(context).width *
+                                                  0.04,
+                                              left: deviceSize(context).width *
+                                                  0.04,
+                                              bottom:
+                                                  deviceSize(context).height *
+                                                      0.01,
+                                            ),
+                                            width: deviceSize(context).width,
+                                            child: RaisedButton(
+                                              elevation: 0,
+                                              color: middlePurple,
+                                              child: Text(
+                                                "Open Saved Analysis",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              onPressed: null,
                                             ),
                                           ),
-                                        ),
-                                        footer: new Text(
-                                          "Confirmed - ${display(analysisValue.selectedCountry.totalConfirmed)}",
-                                          style: new TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: 15.0),
-                                        ),
-                                        circularStrokeCap:
-                                            CircularStrokeCap.round,
-                                        progressColor: Colors.purple,
-                                      ),
-                                    ),
+                                        );
+                                      }
+                                    },
                                   ),
-                                ),
-                                Expanded(
-                                  child: Card(
-                                    elevation: 8,
-                                    margin: EdgeInsets.only(
-                                        left: 5, bottom: 10, right: 20),
-                                    child: Container(
-                                      padding: EdgeInsets.all(15),
-                                      child: new CircularPercentIndicator(
-                                        radius: 120.0,
-                                        lineWidth: 13.0,
-                                        animation: true,
-                                        percent: double.parse(((analysisValue
-                                                        .selectedCountry
-                                                        .totalConfirmed -
-                                                    analysisValue
-                                                        .selectedCountry
-                                                        .totalDeaths -
-                                                    analysisValue
-                                                        .selectedCountry
-                                                        .totalRecovered) /
-                                                analysisValue.selectedCountry
-                                                    .totalConfirmed)
-                                            .toStringAsFixed(2)),
-                                        center: Container(
-                                          height: 50,
-                                          width: 50,
-                                          decoration: BoxDecoration(
-                                              color: Colors.red[50],
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(width / 2))),
-                                          child: Align(
-                                            alignment: Alignment.center,
-                                            child: new Text(
-                                              "${display(100 * (analysisValue.selectedCountry.totalConfirmed - analysisValue.selectedCountry.totalDeaths - analysisValue.selectedCountry.totalRecovered) / analysisValue.selectedCountry.totalConfirmed)}%",
-                                              style: new TextStyle(
-                                                  color: Colors.red[600],
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 13.0),
-                                            ),
-                                          ),
-                                        ),
-                                        footer: new Text(
-                                          "Actived - ${display(analysisValue.selectedCountry.totalConfirmed - analysisValue.selectedCountry.totalDeaths - analysisValue.selectedCountry.totalRecovered)}",
-                                          style: new TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: 15.0),
-                                        ),
-                                        circularStrokeCap:
-                                            CircularStrokeCap.round,
-                                        progressColor: Colors.purple,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Card(
-                                    elevation: 8,
-                                    margin: EdgeInsets.only(
-                                        left: 20, bottom: 10, right: 5),
-                                    child: Container(
-                                      padding: EdgeInsets.all(15),
-                                      child: new CircularPercentIndicator(
-                                        radius: 120.0,
-                                        lineWidth: 13.0,
-                                        animation: true,
-                                        percent: double.parse((analysisValue
-                                                    .selectedCountry
-                                                    .totalRecovered /
-                                                analysisValue.selectedCountry
-                                                    .totalConfirmed)
-                                            .toStringAsFixed(2)),
-                                        center: Container(
-                                          height: 50,
-                                          width: 50,
-                                          decoration: BoxDecoration(
-                                              color: Colors.red[50],
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(width / 2))),
-                                          child: Align(
-                                            alignment: Alignment.center,
-                                            child: new Text(
-                                              "${(100 * (analysisValue.selectedCountry.totalRecovered) / analysisValue.selectedCountry.totalConfirmed).toStringAsFixed(2)}%",
-                                              style: new TextStyle(
-                                                  color: Colors.red[600],
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 13.0),
-                                            ),
-                                          ),
-                                        ),
-                                        footer: new Text(
-                                          "Recovered - ${display(analysisValue.selectedCountry.totalRecovered)}",
-                                          style: new TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: 15.0),
-                                        ),
-                                        circularStrokeCap:
-                                            CircularStrokeCap.round,
-                                        progressColor: Colors.purple,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Card(
-                                    elevation: 8,
-                                    margin: EdgeInsets.only(
-                                        left: 5, bottom: 10, right: 20),
-                                    child: Container(
-                                      padding: EdgeInsets.all(15),
-                                      child: new CircularPercentIndicator(
-                                        radius: 120.0,
-                                        lineWidth: 13.0,
-                                        animation: true,
-                                        percent: double.parse(((analysisValue
-                                                    .selectedCountry
-                                                    .totalDeaths) /
-                                                analysisValue.selectedCountry
-                                                    .totalConfirmed)
-                                            .toStringAsFixed(2)),
-                                        center: Container(
-                                          height: 50,
-                                          width: 50,
-                                          decoration: BoxDecoration(
-                                              color: Colors.red[50],
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(width / 2))),
-                                          child: Align(
-                                            alignment: Alignment.center,
-                                            child: new Text(
-                                              "${(100 * (analysisValue.selectedCountry.totalDeaths) / analysisValue.selectedCountry.totalConfirmed).toStringAsFixed(2)}%",
-                                              style: new TextStyle(
-                                                  color: Colors.red[600],
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 13.0),
-                                            ),
-                                          ),
-                                        ),
-                                        footer: new Text(
-                                          "Deaths - ${display(analysisValue.selectedCountry.totalDeaths)}",
-                                          style: new TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: 15.0),
-                                        ),
-                                        circularStrokeCap:
-                                            CircularStrokeCap.round,
-                                        progressColor: Colors.purple,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
                           ],
-                        ),
-                      )
-                    : FutureBuilder(
-                        future: Provider.of<AnalysisProvider>(context,
-                                listen: false)
-                            .getAnalysisData(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<dynamic> snapshot) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                      );
-              },
-            ),
-            Container(
-                // child: AnimationSplineDefault(widget.key),
-                ),
-          ],
+                        )
+                      : FutureBuilder(
+                          future: Provider.of<AnalysisProvider>(context,
+                                  listen: false)
+                              .getAnalysisData(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<dynamic> snapshot) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                        );
+                },
+              ),
+              // Container(
+              //     // child: AnimationSplineDefault(widget.key),
+              //     ),
+            ],
+          ),
         ));
   }
+
+  Widget saveAnalysis(SaveAnalProvider consValue,
+      DropdownProvider dropdownValue, AnalysisProvider anavalue) {
+    consValue.isDerecatedOrNot(anavalue.selectedCountry.country);
+
+    print("is ${consValue.isDeprecated}");
+    return RaisedButton(
+      elevation: 0,
+      color: middlePurple,
+      child: Text(
+        "Open Saved Analysis",
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: consValue.isDeprecated
+          ? null
+          : () {
+              consValue.saveAnalysis(dropdownValue.typeList[1].id,
+                  anavalue.selectedCountry.country);
+            },
+    );
+  }
 }
-
-// Row(
-//   children: <Widget>[
-//     Text(
-//       "Select Region",
-//       textScaleFactor: 1.4,
-//       style: TextStyle(
-//         color: Colors.white,
-//         fontWeight: FontWeight.bold,
-//       ),
-//     ),
-//     IconButton(
-//       icon: Icon(
-//         Icons.arrow_drop_down,
-//         color: Colors.white,
-//       ),
-//       onPressed: null,
-//     )
-//   ],
-// ),
-
-// Padding(
-//   padding: EdgeInsets.only(
-//     top: deviceSize(context).height * 0.03,
-//     right: deviceSize(context).width * 0.02,
-//     left: deviceSize(context).width * 0.02,
-//     bottom: deviceSize(context).height * 0.03,
-//   ),
-//   child: Row(
-//     crossAxisAlignment: CrossAxisAlignment.start,
-//     mainAxisAlignment: MainAxisAlignment.center,
-//     children: <Widget>[
-//       Expanded(
-//         child: Text(
-//           "Analysis",
-//           textAlign: TextAlign.center,
-//           textScaleFactor: 1.4,
-//           style: TextStyle(
-//             color: Colors.white,
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
-//       ),
-//     ],
-//   ),
-// ),

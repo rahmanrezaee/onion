@@ -244,6 +244,8 @@ class Auth with ChangeNotifier {
     final StringBuffer url = new StringBuffer(BASE_URL + "/upload");
     Dio dio = new Dio();
 
+    print("prfile $url");
+
     print("file image");
 
     print(await MultipartFile.fromFile(imageFile.path));

@@ -27,6 +27,7 @@ class _MainScreenState extends State<MainScreen> {
       MyMessagePage(openDrawer: widget.openDrawer),
       Analysis(),
       Center(child: Dashboard()),
+      Dashboard(),
       Center(child: Text("under development"))
     ];
 
@@ -35,7 +36,6 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
         color: middlePurple,
-        
         itemTitles: [
           Text("Home",
               textAlign: TextAlign.center,
@@ -65,7 +65,6 @@ class _MainScreenState extends State<MainScreen> {
           setState(() {
             _page = index;
           });
-        
         },
       ),
     );

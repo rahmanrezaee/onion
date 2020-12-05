@@ -14,6 +14,7 @@ import 'package:onion/pages/Settings.dart';
 import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
+import 'package:onion/pages/profile/profile_page.dart';
 import 'package:onion/pages/underDevelopment.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:http/http.dart';
@@ -212,7 +213,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       context: context,
                       name: "My Profile",
                       icon: Icons.person,
-                      routeName: "Uder Development",
+                      routeName:  ProfilePage.routeName,
                       justPush: true)
                   : Container(),
               value.token != null

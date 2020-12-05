@@ -1,21 +1,17 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:onion/const/MyUrl.dart';
 import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 
 class SaveAnalModel {
   final String id;
-  
   final String title;
   final String category;
   final String region;
   final String industry;
 
- SaveAnalModel({
+  SaveAnalModel({
     this.id,
     this.title,
     this.region,
@@ -25,23 +21,22 @@ class SaveAnalModel {
 }
 
 class SaveAnalProvider extends ChangeNotifier {
-  List<SaveAnalModel> _items = [];
+  List<SaveAnalModel> _items;
+  Auth auth;
+  SaveAnalProvider(this.auth);
 
   List<SaveAnalModel> get items {
-    return _items;
+    return _items != null ? _items : null;
   }
 
   Future<void> deleteAnalysis({
-    String token,
     String id,
   }) async {
-    print("Mahdi Clicked $token");
-    print("Mahdi Clicked $id");
     try {
       final response = await APIRequest().post(
         myUrl: "$deleteAnalysisUrl?id=$id",
         myBody: null,
-        myHeaders: {"token": token},
+        myHeaders: {"token": this.auth.token},
       );
       print("MLenght: ${_items.length}");
       _items.removeWhere((element) {
@@ -57,45 +52,69 @@ class SaveAnalProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> saveAnalysis({
-    String token,
-    String analysisId,
-    String region,
-  }) async {
+  Future<bool> saveAnalysis(analysisId, region) async {
     try {
-      print("Mahdi Clicked $token");
-      print("Mahdi Clicked $analysisId");
-      print("Mahdi Clicked $region");
-      final response = await http.post(
-        saveAnalysisUrl,
-        body: json.encode({
+      print("token ${auth.token}");
+      final response = await APIRequest().post(
+        myUrl: saveAnalysisUrl,
+        myBody: {
           "analysisId": analysisId,
           "region": region,
-        }),
-        headers: {
-          "token": token,
+        },
+        myHeaders: {
+          "token": auth.token,
           "Content-Type": "application/json",
         },
       );
-      final extractedData = json.decode(response.body);
-      print("$extractedData");
-    } catch (e) {
-      print("Mahdi Error: $e");
+
+      final extractedData = response.data["data"];
+      print(extractedData);
+      _items.add(SaveAnalModel(
+        id: extractedData['_id'],
+        region: extractedData['region'],
+        title: extractedData['analysisData']['title'],
+        category: extractedData['analysisData']['category'],
+        industry: extractedData['analysisData']['industry'],
+      ));
+
+      notifyListeners();
+      return true;
+    } on DioError catch (e) {
+      print("Mahdi Error: ${e.response}");
     }
   }
 
-  Future<void> getAnalysis({String token}) async {
-    print("Mahdi: an $token");
+  bool isDeprecated = false;
+
+  void isDerecatedOrNot(country) {
+    isDeprecated = false;
+    notifyListeners();
+    if (_items.isNotEmpty) {
+      _items.forEach((element) {
+        if (element.region == country) {
+          isDeprecated = true;
+        }
+      });
+    } else {
+      isDeprecated = false;
+    }
+
+    notifyListeners();
+  }
+
+  Future<bool> getAnalysis() async {
     try {
-      final result = await APIRequest()
-          .get(myUrl: "http://3.138.186.196:3000/analysis/list", token: token);
+      final result =
+          await APIRequest().get(myUrl: myAnalysisUrl, token: auth.token);
 
       print("Mahdi an $result");
       final extractedData = result.data;
       if (extractedData == null) {
-        return null;
+        _items = [];
+        return false;
       }
       final List<SaveAnalModel> loadedProducts = [];
+
       extractedData.forEach((tableData) {
         loadedProducts.add(SaveAnalModel(
           id: tableData['_id'],
@@ -105,13 +124,13 @@ class SaveAnalProvider extends ChangeNotifier {
           industry: tableData['analysisData']['industry'],
         ));
       });
+
       _items = loadedProducts;
-      print("Mahdi: $_items");
-      print("Mahdi: ${_items[0].title}");
 
       notifyListeners();
-    } catch (e) {
-      print("Mahdi: Error $e");
+      return true;
+    } on DioError catch (e) {
+      print("Mahdi: Error ${e.response}");
     }
   }
 }

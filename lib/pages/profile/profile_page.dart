@@ -6,9 +6,14 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:onion/const/values.dart';
 import 'package:onion/models/users.dart';
-import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/validation/signup_validation.dart';
+import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
+import 'package:onion/widgets/CupertinoRadioChoice.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
+import 'package:onion/widgets/FiveRating.dart';
+import 'package:onion/widgets/IdeasWidget/setupIdeaWidget.dart';
+import 'package:onion/widgets/MyAppBar.dart';
+import 'package:onion/widgets/profileWidget/add_franchies_widget.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -29,13 +34,25 @@ class _ProfilePageState extends State<ProfilePage> {
       "name": "Working",
     }
   ];
+
+  String SelectedBusinessProfile = "Innovator";
+
   bool _autovalidate = false;
 
   @override
   Widget build(BuildContext context) {
     final validationService = Provider.of<SignupValidation>(context);
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text("My Profile "),
+          centerTitle: true,
+          actions: [
+            Padding(
+              padding: EdgeInsets.all(15.0),
+              child: MyAlertIcon(num: 3),
+            )
+          ],
+        ),
         body: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -44,13 +61,17 @@ class _ProfilePageState extends State<ProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15.0,
-                  ),
-                  child: Text(
-                    "Investor",
-                    style: Theme.of(context).textTheme.headline6,
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15.0,
+                      vertical: 5,
+                    ),
+                    child: Text(
+                      SelectedBusinessProfile,
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
                   ),
                 ),
                 Card(
@@ -252,11 +273,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                         : FaIcon(FontAwesomeIcons.facebookF,
                                             color: Colors.white, size: 18),
                                   ),
-                                  onTap: (){},
+                                  onTap: () {},
                                 ),
                               ),
                             ),
-                            
                             SizedBox(width: 15),
                             ClipOval(
                               child: Material(
@@ -276,11 +296,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                         : FaIcon(FontAwesomeIcons.googlePlusG,
                                             color: Colors.white, size: 18),
                                   ),
-                                  onTap: (){},
+                                  onTap: () {},
                                 ),
                               ),
-                            ),SizedBox(width: 15),
-                             ClipOval(
+                            ),
+                            SizedBox(width: 15),
+                            ClipOval(
                               child: Material(
                                 color: Colors.blue[800], // button color
                                 child: InkWell(
@@ -298,26 +319,91 @@ class _ProfilePageState extends State<ProfilePage> {
                                         : FaIcon(FontAwesomeIcons.linkedinIn,
                                             color: Colors.white, size: 18),
                                   ),
-                                  onTap: (){},
+                                  onTap: () {},
                                 ),
                               ),
                             ),
                           ],
                         ),
                         SizedBox(height: 20),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 40,
-                          child: RaisedButton(
-                            onPressed: null,
-                            //  checkboxSelected == false ? null : signUp,
-                            // child: submitButton(),
-                            child: Text("Save"),
-                            // child: Text("Log In", style: TextStyle(color: Colors.white)),
-                            // onPressed: () => signUp,
-                            color: Colors.purple,
+
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 15.0,
+                              vertical: 5,
+                            ),
+                            child: Text(
+                              "Business Profile",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
                           ),
                         ),
+
+                        CupertinoRadioChoice(
+                            choices: {
+                              'Innovator': 'Innovator',
+                              'Service Provider': 'Service Provider',
+                              'Investor': 'Investor'
+                            },
+                            onChange: (selectedGender) {
+                              setState(() {
+                                SelectedBusinessProfile = selectedGender;
+                              });
+                            },
+                            notSelectedColor: Colors.white,
+                            selectedTextColor: Colors.white,
+                            notSelectedTextColor:
+                                Theme.of(context).primaryColor,
+                            notBorderColor: Theme.of(context).primaryColor,
+                            selectedColor: Theme.of(context).primaryColor,
+                            initialKeyValue: SelectedBusinessProfile),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            MyFiveRating(
+                              rateVal: 3.4,
+                            ),
+                            InkWell(
+                              onTap: () {},
+                              child: Text(
+                                "View Rating",
+                                style: TextStyle(
+                                    textBaseline: TextBaseline.ideographic,
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 12),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Visibility(
+                            visible: SelectedBusinessProfile == "Innovator",
+                            child: SetupIdeaWidget()),
+                        Visibility(
+                            visible:
+                                SelectedBusinessProfile == "Service Provider",
+                            child: AddFranchiesWidget()),
+                        // Visibility(child: ),
+
+                        // SizedBox(
+                        //   width: double.infinity,
+                        //   height: 40,
+                        //   child: RaisedButton(
+                        //     onPressed: null,
+                        //     //  checkboxSelected == false ? null : signUp,
+                        //     // child: submitButton(),
+                        //     child: Text("Save"),
+                        //     // child: Text("Log In", style: TextStyle(color: Colors.white)),
+                        //     // onPressed: () => signUp,
+                        //     color: Colors.purple,
+                        //   ),
+                        // ),
                         //The OR Divider
                         SizedBox(height: 10),
                       ],

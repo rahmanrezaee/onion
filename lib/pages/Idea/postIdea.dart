@@ -1439,7 +1439,6 @@ class _PostIdeaState extends State<PostIdea> {
       for (int i = 0; i < files.length; i++) {
         authProvider.uploadFile(files[i], "video").then((value) {
           Map sendMap = {
-            "_id": value["_id"],
             "uriPath": value["uriPath"],
           };
           postForm.whitePaper = sendMap;
@@ -1464,8 +1463,6 @@ class _PostIdeaState extends State<PostIdea> {
       "MP2",
       "MPEG",
       "MPE",
-      "MPV",
-      "OGG",
       "MP4",
       "M4P",
       "M4V",

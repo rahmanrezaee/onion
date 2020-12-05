@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/models/CategoryModel.dart';
-
+import 'package:onion/models/AnalyticsModel.dart';
 import '../../const/Size.dart';
 
-class MySmallDropdown extends StatelessWidget {
-  final List<CategoryModel> myDropDownList;
+class AnaylsisDropDown extends StatelessWidget {
+  final List<AnalyticsModel> myDropDownList;
   final Color dropDownAroundColor;
   final Color txtColor;
   final Color dropDownColor;
@@ -18,7 +17,7 @@ class MySmallDropdown extends StatelessWidget {
   final Color hintColor;
   final double dropDownWidth;
 
-  MySmallDropdown({
+  AnaylsisDropDown({
     Key key,
     @required this.myDropDownList,
     @required this.dropDownAroundColor,
@@ -33,6 +32,7 @@ class MySmallDropdown extends StatelessWidget {
     this.hintColor = Colors.white,
   });
 
+  String hintTxt = "country";
   bool isOpened = false;
 
   @override
@@ -52,27 +52,27 @@ class MySmallDropdown extends StatelessWidget {
               value: value,
               isExpanded: myisExpanded,
               iconDisabledColor: iconColor,
-              iconEnabledColor: iconColor,
+              iconEnabledColor:iconColor,
               dropdownColor: dropDownColor,
               hint: Text(
-                "empty",
+                hintTxt,
                 textScaleFactor: 0.7,
                 style: TextStyle(color: hintColor),
               ),
               onChanged: onChange,
               isDense: true,
               items: myDropDownList.isNotEmpty
-                  ? myDropDownList.map((e) {
+                  ?myDropDownList.map((e) {
                       return DropdownMenuItem(
                         child: SizedBox(
                           width: dropDownWidth,
                           child: Text(
-                            "${e.name}",
+                            "${e.title}",
                             textScaleFactor: 0.7,
                             style: TextStyle(color: txtColor),
                           ),
                         ),
-                        value: e.name,
+                        value: e.title,
                       );
                     }).toList()
                   : null),

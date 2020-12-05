@@ -1,8 +1,8 @@
-import 'package:onion/pages/Analysis.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
-import 'package:onion/statemanagment/auth_provider.dart';
-import 'package:onion/widgets/Home/MyPopup.dart';
-import 'package:onion/widgets/SmallDropDown.dart';
+import 'package:onion/statemanagment/analysis_provider.dart';
+import 'package:onion/statemanagment/dropdown_provider.dart';
+import 'package:onion/widgets/AnalysisWidget/extra/MyEmptyText.dart';
+import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
@@ -11,11 +11,8 @@ import '../const/Size.dart';
 import '../const/color.dart';
 import '../statemanagment/dropDownItem/AnalyticsProvider.dart';
 import '../statemanagment/dropDownItem/CategoryProvider.dart';
-import '../statemanagment/dropDownItem/IndustryProvider.dart';
+// import '../statemanagment/dropDownItem/IndustryProvider.dart';
 import './AnalysisWidget/MySmallDropdown.dart';
-
-import './MyAppBarContainer.dart';
-import 'Home/MyGoogleMap.dart';
 
 Future<void> tempShowMyDialog({@required BuildContext context}) async {
   return showDialog<void>(
@@ -59,6 +56,7 @@ class _DialogContentState extends State<DialogContent> {
     });
   }
 
+  bool isloading = false;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -84,172 +82,162 @@ class _DialogContentState extends State<DialogContent> {
             ),
             child: Column(
               children: [
-                Text(
-                  'Add New Analysis',
-                  textScaleFactor: 1,
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: deviceSize(context).height * 0.03),
-                Consumer<CategoryProvider>(
-                  builder: (
-                    BuildContext consContext,
-                    value,
-                    Widget child,
-                  ) {
-                    if (value.items.isEmpty) {
-                      print("Mahdia IF ");
-                      return MyPopTxt(
-                        myTxt: value.isLoading ? "loading..." : "Empty",
-                      );
-                    } else {
-                      print("Mahdia Else ");
-                      // return Text("Mahdi");
-                      return MySmallDropdown(
-                        iconColor: Colors.black,
-                        myisExpanded: true,
-                        myDropDownList: value.items,
-                        dropDownAroundColor: Colors.grey,
-                        txtColor: Colors.grey,
-                        dropDownColor: Colors.white,
-                        futureType: "category",
-                        firstVal: value.items[0].name,
-                        dropDownWidth: deviceSize(context).width * 0.7,
-                        hintColor: Colors.grey,
-                      );
-                    }
-                  },
-                ),
-                SizedBox(height: deviceSize(context).height * 0.03),
-                Consumer<IndustryProvider>(
-                  builder: (
-                    BuildContext consContext,
-                    value,
-                    Widget child,
-                  ) {
-                    if (value.items.isEmpty) {
-                      print("Mahdia IF ");
-                      return MyPopTxt(
-                        myTxt: value.isLoading ? "loading..." : "Empty",
-                      );
-                    } else {
-                      print("Mahdia Else ");
-                      // return Text("Mahdi");
-                      return MySmallDropdown(
-                        iconColor: Colors.black,
-                        myisExpanded: true,
-                        myDropDownList: value.items,
-                        dropDownAroundColor: Colors.grey,
-                        txtColor: Colors.grey,
-                        dropDownColor: Colors.white,
-                        firstVal: value.items[0].name,
-                        futureType: "industry",                        hintColor: Colors.grey,
+                Consumer<DropdownProvider>(
+                    builder: (BuildContext context, dpvalue, Widget child) {
+                  return Column(
+                    children: [
+                      Text(
+                        'Let us know what all analytics you are intrested in?',
+                        textScaleFactor: 1,
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: deviceSize(context).height * 0.03),
+                      dpvalue.categoryList.isEmpty
+                          ? FutureBuilder(
+                              future: dpvalue.fetchItemsCategory(),
+                              builder: (futureContext, snapshot) {
+                                return MyEmptyText(myTxt: "Loading...");
+                              },
+                            )
+                          : DropDownFormField(
+                              value: dpvalue.categorySelected,
+                              onChanged: (value) async {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
+                                dpvalue.categorySelected = value;
+                                await dpvalue.fetchItemsIndustry();
+                              },
+                              dataSource: dpvalue.categoryList.isEmpty
+                                  ? []
+                                  : dpvalue.categoryList.map((data) {
+                                      return {
+                                        "display": data.name,
+                                        "value": data.name
+                                      };
+                                    }).toList(),
+                              textField: 'display',
+                              valueField: 'value',
+                            ),
+                      SizedBox(height: deviceSize(context).height * 0.03),
+                      dpvalue.idustryList.isNotEmpty
+                          ? DropDownFormField(
+                              value: dpvalue.idustrySelected,
+                              onChanged: (value) async {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
+                                dpvalue.idustrySelected = value;
+                                await dpvalue.fetchItemsType();
+                              },
+                              dataSource: dpvalue.idustryList.isEmpty
+                                  ? []
+                                  : dpvalue.idustryList.map((data) {
+                                      return {
+                                        "display": data.name,
+                                        "value": data.name
+                                      };
+                                    }).toList(),
+                              textField: 'display',
+                              valueField: 'value',
+                            )
+                          : Text("No Item To Analysis"),
+                      SizedBox(height: deviceSize(context).height * 0.03),
+                      dpvalue.typeList.isNotEmpty
+                          ? DropDownFormField(
+                              value: dpvalue.typeSelected,
+                              onChanged: (value) async {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
 
-                        dropDownWidth: deviceSize(context).width * 0.7,
-                      );
-                    }
-                  },
-                ),
-                SizedBox(height: deviceSize(context).height * 0.03),
-                Consumer<AnalyticsProvider>(
-                  builder: (
-                    BuildContext consContext,
-                    value,
-                    Widget child,
-                  ) {
-                    if (value.items.isEmpty) {
-                      return MyPopTxt(
-                        myTxt: value.isLoading ? "loading..." : "Empty",
-                      );
-                    } else {
-                      print("Mahdia Else ");
-                      // return Text("Mahdi");
-                      return MySmallDropdown(
-                        iconColor: Colors.black,
-                        myisExpanded: true,
-                        hintColor: Colors.grey,
-                        myDropDownList: [],
-                        myDropDownAnal: value.items,
-                        dropDownAroundColor: Colors.grey,
-                        txtColor: Colors.grey,
-                        dropDownColor: Colors.white,
-                        firstVal: value.items[0].title,
-                        futureType: "analytics",
-                        dropDownWidth: deviceSize(context).width * 0.7,
-                      );
-                    }
-                  },
-                ),
-                SizedBox(height: deviceSize(context).height * 0.03),
-                Consumer<AnalyticsProvider>(
-                  builder: (BuildContext context, value, Widget child) {
-                    if (value.countryItems.isEmpty) {
-                      return MyPopTxt(
-                        myTxt: value.isLoading ? "loading..." : "Empty",
-                      );
-                    } else {
-                      return SmallDropCount(
-                        myDropDownList: value.countryItems.isNotEmpty
-                            ? value.countryItems
-                            : [],
-                        dropDownAroundColor: Colors.grey,
-                        dropDownColor: Colors.white,
-                        iconColor: Colors.black,
-                        myisExpanded: true,
-                        txtColor: Colors.grey,
-                        dropDownWidth: deviceSize(context).width * 0.7,
-                      );
-                    }
-                  },
-                ),
-                SizedBox(height: deviceSize(context).height * 0.01),
-                SizedBox(
-                  width: deviceSize(context).width * 0.3,
-                  child: Consumer<AnalyticsProvider>(
-                    builder: (BuildContext context, value, Widget child) {
-                      return RaisedButton(
-                        color: middlePurple,
-                        textColor: Colors.white,
-                        elevation: 0,
-                        child: Text("Add"),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          side: BorderSide(color: middlePurple),
+                                dpvalue.typeSelected = value;
+                                await dpvalue.fetchCountryType(context);
+                              },
+                              dataSource: dpvalue.typeList.isEmpty
+                                  ? []
+                                  : dpvalue.typeList.map((data) {
+                                      return {
+                                        "display": data.title,
+                                        "value": data.title
+                                      };
+                                    }).toList(),
+                              textField: 'display',
+                              valueField: 'value',
+                            )
+                          : Text("No Item To Analysis"),
+                      SizedBox(height: deviceSize(context).height * 0.03),
+                    ],
+                  );
+                }),
+                Consumer2<AnalysisProvider, DropdownProvider>(
+                  builder: (BuildContext context, anavalue, dropdownValue,
+                      Widget child) {
+                    return Column(children: [
+                      anavalue.countryInList.isEmpty
+                          ? DropDownFormField(
+                              value: "no Item",
+                              dataSource: [
+                                {"display": "no Item", "value": "no Item"}
+                              ],
+                              textField: 'display',
+                              valueField: 'value',
+                            )
+                          : DropDownFormField(
+                              value: anavalue.selectedCountry.country,
+                              onChanged: (value) async {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
+
+                                anavalue.countryInList.forEach((element) {
+                                  if (element.country == value) {
+                                    anavalue.changeCountryColors(element);
+                                  }
+                                });
+                              },
+                              dataSource: anavalue.countryInList.map((data) {
+                                return {
+                                  "display": data.country,
+                                  "value": data.country
+                                };
+                              }).toList(),
+                              textField: 'display',
+                              valueField: 'value',
+                            ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: RaisedButton(
+                          color: middlePurple,
+                          textColor: Colors.white,
+                          elevation: 0,
+                          child: isloading
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(),
+                                )
+                              : Text("Save Analysis"),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            side: BorderSide(color: middlePurple),
+                          ),
+                          onPressed: !isloading
+                              ? () async {
+                                  setState(() {
+                                    isloading = true;
+                                  });
+                                  await Provider.of<SaveAnalProvider>(
+                                    context,
+                                    listen: false,
+                                  ).saveAnalysis(dropdownValue.typeList[1].id,
+                                      anavalue.selectedCountry.country);
+                                  setState(() {
+                                    isloading = false;
+                                  });
+                                  Navigator.pop(context);
+                                }
+                              : () {},
                         ),
-                        onPressed: () async {
-                          value.clearBoth();
-                          if (value.getAnalId == null ||
-                              value.getCountryId == null) {
-                            print(
-                                "Mahdi:If: ${value.getAnalId} ${value.getCountryId}");
-                            return;
-                          } else {
-                            print(
-                                "Mahdi:else: ${value.getAnalId} ${value.getCountryId}");
-                            String token = Provider.of<Auth>(
-                              context,
-                              listen: false,
-                            ).token;
-                            Provider.of<SaveAnalProvider>(
-                              context,
-                              listen: false,
-                            )
-                                .saveAnalysis(
-                              token: token,
-                              analysisId: value.getAnalId,
-                              region: value.getCountryId,
-                            )
-                                .then((value) {
-                              Provider.of<SaveAnalProvider>(
-                                context,
-                                listen: false,
-                              ).getAnalysis(token: token);
-                              Navigator.pop(context);
-                            });
-                          }
-                        },
-                      );
-                    },
-                  ),
+                      ),
+                    ]);
+                  },
                 ),
               ],
             ),
@@ -259,7 +247,6 @@ class _DialogContentState extends State<DialogContent> {
     );
   }
 }
-
 
 class MyPopTxt extends StatelessWidget {
   final String myTxt;
