@@ -196,32 +196,32 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                                       mypopup.PopupMenuItem(
                                         value: 2,
                                         onClick: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                    title:
-                                                        Text("Are you sure?"),
-                                                    actions: [
-                                                      FlatButton(
-                                                        child: Text("Yes"),
-                                                        onPressed: () {
-                                                          IdeasServices()
-                                                              .deleteIdea(
-                                                            idea.id,
-                                                            token,
-                                                          );
-                                                        },
-                                                      ),
-                                                      FlatButton(
-                                                        child: Text("Cancel"),
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                      ),
-                                                    ]);
-                                              });
+                                          // showDialog(
+                                          //     context: context,
+                                          //     builder: (context) {
+                                          // return AlertDialog(
+                                          //     title:
+                                          //         Text("Are you sure?"),
+                                          //     actions: [
+                                          //       FlatButton(
+                                          //         child: Text("Yes"),
+                                          //         onPressed: () {
+                                          //           IdeasServices()
+                                          //               .deleteIdea(
+                                          //             idea.id,
+                                          //             token,
+                                          //           );
+                                          //         },
+                                          //       ),
+                                          //       FlatButton(
+                                          //         child: Text("Cancel"),
+                                          //         onPressed: () {
+                                          //           Navigator.of(context)
+                                          //               .pop();
+                                          //         },
+                                          //       ),
+                                          //     ]);
+                                          // });
                                         },
                                         child: Container(
                                           padding: EdgeInsets.symmetric(

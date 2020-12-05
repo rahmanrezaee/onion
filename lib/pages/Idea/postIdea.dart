@@ -453,7 +453,8 @@ class _PostIdeaState extends State<PostIdea> {
                                       InkWell(
                                         onTap: () async {
                                           print("Ali Aad");
-                                           FocusScope.of(context).requestFocus(new FocusNode());
+                                          FocusScope.of(context)
+                                              .requestFocus(new FocusNode());
                                           DateTime date = await showDatePicker(
                                             context: context,
                                             initialDate: DateTime.now(),
@@ -603,7 +604,9 @@ class _PostIdeaState extends State<PostIdea> {
                                               ),
                                               child: TextFormField(
                                                 onTap: () async {
-                                                   FocusScope.of(context).requestFocus(new FocusNode());
+                                                  FocusScope.of(context)
+                                                      .requestFocus(
+                                                          new FocusNode());
                                                   DateTime date =
                                                       await showDatePicker(
                                                     context: context,
@@ -720,7 +723,9 @@ class _PostIdeaState extends State<PostIdea> {
                                             SizedBox(height: 5),
                                             TextFormField(
                                               onTap: () async {
-                                                 FocusScope.of(context).requestFocus(new FocusNode());
+                                                FocusScope.of(context)
+                                                    .requestFocus(
+                                                        new FocusNode());
                                                 DateTime date =
                                                     await showDatePicker(
                                                   context: context,

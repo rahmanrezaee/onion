@@ -9,6 +9,7 @@ import 'package:onion/pages/viewRating.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
+import 'package:onion/statemanagment/idea/ideasProviders.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/validation/signup_validation.dart';
@@ -63,6 +64,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
       ChangeNotifierProvider(create: (_) => AnalysisProvider()),
       ChangeNotifierProvider(create: (_) => DropdownProvider()),
+      ChangeNotifierProvider(create: (_) => IdeasProvider()),
       ChangeNotifierProxyProvider<Auth, SaveAnalProvider>(
           update: (
             context,
