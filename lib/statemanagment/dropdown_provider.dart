@@ -127,7 +127,7 @@ class DropdownProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchCountryType(BuildContext context) async {
+  Future<void> fetchCountryType( context) async {
     var analysis = Provider.of<AnalysisProvider>(context);
 
     analysis.cleanCountryMerged();

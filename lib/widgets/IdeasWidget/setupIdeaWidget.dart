@@ -48,7 +48,7 @@ final _formKey = new GlobalKey<FormState>();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
 
       final validationService = Provider.of<SetupIdeaValidation>(context);
    String token = Provider.of<Auth>(context, listen: false).token;

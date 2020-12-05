@@ -26,7 +26,7 @@ class APIRequest {
   Future post({
     @required String myUrl,
     @required Map<String, String> myBody,
-    @required Map<String, String> myHeaders,
+    @required Map myHeaders,
   }) {
     dio.options.headers = myHeaders;
     return dio.post(myUrl, data: myBody);

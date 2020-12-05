@@ -5,7 +5,9 @@ import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
 import 'package:onion/pages/profile/profile_page.dart';
+import 'package:onion/pages/rating/RatingPage.dart';
 import 'package:onion/pages/viewRating.dart';
+import 'package:onion/statemanagment/RatingProvider.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
@@ -78,6 +80,17 @@ void main() async {
                context,
             ) =>
                 SaveAnalProvider(null)),
+        ChangeNotifierProxyProvider<Auth, RatingProvider>(
+            update: (
+              context,
+              auth,
+              previousMessages,
+            ) =>
+                RatingProvider(auth),
+            create: (
+               context,
+            ) =>
+                RatingProvider(null)),
       ],
       child: MyApp(),
     ),
@@ -100,6 +113,7 @@ class MyApp extends StatelessWidget {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
           textTheme: TextTheme(
+
             headline6: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500),
             headline5: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
             headline4: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w600),
@@ -107,10 +121,10 @@ class MyApp extends StatelessWidget {
             headline2: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w700),
             headline1: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w800),
             bodyText2: TextStyle(color: Colors.black54),
-            // :
+            
           ),
         ),
-        home: CustomDrawerPage(key),
+        home:  CustomDrawerPage(key),
         routes: {
           Login.routeName: (context) => auth.token != null
               ? CustomDrawerPage(key)
@@ -161,6 +175,7 @@ class MyApp extends StatelessWidget {
           MyIdeaId.routeName: (context) => MyIdeaId(),
           MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
           RequestPage.routeName: (context) => RequestPage(),
+          RatingPage.routeName: (context) => RatingPage(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (_) => UnderDevelopment());

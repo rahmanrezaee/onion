@@ -15,6 +15,7 @@ import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/pages/profile/profile_page.dart';
+import 'package:onion/pages/rating/RatingPage.dart';
 import 'package:onion/pages/underDevelopment.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:http/http.dart';
@@ -63,7 +64,7 @@ class _MyDrawerState extends State<MyDrawer> {
     String name,
     IconData icon,
     String routeName,
-    BuildContext context,
+    context,
     bool justPush = false,
     bool hasDrawer = false,
   }) {
@@ -106,11 +107,11 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     Auth().isAuth().then((auth) {
       _isAuth = auth;
     });
-    return Consumer<Auth>(builder: (BuildContext context, value, Widget child) {
+    return Consumer<Auth>(builder: (context, value, Widget child) {
       return Drawer(
         elevation: 0,
         child: Container(
@@ -261,16 +262,15 @@ class _MyDrawerState extends State<MyDrawer> {
                   routeName: MyIdeaId.routeName,
                   justPush: true),
 
-              // value.token != null
-              //     ? myListTile(
-              //         context: context,
-              //         name: "My Analysis",
-              //         icon: Icons.multiline_chart,
-              //         routeName: "Under Development",
-              //         justPush: true,
-              //         hasDrawer: true,
-              //       )
-              //     : Container(),
+              value.token != null
+                  ? myListTile(
+                      context: context,
+                      name: "Rating",
+                      icon: Icons.multiline_chart,
+                      routeName: RatingPage.routeName,
+                      justPush: true,
+                    )
+                  : Container(),
               InkWell(
                 onTap: () {
                   showDialog(

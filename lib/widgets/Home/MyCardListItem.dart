@@ -21,7 +21,7 @@ class MyCardListItem extends StatefulWidget {
 
 class _MyCardListItemState extends State<MyCardListItem> {
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     return Card(
       child: Container(
         height: deviceSize(context).height * 0.17,

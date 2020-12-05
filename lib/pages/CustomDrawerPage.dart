@@ -42,10 +42,7 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
   initState() {
     _page = MainScreen(openDrawer: openCustomDrawer, key: widget.key);
     super.initState();
-  
   }
-
-
 
   @override
   void dispose() {
@@ -54,7 +51,6 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
 
   @override
   Widget build(context) {
-   
     return InnerDrawer(
       key: _innerDrawerKey,
       onTapClose: true,
@@ -91,22 +87,30 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
       // return  true (open) or false (close)
       leftChild: MyDrawer(),
       scaffold: Scaffold(
-        // bottomNavigationBar:ConnectivityWidgetWrapper(
-        body: ConnectivityWidgetWrapper(
-                  child: Consumer<DrawerScaffold>(
-            builder: (context, value, Widget child) {
-              if (value.scaffoldType == MainScreen.routeName) {
-                return _page;
-              } else if (value.scaffoldType == Services.routeName) {
-                return Services(openDrawer: openCustomDrawer);
-              } else if (value.scaffoldType == Analysis.routeName) {
-                return Analysis(openDrawer: openCustomDrawer);
-              }
-              return null;
-            },
-          ),
-        )
-      ),
+          // bottomNavigationBar:ConnectivityWidgetWrapper(
+          body: ConnectivityWidgetWrapper(
+        disableInteraction: true,
+       
+        height: 70.0,
+        message: "You are Offline!",
+        messageStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 15.0,
+        ),
+        // alignment: Alignment.topCenter,
+        child: Consumer<DrawerScaffold>(
+          builder: (context, value, Widget child) {
+            if (value.scaffoldType == MainScreen.routeName) {
+              return _page;
+            } else if (value.scaffoldType == Services.routeName) {
+              return Services(openDrawer: openCustomDrawer);
+            } else if (value.scaffoldType == Analysis.routeName) {
+              return Analysis(openDrawer: openCustomDrawer);
+            }
+            return null;
+          },
+        ),
+      )),
     );
   }
 

@@ -76,7 +76,7 @@ class _SignUpState extends State<SignUp> {
   bool _autovalidate = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     final validationService = Provider.of<SignupValidation>(context);
 
     return Scaffold(
@@ -87,7 +87,7 @@ class _SignUpState extends State<SignUp> {
         },
         child: FutureBuilder(
           future: fetchDataForSignup,
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          builder: ( context, AsyncSnapshot<dynamic> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
                 if (snapshot.data == null) {
@@ -670,7 +670,7 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
-  void _getImage(BuildContext context, ImageSource source) async {
+  void _getImage( context, ImageSource source) async {
     File image = await ImagePicker.pickImage(
       source: source,
       imageQuality: 85,
@@ -732,12 +732,12 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
-  void _openImagePickerModal(BuildContext context) {
+  void _openImagePickerModal( context) {
     final flatButtonColor = Theme.of(context).primaryColor;
 
     showModalBottomSheet(
         context: context,
-        builder: (BuildContext context) {
+        builder: ( context) {
           return Container(
             height: 150.0,
             child: Column(

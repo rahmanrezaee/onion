@@ -62,7 +62,7 @@ class _PostIdeaState extends State<PostIdea> {
   // List<File> documents = [];
   File video;
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     // Map<String, String> setupIdea = ModalRoute.of(context).settings.arguments;
     // Map<String, String> setupIdea = ModalRoute.of(context).settings.arguments;
     final validationService = Provider.of<PostIdeaValidation>(context);
@@ -855,7 +855,7 @@ class _PostIdeaState extends State<PostIdea> {
                             child: ListView.builder(
                               itemCount: image.length + 1,
                               scrollDirection: Axis.horizontal,
-                              itemBuilder: (BuildContext context, int index) {
+                              itemBuilder: ( context, int index) {
                                 return image.length > index
                                     ? Stack(
                                         overflow: Overflow.visible,

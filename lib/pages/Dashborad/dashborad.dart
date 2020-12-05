@@ -27,7 +27,7 @@ class Dashboard extends StatefulWidget {
   static const routeName = "dashboard";
   final Function openDrawer;
 
-  const Dashboard({this.openDrawer,Key key});
+  const Dashboard({this.openDrawer, Key key});
 
   @override
   _DashboardState createState() => _DashboardState();
@@ -44,7 +44,7 @@ class _DashboardState extends State<Dashboard> {
   final myController = TextEditingController();
   GlobalKey<FormState> _formKey;
 
-  _formSub(BuildContext context) async {
+  _formSub( context) async {
     print("Mahdi: ${myController.text}");
     if (!_formKey.currentState.validate()) {
       return;
@@ -68,10 +68,10 @@ class _DashboardState extends State<Dashboard> {
   final displayDigitOnly = new NumberFormat("#,##0", "en_US");
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     var auth = Provider.of<Auth>(context, listen: false);
     return Scaffold(
-      appBar: MyAppBar(title: "Dashboard", openDrawer: widget.openDrawer),
+        appBar: MyAppBar(title: "Dashboard", openDrawer: widget.openDrawer),
         // appBar: AppBar(
         //   elevation: 0,
         //   centerTitle: true,
@@ -96,7 +96,7 @@ class _DashboardState extends State<Dashboard> {
               key: widget.key,
             ),
             Consumer<AnalysisProvider>(
-                builder: (BuildContext context, analysisValue, Widget child) {
+                builder: ( context, analysisValue, Widget child) {
               return analysisValue.country != null
                   ? Column(children: [
                       Container(
@@ -377,11 +377,13 @@ class _DashboardState extends State<Dashboard> {
                     ])
                   : FutureBuilder(
                       future: analysisValue.getAnalysisData(),
-                      builder: (BuildContext context,
+                      builder: ( context,
                           AsyncSnapshot<dynamic> snapshot) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        if (snapshot.connectionState == ConnectionState.waiting)
+                          return Center(child: CircularProgressIndicator());
+                        else if (snapshot.connectionState ==
+                            ConnectionState.done)
+                          return Center(child: Text(""));
                       });
             }),
             Column(
@@ -430,56 +432,53 @@ class _DashboardState extends State<Dashboard> {
                                     margin: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 15),
                                     height: deviceSize(context).height * 0.4,
-                                    child:  ListView.builder(
-                                        padding: EdgeInsets.zero,
-                                        shrinkWrap: false,
-                                        itemCount: consValue.items.length,
-                                        itemBuilder: (listContext, index) {
-                                          return InkWell(
-                                            onTap: () {
-                                              Navigator.pushNamed(
-                                                  context, Analysis.routeName);
+                                    child: ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: false,
+                                      itemCount: consValue.items.length,
+                                      itemBuilder: (listContext, index) {
+                                        return InkWell(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                                context, Analysis.routeName);
 
-                                              drValue.categorySelected =
-                                                  consValue
-                                                      .items[index].category;
-                                              drValue.idustrySelected =
-                                                  consValue
-                                                      .items[index].industry;
-                                              drValue.typeSelected =
-                                                  consValue.items[index].title;
-                                              anaValue.country
-                                                  .forEach((element) {
-
-                                                if (element.country == consValue.items[index].region)
-                                                  anaValue.changeCountryColors( element);
-                                              });
-                                              // dp.country = consValue.items[index].title;
+                                            drValue.categorySelected =
+                                                consValue.items[index].category;
+                                            drValue.idustrySelected =
+                                                consValue.items[index].industry;
+                                            drValue.typeSelected =
+                                                consValue.items[index].title;
+                                            anaValue.country.forEach((element) {
+                                              if (element.country ==
+                                                  consValue.items[index].region)
+                                                anaValue.changeCountryColors(
+                                                    element);
+                                            });
+                                            // dp.country = consValue.items[index].title;
+                                          },
+                                          child: MyCardItem(
+                                            onDelete: (value) {
+                                              consValue.deleteAnalysis(
+                                                id: value,
+                                              );
                                             },
-                                            child: MyCardItem(
-                                              onDelete: (value) {
-                                                consValue.deleteAnalysis(
-                                                  id: value,
-                                                );
-                                              },
-                                              id: consValue.items[index].id,
-                                              analysis:
-                                                  consValue.items[index].title,
-                                              category: consValue
-                                                  .items[index].category,
-                                              industry: consValue
-                                                  .items[index].industry,
-                                              region:
-                                                  consValue.items[index].region,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                
+                                            id: consValue.items[index].id,
+                                            analysis:
+                                                consValue.items[index].title,
+                                            category:
+                                                consValue.items[index].category,
+                                            industry:
+                                                consValue.items[index].industry,
+                                            region:
+                                                consValue.items[index].region,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
                             : FutureBuilder(
                                 future: consValue.getAnalysis(),
-                                builder: (BuildContext context,
+                                builder: ( context,
                                     AsyncSnapshot<dynamic> snapshot) {
                                   if (snapshot.connectionState ==
                                       ConnectionState.waiting) {

@@ -30,7 +30,7 @@ class _ComplateProfileState extends State<ComplateProfile> {
   bool _obscureText = true;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     return Scaffold(
       key: _scaffoldKey,
       body: Stack(

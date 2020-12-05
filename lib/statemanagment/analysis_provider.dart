@@ -131,10 +131,9 @@ class AnalysisProvider with ChangeNotifier {
       changeCountryColors(all);
       return true;
     } on DioError catch (e) {
-      
       print("errors");
       print(e.response);
-       return false;
+      return false;
     }
   }
 
@@ -287,7 +286,11 @@ class AnalysisProvider with ChangeNotifier {
     }
   }
 
-  Future getTableDailyReport() async {
+  Future<bool> getTableDailyReport() async {
+    print("fetch table");
+    if (selectedCountry.country.isEmpty) {
+      return false;
+    }
     tableSatatis = List<TableSatatis>();
     String url =
         "https://api.covid19api.com/country/${selectedCountry.country}?from=${Jiffy(Jiffy(now).subtract(days: 6)).format("yyy-MM-dd")}T00:00:00Z&to=${Jiffy(now).format("yyy-MM-dd")}T00:00:00Z";
@@ -320,7 +323,9 @@ class AnalysisProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } on DioError catch (e) {
-      print("errors");
+      print("errors table");
+      tableSatatis = null;
+      return false;
       print(e.response);
     }
   }

@@ -55,7 +55,7 @@ class _SettingsState extends State<Settings> {
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -78,7 +78,7 @@ class _SettingsState extends State<Settings> {
       ),
       body: FutureBuilder(
         future: notifcationSetting,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        builder: ( context, AsyncSnapshot<dynamic> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               return Padding(

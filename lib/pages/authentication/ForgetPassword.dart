@@ -24,7 +24,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   bool _obscureText = true;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     return Scaffold(
       key: _scaffoldKey,
       body: Stack(

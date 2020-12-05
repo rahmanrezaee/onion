@@ -9,7 +9,7 @@ class HomeAfterLogin extends StatefulWidget {
 
 class _HomeAfterLoginState extends State<HomeAfterLogin> {
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     return Scaffold(
       appBar: AppBar(),
       body: Column(

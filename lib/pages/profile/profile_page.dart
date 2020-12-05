@@ -40,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _autovalidate = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     final validationService = Provider.of<SignupValidation>(context);
     return Scaffold(
         appBar: AppBar(
@@ -419,7 +419,7 @@ class _ProfilePageState extends State<ProfilePage> {
   File _imageFile;
   bool _isUploadingImage = false;
 
-  void _getImage(BuildContext context, ImageSource source) async {
+  void _getImage( context, ImageSource source) async {
     File image = await ImagePicker.pickImage(
       source: source,
       imageQuality: 85,
@@ -451,12 +451,12 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  void _openImagePickerModal(BuildContext context) {
+  void _openImagePickerModal( context) {
     final flatButtonColor = Theme.of(context).primaryColor;
 
     showModalBottomSheet(
         context: context,
-        builder: (BuildContext context) {
+        builder: ( context) {
           return Container(
             height: 150.0,
             child: Column(

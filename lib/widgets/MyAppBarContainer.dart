@@ -16,7 +16,7 @@ import './AnalysisWidget/extra/MyEmptyText.dart';
 
 class MyAppBarContainer extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     // var pro = Provider.of<DropdownProvider>(context, listen: false);
     return Container(
       height: deviceSize(context).height * 0.16,
@@ -38,7 +38,7 @@ class MyAppBarContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Consumer<DropdownProvider>(
-            builder: (BuildContext context, dpvalue, Widget child) {
+            builder: ( context, dpvalue, Widget child) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
@@ -114,7 +114,7 @@ class MyAppBarContainer extends StatelessWidget {
             },
           ),
           Consumer<AnalysisProvider>(
-            builder: (BuildContext context, anavalue, Widget child) {
+            builder: ( context, anavalue, Widget child) {
               if (anavalue.countryInList.isEmpty) {
                 return Padding(
                   padding: const EdgeInsets.only(top: 20, left: 10),
@@ -167,7 +167,7 @@ class MyAppBarContainer extends StatelessWidget {
           //     right: deviceSize(context).width * 0.03,
           //   ),
           //   child: Consumer<AnalysisProvider>(
-          //     builder: (BuildContext context, anavalue, Widget child) {
+          //     builder: ( context, anavalue, Widget child) {
           //       return DropdownButtonHideUnderline(
           //         child: DropdownButton(
           //           value: anavalue.selectedCountry.countryCode,
