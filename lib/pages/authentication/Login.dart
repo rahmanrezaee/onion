@@ -335,6 +335,7 @@ class _LoginState extends State<Login> {
           Positioned(
             bottom: 0 - MediaQuery.of(context).viewInsets.bottom,
             child: Container(
+              
               height: MediaQuery.of(context).size.height / 15,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
@@ -369,7 +370,10 @@ class _LoginState extends State<Login> {
           .login(username.text, passport.text);
     } on LoginException catch (e) {
       _scaffoldKey.currentState
-          .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+          .showSnackBar(showSnackbar(
+            text:
+            e.cause,
+            icon: Icon(Icons.error), color: Colors.red));
       print(e.cause);
     }
     setState(() {

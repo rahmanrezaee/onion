@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+   
     return Scaffold(
         key: _scaffoldKey,
         appBar: MyAppBar(title: "Home", openDrawer: widget.openDrawer),
@@ -144,7 +144,9 @@ class _HomePageState extends State<HomePage> {
                   callBack: () {
                     _scaffoldKey.currentState.showSnackBar(
                       showSnackbar(
-                          "add other", Icon(Icons.alarm), Colors.green),
+                        text:
+                          "add other",
+                          icon: Icon(Icons.alarm), color : Colors.green),
                     );
                   },
                 ),
@@ -152,7 +154,10 @@ class _HomePageState extends State<HomePage> {
                   callBack: () {
                     _scaffoldKey.currentState.showSnackBar(
                       showSnackbar(
-                          "add Second", Icon(Icons.alarm), Colors.green),
+                        text: "add Second",
+                        icon: Icon(Icons.alarm),
+                        color: Colors.green,
+                      ),
                     );
                   },
                 ),

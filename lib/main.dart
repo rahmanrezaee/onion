@@ -1,3 +1,4 @@
+import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
@@ -8,6 +9,7 @@ import 'package:onion/pages/viewRating.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
+import 'package:onion/utilities/Connectivity/ConnectionStatusSingleton.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/validation/signup_validation.dart';
@@ -53,35 +55,38 @@ import './widgets/bottom_nav.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+ 
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => DrawerScaffold()),
-      ChangeNotifierProvider(create: (_) => Auth()),
-      ChangeNotifierProvider(create: (_) => SignupValidation()),
-      ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
-      ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
-      ChangeNotifierProvider(create: (_) => AnalysisProvider()),
-      ChangeNotifierProvider(create: (_) => DropdownProvider()),
-      ChangeNotifierProxyProvider<Auth, SaveAnalProvider>(
-          update: (
-            context,
-            auth,
-            previousMessages,
-          ) =>
-              SaveAnalProvider(auth),
-          create: (
-            BuildContext context,
-          ) =>
-              SaveAnalProvider(null)),
-    ],
-    child: MyApp(),
+  runApp(ConnectivityAppWrapper(
+      app:  MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => DrawerScaffold()),
+        ChangeNotifierProvider(create: (_) => Auth()),
+        ChangeNotifierProvider(create: (_) => SignupValidation()),
+        ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
+        ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
+        ChangeNotifierProvider(create: (_) => AnalysisProvider()),
+        ChangeNotifierProvider(create: (_) => DropdownProvider()),
+        ChangeNotifierProxyProvider<Auth, SaveAnalProvider>(
+            update: (
+              context,
+              auth,
+              previousMessages,
+            ) =>
+                SaveAnalProvider(auth),
+            create: (
+               context,
+            ) =>
+                SaveAnalProvider(null)),
+      ],
+      child: MyApp(),
+    ),
   ));
 }
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     Provider.of<Auth>(context, listen: false).tryAutoLogin();
 
     return Consumer<Auth>(
@@ -102,7 +107,7 @@ class MyApp extends StatelessWidget {
             headline2: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w700),
             headline1: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w800),
             bodyText2: TextStyle(color: Colors.black54),
-            // : 
+            // :
           ),
         ),
         home: CustomDrawerPage(key),

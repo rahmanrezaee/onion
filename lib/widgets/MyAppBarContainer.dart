@@ -42,7 +42,7 @@ class MyAppBarContainer extends StatelessWidget {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  dpvalue.categoryList.isEmpty
+                  dpvalue.categoryList == null
                       ? FutureBuilder(
                           future: dpvalue.fetchItemsCategory(),
                           builder: (futureContext, snapshot) {
@@ -50,13 +50,12 @@ class MyAppBarContainer extends StatelessWidget {
                                 ConnectionState.waiting) {
                               return MyEmptyText(myTxt: "Loading...");
                             } else {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done)
+                              if (snapshot.connectionState ==  ConnectionState.done)
                                 return MyEmptyText(myTxt: "Done");
                             }
                           },
                         )
-                      : MySmallDropdown(
+                      : dpvalue.categoryList.isEmpty ? MyEmptyText(myTxt: "Empty"): MySmallDropdown(
                           myisExpanded: false,
                           myDropDownList: dpvalue.categoryList.isEmpty
                               ? []
@@ -72,8 +71,8 @@ class MyAppBarContainer extends StatelessWidget {
                           value: dpvalue.categorySelected,
                           dropDownWidth: deviceSize(context).width * 0.17,
                         ),
-                  dpvalue.idustryList.isNotEmpty
-                      ? MySmallDropdown(
+                  dpvalue.idustryList != null 
+                      ? dpvalue.idustryList.isEmpty ? MyEmptyText(myTxt: "Empty"): MySmallDropdown(
                           myisExpanded: false,
                           myDropDownList: dpvalue.idustryList.isEmpty
                               ? []
@@ -90,13 +89,14 @@ class MyAppBarContainer extends StatelessWidget {
                           dropDownWidth: deviceSize(context).width * 0.17,
                         )
                       : MyEmptyText(myTxt: "Selected Category"),
-                  dpvalue.typeList.isNotEmpty
-                      ? AnaylsisDropDown(
+                  dpvalue.typeList != null 
+                      ?  dpvalue.idustryList.isEmpty ? MyEmptyText(myTxt: "Empty"): AnaylsisDropDown(
                           myisExpanded: false,
                           myDropDownList:
                               dpvalue.typeList.isEmpty ? [] : dpvalue.typeList,
                           dropDownAroundColor: Colors.white,
                           // myDropDownAnal: [],
+                          
                           dropDownColor: middlePurple,
                           iconColor: Colors.white,
                           txtColor: Colors.white,

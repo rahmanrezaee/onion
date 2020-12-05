@@ -13,7 +13,6 @@ import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-
 class AnalysisProvider with ChangeNotifier {
   Dio dio = new Dio();
   GlobalChart gc;
@@ -80,11 +79,10 @@ class AnalysisProvider with ChangeNotifier {
   }
 
   void cleanCountryMerged() {
-    
     countryInList.clear();
     // add globle country
     countryInList.add(country[0]);
-  
+
     notifyListeners();
   }
 
@@ -105,7 +103,7 @@ class AnalysisProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future getAnalysisData() async {
+  Future<bool> getAnalysisData() async {
     try {
       final StringBuffer url =
           new StringBuffer("https://api.covid19api.com/summary");
@@ -131,9 +129,12 @@ class AnalysisProvider with ChangeNotifier {
         country.add(CircularChart.toJson(item));
       }
       changeCountryColors(all);
+      return true;
     } on DioError catch (e) {
+      
       print("errors");
       print(e.response);
+       return false;
     }
   }
 
@@ -154,8 +155,11 @@ class AnalysisProvider with ChangeNotifier {
         }
       }
     }).toList();
-    getMonthlyReport();
-    getTableDailyReport();
+
+    if (selectedCountry.country != "All Country") {
+      getMonthlyReport();
+      getTableDailyReport();
+    }
   }
 
   Future getMonthlyReport() async {

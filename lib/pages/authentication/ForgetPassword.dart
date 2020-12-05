@@ -194,7 +194,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
           });
     } on LoginException catch (e) {
       _scaffoldKey.currentState
-          .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+          .showSnackBar(showSnackbar(text:e.cause,icon: Icon(Icons.error),color: Colors.red));
       print(e.cause);
     }
     setState(() {

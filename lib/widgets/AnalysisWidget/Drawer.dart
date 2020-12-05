@@ -202,10 +202,11 @@ class _MyDrawerState extends State<MyDrawer> {
 
               myListTile(
                 context: context,
-                name: "Analytics ",
+                name: "analysis",
                 icon: Icons.person,
                 routeName: Analysis.routeName,
-                 justPush: true
+                justPush: true,
+                hasDrawer: true,
               ),
 
               value.token != null
@@ -213,7 +214,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       context: context,
                       name: "My Profile",
                       icon: Icons.person,
-                      routeName:  ProfilePage.routeName,
+                      routeName: ProfilePage.routeName,
                       justPush: true)
                   : Container(),
               value.token != null
@@ -222,8 +223,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       name: "Setting",
                       icon: Icons.settings,
                       routeName: "Uder Development",
-                      justPush: true
-                    )
+                      justPush: true)
                   : SizedBox(),
 
               Divider(color: Colors.white, height: 0.1),
@@ -255,12 +255,11 @@ class _MyDrawerState extends State<MyDrawer> {
                 hasDrawer: true,
               ),
               myListTile(
-                context: context,
-                name: "My Ideas Id",
-                icon: Icons.ac_unit,
-                routeName: MyIdeaId.routeName,
-                justPush: true
-              ),
+                  context: context,
+                  name: "My Ideas Id",
+                  icon: Icons.ac_unit,
+                  routeName: MyIdeaId.routeName,
+                  justPush: true),
 
               // value.token != null
               //     ? myListTile(
@@ -281,11 +280,10 @@ class _MyDrawerState extends State<MyDrawer> {
                       });
                 },
                 child: myListTile(
-                  context: context,
-                  name: "Term and Condition",
-                  icon: Icons.assignment,
-                  justPush: true
-                ),
+                    context: context,
+                    name: "Term and Condition",
+                    icon: Icons.assignment,
+                    justPush: true),
               ),
               myListTile(
                 context: context,

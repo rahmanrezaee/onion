@@ -1,10 +1,13 @@
+import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/pages/Analysis.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Home.dart';
 import 'package:onion/pages/MyMessagePage.dart';
-import 'package:onion/pages/underDevelopment.dart';
+import 'package:onion/utilities/Connectivity/MyConnectivity.dart';
+import 'package:onion/widgets/Snanckbar.dart';
 import 'package:onion/widgets/bottom_nav.dart';
 
 class MainScreen extends StatefulWidget {
@@ -20,18 +23,31 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _page = 0;
 
+  initState() {
+    super.initState();
+   
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> pageWidget = [
       HomePage(openDrawer: widget.openDrawer),
       MyMessagePage(openDrawer: widget.openDrawer),
-      Analysis(),
-      Dashboard(),
-      Center(child: Text("under development"))
+      Analysis(openDrawer: widget.openDrawer),
+      Dashboard(openDrawer: widget.openDrawer),
+      Center(child: Text("under development")),
     ];
 
+   
+
     return Scaffold(
-      body: pageWidget[_page],
+      body:  pageWidget[_page],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
         color: middlePurple,

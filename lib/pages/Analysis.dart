@@ -1,36 +1,20 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:number_display/number_display.dart';
-import 'package:onion/models/circularChart.dart';
-import 'package:onion/models/globalChart.dart';
-import 'package:onion/models/sample_view.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
-import 'package:onion/widgets/AnalysisWidget/Charts/LineDefault.dart';
-import 'package:onion/widgets/AnalysisWidget/Charts/AnimationSplineDefault.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/TableChart.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/pie.dart';
 import 'package:onion/widgets/Home/MyGoogleMap.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:onion/widgets/MyAppBar.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_maps/maps.dart';
 
 import '../widgets/MyAppBarContainer.dart';
 import '../widgets/AnalysisWidget/MyAlert.dart';
 import '../const/color.dart';
 import '../const/Size.dart';
 
-import 'package:onion/models/circularChart.dart';
-
-///Map import
-import 'package:syncfusion_flutter_maps/maps.dart';
-
-///Core theme import
-import 'package:syncfusion_flutter_core/theme.dart';
 
 class SalesData {
   SalesData(
@@ -45,9 +29,10 @@ class SalesData {
 
 class Analysis extends StatefulWidget {
   static const routeName = "analysis";
-  // final Function openDrawer;
 
-  const Analysis({Key key});
+  final Function openDrawer;
+
+  const Analysis({this.openDrawer,Key key});
 
   @override
   _AnalysisState createState() => _AnalysisState();
@@ -65,24 +50,25 @@ class _AnalysisState extends State<Analysis> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            "Analysis",
-            textAlign: TextAlign.center,
-            textScaleFactor: 1.2,
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          actions: [
-            Padding(
-              padding: EdgeInsets.all(15.0),
-              child: MyAlertIcon(num: 3),
-            ),
-          ],
-        ),
+       appBar: MyAppBar(title: "Analysis", openDrawer: widget.openDrawer),
+        //  AppBar(
+        //   elevation: 0,
+        //   centerTitle: true,
+        //   title: Text(
+        //     "Analysis",
+        //     textAlign: TextAlign.center,
+        //     textScaleFactor: 1.2,
+        //     style: TextStyle(
+        //       color: Colors.white,
+        //     ),
+        //   ),
+        //   actions: [
+        //     Padding(
+        //       padding: EdgeInsets.all(15.0),
+        //       child: MyAlertIcon(num: 3),
+        //     ),
+        //   ],
+        // ),
         // drawer: MyDrawer()
         body: SingleChildScrollView(
           child: Column(

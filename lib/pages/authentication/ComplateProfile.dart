@@ -327,8 +327,11 @@ class _ComplateProfileState extends State<ComplateProfile> {
 
   Future<void> signUp() async {
     _scaffoldKey.currentState.showSnackBar(showSnackbar(
+      text:
         "For now is not Avilable",
+        icon:
         Icon(Icons.alarm),
+        color:
         Colors.red));
     // if (_formKey.currentState.validate()) {
     //   _formKey.currentState.save();

@@ -632,7 +632,7 @@ class _SignUpState extends State<SignUp> {
   Future<void> signUp() async {
     if (!checkboxSelected) {
       _scaffoldKey.currentState.showSnackBar(
-          showSnackbar("Accept Our Agreement", Icon(Icons.error), Colors.red));
+          showSnackbar(text: "Accept Our Agreement", icon:Icon(Icons.error),color: Colors.red));
       return;
     }
 
@@ -648,7 +648,7 @@ class _SignUpState extends State<SignUp> {
 
         if (re != null) {
           _scaffoldKey.currentState
-              .showSnackBar(showSnackbar(re, Icon(Icons.error), Colors.red));
+              .showSnackBar(showSnackbar(text: re,icon: Icon(Icons.error),color: Colors.red));
         } else {
           Navigator.pop(context);
         }
@@ -656,8 +656,11 @@ class _SignUpState extends State<SignUp> {
         // Navigator.pop(context);
       } on LoginException catch (e) {
         _scaffoldKey.currentState.showSnackBar(showSnackbar(
+          text:
             "Have Problem to Connection. Check Your Connection",
+            icon:
             Icon(Icons.error),
+            color:
             Colors.red));
       }
 
@@ -692,7 +695,7 @@ class _SignUpState extends State<SignUp> {
       user.profile = result['name'];
     } on UploadException catch (e) {
       _scaffoldKey.currentState
-          .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+          .showSnackBar(showSnackbar( text: e.cause,icon: Icon(Icons.error), color: Colors.red));
     }
 
     setState(() {

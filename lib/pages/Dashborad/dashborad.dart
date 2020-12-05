@@ -17,16 +17,17 @@ import 'package:onion/widgets/AnalysisWidget/Charts/pie.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/Home/MyGoogleMap.dart';
+import 'package:onion/widgets/MyAppBar.dart';
 import 'package:onion/widgets/dashboardWidget/MyBtn.dart';
 import 'package:onion/widgets/dashboardWidget/savedAnalysis.dart';
 import 'package:onion/widgets/temp_popup.dart';
 import 'package:provider/provider.dart';
 
 class Dashboard extends StatefulWidget {
-  static const routeName = "analysis";
-  // final Function openDrawer;
+  static const routeName = "dashboard";
+  final Function openDrawer;
 
-  const Dashboard({Key key});
+  const Dashboard({this.openDrawer,Key key});
 
   @override
   _DashboardState createState() => _DashboardState();
@@ -70,24 +71,25 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     var auth = Provider.of<Auth>(context, listen: false);
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            "Dashboard",
-            textAlign: TextAlign.center,
-            textScaleFactor: 1.2,
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          actions: [
-            Padding(
-              padding: EdgeInsets.all(15.0),
-              child: MyAlertIcon(num: 3),
-            ),
-          ],
-        ),
+      appBar: MyAppBar(title: "Dashboard", openDrawer: widget.openDrawer),
+        // appBar: AppBar(
+        //   elevation: 0,
+        //   centerTitle: true,
+        //   title: Text(
+        //     "Dashboard",
+        //     textAlign: TextAlign.center,
+        //     textScaleFactor: 1.2,
+        //     style: TextStyle(
+        //       color: Colors.white,
+        //     ),
+        //   ),
+        //   actions: [
+        //     Padding(
+        //       padding: EdgeInsets.all(15.0),
+        //       child: MyAlertIcon(num: 3),
+        //     ),
+        //   ],
+        // ),
         body: SingleChildScrollView(
           child: Column(children: [
             MyGoogleMap(
@@ -428,9 +430,9 @@ class _DashboardState extends State<Dashboard> {
                                     margin: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 15),
                                     height: deviceSize(context).height * 0.4,
-                                    child: Scrollbar(
-                                      child: ListView.builder(
+                                    child:  ListView.builder(
                                         padding: EdgeInsets.zero,
+                                        shrinkWrap: false,
                                         itemCount: consValue.items.length,
                                         itemBuilder: (listContext, index) {
                                           return InkWell(
@@ -473,8 +475,8 @@ class _DashboardState extends State<Dashboard> {
                                           );
                                         },
                                       ),
-                                    ),
-                                  )
+                                    )
+                                
                             : FutureBuilder(
                                 future: consValue.getAnalysis(),
                                 builder: (BuildContext context,

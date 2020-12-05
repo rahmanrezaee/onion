@@ -22,6 +22,7 @@ class Auth with ChangeNotifier {
   String token;
   Map userDataField;
   User currentUser = new User();
+  
   // AuthMethods authMethods = new AuthMethods();
 
   Future<bool> isAuth() async {
