@@ -4,6 +4,9 @@ import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/pages/Idea/MyIdeaId.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 // import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+import '../../models/Idea.dart';
+//
+import 'package:video_player/video_player.dart';
 
 class MyIdeaDetails extends StatefulWidget {
   static String routeName = "MyIdeaDetail";
@@ -13,26 +16,36 @@ class MyIdeaDetails extends StatefulWidget {
 }
 
 class _MyIdeaDetailsState extends State<MyIdeaDetails> {
-  final String urlToStreamVideo =
-      'https://r2---sn-4g5ednee.googlevideo.com/videoplayback?expire=1605463581&ei=vRmxX7DfAcKbgAePpoXICA&ip=37.221.178.103&id=o-AHc-Un2QpnxIK_yr5ahI2qLgHl1jtN748zoYpC1Fx3Dg&itag=18&source=youtube&requiressl=yes&vprv=1&mime=video%2Fmp4&ns=8xYGWk6pA7ySGtJGCqzIbQoF&gir=yes&clen=14052630&ratebypass=yes&dur=213.646&lmt=1604178388266477&fvip=2&c=WEB&txp=6210222&n=O3rg87s6HFzvVIzxy&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRgIhAIQeJRA5WKm9CBo-8f005v97prRzBO9vgWgXPFrbgzwDAiEA1FgnJ0c6t2DFPl2bUINAK7_wUTXy2q2uK5mgkSL8rbg%3D&rm=sn-huxaqvv-ubqe7l,sn-nv4sl7l&req_id=3eb1e345c455a3ee&redirect_counter=2&cms_redirect=yes&ipbypass=yes&mh=As&mip=103.119.24.113&mm=29&mn=sn-4g5ednee&ms=rdu&mt=1605441888&mv=m&mvi=2&pl=24&lsparams=ipbypass,mh,mip,mm,mn,ms,mv,mvi,pl&lsig=AG3C_xAwRgIhAJfCrypp6O3zAYnK5560-x8bFbhVMx4TaggU5Bgr42zAAiEAhH8tLbW2Xr6qtsD5Lm1b1OMFKSTCMMMbdk6O777bIP4%3D';
-
-  // VlcPlayerController _videoController;
-
+  VideoPlayerController _controller;
+  //Video player controller
   final double playerWidth = 640.0;
-
   final double playerHeight = 360.0;
   bool _isPlaying = false;
   initState() {
-    // _videoController = new VlcPlayerController(
-    //     // Start playing as soon as the video is loaded.
-    //     onInit: () {
-    //   // _videoController.play();
-    // });
-    super.initState();
+    //Video player initialize
+    _controller = VideoPlayerController.network(
+      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+      // closedCaptionFile: _loadCaptions(),
+      videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+    );
+
+    _controller.addListener(() {
+      setState(() {});
+    });
+    _controller.setLooping(true);
+    _controller.initialize();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    SetupIdeaModel idea = ModalRoute.of(context).settings.arguments;
+    print("his is the document: ${idea.documents}");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: middlePurple,
@@ -79,7 +92,7 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                           children: [
                             Text("Industry: ", style: TextStyle(fontSize: 15)),
                             Text(
-                              "<IndustryName>",
+                              "${idea.category}",
                               style: TextStyle(fontSize: 15),
                             ),
                           ],
@@ -90,7 +103,7 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                           children: [
                             Text("Headline: ", style: TextStyle(fontSize: 15)),
                             Text(
-                              "<Headline>",
+                              "${idea.ideaHeadline}",
                               style: TextStyle(fontSize: 15),
                             ),
                           ],
@@ -106,8 +119,7 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                                   fontWeight: FontWeight.bold),
                               children: <TextSpan>[
                                 TextSpan(
-                                  text:
-                                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                                  text: "${idea.ideaText}",
                                   style:
                                       TextStyle(fontWeight: FontWeight.normal),
                                 )
@@ -125,7 +137,8 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                         ),
                         SizedBox(height: 10),
                         Wrap(
-                            children: List.generate(8, (index) {
+                            children:
+                                List.generate(idea.documents.length, (index) {
                           return Icon(Icons.upload_file,
                               size: 50, color: deepGrey);
                         })),
@@ -160,6 +173,10 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                                 //   placeholder: Center(
                                 //       child: CircularProgressIndicator()),
                                 // ),
+                                child: AspectRatio(
+                                  aspectRatio: _controller.value.aspectRatio,
+                                  child: VideoPlayer(_controller),
+                                ),
                               ),
                             ),
                           ),
@@ -190,7 +207,7 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                             Row(children: [
                               Icon(Icons.location_on, color: middlePurple),
                               Text(
-                                "Delhi, Punjab",
+                                "${idea.location}",
                                 // style: TextStyle(),
                               ),
                             ]),
@@ -203,7 +220,7 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                             Text("No of estimated people",
                                 style: TextStyle(color: deepGrey)),
                             Text(
-                              "8 People",
+                              "${idea.estimatedPeople}",
                               // style: TextStyle(),
                             ),
                           ],

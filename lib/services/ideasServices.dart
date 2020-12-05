@@ -3,6 +3,15 @@ import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
 import 'package:dio/dio.dart';
 
 class IdeasServices {
+  Future getIdeaList(String token) async {
+    Response response = await APIRequest().get(
+      myUrl: "$baseUrl/innovator/idea/list",
+      token: token,
+    );
+    print("Response: ${response.data}");
+    return response.data;
+  }
+
   Future<bool> setupIdea(Map data, String token) async {
     Response response = await APIRequest().post(
         myUrl: "$baseUrl/innovator/idea/addsetup",
@@ -17,7 +26,7 @@ class IdeasServices {
         myUrl: "$baseUrl/innovator/idea/add",
         myBody: data,
         myHeaders: {"token": "$token"});
-    print("Response: ${response.data}");
+    print("This is the response: ${response.data}");
     return response.data['status'];
   }
 }

@@ -273,7 +273,7 @@ class Auth with ChangeNotifier {
       }
     } on DioError catch (e) {
       print("errors");
-      print(e.response);
+      print("this is error bro: in saving bro: ${e.response}");
       // throw UploadException(e.response.data["message"]);
     }
   }

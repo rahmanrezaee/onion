@@ -1,35 +1,20 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:onion/models/Idea.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
-import 'package:onion/pages/Idea/viewIdeas.dart';
-import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/widgets/IdeaWiget/popupMenu.dart' as mypopup;
-import 'package:provider/provider.dart';
-import '../../models/Idea.dart';
 
-class ItemIdea extends StatefulWidget {
-  final SetupIdeaModel idea;
-  ItemIdea(this.idea);
+class FranchiseItem extends StatefulWidget {
   @override
-  _ItemIdeaState createState() => _ItemIdeaState();
+  _FranchiseItemState createState() => _FranchiseItemState();
 }
 
-class _ItemIdeaState extends State<ItemIdea> {
-  Auth authProvider;
-  initState() {
-    super.initState();
-    authProvider = Provider.of<Auth>(context, listen: false);
-  }
-
+class _FranchiseItemState extends State<FranchiseItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context)
-            .pushNamed(MyIdeaDetails.routeName, arguments: widget.idea);
-        // Navigator.of(context).pushNamed(ViewIdeas.routeName);
+        Navigator.of(context).pushNamed(MyIdeaDetails.routeName);
       },
       child: Card(
         elevation: 4,
@@ -42,9 +27,7 @@ class _ItemIdeaState extends State<ItemIdea> {
                 children: [
                   CircleAvatar(
                     radius: 25,
-                    backgroundImage: NetworkImage(authProvider
-                            .currentUser.profile ??
-                        "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"),
+                    backgroundImage: NetworkImage("https://i.pravatar.cc/300"),
                   ),
                   SizedBox(width: 5),
                   Expanded(
@@ -62,7 +45,7 @@ class _ItemIdeaState extends State<ItemIdea> {
                               ),
                             ),
                             TextSpan(
-                              text: "${widget.idea.category}",
+                              text: "Some Text",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w300,
@@ -80,7 +63,7 @@ class _ItemIdeaState extends State<ItemIdea> {
                               ),
                             ),
                             TextSpan(
-                              text: "${widget.idea.ideaHeadline}",
+                              text: "Abcedasd",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w300,
@@ -137,7 +120,7 @@ class _ItemIdeaState extends State<ItemIdea> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Text("View Bids"),
+                                    Text("View Request"),
                                   ],
                                 ),
                               ),
@@ -157,26 +140,7 @@ class _ItemIdeaState extends State<ItemIdea> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Text("View Interseted Investment"),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            mypopup.PopupMenuItem(
-                              value: 2,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                decoration: BoxDecoration(
-                                  // color: ,
-                                  border: Border.all(
-                                      color: Colors.grey[200], width: 2),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Find Investor"),
+                                    Text("View Franchise"),
                                   ],
                                 ),
                               ),
@@ -228,7 +192,8 @@ class _ItemIdeaState extends State<ItemIdea> {
                           ),
                         ),
                         TextSpan(
-                          text: "${widget.idea.ideaText}",
+                          text:
+                              "Flutter is Google’s mobile UI framework for crafting high-quality native interfaces on iOS and Android in record time. Flutter works with existing code, is used by developers and organizations around the world, and is free and open source.",
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w300,

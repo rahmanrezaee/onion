@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/Idea/viewIdeas.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
@@ -11,7 +11,6 @@ import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/validation/signup_validation.dart';
 import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
-import 'package:onion/widgets/test.dart';
 import 'package:provider/provider.dart';
 
 import './pages/Idea/MyIdeaDetailes.dart';
@@ -20,7 +19,6 @@ import './pages/franchises/requestFranchisesUser.dart';
 import './pages/franchises/viewFranchisesUser.dart';
 import './statemanagment/MyDropDownState.dart';
 import './test.dart';
-import './pages/franchises/RequestOnFranchise.dart';
 import './pages/underDevelopment.dart';
 import './pages/Home.dart';
 import './pages/Idea/postIdea.dart';
@@ -49,20 +47,18 @@ import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
 import './pages/request.dart';
-
-
+import './pages/franchises/myFranchises.dart';
+import './pages/franchises/addFranchise.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  SharedPreferences.setMockInitialValues ({});
+  SharedPreferences.setMockInitialValues({});
 
   runApp(MultiProvider(
     providers: [
-
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ChangeNotifierProvider(create: (_) => MyFlagState()),
       ChangeNotifierProvider(create: (_) => IndustryProvider()),
@@ -81,12 +77,56 @@ void main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  Future<dynamic> myBackgroundMessageHandler(
+      Map<String, dynamic> message) async {
+    if (message.containsKey('data')) {
+      // Handle data message
+      final dynamic data = message['data'];
+    }
+
+    if (message.containsKey('notification')) {
+      // Handle notification message
+      final dynamic notification = message['notification'];
+    }
+
+    // Or do other work.
+  }
+
+  getMessages() async {
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        // print("Notification $message");
+      },
+      onBackgroundMessage: myBackgroundMessageHandler,
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        // _navigateToItemDetail(message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        // _navigateToItemDetail(message);
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getMessages();
+  }
+
   @override
   Widget build(BuildContext context) {
-
     Provider.of<Auth>(context, listen: false).tryAutoLogin();
-    
+
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
         title: 'Onion.ai',
@@ -98,10 +138,10 @@ class MyApp extends StatelessWidget {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           }),
         ),
-        home: CustomDrawerPage(key),
+        home: CustomDrawerPage(widget.key),
         routes: {
           Login.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : FutureBuilder(
                   future:
                       Provider.of<Auth>(context, listen: false).tryAutoLogin(),
@@ -116,20 +156,21 @@ class MyApp extends StatelessWidget {
           MyIdeaId.routeName: (context) => MyIdeaId(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) =>
-              auth.token != null ? CustomDrawerPage(key) : SignUp(),
+              auth.token != null ? CustomDrawerPage(widget.key) : SignUp(),
           ComplateProfile.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : ComplateProfile(
                   ModalRoute.of(context).settings.arguments,
                 ),
-          CustomDrawerPage.routeName: (context) => CustomDrawerPage(key),
+          CustomDrawerPage.routeName: (context) => CustomDrawerPage(widget.key),
           AnalyticsOne.routeName: (context) => AnalyticsOne(),
           Analysis.routeName: (context) => Analysis(),
           RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-          ForgetPassword.routeName: (context) =>
-              auth.token != null ? CustomDrawerPage(key) : ForgetPassword(),
+          ForgetPassword.routeName: (context) => auth.token != null
+              ? CustomDrawerPage(widget.key)
+              : ForgetPassword(),
           ChangePassword.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : ChangePassword(
                   ModalRoute.of(context).settings.arguments,
                 ),
@@ -146,9 +187,11 @@ class MyApp extends StatelessWidget {
           RequestFranchisesUser.routeName: (context) => RequestFranchisesUser(),
           ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(),
           MyIdeaId.routeName: (context) => MyIdeaId(),
-
           MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
           RequestPage.routeName: (context) => RequestPage(),
+          AddFranchise.routeName: (context) => AddFranchise(),
+          MyFranchises.routeName: (context) => MyFranchises(),
+          ViewIdeas.routeName: (context) => ViewIdeas(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (_) => UnderDevelopment());
