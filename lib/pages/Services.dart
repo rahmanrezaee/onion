@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import 'package:onion/pages/Home.dart';
 import 'package:onion/pages/Idea/setupIdea.dart';
 import 'package:onion/services/ServicesPage.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as p;
 import 'package:lottie/lottie.dart';
 import '../const/color.dart';
 import '../pages/CustomDrawerPage.dart';
@@ -28,10 +28,9 @@ class _ServicesState extends State<Services> {
 
   //DemoImages
   List<String> sliderImages;
-  Future _getData;
+
   @override
   void initState() {
-    _getData = ServicesHttp().getServicesList();
     ServicesHttp().getSliders().then((images) {
       setState(() {
         sliderImages = images;
@@ -44,11 +43,10 @@ class _ServicesState extends State<Services> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        return false;
-        // return await Provider.of<DrawerScaffold>(
-        //   context,
-        //   listen: false,
-        // ).scaffoldFunc(mScaffoldType: HomePage.routeName);
+        return await p.Provider.of<DrawerScaffold>(
+          context,
+          listen: false,
+        ).scaffoldFunc(mScaffoldType: HomePage.routeName);
       },
       child: Scaffold(
         appBar: MyAppBar(title: "Services", openDrawer: widget.openDrawer),
@@ -148,7 +146,7 @@ class _ServicesState extends State<Services> {
                   child: Text("Our Services", style: TextStyle(fontSize: 20)),
                 ),
                 FutureBuilder(
-                  future: _getData,
+                  future: ServicesHttp().getServicesList(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var data = snapshot.data;
@@ -195,7 +193,7 @@ class _ServicesState extends State<Services> {
                                                 ]),
                                           ),
                                         ]),
-                                        Consumer<Auth>(
+                                       p.Consumer<Auth>(
                                           builder:
                                               (consumerContext, val, child) {
                                             return Padding(

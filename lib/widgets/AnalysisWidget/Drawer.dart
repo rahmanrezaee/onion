@@ -16,9 +16,12 @@ import 'package:onion/pages/franchises/addFranchise.dart';
 import 'package:onion/pages/franchises/myFranchises.dart';
 import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
+import 'package:onion/pages/profile/profile_page.dart';
+import 'package:onion/pages/rating/RatingPage.dart';
 import 'package:onion/pages/underDevelopment.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:http/http.dart';
+import 'package:onion/pages/Settings.dart';
 import 'package:onion/pages/request.dart';
 import 'package:onion/services/SimpleHttp.dart';
 import 'package:onion/widgets/T&C_widget.dart';
@@ -63,7 +66,7 @@ class _MyDrawerState extends State<MyDrawer> {
     String name,
     IconData icon,
     String routeName,
-    BuildContext context,
+    context,
     bool justPush = false,
     bool hasDrawer = false,
   }) {
@@ -106,11 +109,11 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     Auth().isAuth().then((auth) {
       _isAuth = auth;
     });
-    return Consumer<Auth>(builder: (BuildContext context, value, Widget child) {
+    return Consumer<Auth>(builder: (context, value, Widget child) {
       return Drawer(
         elevation: 0,
         child: Container(
@@ -201,18 +204,20 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
 
               myListTile(
-                  context: context,
-                  name: "Analytics ",
-                  icon: Icons.person,
-                  routeName: Analysis.routeName,
-                  justPush: true),
+                context: context,
+                name: "analysis",
+                icon: Icons.person,
+                routeName: Analysis.routeName,
+                justPush: true,
+                hasDrawer: true,
+              ),
 
               value.token != null
                   ? myListTile(
                       context: context,
                       name: "My Profile",
                       icon: Icons.person,
-                      routeName: "Uder Development",
+                      routeName: ProfilePage.routeName,
                       justPush: true)
                   : Container(),
               value.token != null
@@ -253,25 +258,22 @@ class _MyDrawerState extends State<MyDrawer> {
                 justPush: true,
                 hasDrawer: false,
               ),
+              myListTile(
+                  context: context,
+                  name: "My Ideas Id",
+                  icon: Icons.ac_unit,
+                  routeName: MyIdeaId.routeName,
+                  justPush: true),
+
               value.token != null
                   ? myListTile(
                       context: context,
-                      name: "My Ideas Id",
-                      icon: Icons.ac_unit,
-                      routeName: MyIdeaId.routeName,
+                      name: "Rating",
+                      icon: Icons.multiline_chart,
+                      routeName: RatingPage.routeName,
+                      justPush: true,
                     )
                   : Container(),
-
-              // value.token != null
-              //     ? myListTile(
-              //         context: context,
-              //         name: "My Analysis",
-              //         icon: Icons.multiline_chart,
-              //         routeName: "Under Development",
-              //         justPush: true,
-              //         hasDrawer: true,
-              //       )
-              //     : Container(),
               InkWell(
                 onTap: () {
                   showDialog(

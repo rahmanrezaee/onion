@@ -173,10 +173,10 @@ class _AddFranchiseState extends State<AddFranchise> {
                               return Column(
                                 children: [
                                   LocationWidget(
-                                    borderColor: _submitted == true &&
-                                            _controllers[index].text == ""
-                                        ? Colors.red
-                                        : Colors.black87,
+                                    // borderColor: _submitted == true &&
+                                    //         _controllers[index].text == ""
+                                    // ? Colors.red
+                                    // : Colors.black87,
                                     text: list[index],
                                     controller: _controllers[index],
                                     locationRemove: () {

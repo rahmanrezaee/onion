@@ -23,6 +23,7 @@ class Auth with ChangeNotifier {
   String token;
   Map userDataField;
   User currentUser = new User();
+  
   // AuthMethods authMethods = new AuthMethods();
 
   Future<bool> isAuth() async {
@@ -245,6 +246,8 @@ class Auth with ChangeNotifier {
     final StringBuffer url = new StringBuffer(BASE_URL + "/upload");
     Dio dio = new Dio();
 
+    print("prfile $url");
+
     print("file image");
 
     print(await MultipartFile.fromFile(imageFile.path));
@@ -274,7 +277,7 @@ class Auth with ChangeNotifier {
       }
     } on DioError catch (e) {
       print("errors");
-      print(e.response);
+      print("this is error bro: in saving bro: ${e.response}");
       // throw UploadException(e.response.data["message"]);
     }
   }

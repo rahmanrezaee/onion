@@ -444,15 +444,20 @@ class _SetupIdeaState extends State<SetupIdea> {
             // },
           );
         } else {
+          setState(() {
+            loading = false;
+          });
           _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text("Somthing went wrong!! Please try again."),
+            content: Text("Something went wrong!! Please try again."),
             backgroundColor: Colors.red,
           ));
         }
       }).catchError((e) {
-        loading = false;
+        setState(() {
+          loading = false;
+        });
         _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text("Somthing went wrong!! Please try again."),
+          content: Text("Something went wrong!! Please try again."),
           backgroundColor: Colors.red,
         ));
       });

@@ -2,12 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:number_display/number_display.dart';
+import 'package:onion/const/MyUrl.dart';
 import 'package:onion/const/values.dart';
 import 'package:onion/models/CountryDensityModel.dart';
 import 'package:onion/models/circularChart.dart';
 import 'package:onion/models/globalChart.dart';
 import 'package:onion/models/sample_view.dart';
 import 'package:onion/models/tableSatatis.dart';
+import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AnalysisProvider with ChangeNotifier {
@@ -27,12 +30,12 @@ class AnalysisProvider with ChangeNotifier {
       "display": "Table",
       "value": "table",
     },
+    // {
+    //   "display": "Line",
+    //   "value": "line",
+    // },
     {
-      "display": "Line",
-      "value": "line",
-    },
-    {
-      "display": "Date",
+      "display": "Data",
       "value": "date",
     },
   ];
@@ -57,19 +60,32 @@ class AnalysisProvider with ChangeNotifier {
     },
   ];
   List<CircularChart> country;
+  List<CircularChart> countryInList = [];
+
   List<CircularChart> monthlyDate;
   CircularChart selectedCountry;
   List<CountryDensityModel> worldPopulationDensityDetails;
   List<SplineSeries<ChartSampleData, String>> getDefaultSplineSeriesList;
 
-
-   final display = createDisplay(
+  final display = createDisplay(
     length: 3,
     decimal: 0,
   );
 
+  void addCountryMerged(CircularChart country) {
+    print("country come show ${country.country}");
+    countryInList.add(country);
+    notifyListeners();
+  }
 
-  
+  void cleanCountryMerged() {
+    countryInList.clear();
+    // add globle country
+    countryInList.add(country[0]);
+
+    notifyListeners();
+  }
+
   void setchartType(String value) {
     this.chartTypeSelected = value;
     getDefaultSplineSeriesList = null;
@@ -87,7 +103,7 @@ class AnalysisProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future getAnalysisData() async {
+  Future<bool> getAnalysisData() async {
     try {
       final StringBuffer url =
           new StringBuffer("https://api.covid19api.com/summary");
@@ -108,20 +124,21 @@ class AnalysisProvider with ChangeNotifier {
         totalRecovered: gc.totalRecovered,
         active: gc.totalConfirmed - gc.totalDeaths,
       );
-      print("done first stap");
       country.add(all);
       for (var item in data['Countries']) {
         country.add(CircularChart.toJson(item));
       }
-      print("done second stap");
       changeCountryColors(all);
+      return true;
     } on DioError catch (e) {
       print("errors");
       print(e.response);
+      return false;
     }
   }
 
   void changeCountryColors(CircularChart selected) {
+    // Provider.of<AnalyticsProvider>(context).selectSingle(selected.country);
     selectedCountry = selected;
     getDefaultSplineSeriesList = null;
     tableSatatis = null;
@@ -137,8 +154,11 @@ class AnalysisProvider with ChangeNotifier {
         }
       }
     }).toList();
-    getMonthlyReport();
-    getTableDailyReport();
+
+    if (selectedCountry.country != "All Country") {
+      getMonthlyReport();
+      getTableDailyReport();
+    }
   }
 
   Future getMonthlyReport() async {
@@ -177,7 +197,6 @@ class AnalysisProvider with ChangeNotifier {
               );
             }
           } else {
-
             if (Jiffy(chartData.elementAt(chartData.length - 1).x).MMMd ==
                 Jiffy(data[i]["Date"]).MMMd) {
               ChartSampleData curr = chartData.elementAt(chartData.length - 1);
@@ -200,7 +219,6 @@ class AnalysisProvider with ChangeNotifier {
                 ),
               );
             }
-           
           }
         } else {
           chartData.add(
@@ -268,7 +286,11 @@ class AnalysisProvider with ChangeNotifier {
     }
   }
 
-  Future getTableDailyReport() async {
+  Future<bool> getTableDailyReport() async {
+    print("fetch table");
+    if (selectedCountry.country.isEmpty) {
+      return false;
+    }
     tableSatatis = List<TableSatatis>();
     String url =
         "https://api.covid19api.com/country/${selectedCountry.country}?from=${Jiffy(Jiffy(now).subtract(days: 6)).format("yyy-MM-dd")}T00:00:00Z&to=${Jiffy(now).format("yyy-MM-dd")}T00:00:00Z";
@@ -279,8 +301,10 @@ class AnalysisProvider with ChangeNotifier {
       print("list of $data");
       for (int i = 0; i < data.length; i++) {
         if (tableSatatis.length > 0 &&
-            tableSatatis.elementAt(tableSatatis.length - 1).date ==
-                data[i]["Date"]) {
+            Jiffy(DateTime.parse(
+                        tableSatatis.elementAt(tableSatatis.length - 1).date))
+                    .MMMd ==
+                Jiffy(data[i]["Date"]).MMMd) {
           var last = tableSatatis.elementAt(tableSatatis.length - 1);
           print(last);
           last.actived = last.actived + data[i]["Active"];
@@ -299,8 +323,14 @@ class AnalysisProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } on DioError catch (e) {
-      print("errors");
+      print("errors table");
+      tableSatatis = null;
+      return false;
       print(e.response);
     }
+  }
+
+  void changeCountryColorsByName(value) {
+    print("value is $value");
   }
 }
