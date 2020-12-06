@@ -9,11 +9,11 @@ import './MyAppBarContainer.dart';
 import 'AnalysisWidget/extra/MyEmptyText.dart';
 import 'DropdownWidget/DropDownFormField.dart';
 
-Future<void> tempShowMyDialog({@required  context}) async {
+Future<void> tempShowMyDialog({@required context}) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
-    builder: ( context) {
+    builder: (context) {
       return AlertDialog(
         contentPadding: EdgeInsets.only(
           bottom: deviceSize(context).height * 0.03,
@@ -37,7 +37,7 @@ class DialogContent extends StatefulWidget {
 class _DialogContentState extends State<DialogContent> {
   bool isloading = false;
   @override
-  Widget build( context) {
+  Widget build(context) {
     return SingleChildScrollView(
       child: ListBody(
         children: <Widget>[
@@ -62,7 +62,7 @@ class _DialogContentState extends State<DialogContent> {
             child: Column(
               children: [
                 Consumer<DropdownProvider>(
-                    builder: ( context, dpvalue, Widget child) {
+                    builder: (context, dpvalue, Widget child) {
                   return Column(
                     children: [
                       Text(
@@ -146,8 +146,8 @@ class _DialogContentState extends State<DialogContent> {
                     ],
                   );
                 }),
-                Consumer2<AnalysisProvider, DropdownProvider>(
-                  builder: ( context, anavalue, dropdownValue,
+                Consumer3<AnalysisProvider, DropdownProvider, SaveAnalProvider>(
+                  builder: (context, anavalue, dropdownValue, saveAna,
                       Widget child) {
                     return Column(children: [
                       anavalue.countryInList.isEmpty
@@ -202,10 +202,8 @@ class _DialogContentState extends State<DialogContent> {
                                   setState(() {
                                     isloading = true;
                                   });
-                                  await Provider.of<SaveAnalProvider>(
-                                    context,
-                                    listen: false,
-                                  ).saveAnalysis(dropdownValue.typeList[1].id,
+                                  await saveAna.saveAnalysis(
+                                      dropdownValue.typeList[1].id,
                                       anavalue.selectedCountry.country);
                                   setState(() {
                                     isloading = false;
@@ -234,7 +232,7 @@ class MyPopTxt extends StatelessWidget {
     this.myTxt,
   }) : super(key: key);
   @override
-  Widget build( context) {
+  Widget build(context) {
     return Container(
       width: deviceSize(context).width * 0.8,
       padding: EdgeInsets.all(deviceSize(context).width * 0.02),

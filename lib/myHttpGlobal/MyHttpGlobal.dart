@@ -8,7 +8,9 @@ class APIRequest {
     @required String myUrl,
     token,
   }) {
-    print(token);
+   
+
+    
 
     try {
       
@@ -26,7 +28,7 @@ class APIRequest {
   Future post({
     @required String myUrl,
     @required Map<String, String> myBody,
-    @required Map myHeaders,
+    @required Map<String, String> myHeaders,
   }) {
     dio.options.headers = myHeaders;
     return dio.post(myUrl, data: myBody);

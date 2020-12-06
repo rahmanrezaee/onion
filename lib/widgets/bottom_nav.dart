@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:provider/provider.dart';
 import 'src/nav_button.dart';
 import 'src/nav_custom_painter.dart';
 
@@ -52,6 +54,10 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
   @override
   void initState() {
     super.initState();
+    changeButton();
+  }
+
+  void changeButton() {
     _icon = widget.items[widget.index];
     _length = widget.items.length;
     _pos = widget.index / _length;
@@ -70,7 +76,6 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
       });
     });
   }
-
   @override
   void didUpdateWidget(CurvedNavigationBar oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -142,105 +147,130 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
             right: -10,
             bottom: 5 - (75.0 - widget.height),
             child: SizedBox(
-                height: 50.0,
+                height: 60.0,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            NavButton(
-                              onTap: _buttonTap,
-                              position: _pos,
-                              length: _length,
-                              index: widget.items.indexOf(widget.items[0]),
-                              child: Center(child: widget.items[0]),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: widget.titleMarginBottom),
-                              child: widget.itemTitles[0],
-                            ),
-                          ],
+                        child: InkWell(
+                          onTap: () {
+                            _buttonTap(0);
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              NavButton(
+                                onTap: _buttonTap,
+                                position: _pos,
+                                length: _length,
+                                index: widget.items.indexOf(widget.items[0]),
+                                child: Center(child: widget.items[0]),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: widget.titleMarginBottom),
+                                child: widget.itemTitles[0],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            NavButton(
-                              onTap: _buttonTap,
-                              position: _pos,
-                              length: _length,
-                              index: widget.items.indexOf(widget.items[1]),
-                              child: Center(child: widget.items[1]),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: widget.titleMarginBottom),
-                              child: widget.itemTitles[1],
-                            ),
-                          ],
+                       child: InkWell(
+                          onTap: () {
+                            _buttonTap(1);
+                          },
+                                                  child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              NavButton(
+                                onTap: _buttonTap,
+                                position: _pos,
+                                length: _length,
+                                index: widget.items.indexOf(widget.items[1]),
+                                child: Center(child: widget.items[1]),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: widget.titleMarginBottom),
+                                child: widget.itemTitles[1],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            NavButton(
-                              onTap: _buttonTap,
-                              position: _pos,
-                              length: _length,
-                              index: widget.items.indexOf(widget.items[2]),
-                              child: Center(child: widget.items[2]),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: widget.titleMarginBottom),
-                              child: widget.itemTitles[2],
-                            ),
-                          ],
+                        child: InkWell(
+                          onTap: () {
+                            _buttonTap(2);
+                          },
+                                                  child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              NavButton(
+                                onTap: _buttonTap,
+                                position: _pos,
+                                length: _length,
+                                index: widget.items.indexOf(widget.items[2]),
+                                child: Center(child: widget.items[2]),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: widget.titleMarginBottom),
+                                child: widget.itemTitles[2],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            NavButton(
-                              onTap: _buttonTap,
-                              position: _pos,
-                              length: _length,
-                              index: widget.items.indexOf(widget.items[3]),
-                              child: Center(child: widget.items[3]),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: widget.titleMarginBottom),
-                              child: widget.itemTitles[3],
-                            ),
-                          ],
+                     child: InkWell(
+                          onTap: () {
+                            _buttonTap(3);
+                          },
+                                                  child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              NavButton(
+                                onTap: _buttonTap,
+                                position: _pos,
+                                length: _length,
+                                index: widget.items.indexOf(widget.items[3]),
+                                child: Center(child: widget.items[3]),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: widget.titleMarginBottom),
+                                child: widget.itemTitles[3],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            NavButton(
-                              onTap: _buttonTap,
-                              position: _pos,
-                              length: _length,
-                              index: widget.items.indexOf(widget.items[4]),
-                              child: Center(child: widget.items[4]),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: widget.titleMarginBottom),
-                              child: widget.itemTitles[4],
-                            ),
-                          ],
+                         child: InkWell(
+                          onTap: () {
+                            _buttonTap(4);
+                          },
+                                                  child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              NavButton(
+                                onTap: _buttonTap,
+                                position: _pos,
+                                length: _length,
+                                index: widget.items.indexOf(widget.items[4]),
+                                child: Center(child: widget.items[4]),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: widget.titleMarginBottom),
+                                child: widget.itemTitles[4],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -279,6 +309,14 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
   }
 
   void _buttonTap(int index) {
+    if (index == 2 || index == 3) {
+      var auth = Provider.of<Auth>(context, listen: false);
+      if (auth.token == null) {
+        Navigator.pushNamed(context, "/login");
+        return null;
+      }
+    }
+
     if (widget.onTap != null) {
       widget.onTap(index);
     }

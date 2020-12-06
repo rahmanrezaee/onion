@@ -23,7 +23,7 @@ class RatingProvider extends ChangeNotifier {
       dio.options.headers = {
         "token": auth.token,
       };
-
+      print(auth.token);
       Response state = await dio.post(url.toString(), data: {
         "ownerId": ownerId,
         "typeId": typeId,

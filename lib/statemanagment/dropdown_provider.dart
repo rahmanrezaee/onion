@@ -16,6 +16,11 @@ class DropdownProvider with ChangeNotifier {
   String idustrySelected = "";
   String typeSelected = "";
 
+  void setCategoryListToNull() {
+    categoryList = null;
+    notifyListeners();
+  }
+
   Future<bool> fetchItemsCategory() async {
     try {
       categoryList = [];
@@ -41,7 +46,6 @@ class DropdownProvider with ChangeNotifier {
           ),
         );
       });
-      
 
       print("Prints Drop1");
       await fetchItemsIndustry();
@@ -79,7 +83,7 @@ class DropdownProvider with ChangeNotifier {
         );
       });
       print("Prints Drop2");
-  
+
       await fetchItemsType();
     } catch (e) {
       notifyListeners();
@@ -89,8 +93,6 @@ class DropdownProvider with ChangeNotifier {
 
   Future<bool> fetchItemsType() async {
     try {
-
-      
       typeList = [];
       addTypeFirstElement();
       typeSelected = typeList[0].title;
@@ -127,8 +129,8 @@ class DropdownProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchCountryType( context) async {
-    var analysis = Provider.of<AnalysisProvider>(context);
+  Future<void> fetchCountryType(context) async {
+    var analysis = Provider.of<AnalysisProvider>(context, listen: false);
 
     analysis.cleanCountryMerged();
 

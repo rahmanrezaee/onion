@@ -48,8 +48,7 @@ class _MapRangeColorMappingPageState extends State<MyGoogleMap> {
   }
 
   @override
-  Widget build( context) =>
-      SingleChildScrollView(child: _getMapsWidget());
+  Widget build(context) => SingleChildScrollView(child: _getMapsWidget());
 
   bool isLaod = false;
   Widget _getMapsWidget() => Container(
@@ -57,9 +56,8 @@ class _MapRangeColorMappingPageState extends State<MyGoogleMap> {
         child: Center(
           child: Padding(
             padding: EdgeInsets.only(right: 10, bottom: 5),
-            child: Consumer2<AnalysisProvider, DropdownProvider>(
-              builder:
-                  ( context, anavalue, droValue, Widget child) {
+            child: Consumer<AnalysisProvider>(
+              builder: (context, anavalue, Widget child) {
                 return anavalue.country != null
                     ? anavalue.country.isEmpty
                         ? Column(
@@ -72,8 +70,8 @@ class _MapRangeColorMappingPageState extends State<MyGoogleMap> {
                         : FutureBuilder<dynamic>(
                             future: Future<dynamic>.delayed(
                                 Duration(milliseconds: 500), () => 'Loaded'),
-                            builder: ( context,
-                                AsyncSnapshot<dynamic> snapshot) {
+                            builder:
+                                (context, AsyncSnapshot<dynamic> snapshot) {
                               return snapshot.hasData
                                   ? SfMapsTheme(
                                       data: SfMapsThemeData(
@@ -287,8 +285,7 @@ class _MapRangeColorMappingPageState extends State<MyGoogleMap> {
                             })
                     : FutureBuilder(
                         future: anavalue.getAnalysisData(),
-                        builder: ( context,
-                            AsyncSnapshot<dynamic> snapshot) {
+                        builder: (context, AsyncSnapshot<dynamic> snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting)
                             return Center(
@@ -300,9 +297,10 @@ class _MapRangeColorMappingPageState extends State<MyGoogleMap> {
                                 IconButton(
                                     icon: Icon(Icons.replay),
                                     onPressed: () {
-                                      droValue.categoryList = null;
-                                      droValue.idustryList = null;
-                                      droValue.typeList = null;
+                                      // droValue.categoryList = null;
+                                      Provider.of<DropdownProvider>(context, listen: false)
+                                          .setCategoryListToNull();
+                                      // droValue.getAnalysisData();
                                       anavalue.getAnalysisData();
                                     }),
                                 Center(child: Text("not loaded Country")),

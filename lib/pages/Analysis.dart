@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:number_display/number_display.dart';
+import 'package:onion/pages/analysisList/analysisList.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
@@ -208,11 +209,13 @@ class _AnalysisState extends State<Analysis> {
       elevation: 0,
       color: middlePurple,
       child: Text(
-        "Open Saved Analysis",
+       consValue.isDeprecated ? "Open Saved Analysis" :  "Save Analysis",
         style: TextStyle(color: Colors.white),
       ),
       onPressed: consValue.isDeprecated
-          ? null
+          ? () {
+              Navigator.of(context).pushNamed(AnalysisList.routeName);
+            }
           : () {
               consValue.saveAnalysis(dropdownValue.typeList[1].id,
                   anavalue.selectedCountry.country);

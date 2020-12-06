@@ -89,14 +89,6 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
       scaffold: Scaffold(
           // bottomNavigationBar:ConnectivityWidgetWrapper(
           body: ConnectivityWidgetWrapper(
-        disableInteraction: true,
-       
-        height: 70.0,
-        message: "You are Offline!",
-        messageStyle: TextStyle(
-          color: Colors.white,
-          fontSize: 15.0,
-        ),
         // alignment: Alignment.topCenter,
         child: Consumer<DrawerScaffold>(
           builder: (context, value, Widget child) {

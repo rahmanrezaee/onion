@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/analysisList/analysisList.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
 import 'package:onion/pages/profile/profile_page.dart';
 import 'package:onion/pages/rating/RatingPage.dart';
@@ -140,6 +141,7 @@ class MyApp extends StatelessWidget {
                           : Login(),
                 ),
           MyIdeaId.routeName: (context) => MyIdeaId(),
+          AnalysisList.routeName: (context) => AnalysisList(),
           ProfilePage.routeName: (context) => ProfilePage(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) =>
