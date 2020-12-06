@@ -11,17 +11,6 @@ class SetupIdeaModel {
     "timelineType": "date",
     "details": null,
   };
-  // SetupIdeaModel({
-  //   this.id,
-  //   this.userId,
-  //   this.typeIdea,
-  //   this.category,
-  //   this.experienceYear,
-  //   this.experienceMonth,
-  //   this.ideaHeadline,
-  //   this.ideaText,
-  //   this.timeline,
-  // });
   List documents = [];
   Map uploadVideo;
   String location;

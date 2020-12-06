@@ -1,5 +1,6 @@
 import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
@@ -103,9 +104,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  
   @override
   void initState() {
     super.initState();
+    _firebaseMessaging.configure(
+      onMessage: (message) async {
+        Navigator.pushNamed(context, NotificationsList.routeName);
+        print("You have a new notification:$message");
+      },
+      onResume: (message) async {
+        Navigator.pushNamed(context, NotificationsList.routeName);
+        print("You have a new notification:$message");
+      },
+    );
   }
 
   @override
@@ -138,17 +152,8 @@ class _MyAppState extends State<MyApp> {
         routes: {
           Login.routeName: (context) => auth.token != null
               ? CustomDrawerPage(widget.key)
-              : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
-                          ? Scaffold(
-                              body: Center(child: Text("Loading...")),
-                            )
-                          : Login(),
-                ),
+              :  Login(),
+              
           MyIdeaId.routeName: (context) => MyIdeaId(),
           AnalysisList.routeName: (context) => AnalysisList(),
           ProfilePage.routeName: (context) => ProfilePage(),

@@ -378,10 +378,10 @@ class _LoginState extends State<Login> {
       // Invalid!
       return;
     }
-    _formKey.currentState.save();
     setState(() {
       _isloading = true;
     });
+    _formKey.currentState.save();
 
     try {
       await Provider.of<Auth>(context, listen: false)

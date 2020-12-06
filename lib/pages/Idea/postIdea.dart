@@ -64,9 +64,6 @@ class _PostIdeaState extends State<PostIdea> {
   File video;
   @override
   Widget build( context) {
-    // Map<String, String> setupIdea = ModalRoute.of(context).settings.arguments;
-    // Map<String, String> setupIdea = ModalRoute.of(context).settings.arguments;
-    final validationService = Provider.of<PostIdeaValidation>(context);
     // print("Setup Idea: ${setupIdea['category']}");
 
     return Scaffold(
@@ -230,7 +227,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   },
                                   decoration: InputDecoration(
                                     hintText: "Year",
-                                    errorText: validationService.year.error,
+                                    // errorText: validationService.year.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -263,7 +260,7 @@ class _PostIdeaState extends State<PostIdea> {
                                     color: Colors.purple,
                                   ),
                                   onChanged: (value) {
-                                    validationService.changeMonth(value);
+                                    // validationService.changeMonth(value);
                                     postForm.experienceMonth = value;
                                   },
                                   validator: (value) {
@@ -277,7 +274,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   },
                                   decoration: InputDecoration(
                                     hintText: "Month",
-                                    errorText: validationService.month.error,
+                                    // errorText: validationService.month.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -323,7 +320,7 @@ class _PostIdeaState extends State<PostIdea> {
                             },
                             decoration: InputDecoration(
                               hintText: "Idea Headline",
-                              errorText: validationService.teamSize.error,
+                          //    errorText: validationService.teamSize.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 0,
                                 horizontal: 10,
@@ -353,7 +350,7 @@ class _PostIdeaState extends State<PostIdea> {
                               if (value.isEmpty) return "Your Idea is empty";
                             },
                             onChanged: (value) {
-                              validationService.changeAbout(value);
+                              // validationService.changeAbout(value);
                               postForm.ideaText = value;
                             },
                             onSaved: (value) {
@@ -362,7 +359,7 @@ class _PostIdeaState extends State<PostIdea> {
                             maxLines: 5,
                             decoration: InputDecoration(
                               hintText: "Idea",
-                              errorText: validationService.about.error,
+                              // errorText: validationService.about.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 10,
                                 horizontal: 10,
@@ -528,8 +525,7 @@ class _PostIdeaState extends State<PostIdea> {
                                                   : null,
                                               hintStyle: TextStyle(
                                                   color: Colors.black),
-                                              errorText:
-                                                  validationService.about.error,
+                                              // errorText: validationService.about.error,
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
                                                 vertical: 10,
@@ -693,8 +689,8 @@ class _PostIdeaState extends State<PostIdea> {
                                                       : '',
                                                   hintStyle: TextStyle(
                                                       color: Colors.black),
-                                                  errorText: validationService
-                                                      .about.error,
+                                                  // errorText: validationService
+                                                      // .about.error,
                                                   contentPadding:
                                                       const EdgeInsets
                                                           .symmetric(
@@ -810,8 +806,8 @@ class _PostIdeaState extends State<PostIdea> {
                                                     : '',
                                                 hintStyle: TextStyle(
                                                     color: Colors.black),
-                                                errorText: validationService
-                                                    .about.error,
+                                                // errorText: validationService
+                                                //     .about.error,
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
                                                   vertical: 10,
@@ -863,7 +859,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   focusNode: new AlwaysDisabledFocusNode(),
                                   decoration: InputDecoration(
                                     hintText: "Upload Documents",
-                                    errorText: validationService.document.error,
+                                    // errorText: validationService.document.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -1020,7 +1016,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   focusNode: new AlwaysDisabledFocusNode(),
                                   decoration: InputDecoration(
                                     hintText: "Upload Video",
-                                    errorText: validationService.video.error,
+                                    // errorText: validationService.video.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -1090,7 +1086,7 @@ class _PostIdeaState extends State<PostIdea> {
                             },
                             decoration: InputDecoration(
                               hintText: "Location",
-                              errorText: validationService.teamSize.error,
+                              // errorText: validationService.teamSize.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 0,
                                 horizontal: 10,
@@ -1161,7 +1157,7 @@ class _PostIdeaState extends State<PostIdea> {
                             },
                             decoration: InputDecoration(
                               hintText: "No of estimated people",
-                              errorText: validationService.teamSize.error,
+                              // errorText: validationService.teamSize.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 0,
                                 horizontal: 10,
@@ -1205,8 +1201,8 @@ class _PostIdeaState extends State<PostIdea> {
                                   // },
                                   decoration: InputDecoration(
                                     hintText: "Upload White Paper",
-                                    errorText:
-                                        validationService.whitePaper.error,
+                                    // errorText:
+                                    //     validationService.whitePaper.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,

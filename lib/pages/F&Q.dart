@@ -65,11 +65,15 @@ class _FandQState extends State<FandQ> {
               child:
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFd8d8d8),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Icon(Icons.add, color: Color(0xFF555555))),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFd8d8d8),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Icon(
+                    Icons.add,
+                    color: Color(0xFF555555),
+                  ),
+                ),
                 SizedBox(width: 10),
                 Expanded(
                     child: Column(
@@ -133,6 +137,7 @@ class CustomizeExpansion extends StatefulWidget {
 class _CustomizeExpansionState extends State<CustomizeExpansion> {
   //We change icon when Expansion opened and closed
   Icon expansionIcon;
+
   @override
   void initState() {
     expansionIcon = widget.icon;

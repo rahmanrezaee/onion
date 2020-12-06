@@ -5,8 +5,14 @@ import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 
 class MyLittleAppbar extends StatelessWidget {
   final String myTitle;
+  final bool hasDrawer;
+  final Function openDrawer;
+
   const MyLittleAppbar({
-    Key key, this.myTitle,
+    Key key,
+    this.myTitle,
+    this.hasDrawer = false,
+    this.openDrawer,
   }) : super(key: key);
 
   @override
@@ -25,6 +31,13 @@ class MyLittleAppbar extends StatelessWidget {
         ),
       ),
       centerTitle: true,
+      leading: hasDrawer
+          ? IconButton(
+              icon: Icon(Icons.menu, color: Colors.white),
+              color: Colors.white,
+              onPressed: openDrawer,
+            )
+          : SizedBox.shrink(),
       actions: [
         Padding(
           padding: EdgeInsets.all(15.0),

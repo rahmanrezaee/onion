@@ -1,13 +1,14 @@
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
+import 'package:onion/widgets/AnalysisWidget/extra/MyEmptyText.dart';
+import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+
+import 'package:onion/widgets/AnalysisWidget/MyBigDropDown.dart';
 import '../const/Size.dart';
 import '../const/color.dart';
-import './MyAppBarContainer.dart';
-import 'AnalysisWidget/extra/MyEmptyText.dart';
-import 'DropdownWidget/DropDownFormField.dart';
 
 Future<void> tempShowMyDialog({@required context}) async {
   return showDialog<void>(
@@ -35,6 +36,8 @@ class DialogContent extends StatefulWidget {
 }
 
 class _DialogContentState extends State<DialogContent> {
+ 
+  
   bool isloading = false;
   @override
   Widget build(context) {

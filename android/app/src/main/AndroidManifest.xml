@@ -80,5 +80,25 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+<<<<<<< HEAD
+=======
+        <!-- <service
+            android:name=".kotlin.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service> -->
+
+        <!-- [START firebase_service] -->
+        <!-- <service
+            android:name=".java.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service> -->
+        <!-- [END firebase_service] -->
+>>>>>>> 153fe334b208b009c9aa85ab6f52d3d0c0fad433
     </application>
 </manifest>

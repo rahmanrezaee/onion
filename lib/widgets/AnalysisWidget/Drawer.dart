@@ -12,6 +12,8 @@ import 'package:onion/pages/MainScreen.dart';
 import 'package:onion/pages/Services.dart';
 import 'package:onion/pages/Settings.dart';
 import 'package:onion/pages/authentication/Login.dart';
+import 'package:onion/pages/franchises/addFranchise.dart';
+import 'package:onion/pages/franchises/myFranchises.dart';
 import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/pages/profile/profile_page.dart';
@@ -180,8 +182,8 @@ class _MyDrawerState extends State<MyDrawer> {
                               style: TextStyle(color: Colors.white),
                             )
                           : FlatButton(
-                              onPressed: () =>
-                                  Navigator.pushNamed(context, Login.routeName),
+                              onPressed: () => Navigator.pushReplacementNamed(
+                                  context, Login.routeName),
                               child: Text(
                                 "click to login..",
                                 textScaleFactor: 1.2,
@@ -251,9 +253,10 @@ class _MyDrawerState extends State<MyDrawer> {
                 context: context,
                 name: "Services",
                 icon: Icons.done,
-                routeName: Services.routeName,
+                // routeName: Services.routeName,
+                routeName: MyFranchises.routeName,
                 justPush: true,
-                hasDrawer: true,
+                hasDrawer: false,
               ),
               myListTile(
                   context: context,

@@ -3,9 +3,9 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:onion/statemanagment/MyDropDownState.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
-import 'package:onion/widgets/AnalysisWidget/AnaylsisDropdownWidget.dart';
 import 'package:provider/provider.dart';
 
 import '../const/Size.dart';
@@ -13,6 +13,7 @@ import '../const/color.dart';
 import './AnalysisWidget/MyBigDropDown.dart';
 import './AnalysisWidget/MySmallDropdown.dart';
 import './AnalysisWidget/extra/MyEmptyText.dart';
+import 'AnalysisWidget/AnaylsisDropdownWidget.dart';
 
 class MyAppBarContainer extends StatelessWidget {
   @override
