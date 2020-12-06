@@ -698,8 +698,8 @@ class _SignUpState extends State<SignUp> {
     });
 
     try {
-      Map result = await Auth().uploadFile(_imageFile, "profile");
-      user.profile = result['name'];
+      var result = await Auth().uploadFile(_imageFile, "profile");
+      user.profile = result['uriPath'];
     } on UploadException catch (e) {
       _scaffoldKey.currentState.showSnackBar(showSnackbar(
           text: e.cause, icon: Icon(Icons.error), color: Colors.red));

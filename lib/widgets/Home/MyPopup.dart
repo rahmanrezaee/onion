@@ -145,14 +145,13 @@ class DialogContent extends StatelessWidget {
                   builder: ( context, anavalue, Widget child) {
                     if (anavalue.countryInList.isEmpty) {
                       return DropDownFormField(
-                              value: "no Item",
-                              dataSource: [
-                                {"display": "no Item", "value": "no Item"}
-                              ],
-                              textField: 'display',
-                              valueField: 'value',
-                            )
-                          ;
+                        value: "no Item",
+                        dataSource: [
+                          {"display": "no Item", "value": "no Item"}
+                        ],
+                        textField: 'display',
+                        valueField: 'value',
+                      );
                     } else {
                       return Column(
                         children: [
@@ -167,7 +166,6 @@ class DialogContent extends StatelessWidget {
                                   anavalue.changeCountryColors(element);
                                 }
                               });
-                              
                             },
                             dataSource: anavalue.countryInList.map((data) {
                               return {

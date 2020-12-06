@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,6 @@ class MySmallDropdown extends StatelessWidget {
     @required this.dropDownAroundColor,
     @required this.myisExpanded,
     this.txtColor,
-
     this.onChange,
     this.dropDownColor,
     this.iconColor,
@@ -37,11 +35,8 @@ class MySmallDropdown extends StatelessWidget {
 
   bool isOpened = false;
 
- 
-
   @override
   Widget build(BuildContext context) {
-   
     return Container(
       padding: EdgeInsets.all(deviceSize(context).width * 0.01),
       margin: EdgeInsets.symmetric(
@@ -54,36 +49,33 @@ class MySmallDropdown extends StatelessWidget {
       child: DropdownButtonHideUnderline(
         child: Center(
           child: DropdownButton(
-            value: value,
-            isExpanded: myisExpanded,
-            iconDisabledColor: iconColor,
-            iconEnabledColor: iconColor,
-            dropdownColor: dropDownColor,
-            hint: Text(
-              "empty",
-              textScaleFactor: 0.7,
-              style: TextStyle(color: hintColor),
-            ),
-            onChanged: onChange, 
-            isDense: true,
-            items:  myDropDownList.isNotEmpty
-                    ? myDropDownList.map((e) {
-                       
-                        return DropdownMenuItem(
-                          child: SizedBox(
-                            width: dropDownWidth,
-                            child: Text(
-                              "${e.name}",
-                              textScaleFactor: 0.7,
-                              style: TextStyle(color: txtColor),
-                            ),
+              value: value,
+              isExpanded: myisExpanded,
+              iconDisabledColor: iconColor,
+              iconEnabledColor: iconColor,
+              dropdownColor: dropDownColor,
+              hint: Text(
+                "empty",
+                textScaleFactor: 0.7,
+                style: TextStyle(color: hintColor),
+              ),
+              onChanged: onChange,
+              isDense: true,
+              items: myDropDownList.isNotEmpty
+                  ? myDropDownList.map((e) {
+                      return DropdownMenuItem(
+                        child: SizedBox(
+                          width: dropDownWidth,
+                          child: Text(
+                            "${e.name}",
+                            textScaleFactor: 0.7,
+                            style: TextStyle(color: txtColor),
                           ),
-                          value: e.name,
-                        );
-                      }).toList()
-                    : null
-               
-          ),
+                        ),
+                        value: e.name,
+                      );
+                    }).toList()
+                  : null),
         ),
       ),
     );

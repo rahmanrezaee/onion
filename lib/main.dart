@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/Idea/viewIdeas.dart';
 import 'package:onion/pages/analysisList/analysisList.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
 import 'package:onion/pages/profile/profile_page.dart';
@@ -18,15 +19,14 @@ import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/validation/signup_validation.dart';
 import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
-import 'package:onion/widgets/test.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './pages/Idea/MyIdeaDetailes.dart';
 import './pages/franchises/RequestOnFranchise.dart';
 import './pages/franchises/requestFranchisesUser.dart';
 import './pages/franchises/viewFranchisesUser.dart';
 import './test.dart';
-import './pages/franchises/RequestOnFranchise.dart';
 import './pages/underDevelopment.dart';
 import './pages/Home.dart';
 import './pages/Idea/postIdea.dart';
@@ -47,13 +47,12 @@ import './statemanagment/DrawerScaffold.dart';
 import './pages/MyMessagePage.dart';
 import './pages/NotificationsList.dart';
 import './pages/ProjectChat.dart';
-import './pages/Home.dart';
 import './pages/AnalyticsOne.dart';
 import './pages/CustomDrawerPage.dart';
 import './pages/Analysis.dart';
 import './pages/request.dart';
-import 'pages/franchises/ViewMyRequestFranchise.dart';
-import './widgets/bottom_nav.dart';
+import './pages/franchises/myFranchises.dart';
+import './pages/franchises/addFranchise.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -98,7 +97,17 @@ void main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build( context) {
     Provider.of<Auth>(context, listen: false).tryAutoLogin();
@@ -125,10 +134,10 @@ class MyApp extends StatelessWidget {
             
           ),
         ),
-        home:  CustomDrawerPage(key),
+        home:  CustomDrawerPage(widget.key),
         routes: {
           Login.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : FutureBuilder(
                   future:
                       Provider.of<Auth>(context, listen: false).tryAutoLogin(),
@@ -145,20 +154,21 @@ class MyApp extends StatelessWidget {
           ProfilePage.routeName: (context) => ProfilePage(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) =>
-              auth.token != null ? CustomDrawerPage(key) : SignUp(),
+              auth.token != null ? CustomDrawerPage(widget.key) : SignUp(),
           ComplateProfile.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : ComplateProfile(
                   ModalRoute.of(context).settings.arguments,
                 ),
-          CustomDrawerPage.routeName: (context) => CustomDrawerPage(key),
+          CustomDrawerPage.routeName: (context) => CustomDrawerPage(widget.key),
           AnalyticsOne.routeName: (context) => AnalyticsOne(),
           Analysis.routeName: (context) => Analysis(),
           RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-          ForgetPassword.routeName: (context) =>
-              auth.token != null ? CustomDrawerPage(key) : ForgetPassword(),
+          ForgetPassword.routeName: (context) => auth.token != null
+              ? CustomDrawerPage(widget.key)
+              : ForgetPassword(),
           ChangePassword.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(key)
+              ? CustomDrawerPage(widget.key)
               : ChangePassword(
                   ModalRoute.of(context).settings.arguments,
                 ),
@@ -177,7 +187,9 @@ class MyApp extends StatelessWidget {
           MyIdeaId.routeName: (context) => MyIdeaId(),
           MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
           RequestPage.routeName: (context) => RequestPage(),
-          RatingPage.routeName: (context) => RatingPage(),
+          AddFranchise.routeName: (context) => AddFranchise(),
+          MyFranchises.routeName: (context) => MyFranchises(),
+          ViewIdeas.routeName: (context) => ViewIdeas(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (_) => UnderDevelopment());

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:onion/const/MyUrl.dart';
-import 'package:onion/models/AnalyticsModel.dart';
 import 'package:onion/models/CategoryModel.dart';
 import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
+import 'package:onion/models/AnalyticsModel.dart';
+import 'package:onion/models/CategoryModel.dart' as CatModel;
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:provider/provider.dart';
 
 class DropdownProvider with ChangeNotifier {
-  List<CategoryModel> categoryList;
-  List<CategoryModel> idustryList;
+
+  List<CatModel.CategoryModel> categoryList;
+  List<CatModel.CategoryModel> idustryList;
   List<AnalyticsModel> typeList;
   List<String> countryList;
 
@@ -38,7 +40,7 @@ class DropdownProvider with ChangeNotifier {
 
       extractedData.forEach((netItems) {
         categoryList.add(
-          CategoryModel(
+          CatModel.CategoryModel(
             id: netItems['_id'],
             name: netItems['name'],
             createdAt: netItems['createdAt'],
@@ -74,7 +76,7 @@ class DropdownProvider with ChangeNotifier {
       idustrySelected = extractedData[0]['name'];
       extractedData.forEach((netItems) {
         idustryList.add(
-          CategoryModel(
+          CatModel.CategoryModel(
             id: netItems['_id'],
             name: netItems['name'],
             createdAt: netItems['createdAt'],
@@ -157,13 +159,13 @@ class DropdownProvider with ChangeNotifier {
   }
 
   void addCategoryFirstElement() {
-    categoryList.add(CategoryModel(id: null, name: "Select Item", parent: "0"));
+    categoryList.add(
+        CatModel.CategoryModel(id: null, name: "Select Item", parent: "0"));
   }
 
   void addIndestyFirstElement() {
-    this
-        .idustryList
-        .add(CategoryModel(id: null, name: "Select Item", parent: "0"));
+    this.idustryList.add(
+        CatModel.CategoryModel(id: null, name: "Select Item", parent: "0"));
   }
 
   void addTypeFirstElement() {

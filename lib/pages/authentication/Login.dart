@@ -406,11 +406,9 @@ class _LoginState extends State<Login> {
 
       if (result != null) {
         user.User newUser = new user.User();
-
         newUser.name = result.displayName;
         newUser.email = result.email;
         newUser.phone = result.phoneNumber;
-
         newUser.profile = result.photoURL;
         Navigator.pushNamed(context, ComplateProfile.routeName,
             arguments: newUser);
