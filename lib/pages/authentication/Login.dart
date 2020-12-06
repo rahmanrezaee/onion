@@ -403,7 +403,7 @@ class _LoginState extends State<Login> {
 
     try {
       fi.User result = await signInWithGoogle();
-
+      print("${result}");
       if (result != null) {
         user.User newUser = new user.User();
         newUser.name = result.displayName;
