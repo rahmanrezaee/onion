@@ -28,6 +28,12 @@ Future<User> signInWithGoogle() async {
       await _auth.signInWithCredential(credential);
   final User user = authResult.user;
 
+  _auth.currentUser.getIdToken(true).then((data) {
+    print("token firebase : $data");
+  });
+
+  print("firebase user $user");
+
   if (user != null) {
     // Checking if email and name is null
     assert(user.email != null);

@@ -5,6 +5,8 @@ import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/analysisList/analysisList.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/pages/franchises/addFranchise.dart';
+import 'package:onion/pages/franchises/myFranchises.dart';
 import 'package:onion/pages/profile/profile_page.dart';
 import 'package:onion/pages/rating/RatingPage.dart';
 import 'package:onion/pages/viewRating.dart';
@@ -12,6 +14,7 @@ import 'package:onion/statemanagment/RatingProvider.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
+import 'package:onion/statemanagment/franchise_provider.dart';
 import 'package:onion/utilities/Connectivity/ConnectionStatusSingleton.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
@@ -92,6 +95,17 @@ void main() async {
                context,
             ) =>
                 RatingProvider(null)),
+        ChangeNotifierProxyProvider<Auth, FranchiesProvider>(
+            update: (
+              context,
+              auth,
+              previousMessages,
+            ) =>
+                FranchiesProvider(auth),
+            create: (
+               context,
+            ) =>
+                FranchiesProvider(null)),
       ],
       child: MyApp(),
     ),
@@ -104,7 +118,9 @@ class MyApp extends StatelessWidget {
     Provider.of<Auth>(context, listen: false).tryAutoLogin();
 
     return Consumer<Auth>(
-      builder: (ctx, auth, _) => MaterialApp(
+      builder: (ctx, auth, _) {
+        var myFranchises = MyFranchises;
+        return MaterialApp(
         title: 'Onion.ai',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -178,11 +194,14 @@ class MyApp extends StatelessWidget {
           MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
           RequestPage.routeName: (context) => RequestPage(),
           RatingPage.routeName: (context) => RatingPage(),
+          MyFranchises.routeName: (context) => MyFranchises(),
+          AddFranchise.routeName: (context) => AddFranchise(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (_) => UnderDevelopment());
         },
-      ),
+      );
+      },
     );
   }
 }
