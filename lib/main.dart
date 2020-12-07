@@ -3,7 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
+import 'package:onion/pages/Idea/InnovatorsIdeas.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/Idea/findIdea.dart';
 import 'package:onion/pages/Idea/viewIdeas.dart';
 import 'package:onion/pages/analysisList/analysisList.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
@@ -58,6 +60,7 @@ import './pages/franchises/addFranchise.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SharedPreferences.setMockInitialValues({});
 
   runApp(ConnectivityAppWrapper(
     app: MultiProvider(
@@ -144,8 +147,8 @@ class _MyAppState extends State<MyApp> {
             bodyText2: TextStyle(color: Colors.black54),
           ),
         ),
-        home: CustomDrawerPage(widget.key),
-        // home: AddFranchise(),
+        // home: CustomDrawerPage(widget.key),
+        home: InnovatorsIdeas(),
         routes: {
           Login.routeName: (context) =>
               auth.token != null ? CustomDrawerPage(widget.key) : Login(),
