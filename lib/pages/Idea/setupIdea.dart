@@ -130,7 +130,7 @@ class _SetupIdeaState extends State<SetupIdea> {
                                 child: TextFormField(
                                   inputFormatters: [
                                     new LengthLimitingTextInputFormatter(
-                                        4), // for mobile
+                                        2), // for mobile
                                   ],
                                   keyboardType: TextInputType.number,
                                   controller: yearController,
@@ -444,15 +444,20 @@ class _SetupIdeaState extends State<SetupIdea> {
             // },
           );
         } else {
+          setState(() {
+            loading = false;
+          });
           _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text("Somthing went wrong!! Please try again."),
+            content: Text("Something went wrong!! Please try again."),
             backgroundColor: Colors.red,
           ));
         }
       }).catchError((e) {
-        loading = false;
+        setState(() {
+          loading = false;
+        });
         _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text("Somthing went wrong!! Please try again."),
+          content: Text("Something went wrong!! Please try again."),
           backgroundColor: Colors.red,
         ));
       });

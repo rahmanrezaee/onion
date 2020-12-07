@@ -5,6 +5,7 @@ import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/statemanagment/SaveAnalysis.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:onion/widgets/AnalysisWidget/extra/MyEmptyText.dart';
 import 'package:onion/widgets/MyAppBarContainer.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
 import 'package:onion/widgets/temp_popup.dart';

@@ -1,6 +1,6 @@
-package com.example.onion;
+package com.example.onion
 
-import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.android.FlutterActivity
 
 class MainActivity: FlutterActivity() {
 }

@@ -1,23 +1,22 @@
 import 'package:onion/pages/Analysis.dart';
+import 'package:onion/statemanagment/analysis_provider.dart';
+import 'package:onion/statemanagment/dropdown_provider.dart';
+import 'package:onion/widgets/AnalysisWidget/extra/MyEmptyText.dart';
+import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-import 'package:onion/widgets/AnalysisWidget/MyBigDropDown.dart';
 import '../../const/Size.dart';
 import '../../const/color.dart';
-import '../../statemanagment/dropDownItem/AnalyticsProvider.dart';
-import '../../statemanagment/dropDownItem/CategoryProvider.dart';
-import '../../statemanagment/dropDownItem/IndustryProvider.dart';
-import '../AnalysisWidget/MySmallDropdown.dart';
 
 import '../MyAppBarContainer.dart';
 import '../SmallDropDown.dart';
 
-Future<void> showMyDialog({@required BuildContext context}) async {
+Future<void> showMyDialog({@required  context}) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
+    builder: ( context) {
       return AlertDialog(
         contentPadding: EdgeInsets.only(
           bottom: deviceSize(context).height * 0.03,
@@ -29,34 +28,13 @@ Future<void> showMyDialog({@required BuildContext context}) async {
   );
 }
 
-class DialogContent extends StatefulWidget {
+class DialogContent extends StatelessWidget {
   const DialogContent({
     Key key,
   }) : super(key: key);
 
   @override
-  _DialogContentState createState() => _DialogContentState();
-}
-
-class _DialogContentState extends State<DialogContent> {
-  Future<void> fetchCategory;
-  bool isCatLoading = true;
-  bool isAnaLoading = true;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    this.fetchCategory = Provider.of<CategoryProvider>(
-      context,
-      listen: false,
-    ).fetchItems(context).then((value) {
-      isCatLoading = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     return SingleChildScrollView(
       child: ListBody(
         children: <Widget>[
@@ -80,140 +58,151 @@ class _DialogContentState extends State<DialogContent> {
             ),
             child: Column(
               children: [
-                Text(
-                  'Let us know what all analytics you are intrested in?',
-                  textScaleFactor: 1,
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: deviceSize(context).height * 0.03),
-                Consumer<CategoryProvider>(
-                  builder: (
-                    BuildContext consContext,
-                    value,
-                    Widget child,
-                  ) {
-                    if (value.items.isEmpty) {
-                      print("Mahdia IF ");
-                      return MyEmptyText(
-                        myTxt: value.isLoading ? "loading..." : "Empty",
+                 Consumer<DropdownProvider>(
+                    builder: ( context, dpvalue, Widget child) {
+                  return Column(
+                    children: [
+                      Text(
+                        'Let us know what all analytics you are intrested in?',
+                        textScaleFactor: 1,
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: deviceSize(context).height * 0.03),
+                      dpvalue.categoryList.isEmpty
+                          ? FutureBuilder(
+                              future: dpvalue.fetchItemsCategory(),
+                              builder: (futureContext, snapshot) {
+                                return MyEmptyText(myTxt: "Loading...");
+                              },
+                            )
+                          : DropDownFormField(
+                              value: dpvalue.categorySelected,
+                              onChanged: (value) async {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
+                                dpvalue.categorySelected = value;
+                                await dpvalue.fetchItemsIndustry();
+                              },
+                              dataSource: dpvalue.categoryList.isEmpty
+                                  ? []
+                                  : dpvalue.categoryList.map((data) {
+                                      return {
+                                        "display": data.name,
+                                        "value": data.name
+                                      };
+                                    }).toList(),
+                              textField: 'display',
+                              valueField: 'value',
+                            ),
+                      SizedBox(height: deviceSize(context).height * 0.03),
+                      dpvalue.idustryList.isNotEmpty
+                          ? DropDownFormField(
+                              value: dpvalue.idustrySelected,
+                              onChanged: (value) async {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
+                                dpvalue.idustrySelected = value;
+                                await dpvalue.fetchItemsType();
+                              },
+                              dataSource: dpvalue.idustryList.isEmpty
+                                  ? []
+                                  : dpvalue.idustryList.map((data) {
+                                      return {
+                                        "display": data.name,
+                                        "value": data.name
+                                      };
+                                    }).toList(),
+                              textField: 'display',
+                              valueField: 'value',
+                            )
+                          : Text("No Item To Analysis"),
+                      SizedBox(height: deviceSize(context).height * 0.03),
+                      dpvalue.typeList.isNotEmpty
+                          ? DropDownFormField(
+                              value: dpvalue.typeSelected,
+                              onChanged: (value) async {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
+                                dpvalue.typeSelected = value;
+                                await dpvalue.fetchCountryType(context);
+                              },
+                              dataSource: dpvalue.typeList.isEmpty
+                                  ? []
+                                  : dpvalue.typeList.map((data) {
+                                      return {
+                                        "display": data.title,
+                                        "value": data.title
+                                      };
+                                    }).toList(),
+                              textField: 'display',
+                              valueField: 'value',
+                            )
+                          : Text("No Item To Analysis"),
+                      SizedBox(height: deviceSize(context).height * 0.03),
+                    ],
+                  );
+                }),
+                Consumer<AnalysisProvider>(
+                  builder: ( context, anavalue, Widget child) {
+                    if (anavalue.countryInList.isEmpty) {
+                      return DropDownFormField(
+                        value: "no Item",
+                        dataSource: [
+                          {"display": "no Item", "value": "no Item"}
+                        ],
+                        textField: 'display',
+                        valueField: 'value',
                       );
                     } else {
-                      print("Mahdia Else ");
-                      // return Text("Mahdi");
-                      return MySmallDropdown(
-                        iconColor: Colors.black,
-                        myisExpanded: true,
-                        myDropDownList: value.items,
-                        dropDownAroundColor: Colors.grey,
-                        txtColor: Colors.grey,
-                        dropDownColor: Colors.white,
-                        futureType: "category",
-                        firstVal: value.items[0].name,
-                        hintColor: Colors.grey,
-                        dropDownWidth: deviceSize(context).width * 0.7,
+                      return Column(
+                        children: [
+                          DropDownFormField(
+                            value: anavalue.selectedCountry.country,
+                            onChanged: (value) async {
+                              FocusScope.of(context)
+                                  .requestFocus(new FocusNode());
+
+                              anavalue.countryInList.forEach((element) {
+                                if (element.country == value) {
+                                  anavalue.changeCountryColors(element);
+                                }
+                              });
+                            },
+                            dataSource: anavalue.countryInList.map((data) {
+                              return {
+                                "display": data.country,
+                                "value": data.country
+                              };
+                            }).toList(),
+                            textField: 'display',
+                            valueField: 'value',
+                          ),
+                          SizedBox(height: deviceSize(context).height * 0.01),
+                          SizedBox(
+                            width: double.infinity,
+                            child: RaisedButton(
+                              color: middlePurple,
+                              textColor: Colors.white,
+                              elevation: 0,
+                              child: Text("See Analysis"),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                                side: BorderSide(color: middlePurple),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                                Navigator.pushNamed(
+                                  context,
+                                  Analysis.routeName,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       );
+                      // DropdownButtonFormField(items: null, onChanged: null);
                     }
                   },
-                ),
-                SizedBox(height: deviceSize(context).height * 0.03),
-                Consumer<IndustryProvider>(
-                  builder: (
-                    BuildContext consContext,
-                    value,
-                    Widget child,
-                  ) {
-                    if (value.items.isEmpty) {
-                      print("Mahdia IF ");
-                      return MyEmptyText(
-                        myTxt: value.isLoading ? "loading..." : "Empty",
-                      );
-                    } else {
-                      print("Mahdia Else ");
-                      // return Text("Mahdi");
-                      return MySmallDropdown(
-                        iconColor: Colors.black,
-                        myisExpanded: true,
-                        myDropDownList: value.items,
-                        dropDownAroundColor: Colors.grey,
-                        txtColor: Colors.grey,
-                        dropDownColor: Colors.white,
-                        firstVal: value.items[0].name,
-                        futureType: "industry",
-                        hintColor: Colors.grey,
-                        dropDownWidth: deviceSize(context).width * 0.7,
-                      );
-                    }
-                  },
-                ),
-                SizedBox(height: deviceSize(context).height * 0.03),
-                Consumer<AnalyticsProvider>(
-                  builder: (
-                    BuildContext consContext,
-                    value,
-                    Widget child,
-                  ) {
-                    if (value.items.isEmpty) {
-                      return MyPopTxt(
-                        myTxt: value.isLoading ? "loading..." : "Empty",
-                      );
-                    } else {
-                      print("Mahdia Else ");
-                      // return Text("Mahdi");
-                      return MySmallDropdown(
-                        iconColor: Colors.black,
-                        myisExpanded: true,
-                        myDropDownList: [],
-                        myDropDownAnal: value.items,
-                        dropDownAroundColor: Colors.grey,
-                        txtColor: Colors.grey,
-                        dropDownColor: Colors.white,
-                        firstVal: value.items[0].title,
-                        futureType: "analytics",
-                        hintColor: Colors.grey,
-                        dropDownWidth: deviceSize(context).width * 0.7,
-                      );
-                    }
-                  },
-                ),
-                SizedBox(height: deviceSize(context).height * 0.03),
-                Consumer<AnalyticsProvider>(
-                  builder: (BuildContext context, value, Widget child) {
-                    if (value.countryItems.isEmpty) {
-                      return MyPopTxt(
-                        myTxt: value.isLoading ? "loading..." : "Empty",
-                      );
-                    } else {
-                      return SmallDropCount(
-                        myDropDownList: value.countryItems.isNotEmpty
-                            ? value.countryItems
-                            : [],
-                        dropDownAroundColor: Colors.grey,
-                        dropDownColor: Colors.white,
-                        iconColor: Colors.black,
-                        myisExpanded: true,
-                        txtColor: Colors.grey,
-                        dropDownWidth: deviceSize(context).width * 0.7,
-                      );
-                    }
-                  },
-                ),
-                SizedBox(height: deviceSize(context).height * 0.01),
-                SizedBox(
-                  width: double.infinity,
-                  child: RaisedButton(
-                    color: middlePurple,
-                    textColor: Colors.white,
-                    elevation: 0,
-                    child: Text("Save"),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      side: BorderSide(color: middlePurple),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      // Navigator.pushNamed(context, Analysis.routeName);
-                    },
-                  ),
                 ),
                 SizedBox(
                   width: double.infinity,
@@ -247,7 +236,7 @@ class MyPopTxt extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     return Container(
       width: deviceSize(context).width * 0.8,
       padding: EdgeInsets.all(deviceSize(context).width * 0.02),
@@ -269,32 +258,3 @@ class MyPopTxt extends StatelessWidget {
     );
   }
 }
-
-// E:\Project\Flutter\Sobhan\NewRepositoryLast\mobile-app\android\app\src\debug\AndroidManifest.xml:24:9-31:50 Warning:
-// [   +3 ms]      activity#com.google.firebase.auth.internal.FederatedSignInActivity@android:launchMode was tagged at
-// AndroidManifest.xml:24 to replace other declarations but no other declaration present
-// [   +6 ms] Note: Some input files use unchecked or unsafe operations.
-// [   +4 ms] Note: Recompile with -Xlint:unchecked for details.
-// [        ] Note: Some input files use or override a deprecated API.
-// [        ] Note: Recompile with -Xlint:deprecation for details.
-// [        ] WARNING: Compatible side by side NDK version was not found. Default is 21.0.6113669.
-// [        ] Compatible side by side NDK version was not found. Default is 21.0.6113669.
-// [+3299 ms] Unable to strip the following libraries, packaging them as they are: libflutter.so.
-// [  +99 ms] Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
-// [   +1 ms] Use '--warning-mode all' to show the individual deprecation warnings.
-// [        ] See https://docs.gradle.org/6.1.1/userguide/command_line_interface.html#sec:command_line_warnings
-// [        ] BUILD SUCCESSFUL in 3m 4s
-// [        ] 354 actionable tasks: 314 executed, 40 up-to-date
-// [ +424 ms] Running Gradle task 'assembleDebug'... (completed in 186.1s, longer than expected)
-// [ +128 ms] calculateSha: LocalDirectory:
-// 'E:\Project\Flutter\Sobhan\NewRepositoryLast\mobile-app\build\app\outputs\flutter-apk'/app.apk
-// E: queries (line=25)
-// E: intent (line=26)
-// E: action (line=27)
-// [  +15 ms] I/flutter (16716): null
-// [ +242 ms] W/ConnectionTracker(16716): Exception thrown while unbinding
-// [   +3 ms] W/ConnectionTracker(16716): java.lang.IllegalArgumentException: Service not registered: lq@bcff89e
-// [  +11 ms] W/ConnectionTracker(16716):  at android.app.LoadedApk.forgetServiceDispatcher(LoadedApk.java:1490)
-// [  +10 ms] W/ConnectionTracker(16716):  at android.app.ContextImpl.unbindService(ContextImpl.java:1655)
-// [   +1 ms] W/ConnectionTracker(16716):  at android.content.ContextWrapper.unbindService(ContextWrapper.java:716)
-// [   +6 ms] W/ConnectionTracker(16716):  at

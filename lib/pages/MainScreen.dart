@@ -5,7 +5,9 @@ import 'package:onion/pages/DashboardPage.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Home.dart';
 import 'package:onion/pages/MyMessagePage.dart';
-import 'package:onion/pages/underDevelopment.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:onion/utilities/Connectivity/MyConnectivity.dart';
+import 'package:onion/widgets/Snanckbar.dart';
 import 'package:onion/widgets/bottom_nav.dart';
 import 'package:onion/pages/SearchTab/SearchTab.dart';
 
@@ -21,6 +23,16 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _page = 0;
+  int _index = 0;
+
+  initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +67,7 @@ class _MainScreenState extends State<MainScreen> {
               style: TextStyle(color: Colors.white, fontSize: 10)),
         ],
         titleMarginBottom: 10,
+        index: _index,
         items: <Widget>[
           Icon(Icons.home, color: Colors.white),
           Icon(Icons.message, color: Colors.white),
@@ -63,8 +76,19 @@ class _MainScreenState extends State<MainScreen> {
           Icon(Icons.search, color: Colors.white),
         ],
         onTap: (index) {
+          // if (index == 2 || index == 3) {
+
+          //   setState(() {
+          //     _page = _page;
+          //     _index = _page;
+          //   });
+
+          //   return;
+          // }
+
           setState(() {
             _page = index;
+            _index = index;
           });
         },
       ),

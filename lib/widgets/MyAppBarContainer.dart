@@ -1,48 +1,24 @@
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/statemanagment/MyDropDownState.dart';
-import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
-import 'package:onion/statemanagment/dropDownItem/CategoryProvider.dart';
-import 'package:onion/statemanagment/dropDownItem/IndustryProvider.dart';
-import 'package:onion/statemanagment/dropDownItem/MyFlagState.dart';
+import 'package:onion/statemanagment/analysis_provider.dart';
+import 'package:onion/statemanagment/dropdown_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../const/Size.dart';
 import '../const/color.dart';
 import './AnalysisWidget/MyBigDropDown.dart';
 import './AnalysisWidget/MySmallDropdown.dart';
+import './AnalysisWidget/extra/MyEmptyText.dart';
+import 'AnalysisWidget/AnaylsisDropdownWidget.dart';
 
-class MyAppBarContainer extends StatefulWidget {
-  MyAppBarContainer({
-    Key key,
-  }) : super(key: key);
-
+class MyAppBarContainer extends StatelessWidget {
   @override
-  _MyAppBarContainerState createState() => _MyAppBarContainerState();
-}
-
-class _MyAppBarContainerState extends State<MyAppBarContainer> {
-  Future<void> fetchCategory;
-  bool isCatLoading = true;
-  bool isAnaLoading = true;
-
-  // Future<void> fetchAnalytics;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () {
-      this.fetchCategory = Provider.of<CategoryProvider>(
-        context,
-        listen: false,
-      ).fetchItems(context).then((value) {
-        isCatLoading = false;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
+    // var pro = Provider.of<DropdownProvider>(context, listen: false);
     return Container(
       height: deviceSize(context).height * 0.16,
       padding: EdgeInsets.symmetric(
@@ -62,361 +38,179 @@ class _MyAppBarContainerState extends State<MyAppBarContainer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              FutureBuilder(
-                future: fetchCategory,
-                builder: (futureContext, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return MyEmptyText(myTxt: "Loading...");
-                  } else {
-                    if (snapshot.error != null) {
-                      return MyEmptyText(myTxt: "Error...  ");
-                    } else {
-                      return Consumer<CategoryProvider>(
-                        builder: (
-                          BuildContext consContext,
-                          value,
-                          Widget child,
-                        ) {
-                          if (value.items.isEmpty) {
-                            return MyEmptyText(
-                              myTxt:
-                                  value.isLoading ? "loading..." : "Empty     ",
-                            );
-                          } else {
-                            return MySmallDropdown(
+          Consumer<DropdownProvider>(
+            builder: (context, dpvalue, Widget child) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  dpvalue.categoryList == null
+                      ? FutureBuilder(
+                          future: dpvalue.fetchItemsCategory(),
+                          builder: (futureContext, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return MyEmptyText(myTxt: "Loading...");
+                            } else {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done)
+                                return MyEmptyText(myTxt: "Done");
+                            }
+                          },
+                        )
+                      : dpvalue.categoryList.isEmpty
+                          ? MyEmptyText(myTxt: "Empty")
+                          : MySmallDropdown(
                               myisExpanded: false,
-                              myDropDownList:
-                                  value.items == null ? [] : value.items,
+                              myDropDownList: dpvalue.categoryList.isEmpty
+                                  ? []
+                                  : dpvalue.categoryList,
                               dropDownAroundColor: Colors.white,
                               dropDownColor: middlePurple,
                               iconColor: Colors.white,
                               txtColor: Colors.white,
-                              futureType: "category",
-                              firstVal: value.items[0].name,
-                            );
-                          }
-                        },
-                      );
-                    }
-                  }
-                },
-              ),
-              FutureBuilder(
-                future: fetchCategory,
-                builder: (consContext, AsyncSnapshot<dynamic> snapshot) {
-                  return Consumer<IndustryProvider>(
-                    builder: (BuildContext consContext, value, Widget child) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return MyEmptyText(myTxt: "Empty");
-                      } else {
-                        if (snapshot.error != null) {
-                          return MyEmptyText(myTxt: "Error...  ");
-                        } else {
-                          if (value.items.isEmpty) {
-                            return MyEmptyText(
-                              myTxt:
-                                  value.isLoading ? "loading..." : "Empty     ",
-                            );
-                          } else {
-                            isAnaLoading = false;
-                            return MySmallDropdown(
+                              onChange: (value) async {
+                                dpvalue.categorySelected = value;
+                                await dpvalue.fetchItemsIndustry();
+                              },
+                              value: dpvalue.categorySelected,
+                              dropDownWidth: deviceSize(context).width * 0.17,
+                            ),
+                  dpvalue.idustryList != null
+                      ? dpvalue.idustryList.isEmpty
+                          ? MyEmptyText(myTxt: "Empty")
+                          : MySmallDropdown(
                               myisExpanded: false,
-                              myDropDownList:
-                                  value.items == null ? [] : value.items,
+                              myDropDownList: dpvalue.idustryList.isEmpty
+                                  ? []
+                                  : dpvalue.idustryList,
                               dropDownAroundColor: Colors.white,
                               dropDownColor: middlePurple,
                               iconColor: Colors.white,
                               txtColor: Colors.white,
-                              futureType: "industry",
-                              firstVal: value.items[0].name,
-                            );
-                          }
-                        }
-                      }
-                    },
-                  );
-                },
-              ),
-              FutureBuilder(
-                builder: (consContext, AsyncSnapshot<dynamic> snapshot) {
-                  return Consumer<AnalyticsProvider>(
-                    builder: (BuildContext consContext, value, Widget child) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return MyEmptyText(myTxt: "Loading...");
-                      } else {
-                        if (snapshot.error != null) {
-                          return MyEmptyText(myTxt: "Error...  ");
-                        } else {
-                          if (value.items.isEmpty) {
-                            return MyEmptyText(
-                              myTxt:
-                                  value.isLoading ? "loading..." : "Empty     ",
-                            );
-                          } else {
-                            return MySmallDropdown(
+                              onChange: (value) async {
+                                dpvalue.idustrySelected = value;
+                                await dpvalue.fetchItemsType();
+                              },
+                              value: dpvalue.idustrySelected,
+                              dropDownWidth: deviceSize(context).width * 0.17,
+                            )
+                      : MyEmptyText(myTxt: "Selected Category"),
+                  dpvalue.typeList != null
+                      ? dpvalue.idustryList.isEmpty
+                          ? MyEmptyText(myTxt: "Empty")
+                          : AnaylsisDropDown(
                               myisExpanded: false,
-                              myDropDownList:
-                                  value.items == null ? [] : value.items,
+                              myDropDownList: dpvalue.typeList.isEmpty
+                                  ? []
+                                  : dpvalue.typeList,
                               dropDownAroundColor: Colors.white,
+                              // myDropDownAnal: [],
+
                               dropDownColor: middlePurple,
                               iconColor: Colors.white,
                               txtColor: Colors.white,
-                              futureType: "analytics",
-                              firstVal: value.items[0].title,
-                            );
-                          }
-                        }
-                      }
-                    },
-                  );
-                },
-              ),
-            ],
+                              onChange: (value) async {
+                                dpvalue.typeSelected = value;
+                                await dpvalue.fetchCountryType(context);
+                              },
+
+                              value: dpvalue.typeSelected,
+                              dropDownWidth: deviceSize(context).width * 0.17,
+                            )
+                      : MyEmptyText(myTxt: "Selected Industry"),
+                ],
+              );
+            },
           ),
-          MyBigDropDown(),
-          // Consumer<MyDropDownState>(
-          //   builder: (BuildContext context, value, Widget child) {
-          //     print("Mahdi The Best One ${value.analyticsSelected}");
-          //     return MyBigDropDown(
-          //       firstVal: value.items.isNotEmpty
-          //           ? value.items[0].countryName
-          //           : "Country",
-          //       myDropDownList: value.items == null ? [] : value.items,
-          //       txtColor: Colors.white,
-          //     );
-          //   },
-          // ),
+          Consumer<AnalysisProvider>(
+            builder: (context, anavalue, Widget child) {
+              if (anavalue.countryInList.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 20, left: 10),
+                  child: Text(
+                    "Empty List",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                );
+              } else {
+                return MyBigDropDown(
+                  myDropDownAnal: anavalue.countryInList.isNotEmpty
+                      ? anavalue.countryInList
+                      : [],
+                  firstVal: anavalue.selectedCountry.country,
+                  onChange: (value) {
+                    anavalue.countryInList.forEach((element) {
+                      if (element.country == value) {
+                        anavalue.changeCountryColors(element);
+                      }
+                    });
+                  },
+                );
+              }
+            },
+          ),
+          //   Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //     children: <Widget>[
+          //       Expanded(
+          //         child: SmallDropdown(
+          //           futureType: "category",
+          //         ),
+          //       ),
+          //       Expanded(
+          //         child: SmallDropdown(
+          //           futureType: "industry",
+          //         ),
+          //       ),
+          //       Expanded(
+          //         child: SmallDropdown(
+          //           futureType: "analytics",
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // Padding(
+          //   padding: EdgeInsets.only(
+          //     top: deviceSize(context).height * 0.03,
+          //     left: deviceSize(context).width * 0.03,
+          //     right: deviceSize(context).width * 0.03,
+          //   ),
+          //   child: Consumer<AnalysisProvider>(
+          //     builder: ( context, anavalue, Widget child) {
+          //       return DropdownButtonHideUnderline(
+          //         child: DropdownButton(
+          //           value: anavalue.selectedCountry.countryCode,
+          //           iconDisabledColor: Colors.white,
+          //           iconEnabledColor: Colors.white,
+          //           dropdownColor: middlePurple,
+          //           isDense: true,
+          //           items: anavalue.countryInList.isEmpty ? anavalue.countryInList.map((e) {
+          //             return DropdownMenuItem(
+          //               child: Text(
+          //                 e.country,
+          //                 textScaleFactor: 1.4,
+          //                 style: TextStyle(
+          //                   color: Colors.white,
+          //                   fontWeight: FontWeight.bold,
+          //                 ),
+          //               ),
+          //               value: e.countryCode,
+          //             );
+          //           }).toList(),
+          //           onChanged: (value) {
+          //             anavalue.country.forEach((element) {
+          //               if (element.countryCode == value) {
+          //                 anavalue.changeCountryColors(element);
+          //               }
+          //             });
+          //           },
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // )
         ],
       ),
     );
   }
 }
-
-class MyEmptyText extends StatelessWidget {
-  final String myTxt;
-  final Color mColor;
-
-  const MyEmptyText({Key key, this.myTxt, this.mColor}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(deviceSize(context).width * 0.02),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: SizedBox(
-        width: deviceSize(context).width * 0.2,
-        child: Text(
-          myTxt,
-          textScaleFactor: 1,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
-  }
-}
-
-// FutureBuilder(
-//   future: fetchCategory,
-//   builder: (futureContext, snapshot) {
-//     if (snapshot.connectionState == ConnectionState.waiting) {
-//       return Text(
-//         "loading...",
-//         style: TextStyle(color: Colors.white),
-//       );
-//     } else {
-//       if (snapshot.error != null) {
-//         return Text(
-//           "Error...",
-//           style: TextStyle(color: Colors.white),
-//         );
-//       } else {
-//         return Consumer<CategoryProvider>(
-//           builder: (conContext, value, Widget child) {
-//             if (categoryFlag) {
-//               _categoryValue = value.items[0].name;
-//             }
-//             categoryFlag = false;
-//             if (value.items.isEmpty) {
-//               return Text(
-//                 "loading...",
-//                 style: TextStyle(color: Colors.white),
-//               );
-//             } else {
-//               return Container(
-//                 padding: EdgeInsets.all(
-//                     deviceSize(context).width * 0.01),
-//                 margin: EdgeInsets.symmetric(
-//                   horizontal: deviceSize(context).width * 0.01,
-//                 ),
-//                 decoration: BoxDecoration(
-//                   border: Border.all(color: Colors.white),
-//                   borderRadius: BorderRadius.circular(5),
-//                 ),
-//                 child: DropdownButtonHideUnderline(
-//                   child: Center(
-//                     child: DropdownButton(
-//                       value: _categoryValue,
-//                       isExpanded: false,
-//                       iconDisabledColor: Colors.white,
-//                       iconEnabledColor: Colors.white,
-//                       dropdownColor: middlePurple,
-//                       onChanged: (value) async {
-//                         setState(() {
-//                           _categoryValue = value;
-//                         });
-//                         // await industryProvider.fetchItems(
-//                         //   name: value,
-//                         //   context: context,
-//                         // );
-//                         Provider.of<IndustryProvider>(
-//                           context,
-//                           listen: false,
-//                         ).fetchItems(name: _categoryValue);
-//                       },
-//                       isDense: true,
-//                       items: value.items.isNotEmpty
-//                           ? value.items.map((e) {
-//                               print("Mahdi: ${e.id}");
-//                               return DropdownMenuItem(
-//                                 child: SizedBox(
-//                                   width:
-//                                       deviceSize(context).width *
-//                                           0.19,
-//                                   child: Text(
-//                                     "${e.name}",
-//                                     overflow:
-//                                         TextOverflow.ellipsis,
-//                                     maxLines: 1,
-//                                     textScaleFactor: 0.7,
-//                                     style: TextStyle(
-//                                       color: Colors.white,
-//                                     ),
-//                                   ),
-//                                 ),
-//                                 value: e.name,
-//                               );
-//                             }).toList()
-//                           : null,
-//                     ),
-//                   ),
-//                 ),
-//               );
-//             }
-//           },
-//         );
-//       }
-//     }
-//   },
-// ),
-// FutureBuilder(
-//   future: fetchCategory,
-//   builder: (futureContext, snapshot) {
-//     if (snapshot.connectionState == ConnectionState.waiting) {
-//       return Text(
-//         "loading...",
-//         style: TextStyle(color: Colors.white),
-//       );
-//     } else {
-//       if (snapshot.error != null) {
-//         return Center(
-//           child: Text("Error Occurred!"),
-//         );
-//       } else {
-//         return Consumer<IndustryProvider>(
-//           builder: (BuildContext conContext, value, Widget child) {
-//             if (value.items.isEmpty) {
-//               return Text(
-//                 "loading...",
-//                 style: TextStyle(color: Colors.white),
-//               );
-//             } else {
-//               return Consumer<IndustryProvider>(
-//                 builder: (context, value, Widget child) {
-//                   if (industryFlag) {
-//                     _industryValue = value.items[0].name;
-//                   }
-//                   industryFlag = false;
-//                   if (value.items.isEmpty) {
-//                     return Text(
-//                       "loading...",
-//                       style: TextStyle(color: Colors.white),
-//                     );
-//                   } else {
-//                     return Container(
-//                       padding: EdgeInsets.all(
-//                           deviceSize(context).width * 0.01),
-//                       margin: EdgeInsets.symmetric(
-//                         horizontal:
-//                             deviceSize(context).width * 0.01,
-//                       ),
-//                       decoration: BoxDecoration(
-//                         border: Border.all(color: Colors.white),
-//                         borderRadius: BorderRadius.circular(5),
-//                       ),
-//                       child: DropdownButtonHideUnderline(
-//                         child: Center(
-//                           child: DropdownButton(
-//                             value: _industryValue,
-//                             isExpanded: false,
-//                             iconDisabledColor: Colors.white,
-//                             iconEnabledColor: Colors.white,
-//                             dropdownColor: middlePurple,
-//                             onChanged: (value) async {
-//                               setState(() {
-//                                 _industryValue = value;
-//                               });
-//                               // await industryProvider.fetchItems(
-//                               //   name: value,
-//                               //   context: context,
-//                               // );
-//                               Provider.of<AnalyticsProvider>(
-//                                 context,
-//                                 listen: false,
-//                               ).fetchItems(
-//                                 name: _industryValue,
-//                               );
-//                             },
-//                             isDense: true,
-//                             items: value.items.isNotEmpty
-//                                 ? value.items.map((e) {
-//                                     print("Mahdi: ${e.id}");
-//                                     return DropdownMenuItem(
-//                                       child: SizedBox(
-//                                         width: deviceSize(context)
-//                                                 .width *
-//                                             0.19,
-//                                         child: Text(
-//                                           "${e.name}",
-//                                           overflow: TextOverflow
-//                                               .ellipsis,
-//                                           maxLines: 1,
-//                                           textScaleFactor: 0.7,
-//                                           style: TextStyle(
-//                                               color:
-//                                                   Colors.white),
-//                                         ),
-//                                       ),
-//                                       value: e.name,
-//                                     );
-//                                   }).toList()
-//                                 : null,
-//                           ),
-//                         ),
-//                       ),
-//                     );
-//                   }
-//                 },
-//               );
-//             }
-//           },
-//         );
-//       }
-//     }
-//   },
-// ),

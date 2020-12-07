@@ -102,4 +102,3 @@ class ChartSampleData {
   /// Holds open value of the datapoint
   final num volume;
 }
-

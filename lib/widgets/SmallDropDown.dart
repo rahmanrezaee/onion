@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onion/const/Size.dart';
 import 'package:onion/models/CountryDensityModel.dart';
-import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
 import 'package:onion/widgets/Home/MyGoogleMap.dart';
-import 'package:provider/provider.dart';
 
 class SmallDropCount extends StatefulWidget {
   final List<CountryDensityModel> myDropDownList;
@@ -35,7 +33,6 @@ class _MySmallDropCount extends State<SmallDropCount> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -67,10 +64,7 @@ class _MySmallDropCount extends State<SmallDropCount> {
               setState(() {
                 _value = value;
               });
-              Provider.of<AnalyticsProvider>(
-                context,
-                listen: false,
-              ).setCountryId(countryName: value);
+           
             },
             isDense: true,
             items: widget.myDropDownList.isNotEmpty
