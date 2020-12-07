@@ -9,16 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:onion/widgets/AnalysisWidget/MyBigDropDown.dart';
 import '../const/Size.dart';
 import '../const/color.dart';
-import '../statemanagment/dropDownItem/AnalyticsProvider.dart';
-import '../statemanagment/dropDownItem/CategoryProvider.dart';
-// import '../statemanagment/dropDownItem/IndustryProvider.dart';
-import './AnalysisWidget/MySmallDropdown.dart';
 
-Future<void> tempShowMyDialog({@required BuildContext context}) async {
+Future<void> tempShowMyDialog({@required context}) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
+    builder: (context) {
       return AlertDialog(
         contentPadding: EdgeInsets.only(
           bottom: deviceSize(context).height * 0.03,
@@ -40,25 +36,11 @@ class DialogContent extends StatefulWidget {
 }
 
 class _DialogContentState extends State<DialogContent> {
-  Future<void> fetchCategory;
-  bool isCatLoading = true;
-  bool isAnaLoading = true;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    this.fetchCategory = Provider.of<CategoryProvider>(
-      context,
-      listen: false,
-    ).fetchItems(context).then((value) {
-      isCatLoading = false;
-    });
-  }
-
+ 
+  
   bool isloading = false;
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return SingleChildScrollView(
       child: ListBody(
         children: <Widget>[
@@ -83,7 +65,7 @@ class _DialogContentState extends State<DialogContent> {
             child: Column(
               children: [
                 Consumer<DropdownProvider>(
-                    builder: (BuildContext context, dpvalue, Widget child) {
+                    builder: (context, dpvalue, Widget child) {
                   return Column(
                     children: [
                       Text(
@@ -167,8 +149,8 @@ class _DialogContentState extends State<DialogContent> {
                     ],
                   );
                 }),
-                Consumer2<AnalysisProvider, DropdownProvider>(
-                  builder: (BuildContext context, anavalue, dropdownValue,
+                Consumer3<AnalysisProvider, DropdownProvider, SaveAnalProvider>(
+                  builder: (context, anavalue, dropdownValue, saveAna,
                       Widget child) {
                     return Column(children: [
                       anavalue.countryInList.isEmpty
@@ -223,10 +205,8 @@ class _DialogContentState extends State<DialogContent> {
                                   setState(() {
                                     isloading = true;
                                   });
-                                  await Provider.of<SaveAnalProvider>(
-                                    context,
-                                    listen: false,
-                                  ).saveAnalysis(dropdownValue.typeList[1].id,
+                                  await saveAna.saveAnalysis(
+                                      dropdownValue.typeList[1].id,
                                       anavalue.selectedCountry.country);
                                   setState(() {
                                     isloading = false;
@@ -255,7 +235,7 @@ class MyPopTxt extends StatelessWidget {
     this.myTxt,
   }) : super(key: key);
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return Container(
       width: deviceSize(context).width * 0.8,
       padding: EdgeInsets.all(deviceSize(context).width * 0.02),

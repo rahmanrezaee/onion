@@ -27,16 +27,7 @@ class IdeasServices {
         myUrl: "$baseUrl/innovator/idea/add",
         myBody: data,
         myHeaders: {"token": "$token"});
-    print("This is the response: ${response.data}");
+    print("Response: ${response.data}");
     return response.data['status'];
-  }
-
-  Future deleteIdea(String ideaId, String token) async {
-    Response response = await APIRequest().delete(
-        myUrl: "$baseUrl/innovator/idea/ideaid/$ideaId",
-        myBody: null,
-        myHeaders: {"token": "$token"});
-    print("This is the response: ${response.data}");
-    return response.data["status"];
   }
 }

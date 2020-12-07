@@ -10,6 +10,7 @@ import 'package:onion/const/MyUrl.dart';
 import 'package:onion/const/values.dart';
 import 'package:onion/models/users.dart';
 import 'package:flutter/widgets.dart';
+import 'package:onion/statemanagment/ChatManagement/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as fi;
@@ -22,6 +23,7 @@ class Auth with ChangeNotifier {
   String token;
   Map userDataField;
   User currentUser = new User();
+  
   // AuthMethods authMethods = new AuthMethods();
 
   Future<bool> isAuth() async {

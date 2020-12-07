@@ -2,11 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/models/CategoryModel.dart';
+import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
 
 import '../../const/Size.dart';
 
 class MySmallDropdown extends StatelessWidget {
   final List<CategoryModel> myDropDownList;
+
+  final List<AnalyticsModel> myDropDownAnal;
   final Color dropDownAroundColor;
   final Color txtColor;
   final Color dropDownColor;
@@ -30,7 +33,7 @@ class MySmallDropdown extends StatelessWidget {
     this.futureType,
     this.value,
     this.dropDownWidth,
-    this.hintColor = Colors.white,
+    this.hintColor = Colors.white, this.myDropDownAnal,
   });
 
   bool isOpened = false;

@@ -28,7 +28,7 @@ class CircularChart {
   CircularChart.toJson(Map json) {
     this.country = json["Country"];
     this.countryCode = json["CountryCode"];
-    this.slug = json["Slug"];
+    this.slug =  json["Slug"];
     this.newConfirmed = json["NewConfirmed"];
     this.totalConfirmed = json["TotalConfirmed"];
     this.newDeaths = json["NewDeaths"];
@@ -37,5 +37,16 @@ class CircularChart {
     this.totalRecovered = json["TotalRecovered"];
     this.date = json["Date"];
     this.active = json["TotalConfirmed"] - json["NewConfirmed"];
+  }
+
+  CircularChart.toMonthJson(Map json) {
+    this.country = json["Country"];
+    this.countryCode = json["CountryCode"];
+   
+    this.totalConfirmed = json["Confirmed"];
+    this.totalDeaths = json["Deaths"];
+    this.totalRecovered = json["Recovered"];
+    this.date = json["Date"];
+    this.active = json["Active"];
   }
 }

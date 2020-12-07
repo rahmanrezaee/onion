@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import 'package:onion/pages/Home.dart';
 import 'package:onion/pages/Idea/setupIdea.dart';
 import 'package:onion/services/ServicesPage.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as p;
 import 'package:lottie/lottie.dart';
 import '../const/color.dart';
 import '../pages/CustomDrawerPage.dart';
@@ -43,7 +43,7 @@ class _ServicesState extends State<Services> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        return await Provider.of<DrawerScaffold>(
+        return await p.Provider.of<DrawerScaffold>(
           context,
           listen: false,
         ).scaffoldFunc(mScaffoldType: HomePage.routeName);
@@ -193,7 +193,7 @@ class _ServicesState extends State<Services> {
                                                 ]),
                                           ),
                                         ]),
-                                        Consumer<Auth>(
+                                       p.Consumer<Auth>(
                                           builder:
                                               (consumerContext, val, child) {
                                             return Padding(

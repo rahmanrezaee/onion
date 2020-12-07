@@ -10,12 +10,13 @@ import '../../const/Size.dart';
 import '../../const/color.dart';
 
 import '../MyAppBarContainer.dart';
+import '../SmallDropDown.dart';
 
-Future<void> showMyDialog({@required BuildContext context}) async {
+Future<void> showMyDialog({@required  context}) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
+    builder: ( context) {
       return AlertDialog(
         contentPadding: EdgeInsets.only(
           bottom: deviceSize(context).height * 0.03,
@@ -33,7 +34,7 @@ class DialogContent extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     return SingleChildScrollView(
       child: ListBody(
         children: <Widget>[
@@ -57,8 +58,8 @@ class DialogContent extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Consumer<DropdownProvider>(
-                    builder: (BuildContext context, dpvalue, Widget child) {
+                 Consumer<DropdownProvider>(
+                    builder: ( context, dpvalue, Widget child) {
                   return Column(
                     children: [
                       Text(
@@ -142,7 +143,7 @@ class DialogContent extends StatelessWidget {
                   );
                 }),
                 Consumer<AnalysisProvider>(
-                  builder: (BuildContext context, anavalue, Widget child) {
+                  builder: ( context, anavalue, Widget child) {
                     if (anavalue.countryInList.isEmpty) {
                       return DropDownFormField(
                         value: "no Item",
@@ -235,7 +236,7 @@ class MyPopTxt extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     return Container(
       width: deviceSize(context).width * 0.8,
       padding: EdgeInsets.all(deviceSize(context).width * 0.02),

@@ -48,7 +48,7 @@ final _formKey = new GlobalKey<FormState>();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
 
       final validationService = Provider.of<SetupIdeaValidation>(context);
    String token = Provider.of<Auth>(context, listen: false).token;
@@ -419,42 +419,42 @@ final _formKey = new GlobalKey<FormState>();
       setState(() {
         loading = true;
       });
-      IdeasServices().setupIdea(formIdea.sendMap(), token).then((bool status) {
-        if (status == true) {
-          setState(() {
-            loading = false;
-          });
-          Navigator.pushNamed(
-            context,
-            PostIdea.routeName,
-            // arguments: {
-            //   "category": formIdea.category,
-            //   "experienceYear": formIdea.experienceYear,
-            //   "experienceMonth": formIdea.experienceMonth,
-            //   "teamSize": formIdea.teamSize.toString(),
-            //   "location": formIdea.location.toString(),
-            //   "aboutYourBusiness": formIdea.aboutBusinnes,
-            //   "website": formIdea.website,
-            // },
-          );
-        } else {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text("Somthing went wrong!! Please try again."),
-            backgroundColor: Colors.red,
-          ));
-        }
-      }).catchError((e) {
-        loading = false;
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text("Somthing went wrong!! Please try again."),
-          backgroundColor: Colors.red,
-        ));
-      });
+      // IdeasServices().setupIdea(formIdea.sendMap(), token).then((bool status) {
+      //   if (status == true) {
+      //     setState(() {
+      //       loading = false;
+      //     });
+      //     Navigator.pushNamed(
+      //       context,
+      //       PostIdea.routeName,
+      //       // arguments: {
+      //       //   "category": formIdea.category,
+      //       //   "experienceYear": formIdea.experienceYear,
+      //       //   "experienceMonth": formIdea.experienceMonth,
+      //       //   "teamSize": formIdea.teamSize.toString(),
+      //       //   "location": formIdea.location.toString(),
+      //       //   "aboutYourBusiness": formIdea.aboutBusinnes,
+      //       //   "website": formIdea.website,
+      //       // },
+      //     );
+      //   } else {
+      //     _scaffoldKey.currentState.showSnackBar(SnackBar(
+      //       content: Text("Somthing went wrong!! Please try again."),
+      //       backgroundColor: Colors.red,
+      //     ));
+      //   }
+     
     } else {
       setState(() {
         _autoValidate = true;
       });
-    }
+    } // }).catchError((e) {
+      //   loading = false;
+      //   _scaffoldKey.currentState.showSnackBar(SnackBar(
+      //     content: Text("Somthing went wrong!! Please try again."),
+      //     backgroundColor: Colors.red,
+      //   ));
+      // });
   }
 
   

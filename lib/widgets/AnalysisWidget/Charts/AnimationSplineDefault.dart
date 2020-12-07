@@ -4,82 +4,58 @@ import 'dart:math';
 
 /// Package import
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
+import 'package:onion/statemanagment/analysis_provider.dart';
+import 'package:provider/provider.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'package:onion/models/sample_view.dart';
 
-/// Renders the spline chart sample with dynamically updated data points.
-class AnimationSplineDefault extends SampleView {
-  /// Renders the spline chart sample with dynamically updated data points.
-  const AnimationSplineDefault(Key key) : super(key: key);
+/// Renders the defaul spline chart sample.
+class SplineDefault extends SampleView {
+  /// Creates the defaul spline chart Series.
+  const SplineDefault(Key key) : super(key: key);
 
   @override
-  _AnimationSplineDefaultState createState() => _AnimationSplineDefaultState();
+  _SplineDefaultState createState() => _SplineDefaultState();
 }
 
-class _AnimationSplineDefaultState extends SampleViewState {
-
-  _AnimationSplineDefaultState();
-  List<_ChartData> _chartData;
-
-  Timer _timer;
+/// State class of the default spline chart.
+class _SplineDefaultState extends SampleViewState {
+  _SplineDefaultState();
+ 
   @override
   Widget build(BuildContext context) {
-    _getChartData();
-    
-    return _getAnimationSplineChart();
+    return Consumer<AnalysisProvider>(
+      builder: (BuildContext context, value, Widget child) {
+        return value.getDefaultSplineSeriesList != null
+            ? SfCartesianChart(
+                plotAreaBorderWidth: 0,
+                legend: Legend(isVisible: !isCardView),
+                primaryXAxis: CategoryAxis(
+                    majorGridLines: MajorGridLines(width: 0),
+                    labelPlacement: LabelPlacement.onTicks),
+                primaryYAxis: NumericAxis(
+                    axisLine: AxisLine(width: 0),
+                    edgeLabelPlacement: EdgeLabelPlacement.shift,
+                    labelFormat: '{value}',
+                    majorTickLines: MajorTickLines(size: 0)),
+                series: value.getDefaultSplineSeriesList,
+                tooltipBehavior: TooltipBehavior(enable: true),
+              )
+            : FutureBuilder(
+                future: value.getMonthlyReport(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  return Center(child: CircularProgressIndicator());
+                },
+              );
+      },
+    );
   }
 
-  /// get the spline chart sample with dynamically updated data points.
-  SfCartesianChart _getAnimationSplineChart() {
-    return SfCartesianChart(
-        plotAreaBorderWidth: 0,
-        primaryXAxis: NumericAxis(majorGridLines: MajorGridLines(width: 0)),
-        primaryYAxis: NumericAxis(
-            majorTickLines: MajorTickLines(color: Colors.transparent),
-            axisLine: AxisLine(width: 0),
-            minimum: 0,
-            maximum: 100),
-        series: _getDefaultSplineSeries());
-  }
+//
 
-  /// get the spline series sample with dynamically updated data points.
-  List<SplineSeries<_ChartData, num>> _getDefaultSplineSeries() {
-    return <SplineSeries<_ChartData, num>>[
-      SplineSeries<_ChartData, num>(
-          dataSource: _chartData,
-          xValueMapper: (_ChartData sales, _) => sales.x,
-          yValueMapper: (_ChartData sales, _) => sales.y,
-          markerSettings: MarkerSettings(isVisible: true))
-    ];
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer.cancel();
-  }
-
-  /// get the random value
-  num _getRandomInt(num min, num max) {
-    final Random random = Random();
-    return min + random.nextInt(max - min);
-  }
-
-  //Get the random data points
-  void _getChartData() {
-    _chartData = <_ChartData>[];
-    for (int i = 0; i < 11; i++) {
-      _chartData.add(_ChartData(i, _getRandomInt(15, 85)));
-    }
-    _timer?.cancel();
-  }
-}
-
-class _ChartData {
-  _ChartData(this.x, this.y);
-  final int x;
-  final int y;
 }

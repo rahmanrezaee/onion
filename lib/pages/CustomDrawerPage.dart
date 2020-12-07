@@ -1,10 +1,15 @@
+import 'package:connection_status_bar/connection_status_bar.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
+import 'package:onion/const/values.dart';
 import 'package:onion/pages/MainScreen.dart';
 import 'package:onion/pages/MyMessagePage.dart';
 import 'package:onion/pages/Services.dart';
 import 'package:onion/pages/underDevelopment.dart';
-import 'package:onion/statemanagment/idea/ideasProviders.dart';
+import 'package:onion/utilities/Connectivity/MyConnectivity.dart';
+import 'package:onion/widgets/Snanckbar.dart';
 import 'package:provider/provider.dart';
 import '../pages/Home.dart';
 import '../statemanagment/DrawerScaffold.dart';
@@ -40,7 +45,12 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(context) {
     return InnerDrawer(
       key: _innerDrawerKey,
       onTapClose: true,
@@ -77,19 +87,22 @@ class _CustomDrawerPageState extends State<CustomDrawerPage> {
       // return  true (open) or false (close)
       leftChild: MyDrawer(),
       scaffold: Scaffold(
-        body: Consumer<DrawerScaffold>(
+          // bottomNavigationBar:ConnectivityWidgetWrapper(
+          body: ConnectivityWidgetWrapper(
+        // alignment: Alignment.topCenter,
+        child: Consumer<DrawerScaffold>(
           builder: (context, value, Widget child) {
             if (value.scaffoldType == MainScreen.routeName) {
               return _page;
             } else if (value.scaffoldType == Services.routeName) {
               return Services(openDrawer: openCustomDrawer);
             } else if (value.scaffoldType == Analysis.routeName) {
-              // return Analysis(openDrawer: openCustomDrawer);
+              return Analysis(openDrawer: openCustomDrawer);
             }
             return null;
           },
         ),
-      ),
+      )),
     );
   }
 

@@ -1,15 +1,20 @@
+import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/Idea/viewIdeas.dart';
+import 'package:onion/pages/analysisList/analysisList.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
 import 'package:onion/pages/profile/profile_page.dart';
+import 'package:onion/pages/rating/RatingPage.dart';
 import 'package:onion/pages/viewRating.dart';
+import 'package:onion/statemanagment/RatingProvider.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
-import 'package:onion/statemanagment/idea/ideasProviders.dart';
+import 'package:onion/utilities/Connectivity/ConnectionStatusSingleton.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/validation/signup_validation.dart';
@@ -53,31 +58,42 @@ import './pages/franchises/addFranchise.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  SharedPreferences.setMockInitialValues({});
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => DrawerScaffold()),
-      ChangeNotifierProvider(create: (_) => Auth()),
-      ChangeNotifierProvider(create: (_) => SignupValidation()),
-      ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
-      ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
-      ChangeNotifierProvider(create: (_) => AnalysisProvider()),
-      ChangeNotifierProvider(create: (_) => DropdownProvider()),
-      ChangeNotifierProvider(create: (_) => IdeasProvider()),
-      ChangeNotifierProxyProvider<Auth, SaveAnalProvider>(
-          update: (
-            context,
-            auth,
-            previousMessages,
-          ) =>
-              SaveAnalProvider(auth),
-          create: (
-            BuildContext context,
-          ) =>
-              SaveAnalProvider(null)),
-    ],
-    child: MyApp(),
+  runApp(ConnectivityAppWrapper(
+    app: MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => DrawerScaffold()),
+        ChangeNotifierProvider(create: (_) => Auth()),
+        ChangeNotifierProvider(create: (_) => SignupValidation()),
+        ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
+        ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
+        ChangeNotifierProvider(create: (_) => AnalysisProvider()),
+        ChangeNotifierProvider(create: (_) => DropdownProvider()),
+        ChangeNotifierProxyProvider<Auth, SaveAnalProvider>(
+            update: (
+              context,
+              auth,
+              previousMessages,
+            ) =>
+                SaveAnalProvider(auth),
+            create: (
+              context,
+            ) =>
+                SaveAnalProvider(null)),
+        ChangeNotifierProxyProvider<Auth, RatingProvider>(
+            update: (
+              context,
+              auth,
+              previousMessages,
+            ) =>
+                RatingProvider(auth),
+            create: (
+              context,
+            ) =>
+                RatingProvider(null)),
+      ],
+      child: MyApp(),
+    ),
   ));
 }
 
@@ -87,13 +103,25 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
   @override
   void initState() {
     super.initState();
+    // _firebaseMessaging.configure(
+    //   onMessage: (message) async {
+    //     Navigator.pushNamed(context, NotificationsList.routeName);
+    //     print("You have a new notification:$message");
+    //   },
+    //   onResume: (message) async {
+    //     Navigator.pushNamed(context, NotificationsList.routeName);
+    //     print("You have a new notification:$message");
+    //   },
+    // );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     Provider.of<Auth>(context, listen: false).tryAutoLogin();
 
     return Consumer<Auth>(
@@ -114,26 +142,15 @@ class _MyAppState extends State<MyApp> {
             headline2: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w700),
             headline1: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w800),
             bodyText2: TextStyle(color: Colors.black54),
-            // :
           ),
         ),
         home: CustomDrawerPage(widget.key),
         // home: AddFranchise(),
         routes: {
-          Login.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(widget.key)
-              : FutureBuilder(
-                  future:
-                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
-                          ? Scaffold(
-                              body: Center(child: Text("Loading...")),
-                            )
-                          : Login(),
-                ),
+          Login.routeName: (context) =>
+              auth.token != null ? CustomDrawerPage(widget.key) : Login(),
           MyIdeaId.routeName: (context) => MyIdeaId(),
+          AnalysisList.routeName: (context) => AnalysisList(),
           ProfilePage.routeName: (context) => ProfilePage(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) =>

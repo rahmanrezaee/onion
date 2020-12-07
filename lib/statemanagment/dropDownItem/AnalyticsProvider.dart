@@ -6,9 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:onion/const/MyUrl.dart';
 import 'package:onion/models/CountryDensityModel.dart';
 import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
-import 'package:onion/statemanagment/analysis_provider.dart';
+import 'package:onion/statemanagment/dropDownItem/BigDropDownPro.dart';
 import 'package:onion/widgets/Home/MyGoogleMap.dart';
-import 'package:provider/provider.dart';
 import 'package:provider/provider.dart';
 
 import './CategoryProvider.dart';
@@ -38,7 +37,6 @@ class AnalyticsProvider with ChangeNotifier {
   String _getAnalId;
   String _getCountryId;
   String _singleCountry;
-  var analysisProvider;
 
   String get singleCountry {
     return _singleCountry;
@@ -88,16 +86,7 @@ class AnalyticsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void selectSingle({String name, BuildContext context}) {
-    var analysisProvider =
-        Provider.of<AnalysisProvider>(context, listen: false);
-
-    analysisProvider.country.forEach((element) {
-      if (name.toString() == element.country) {
-        analysisProvider.changeCountryColors(element);
-      }
-    });
-
+  void selectSingle({String name}) {
     _myBigDropSelected = true;
     List<CountryDensityModel> temp = [];
     for (int i = 0; i < _countryItems.length; i++) {
@@ -185,24 +174,14 @@ class AnalyticsProvider with ChangeNotifier {
       print("Mahdi: List ${loadedProducts[0].regions}");
       print("Mahdi: List ${loadedProducts[0].id}");
 
-      var analysisProvider =
-          Provider.of<AnalysisProvider>(context, listen: false);
       isLoading = false;
       _items = loadedProducts;
       print("Mahdi: ListL ${loadedProducts[0].regions}");
-
-      loadedProducts[0].regions.forEach((e) {
-        analysisProvider.country.forEach((element) {
-          if (e.toString() == element.country) {
-            analysisProvider.addCountryMerged(element);
-          }
-        });
-        _countryItems.add(
-          CountryDensityModel(e.toString(), 26337),
-        );
-      });
-      // analysisProvider.changeCountryColors(analysisProvider.countryInList[0]);
-
+      loadedProducts[0].regions.forEach(
+            (e) => _countryItems.add(
+              CountryDensityModel(e.toString(), 26337),
+            ),
+          );
       print("Mahdi: ListL $_countryItems");
 
       notifyListeners();

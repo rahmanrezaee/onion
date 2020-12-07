@@ -12,9 +12,12 @@ import 'package:onion/pages/MainScreen.dart';
 import 'package:onion/pages/Services.dart';
 import 'package:onion/pages/Settings.dart';
 import 'package:onion/pages/authentication/Login.dart';
+import 'package:onion/pages/franchises/addFranchise.dart';
+import 'package:onion/pages/franchises/myFranchises.dart';
 import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/pages/profile/profile_page.dart';
+import 'package:onion/pages/rating/RatingPage.dart';
 import 'package:onion/pages/underDevelopment.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:http/http.dart';
@@ -23,8 +26,8 @@ import 'package:onion/pages/request.dart';
 import 'package:onion/services/SimpleHttp.dart';
 import 'package:onion/widgets/T&C_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
-import 'package:onion/statemanagment/idea/ideasProviders.dart';
 import '../../pages/Analysis.dart';
 import '../../pages/Home.dart';
 import '../../statemanagment/DrawerScaffold.dart';
@@ -63,7 +66,7 @@ class _MyDrawerState extends State<MyDrawer> {
     String name,
     IconData icon,
     String routeName,
-    BuildContext context,
+    context,
     bool justPush = false,
     bool hasDrawer = false,
   }) {
@@ -106,233 +109,228 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     Auth().isAuth().then((auth) {
       _isAuth = auth;
     });
-    return Consumer<Auth>(builder: (BuildContext context, value, Widget child) {
-      return ChangeNotifierProvider(
-        create: (context) {
-          return IdeasProvider();
-        },
-        child: Drawer(
-          elevation: 0,
-          child: Container(
-            color: middlePurple,
-            child: ListView(
-              // Important: Remove any padding from the ListView.
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: middlePurple,
-                  ),
-                  child: Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            child: Stack(
-                              children: [
-                                SizedBox(
-                                  height: 100,
-                                  width: 100,
-                                  child: CircleAvatar(
-                                    backgroundImage: value.token != null &&
-                                            value.currentUser.profile != null
-                                        ? NetworkImage(BASE_URL +
-                                            value.currentUser.profile)
-                                        : AssetImage(
-                                            'assets/images/empty_profile.jpg'),
-                                  ),
-                                ),
-                                value.token != null
-                                    ? Positioned(
-                                        right: 8,
-                                        bottom: 8,
-                                        child: Container(
-                                          height:
-                                              deviceSize(context).width * 0.06,
-                                          width:
-                                              deviceSize(context).width * 0.06,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              deviceSize(context).width * 0.03,
-                                            ),
-                                          ),
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.edit,
-                                              color: middlePurple,
-                                              size: deviceSize(context).width *
-                                                  0.04,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : SizedBox()
-                              ],
-                            ),
-                          ),
-                        ),
-                        value.token != null
-                            ? Text(
-                                value.currentUser.name,
-                                textScaleFactor: 1.2,
-                                style: TextStyle(color: Colors.white),
-                              )
-                            : FlatButton(
-                                onPressed: () => Navigator.pushNamed(
-                                    context, Login.routeName),
-                                child: Text(
-                                  "click to login..",
-                                  textScaleFactor: 1.2,
-                                  style: TextStyle(color: Colors.white),
+    return Consumer<Auth>(builder: (context, value, Widget child) {
+      return Drawer(
+        elevation: 0,
+        child: Container(
+          color: middlePurple,
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: middlePurple,
+                ),
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          child: Stack(
+                            children: [
+                              SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: CircleAvatar(
+                                  backgroundImage: value.token != null &&
+                                          value.currentUser.profile != null
+                                      ? NetworkImage(
+                                          BASE_URL + value.currentUser.profile)
+                                      : AssetImage(
+                                          'assets/images/empty_profile.jpg'),
                                 ),
                               ),
-                      ],
-                    ),
-                  ),
-                ),
-                myListTile(
-                  context: context,
-                  name: "Home",
-                  icon: Icons.home,
-                  routeName: MainScreen.routeName,
-                  justPush: true,
-                  hasDrawer: true,
-                ),
-
-                myListTile(
-                    context: context,
-                    name: "Analytics ",
-                    icon: Icons.person,
-                    routeName: Analysis.routeName,
-                    justPush: true),
-
-                value.token != null
-                    ? myListTile(
-                        context: context,
-                        name: "My Profile",
-                        icon: Icons.person,
-                        routeName: ProfilePage.routeName,
-                        justPush: true)
-                    : Container(),
-                value.token != null
-                    ? myListTile(
-                        context: context,
-                        name: "Setting",
-                        icon: Icons.settings,
-                        routeName: "Uder Development",
-                        justPush: true)
-                    : SizedBox(),
-
-                Divider(color: Colors.white, height: 0.1),
-
-                value.token != null
-                    ? myListTile(
-                        context: context,
-                        name: "Notification Setting",
-                        justPush: true,
-                        icon: Icons.notifications,
-                        routeName: Settings.routeName,
-                      )
-                    : Container(),
-
-                value.token != null
-                    ? myListTile(
-                        context: context,
-                        name: "Request",
-                        icon: Icons.request_page,
-                        routeName: RequestPage.routeName,
-                        justPush: true)
-                    : Container(),
-                myListTile(
-                  context: context,
-                  name: "Services",
-                  icon: Icons.done,
-                  routeName: Services.routeName,
-                  justPush: true,
-                  hasDrawer: true,
-                ),
-                value.token != null
-                    ? myListTile(
-                        context: context,
-                        name: "My Ideas Id",
-                        icon: Icons.ac_unit,
-                        routeName: MyIdeaId.routeName,
-                        justPush: true)
-                    : Container(),
-                // value.token != null
-                //     ? myListTile(
-                //         context: context,
-                //         name: "My Analysis",
-                //         icon: Icons.multiline_chart,
-                //         routeName: "Under Development",
-                //         justPush: true,
-                //         hasDrawer: true,
-                //       )
-                //     : Container(),
-                InkWell(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return TandCDialog();
-                        });
-                  },
-                  child: myListTile(
-                      context: context,
-                      name: "Term and Condition",
-                      icon: Icons.assignment,
-                      justPush: true),
-                ),
-                myListTile(
-                  context: context,
-                  name: "FAQ",
-                  icon: Icons.question_answer_rounded,
-                  routeName: FandQ.routeName,
-                  justPush: true,
-                ),
-                // value.token != null
-                //     ? myListTile(
-                //         context: context,
-                //         name: "My Idea List",
-                //         icon: Icons.help,
-                //         routeName: MyIdeaId.routeName,
-                //         justPush: true,
-                //       )
-                //     : Container(),
-                value.token != null
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: deviceSize(context).width * 0.07,
-                        ),
-                        child: RaisedButton(
-                          child: Text("logout"),
-                          elevation: 0,
-                          onPressed: () {
-                            value.logout();
-                          },
-                        ),
-                      )
-                    : Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: deviceSize(context).width * 0.07,
-                        ),
-                        child: RaisedButton(
-                          elevation: 0,
-                          onPressed: () => Navigator.pushNamed(
-                            context,
-                            Login.routeName,
+                              value.token != null
+                                  ? Positioned(
+                                      right: 8,
+                                      bottom: 8,
+                                      child: Container(
+                                        height:
+                                            deviceSize(context).width * 0.06,
+                                        width: deviceSize(context).width * 0.06,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            deviceSize(context).width * 0.03,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.edit,
+                                            color: middlePurple,
+                                            size: deviceSize(context).width *
+                                                0.04,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox()
+                            ],
                           ),
-                          child: Text("login"),
                         ),
                       ),
-              ],
-            ),
+                      value.token != null
+                          ? Text(
+                              value.currentUser.name,
+                              textScaleFactor: 1.2,
+                              style: TextStyle(color: Colors.white),
+                            )
+                          : FlatButton(
+                              onPressed: () => Navigator.pushReplacementNamed(
+                                  context, Login.routeName),
+                              child: Text(
+                                "click to login..",
+                                textScaleFactor: 1.2,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+              ),
+              myListTile(
+                context: context,
+                name: "Home",
+                icon: Icons.home,
+                routeName: MainScreen.routeName,
+                justPush: true,
+                hasDrawer: true,
+              ),
+
+              myListTile(
+                context: context,
+                name: "analysis",
+                icon: Icons.person,
+                routeName: Analysis.routeName,
+                justPush: true,
+                hasDrawer: true,
+              ),
+
+              value.token != null
+                  ? myListTile(
+                      context: context,
+                      name: "My Profile",
+                      icon: Icons.person,
+                      routeName: ProfilePage.routeName,
+                      justPush: true)
+                  : Container(),
+              value.token != null
+                  ? myListTile(
+                      context: context,
+                      name: "Setting",
+                      icon: Icons.settings,
+                      routeName: "Uder Development",
+                      justPush: true)
+                  : SizedBox(),
+
+              Divider(color: Colors.white, height: 0.1),
+
+              value.token != null
+                  ? myListTile(
+                      context: context,
+                      name: "Notification Setting",
+                      justPush: true,
+                      icon: Icons.notifications,
+                      routeName: Settings.routeName,
+                    )
+                  : Container(),
+
+              value.token != null
+                  ? myListTile(
+                      context: context,
+                      name: "Request",
+                      icon: Icons.request_page,
+                      routeName: RequestPage.routeName,
+                      justPush: true)
+                  : Container(),
+              myListTile(
+                context: context,
+                name: "Services",
+                icon: Icons.done,
+                // routeName: Services.routeName,
+                routeName: MyFranchises.routeName,
+                justPush: true,
+                hasDrawer: false,
+              ),
+              myListTile(
+                  context: context,
+                  name: "My Ideas Id",
+                  icon: Icons.ac_unit,
+                  routeName: MyIdeaId.routeName,
+                  justPush: true),
+
+              value.token != null
+                  ? myListTile(
+                      context: context,
+                      name: "Rating",
+                      icon: Icons.multiline_chart,
+                      routeName: RatingPage.routeName,
+                      justPush: true,
+                    )
+                  : Container(),
+              InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return TandCDialog();
+                      });
+                },
+                child: myListTile(
+                    context: context,
+                    name: "Term and Condition",
+                    icon: Icons.assignment,
+                    justPush: true),
+              ),
+              myListTile(
+                context: context,
+                name: "FAQ",
+                icon: Icons.question_answer_rounded,
+                routeName: FandQ.routeName,
+                justPush: true,
+              ),
+              // value.token != null
+              //     ? myListTile(
+              //         context: context,
+              //         name: "My Idea List",
+              //         icon: Icons.help,
+              //         routeName: MyIdeaId.routeName,
+              //         justPush: true,
+              //       )
+              //     : Container(),
+              value.token != null
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: deviceSize(context).width * 0.07,
+                      ),
+                      child: RaisedButton(
+                        child: Text("logout"),
+                        elevation: 0,
+                        onPressed: () {
+                          value.logout();
+                        },
+                      ),
+                    )
+                  : Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: deviceSize(context).width * 0.07,
+                      ),
+                      child: RaisedButton(
+                        elevation: 0,
+                        onPressed: () => Navigator.pushNamed(
+                          context,
+                          Login.routeName,
+                        ),
+                        child: Text("login"),
+                      ),
+                    ),
+            ],
           ),
         ),
       );

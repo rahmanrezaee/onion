@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onion/const/MyUrl.dart';
+import 'package:onion/models/CategoryModel.dart';
 import 'package:onion/myHttpGlobal/MyHttpGlobal.dart';
 import 'package:onion/models/AnalyticsModel.dart';
 import 'package:onion/models/CategoryModel.dart' as CatModel;
@@ -7,23 +8,24 @@ import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:provider/provider.dart';
 
 class DropdownProvider with ChangeNotifier {
-  List<CatModel.CategoryModel> categoryList = [];
-  List<CatModel.CategoryModel> idustryList = [];
-  List<AnalyticsModel> typeList = [];
-  List<String> countryList = [];
+
+  List<CatModel.CategoryModel> categoryList;
+  List<CatModel.CategoryModel> idustryList;
+  List<AnalyticsModel> typeList;
+  List<String> countryList;
 
   String categorySelected = "";
   String idustrySelected = "";
   String typeSelected = "";
 
+  void setCategoryListToNull() {
+    categoryList = null;
+    notifyListeners();
+  }
+
   Future<bool> fetchItemsCategory() async {
     try {
-      if (categoryList.isNotEmpty) {
-        categoryList.clear();
-        // addCategoryFirstElement();
-        notifyListeners();
-      }
-
+      categoryList = [];
       final response = await APIRequest().get(
         myUrl: "$baseDropDownItemsUrl?type=category",
         token: null,
@@ -46,7 +48,8 @@ class DropdownProvider with ChangeNotifier {
           ),
         );
       });
-      notifyListeners();
+
+      print("Prints Drop1");
       await fetchItemsIndustry();
 
       return true;
@@ -58,10 +61,9 @@ class DropdownProvider with ChangeNotifier {
 
   Future<void> fetchItemsIndustry() async {
     try {
-      if (idustryList.isNotEmpty) {
-        idustryList.clear();
-        notifyListeners();
-      }
+      idustryList = [];
+      notifyListeners();
+      // notifyListeners();
       final response = await APIRequest().get(
           myUrl:
               "$baseDropDownItemsUrl?type=category&parent=${this.categorySelected}");
@@ -82,7 +84,8 @@ class DropdownProvider with ChangeNotifier {
           ),
         );
       });
-      notifyListeners();
+      print("Prints Drop2");
+
       await fetchItemsType();
     } catch (e) {
       notifyListeners();
@@ -92,9 +95,7 @@ class DropdownProvider with ChangeNotifier {
 
   Future<bool> fetchItemsType() async {
     try {
-      if (typeList.isNotEmpty) {
-        typeList.clear();
-      }
+      typeList = [];
       addTypeFirstElement();
       typeSelected = typeList[0].title;
       notifyListeners();
@@ -120,7 +121,7 @@ class DropdownProvider with ChangeNotifier {
 
         typeList.add(am);
       });
-
+      print("Prints Drop3");
       notifyListeners();
 
       return true;
@@ -130,8 +131,8 @@ class DropdownProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchCountryType(BuildContext context) async {
-    var analysis = Provider.of<AnalysisProvider>(context);
+  Future<void> fetchCountryType(context) async {
+    var analysis = Provider.of<AnalysisProvider>(context, listen: false);
 
     analysis.cleanCountryMerged();
 

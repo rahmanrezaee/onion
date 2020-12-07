@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
 import 'package:provider/provider.dart';
 
+import 'package:onion/statemanagment/dropDownItem/AnalyticsProvider.dart';
+import 'package:onion/widgets/Home/MyGoogleMap.dart';
 import '../../const/MyUrl.dart';
 import '../../myHttpGlobal/MyHttpGlobal.dart';
 import './CategoryProvider.dart';
@@ -52,8 +53,6 @@ class IndustryProvider with ChangeNotifier {
 
       final extractedData = response.data;
 
-      print("I AM MAHDI");
-
       if (extractedData == null) {
         _items = [];
         return;
@@ -71,13 +70,11 @@ class IndustryProvider with ChangeNotifier {
         );
       });
 
-      // print("Mahdi: title ${loadedProducts[0].name}");
 
       // for (int i = 1; i < 6; i++) {
       //   loadedProducts.add(CategoryModel(id: i, val: extractedData['$i']));
       // }
 
-      _items = [];
       _items = loadedProducts;
       isLoading = false;
 

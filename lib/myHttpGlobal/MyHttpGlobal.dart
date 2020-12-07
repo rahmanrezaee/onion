@@ -8,7 +8,9 @@ class APIRequest {
     @required String myUrl,
     token,
   }) {
-    print(token);
+   
+
+    
 
     try {
       if (token == null) {

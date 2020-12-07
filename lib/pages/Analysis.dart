@@ -1,36 +1,19 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:number_display/number_display.dart';
-import 'package:onion/models/circularChart.dart';
-import 'package:onion/models/globalChart.dart';
-import 'package:onion/models/sample_view.dart';
+import 'package:onion/pages/analysisList/analysisList.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
-import 'package:onion/widgets/AnalysisWidget/Charts/LineDefault.dart';
-import 'package:onion/widgets/AnalysisWidget/Charts/AnimationSplineDefault.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/TableChart.dart';
 import 'package:onion/widgets/AnalysisWidget/Charts/pie.dart';
 import 'package:onion/widgets/Home/MyGoogleMap.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:onion/widgets/MyAppBar.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_maps/maps.dart';
 
 import '../widgets/MyAppBarContainer.dart';
 import '../widgets/AnalysisWidget/MyAlert.dart';
 import '../const/color.dart';
 import '../const/Size.dart';
-
-import 'package:onion/models/circularChart.dart';
-
-///Map import
-import 'package:syncfusion_flutter_maps/maps.dart';
-
-///Core theme import
-import 'package:syncfusion_flutter_core/theme.dart';
 
 class SalesData {
   SalesData(
@@ -45,9 +28,10 @@ class SalesData {
 
 class Analysis extends StatefulWidget {
   static const routeName = "analysis";
-  // final Function openDrawer;
 
-  const Analysis({Key key});
+  final Function openDrawer;
+
+  const Analysis({this.openDrawer, Key key});
 
   @override
   _AnalysisState createState() => _AnalysisState();
@@ -62,27 +46,28 @@ class _AnalysisState extends State<Analysis> {
   bool enableAnalysisButton = true;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            "Analysis",
-            textAlign: TextAlign.center,
-            textScaleFactor: 1.2,
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          actions: [
-            Padding(
-              padding: EdgeInsets.all(15.0),
-              child: MyAlertIcon(num: 3),
-            ),
-          ],
-        ),
+        appBar: MyAppBar(title: "Analysis", openDrawer: widget.openDrawer),
+        //  AppBar(
+        //   elevation: 0,
+        //   centerTitle: true,
+        //   title: Text(
+        //     "Analysis",
+        //     textAlign: TextAlign.center,
+        //     textScaleFactor: 1.2,
+        //     style: TextStyle(
+        //       color: Colors.white,
+        //     ),
+        //   ),
+        //   actions: [
+        //     Padding(
+        //       padding: EdgeInsets.all(15.0),
+        //       child: MyAlertIcon(num: 3),
+        //     ),
+        //   ],
+        // ),
         // drawer: MyDrawer()
         body: SingleChildScrollView(
           child: Column(
@@ -108,16 +93,30 @@ class _AnalysisState extends State<Analysis> {
                                   ? analysisValue.tableSatatis != null
                                       ? TableChart(analysisValue.tableSatatis)
                                       : FutureBuilder(
-                                          future: Provider.of<AnalysisProvider>(
-                                                  context,
-                                                  listen: false)
+                                          future: analysisValue
                                               .getTableDailyReport(),
-                                          builder: (BuildContext context,
+                                          builder: (context,
                                               AsyncSnapshot<dynamic> snapshot) {
-                                            return Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting)
+                                              return Center(
+                                                  child:
+                                                      CircularProgressIndicator());
+                                            else if (snapshot.connectionState ==
+                                                ConnectionState.done)
+                                              return Column(
+                                                children: [
+                                                  IconButton(
+                                                      icon: Icon(Icons.replay),
+                                                      onPressed: () {
+                                                        analysisValue
+                                                            .getTableDailyReport();
+                                                      }),
+                                                  Center(
+                                                      child: Text(
+                                                          "not loaded Table Daily")),
+                                                ],
+                                              );
                                           },
                                         )
                                   : Text("Please Select A country to analysis"),
@@ -139,7 +138,7 @@ class _AnalysisState extends State<Analysis> {
                                   )
                                 : FutureBuilder(
                                     future: consValue.getAnalysis(),
-                                    builder: (BuildContext context,
+                                    builder: (context,
                                         AsyncSnapshot<dynamic> snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.waiting) {
@@ -173,6 +172,7 @@ class _AnalysisState extends State<Analysis> {
                                               ),
                                               onPressed: null,
                                             ),
+                                           
                                           ),
                                         );
                                       }
@@ -181,14 +181,14 @@ class _AnalysisState extends State<Analysis> {
                           ],
                         )
                       : FutureBuilder(
-                          future: Provider.of<AnalysisProvider>(context,
-                                  listen: false)
-                              .getAnalysisData(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<dynamic> snapshot) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
+                          future: analysisValue.getAnalysisData(),
+                          builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting)
+                              return Center(child: CircularProgressIndicator());
+                            else if (snapshot.connectionState ==
+                                ConnectionState.done)
+                              return Center(child: Text(""));
                           },
                         );
                 },
@@ -210,11 +210,13 @@ class _AnalysisState extends State<Analysis> {
       elevation: 0,
       color: middlePurple,
       child: Text(
-        "Open Saved Analysis",
+       consValue.isDeprecated ? "Open Saved Analysis" :  "Save Analysis",
         style: TextStyle(color: Colors.white),
       ),
       onPressed: consValue.isDeprecated
-          ? null
+          ? () {
+              Navigator.of(context).pushNamed(AnalysisList.routeName);
+            }
           : () {
               consValue.saveAnalysis(dropdownValue.typeList[1].id,
                   anavalue.selectedCountry.country);

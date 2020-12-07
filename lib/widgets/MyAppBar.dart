@@ -12,8 +12,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MyAppBar({Key key, this.title, this.openDrawer}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<Auth>(builder: (BuildContext context, value, Widget child) {
+  Widget build( context) {
+    return Consumer<Auth>(builder: ( context, value, Widget child) {
       return AppBar(
         elevation: 0,
         centerTitle: true,

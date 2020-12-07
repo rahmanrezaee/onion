@@ -27,7 +27,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool _obscureText = true;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( context) {
     return Scaffold(
       key: _scaffoldKey,
       body: Stack(
@@ -267,7 +267,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       }
     } on LoginException catch (e) {
       _scaffoldKey.currentState
-          .showSnackBar(showSnackbar(e.cause, Icon(Icons.error), Colors.red));
+          .showSnackBar(showSnackbar(text:e.cause, icon:Icon(Icons.error),color: Colors.red));
       print(e.cause);
     }
     setState(() {
