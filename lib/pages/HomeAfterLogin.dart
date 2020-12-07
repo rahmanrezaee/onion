@@ -15,8 +15,8 @@ class _HomeAfterLoginState extends State<HomeAfterLogin> {
       body: Column(
         children: [
           RaisedButton(
-            onPressed: () async{
-              await Provider.of<Auth>(context, listen: false).logout();
+            onPressed: () async {
+              await Provider.of<Auth>(context, listen: false).logout(context);
               Navigator.pushReplacementNamed(context, "/");
             },
             child: Text("logout"),

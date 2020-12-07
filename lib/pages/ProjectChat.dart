@@ -1,15 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/statemanagment/ChatManagement/Constants.dart';
 import 'package:provider/provider.dart';
-import '../statemanagment/ChatManagement/database.dart';
 
 import '../const/Size.dart';
 import '../const/color.dart';
 import '../widgets/AnalysisWidget/MyAlert.dart';
 import '../widgets/MyLittleAppbar.dart';
-
+import '../statemanagment/ChatManagement/Constants.dart';
+import '../statemanagment/ChatManagement/database.dart';
+import '../statemanagment/auth_provider.dart';
+import '../widgets/ChatTabWidget/MyChatItems.dart';
 import '../const/values.dart';
 
 class ProjectChat extends StatefulWidget {
@@ -20,25 +20,53 @@ class ProjectChat extends StatefulWidget {
 }
 
 class _ProjectChatState extends State<ProjectChat> {
-  DatabaseMethods databaseMethods = new DatabaseMethods();
   final TextEditingController sendTxt = new TextEditingController();
   String args;
   Future<void> myFuture;
   var _tapPosition;
+  bool isEditMode = false;
+  String editKey;
+  FocusNode _focusNode = FocusNode();
+  final _listViewController = ScrollController();
+  String userEmail;
+  RealtimeData realTimeData;
 
   sendMessage({String chatRoomId}) async {
     print("Mahdi sendMessage1");
     if (sendTxt.text.isEmpty || Constants.myName == null) {
       return;
     }
-    Map<String, String> messageMap = {
-      "message": sendTxt.text,
-      "sendBy": Constants.myName,
-      "time": DateTime.now().millisecondsSinceEpoch.toString(),
-    };
+    if (!isEditMode) {
+      Map<String, String> messageMap = {
+        "message": sendTxt.text,
+        "sendBy": userEmail,
+        "time": DateTime.now().millisecondsSinceEpoch.toString(),
+      };
 
-    await RealtimeData().createData(message: messageMap);
+      await RealtimeData().sendMessage(
+        sendProperty: messageMap,
+        groupName: args,
+      );
+    } else if (editKey != null) {
+      realTimeData.editValue(
+        key: editKey,
+        editMessage: sendTxt.text,
+        groupName: args,
+      );
+      // await Provider.of<RealtimeData>(context, listen: false).editValue(
+      //   editMessage: sendTxt.text,
+      //   key: editKey,
+      // );
+    }
+    if (_listViewController.hasClients) {
+      _listViewController.jumpTo(
+        _listViewController.position.maxScrollExtent,
+      );
+    }
+
+    editKey = "";
     sendTxt.text = "";
+    isEditMode = false;
   }
 
   @override
@@ -46,8 +74,14 @@ class _ProjectChatState extends State<ProjectChat> {
     // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero, () {
+      realTimeData = Provider.of<RealtimeData>(context, listen: false);
+      realTimeData.clearMyMessage();
       args = ModalRoute.of(context).settings.arguments;
-      myFuture = Provider.of<RealtimeData>(context, listen: false).newValue();
+      realTimeData.deleteListener(args);
+      realTimeData.editListener(args);
+
+      myFuture = realTimeData.getMyMessage(args);
+      userEmail = Provider.of<Auth>(context, listen: false).userEmail;
     });
   }
 
@@ -55,7 +89,8 @@ class _ProjectChatState extends State<ProjectChat> {
     _tapPosition = details.globalPosition;
   }
 
-  showMyPopUp(BuildContext context, String key) async {
+  showMyPopUp(BuildContext context, String key, String message) async {
+    editKey = key.toString();
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     var value = await showMenu(
       context: context,
@@ -74,12 +109,14 @@ class _ProjectChatState extends State<ProjectChat> {
         ),
       ],
     );
-    print("Mahdi showMyPopUp $value");
-    final myFutureTemp = Provider.of<RealtimeData>(context, listen: false);
+    final myFutureTemp = realTimeData;
     if (value == 0) {
-      myFutureTemp.deleteValue(key);
+      myFutureTemp.deleteValue(key: key, groupName: args);
     } else if (value == 1) {
-
+      isEditMode = true;
+      sendTxt.text = message;
+      FocusScope.of(context).requestFocus(_focusNode);
+      // myFutureTemp.editValue(key);
     }
   }
 
@@ -108,44 +145,63 @@ class _ProjectChatState extends State<ProjectChat> {
                   } else {
                     return Consumer<RealtimeData>(
                       builder: (BuildContext context, value, Widget child) {
-                        return ListView.builder(
-                          itemCount: value.message.length,
-                          itemBuilder: (ctx, index) {
-                            String key = value.message.keys.elementAt(index);
-                            String getPreviuosdate = "";
-                            if (index > 0) {
-                              String previouskey = value.message.keys.elementAt(
-                                index - 1,
-                              );
-                              String previuosdate =
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                int.parse(previouskey),
+                        if (value.myMessage.isNotEmpty) {
+                          return ListView.builder(
+                            controller: _listViewController,
+                            itemCount: value.myMessage.length,
+                            itemBuilder: (ctx, index) {
+                              String key =
+                                  value.myMessage.keys.elementAt(index);
+                              print("Mahdi ListView:: $key");
+                              print(
+                                  "Mahdi ListView::  ${value.myMessage[key]}");
+                              String getPreviuosdate = "";
+                              if (index > 0) {
+                                String previouskey =
+                                    value.myMessage.keys.elementAt(
+                                  index - 1,
+                                );
+                                String previuosdate =
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                  int.parse(previouskey),
+                                ).toString();
+                                getPreviuosdate = previuosdate.substring(
+                                    0, previuosdate.indexOf(" "));
+                              }
+                              String date = DateTime.fromMillisecondsSinceEpoch(
+                                int.parse(key),
                               ).toString();
-                              getPreviuosdate = previuosdate.substring(
-                                  0, previuosdate.indexOf(" "));
-                            }
-                            String date = DateTime.fromMillisecondsSinceEpoch(
-                              int.parse(key),
-                            ).toString();
-                            String chatDate =
-                                date.substring(0, date.indexOf(" ")) !=
-                                        getPreviuosdate
-                                    ? date.substring(0, date.indexOf(" "))
-                                    : "";
-                            return GestureDetector(
-                              onTapDown: _storePosition,
-                              onTap: () => showMyPopUp(context, key),
-                              child: MyChatItems(
-                                isMe: value.message[key]["owner"] ==
-                                    Constants.myName,
-                                message: "${value.message[key]["message"]}",
-                                date: "$chatDate",
-                                hour:
-                                    "${date.substring(date.indexOf(" "), date.lastIndexOf(":"))}",
-                              ),
-                            );
-                          },
-                        );
+                              String chatDate =
+                                  date.substring(0, date.indexOf(" ")) !=
+                                          getPreviuosdate
+                                      ? date.substring(0, date.indexOf(" "))
+                                      : "";
+
+                              return GestureDetector(
+                                onTapDown: _storePosition,
+                                onTap: () => showMyPopUp(
+                                  context,
+                                  key,
+                                  value.myMessage[key]["message"],
+                                ),
+                                child: MyChatItems(
+                                  isMe: value.myMessage[key]["sendBy"]
+                                          .toString() ==
+                                      userEmail.toString(),
+                                  message:
+                                      "${value.myMessage[key.toString()]["message"]}",
+                                  // date: "",
+                                  // hour: "",
+                                  date: "$chatDate",
+                                  hour:
+                                      "${date.substring(date.indexOf(" "), date.lastIndexOf(":"))}",
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return SizedBox.shrink();
+                        }
                       },
                     );
                   }
@@ -161,158 +217,40 @@ class _ProjectChatState extends State<ProjectChat> {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
-                  child: SizedBox(
-                    height: deviceSize(context).height * 0.05,
-                    child: TextField(
-                      controller: sendTxt,
-                      onSubmitted: (_) => sendMessage(chatRoomId: args),
-                      decoration: InputDecoration(
-                        border: new OutlineInputBorder(
-                          borderSide: new BorderSide(color: grey),
-                          borderRadius: const BorderRadius.horizontal(
-                            left: Radius.circular(5.0),
-                          ),
+                  child: TextField(
+                    controller: sendTxt,
+                    focusNode: _focusNode,
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                    onSubmitted: (_) => sendMessage(chatRoomId: args),
+                    decoration: InputDecoration(
+                      border: new OutlineInputBorder(
+                        borderSide: new BorderSide(color: grey),
+                        borderRadius: const BorderRadius.horizontal(
+                          left: Radius.circular(5.0),
                         ),
-                        contentPadding: EdgeInsets.only(
-                          top: deviceSize(context).height * 0.01,
-                          left: deviceSize(context).width * 0.02,
-                        ),
-                        fillColor: grey,
-                        hintText: "Type your message",
-                        filled: true,
                       ),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: deviceSize(context).width * 0.25,
-                  height: deviceSize(context).height * 0.05,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: <Color>[firstPurple, thirdPurple],
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(5),
-                      bottomRight: Radius.circular(5),
-                    ),
-                  ),
-                  child: InkWell(
-                    onTap: () => sendMessage(chatRoomId: args),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          "SEND",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Icon(Icons.send, color: Colors.white)
-                      ],
+                      contentPadding: EdgeInsets.only(
+                        top: deviceSize(context).height * 0.01,
+                        bottom: deviceSize(context).height * 0.01,
+                        left: deviceSize(context).width * 0.02,
+                      ),
+                      fillColor: grey,
+                      hintText: "Type your message",
+                      filled: true,
+                      suffixIcon: InkWell(
+                        onTap: () => sendMessage(chatRoomId: args),
+                        child: Icon(Icons.send, color: Colors.black),
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class MyChatItems extends StatelessWidget {
-  final bool isMe;
-  final String message;
-  final String date;
-  final String hour;
-
-  const MyChatItems({
-    Key key,
-    @required this.isMe,
-    this.message,
-    this.date,
-    this.hour,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: isMe ? TextDirection.rtl : TextDirection.ltr,
-      child: Column(
-        children: [
-          SizedBox(height: deviceSize(context).height * 0.04),
-          date.isNotEmpty ? Text("$date") : SizedBox.shrink(),
-          date.isNotEmpty
-              ? SizedBox(height: deviceSize(context).height * 0.02)
-              : SizedBox.shrink(),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: deviceSize(context).height * 0.08,
-                width: deviceSize(context).height * 0.08,
-                child: CircleAvatar(
-                  backgroundImage:
-                      AssetImage("assets/images/empty_profile.jpg"),
-                ),
-              ),
-              SizedBox(width: deviceSize(context).width * 0.02),
-              Container(
-                decoration: BoxDecoration(
-                  color: isMe ? greyBlue : grey,
-                  borderRadius: BorderRadius.only(
-                    topRight: isMe ? Radius.circular(0) : Radius.circular(15),
-                    bottomRight: Radius.circular(15),
-                    bottomLeft: Radius.circular(15),
-                    topLeft: !isMe ? Radius.circular(0) : Radius.circular(15),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: deviceSize(context).width * 0.03,
-                        right: deviceSize(context).width * 0.03,
-                        top: deviceSize(context).height * 0.03,
-                        bottom: deviceSize(context).width * 0.02,
-                      ),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: deviceSize(context).height * 0.01,
-                          maxHeight: deviceSize(context).height,
-                          minWidth: deviceSize(context).width * 0.02,
-                          maxWidth: deviceSize(context).width * 0.7,
-                        ),
-                        child: AutoSizeText(
-                          message == null ? loremIpsum : message,
-                          textAlign: TextAlign.start,
-                          textScaleFactor: 1.1,
-                          maxLines: 10,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: deviceSize(context).width * 0.01,
-                        right: deviceSize(context).width * 0.02,
-                        bottom: deviceSize(context).width * 0.02,
-                      ),
-                      child: Text(
-                        "$hour",
-                        textAlign: TextAlign.end,
-                        textScaleFactor: 0.9,
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    )
-                  ],
-                ),
-              )
-            ],
-          )
         ],
       ),
     );
@@ -390,3 +328,31 @@ class MyChatItems extends StatelessWidget {
 //   print("Mahdi readData: $value");
 // });
 // return Text("Data valid");
+
+// Container(
+//   width: deviceSize(context).width * 0.25,
+//   decoration: BoxDecoration(
+//     gradient: LinearGradient(
+//       begin: Alignment.topLeft,
+//       end: Alignment.bottomRight,
+//       colors: <Color>[firstPurple, thirdPurple],
+//     ),
+//     borderRadius: BorderRadius.only(
+//       topRight: Radius.circular(5),
+//       bottomRight: Radius.circular(5),
+//     ),
+//   ),
+//   child: InkWell(
+//     onTap: () => sendMessage(chatRoomId: args),
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//       children: [
+//         Text(
+//           "SEND",
+//           style: TextStyle(color: Colors.white),
+//         ),
+//         Icon(Icons.send, color: Colors.white)
+//       ],
+//     ),
+//   ),
+// ),

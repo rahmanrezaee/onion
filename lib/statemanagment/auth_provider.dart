@@ -3,15 +3,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:onion/const/MyUrl.dart';
 import 'package:onion/const/values.dart';
 import 'package:onion/models/users.dart';
 import 'package:flutter/widgets.dart';
 import 'package:onion/statemanagment/ChatManagement/auth.dart';
 import 'package:onion/statemanagment/ChatManagement/database.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as fi;
@@ -22,14 +21,22 @@ class Auth with ChangeNotifier {
   Dio dio = new Dio();
 
   String token;
+  String _firebaseId;
   Map userDataField;
   User currentUser = new User();
   AuthMethods authMethods = new AuthMethods();
-  DatabaseMethods databaseMethods = new DatabaseMethods();
 
   Future<bool> isAuth() async {
     await tryAutoLogin();
     return token != null ? true : false;
+  }
+
+  String get userEmail {
+    return currentUser.email;
+  }
+
+  String get firebaseId {
+    return _firebaseId;
   }
 
   Future registerUser({User user}) async {
@@ -40,25 +47,30 @@ class Auth with ChangeNotifier {
 
       var response = await dio.post(url, data: user.toMap());
       final responseData = response.data;
-      authMethods
-          .signUpWithEmailAndPassword(user.email, user.password)
-          .then((value) {
-        print("Mahdi I am Firebase SignUp: $value");
-      }).catchError((e) {
-        print("Mahdi I am Firebase SignUp: $e");
-      });
+      print("Mahdi registerUser: $responseData");
+      // authMethods
+      //     .signUpWithEmailAndPassword(user.email, user.password)
+      //     .then((value) {
+      //   print("Mahdi I am Firebase SignUp: $value");
+      // }).catchError((e) {
+      //   print("Mahdi I am Firebase SignUp: $e");
+      // });
 
       Map<String, String> userInfoMap = {
         "name": user.name,
         "email": user.email,
       };
+      _firebaseId = response.data["data"]["_id"];
 
-      databaseMethods.uploadUserInfo(userInfoMap);
+      // databaseMethods.uploadUserInfo(userInfoMap);
 
       var prefs = await SharedPreferences.getInstance();
 
       currentUser = user;
+      currentUser.email = user.email;
+
       userDataField = {
+        'firebaseId': _firebaseId,
         'token': responseData['token'],
         'username': user.name,
         'country': user.country,
@@ -92,6 +104,7 @@ class Auth with ChangeNotifier {
     final extractedUserData =
         json.decode(prefs.getString('userData')) as Map<String, Object>;
 
+    _firebaseId = extractedUserData['firebaseId'];
     token = extractedUserData['token'];
     currentUser.name = extractedUserData['username'];
     currentUser.email = extractedUserData['email'];
@@ -123,13 +136,16 @@ class Auth with ChangeNotifier {
         'password': password,
       });
 
-
       final responseData = response.data;
 
       print(responseData);
-      print("responseData ${response.data}");
+      print("responseData ${response.data["data"]["_id"]}");
 
-      authMethods.signInWithCustomToken(username, password).then((value) {
+      _firebaseId = response.data["data"]["_id"];
+
+      authMethods
+          .signInWithCustomToken(responseData['firebaseToken'], _firebaseId)
+          .then((value) {
         print("Mahdi I am Firebase SignIn: $value");
       }).catchError((e) {
         print("Mahdi I am Firebase SignIn: $e");
@@ -138,6 +154,7 @@ class Auth with ChangeNotifier {
       var prefs = await SharedPreferences.getInstance();
       final userData = json.encode(
         {
+          'firebaseId': _firebaseId,
           'token': responseData['token'],
           'username': responseData['data']['username'],
           'id': responseData['data']['_id'],
@@ -197,9 +214,11 @@ class Auth with ChangeNotifier {
     return true;
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     authMethods.signOut();
     token = null;
+    Provider.of<RealtimeData>(context, listen: false).clearUserInfo();
+    Provider.of<RealtimeData>(context, listen: false).clearMyMessage();
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     // prefs.remove('userData');

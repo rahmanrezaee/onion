@@ -10,23 +10,23 @@ class AuthMethods {
     return user != null ? MyUser(uid: user.uid) : null;
   }
 
-  Future signInWithCustomToken(String email, String password) async {
+  Future signInWithCustomToken(String customToken, String uid) async {
     try {
-      // UserCredential result = await _auth.signInWithCustomToken(customToken);
-      // print("Mahdi: result $result");
-
-      // FirebaseUser firebaseUser = result.user;
-      // return true;
-
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      HelperFunctions.saveUserNameSharedPereference(email);
+      UserCredential result = await _auth.signInWithCustomToken(customToken);
+      print("Mahdi: result ${result.user.uid} : $uid");
 
       FirebaseUser firebaseUser = result.user;
-      print("Mahdi: signInWithCustomToken result: $result");
-      return _userFromFirebaseUser(firebaseUser);
+      return true;
+
+      // UserCredential result = await _auth.signInWithEmailAndPassword(
+      //   email: email,
+      //   password: password,
+      // );
+      // HelperFunctions.saveUserNameSharedPereference(email);
+
+      // FirebaseUser firebaseUser = result.user;
+      // print("Mahdi: signInWithCustomToken result: $result");
+      // return _userFromFirebaseUser(firebaseUser);
     } catch (e) {
       print("Firebase signInWithEmailAndPassword ${e.toString()}");
     }

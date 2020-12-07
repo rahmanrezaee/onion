@@ -1,14 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:onion/statemanagment/ChatManagement/Constants.dart';
-import 'package:onion/statemanagment/ChatManagement/HelperFunctions.dart';
-import 'package:onion/statemanagment/ChatManagement/database.dart';
-import 'package:onion/widgets/MRaiseButton.dart';
-import 'package:onion/widgets/MyAppBar.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../statemanagment/ChatManagement/database.dart';
+import '../widgets/MRaiseButton.dart';
+import '../widgets/MyAppBar.dart';
 import './NotificationsList.dart';
 import '../const/color.dart';
 import '../const/Size.dart';
@@ -25,14 +23,16 @@ class MyMessagePage extends StatefulWidget {
 }
 
 class _MyMessagePageState extends State<MyMessagePage> {
+  Future<void> myFuture;
+
   @override
   void initState() {
     super.initState();
-    getUserInfo();
-  }
-
-  getUserInfo() async {
-    Constants.myName = await HelperFunctions.getUserNameSharedPereference();
+    Future.delayed(Duration.zero, () {
+      String firebaseId = Provider.of<Auth>(context, listen: false).firebaseId;
+      myFuture = Provider.of<RealtimeData>(context, listen: false)
+          .getUserInfo(firebaseId);
+    });
   }
 
   @override
@@ -40,8 +40,7 @@ class _MyMessagePageState extends State<MyMessagePage> {
     return Scaffold(
       appBar: MyAppBar(title: "My Message", openDrawer: widget.openDrawer),
       body: FutureBuilder(
-        future: Provider.of<DatabaseMethods>(context, listen: false)
-            .getUserByUserName(),
+        future: myFuture,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -57,31 +56,32 @@ class _MyMessagePageState extends State<MyMessagePage> {
                 children: [
                   MyTextFieldMessage(),
                   Expanded(
-                    child: Consumer<DatabaseMethods>(
+                    child: Consumer<RealtimeData>(
                       builder: (BuildContext context, value, Widget child) {
-                        return ListView.builder(
-                          itemCount: value.searchSnapshot.documents.length,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: deviceSize(context).width * 0.03,
-                            vertical: deviceSize(context).height * 0.01,
-                          ),
-                          itemBuilder: (BuildContext context, int index) {
-                            print("Mahdi Listview: ");
-                            print(
-                                "Mahdi Listview: ${value.searchSnapshot.documents[index].get('name')}");
-                            print(
-                                "Mahdi Listview: ${value.searchSnapshot.documents[index].get('email')}");
-                            // return SizedBox.shrink();
-                            return MyCardItem(
-                              myImageType: "circle",
-                              clickType: "message",
-                              name:
-                                  "${value.searchSnapshot.documents[index].get('name')}",
-                              message:
-                                  "${value.searchSnapshot.documents[index].get('email')}",
-                            );
-                          },
-                        );
+                        if (value?.userInfo?.isNotEmpty ?? true) {
+                          return ListView.builder(
+                            itemCount: value.userInfo['groups'].length,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: deviceSize(context).width * 0.03,
+                              vertical: deviceSize(context).height * 0.01,
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                              String key = value.userInfo['groups'].keys
+                                  .elementAt(index);
+                              print("Mahdi getAllContacts: $key");
+                              return MyCardItem(
+                                myImageType: "circle",
+                                clickType: "message",
+                                name: "$key",
+                                message: "",
+                                // message:
+                                //     "${value.searchSnapshot.documents[index].get('email')}",
+                              );
+                            },
+                          );
+                        } else {
+                          return SizedBox.shrink();
+                        }
                       },
                     ),
                   ),
@@ -103,9 +103,6 @@ class MyTextFieldMessage extends StatefulWidget {
 class _MyTextFieldMessageState extends State<MyTextFieldMessage> {
   DateTime selectedDate;
   final searchController = TextEditingController();
-  QuerySnapshot searchSnapshot;
-
-  DatabaseMethods databaseMethods = new DatabaseMethods();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(

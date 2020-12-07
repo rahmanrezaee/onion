@@ -75,7 +75,6 @@ void main() async {
       ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
       ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
       ChangeNotifierProvider(create: (_) => AnalysisProvider()),
-      ChangeNotifierProvider(create: (_) => DatabaseMethods()),
       ChangeNotifierProvider(create: (_) => RealtimeData()),
     ],
     child: MyApp(),
@@ -126,18 +125,18 @@ class _MyAppState extends State<MyApp> {
         routes: {
           // Login.routeName: (context) => CustomDrawerPage(widget.key),
           Login.routeName: (context) => auth.token != null
-          ? CustomDrawerPage(widget.key)
-          : FutureBuilder(
-              future:
-                  Provider.of<Auth>(context, listen: false).tryAutoLogin(),
-              builder: (ctx, authResultSnapshot) =>
-                  authResultSnapshot.connectionState ==
-                          ConnectionState.waiting
-                      ? Scaffold(
-                          body: Center(child: Text("Loading...")),
-                        )
-                      : Login(),
-            ),
+              ? CustomDrawerPage(widget.key)
+              : FutureBuilder(
+                  future:
+                      Provider.of<Auth>(context, listen: false).tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(child: Text("Loading...")),
+                            )
+                          : Login(),
+                ),
           MyIdeaId.routeName: (context) => MyIdeaId(),
           RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
           SignUp.routeName: (context) =>

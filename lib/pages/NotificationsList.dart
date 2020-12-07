@@ -1,11 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'package:onion/const/Size.dart';
 import 'package:onion/pages/ProjectChat.dart';
-import 'package:onion/statemanagment/ChatManagement/Constants.dart';
-import 'package:onion/statemanagment/ChatManagement/database.dart';
-
 import '../const/values.dart';
 
 class NotificationsList extends StatefulWidget {
@@ -68,7 +65,6 @@ class MyCardItem extends StatelessWidget {
   final String name;
   final String message;
   final String clickType;
-  DatabaseMethods databaseMethods = new DatabaseMethods();
 
   MyCardItem({
     Key key,
@@ -82,25 +78,25 @@ class MyCardItem extends StatelessWidget {
     @required BuildContext context,
     @required String userName,
   }) {
-    if (Constants.myName != null) {
-      String chatRoomId = getChatRoomId(userName, Constants.myName);
-      List<String> users = [userName, Constants.myName];
-      Map<String, dynamic> chatRoomMap = {
-        "users": users,
-        "ChatRoomId": chatRoomId,
-      };
-      DatabaseMethods().createChatRoom(
-        chatRoomId: chatRoomId,
-        chatRoomMap: chatRoomMap,
-      );
-      Navigator.pushNamed(
-        context,
-        ProjectChat.routeName,
-        arguments: chatRoomId,
-      );
-    } else {
-      print("You can n't send message to yourself");
-    }
+    // if (Constants.myName != null) {
+    // String chatRoomId = getChatRoomId(userName, Constants.myName);
+    // List<String> users = [userName, Constants.myName];
+    // Map<String, dynamic> chatRoomMap = {
+    //   "users": users,
+    //   "ChatRoomId": chatRoomId,
+    // };
+    // DatabaseMethods().createChatRoom(
+    //   chatRoomId: chatRoomId,
+    //   chatRoomMap: chatRoomMap,
+    // );
+    Navigator.pushNamed(
+      context,
+      ProjectChat.routeName,
+      arguments: name,
+    );
+    // } else {
+    //   print("You can n't send message to yourself");
+    // }
   }
 
   @override
@@ -108,7 +104,6 @@ class MyCardItem extends StatelessWidget {
     return GestureDetector(
       onTap: clickType == "message"
           ? () {
-              print("Mahdi: clickType a");
               createChatRoomAndStartText(context: context, userName: name);
             }
           : null,
@@ -181,14 +176,6 @@ class MyCardItem extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-getChatRoomId(String a, String b) {
-  if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-    return "$b\_$a";
-  } else {
-    return "$a\_$b";
   }
 }
 
