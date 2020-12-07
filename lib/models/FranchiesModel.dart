@@ -4,9 +4,9 @@ class FranchiesModel {
   String industry;
   String brandName;
   String requirments;
-  List<String> location = [];
-  String uploadDocuments;
-  String uploadVideo;
+  List location = [];
+  List uploadDocuments = [];
+  List uploadVideo = [];
 
   FranchiesModel();
 

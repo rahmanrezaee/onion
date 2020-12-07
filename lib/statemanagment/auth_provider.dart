@@ -22,7 +22,7 @@ class Auth with ChangeNotifier {
   String token;
   Map userDataField;
   User currentUser = new User();
-  
+
   // AuthMethods authMethods = new AuthMethods();
 
   Future<bool> isAuth() async {
@@ -242,12 +242,10 @@ class Auth with ChangeNotifier {
   }
 
   Future<Map> uploadFile(File imageFile, String category) async {
+
+
     final StringBuffer url = new StringBuffer(BASE_URL + "/upload");
     Dio dio = new Dio();
-
-    print("prfile $url");
-
-    print("file image");
 
     print(await MultipartFile.fromFile(imageFile.path));
 

@@ -25,8 +25,7 @@ class _MyFranchisesState extends State<MyFranchises> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context)
-                .pushReplacementNamed(CustomDrawerPage.routeName);
+            Navigator.of(context).pop();
           },
         ),
         actions: [
@@ -39,24 +38,28 @@ class _MyFranchisesState extends State<MyFranchises> {
           )
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 15),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: InkWell(
-                onTap: () {},
-                child: Icon(
-                  Icons.info_outline,
-                  color: middlePurple,
+      body: Consumer<FranchiesProvider>(
+          builder: (BuildContext context, value, Widget child) {
+        return RefreshIndicator(
+          onRefresh: () async {
+            // value.clearToNullList();
+            await value.getFranchies();
+          },
+          child: Column(
+            // padding: EdgeInsets.only(left: 10, right: 10, top: 15),
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: InkWell(
+                  onTap: () {},
+                  child: Icon(
+                    Icons.info_outline,
+                    color: middlePurple,
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              child: Consumer<FranchiesProvider>(
-                  builder: (BuildContext context, value, Widget child) {
-                return value.items != null
+              Expanded(
+                child: value.items != null
                     ? ListView.builder(
                         itemCount: value.items.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -71,7 +74,8 @@ class _MyFranchisesState extends State<MyFranchises> {
                     : FutureBuilder(
                         future: value.getFranchies(),
                         builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                          if (snapshot.connectionState ==  ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return Container(
                               height: 80,
                               alignment: Alignment.center,
@@ -85,12 +89,12 @@ class _MyFranchisesState extends State<MyFranchises> {
                             );
                           }
                         },
-                      );
-              }),
-            ),
-          ],
-        ),
-      ),
+                      ),
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

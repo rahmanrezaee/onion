@@ -1,10 +1,46 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
+import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
+import 'package:onion/widgets/PlayWidget/BasicVideoPlayer.dart';
+import 'package:onion/widgets/PlayWidget/VideoPlayer.dart';
+import 'package:video_player/video_player.dart';
 
-class ViewFranchisesUser extends StatelessWidget {
+class ViewFranchisesUser extends StatefulWidget {
   static String routeName = "ViewFranchisesUser";
+  FranchiesModel franchiesModel;
+  ViewFranchisesUser(this.franchiesModel);
+
+  @override
+  _ViewFranchisesUserState createState() => _ViewFranchisesUserState();
+}
+
+class _ViewFranchisesUserState extends State<ViewFranchisesUser> {
+  VideoPlayerController _controller;
+  Future<void> _initializeVideoPlayerFuture;
+
+  @override
+  void initState() {
+    _controller = VideoPlayerController.network(
+        widget.franchiesModel.uploadVideo[0]["uriPath"]);
+    //_controller = VideoPlayerController.asset("videos/sample_video.mp4");
+    _initializeVideoPlayerFuture = _controller.initialize();
+    _controller.setLooping(true);
+    _controller.setVolume(1.0);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +98,7 @@ class ViewFranchisesUser extends StatelessWidget {
                         children: [
                           Text("Industry: ", style: TextStyle(fontSize: 15)),
                           Text(
-                            "<IndustryName>",
+                            "<${widget.franchiesModel.industry}>",
                             style: TextStyle(fontSize: 15),
                           ),
                         ],
@@ -74,7 +110,7 @@ class ViewFranchisesUser extends StatelessWidget {
                             Text("Brand",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.black87)),
-                            Text("Brand Name",
+                            Text("${widget.franchiesModel.brandName}",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.black87)),
                           ]),
@@ -85,7 +121,7 @@ class ViewFranchisesUser extends StatelessWidget {
                             Text("Location",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.black87)),
-                            Text("Place/Location",
+                            Text("${widget.franchiesModel.location.toString()}",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.black87)),
                           ]),
@@ -125,7 +161,7 @@ class ViewFranchisesUser extends StatelessWidget {
                       ),
                       SizedBox(height: 5),
                       Text(
-                        "Automate th eprocess of sending emails with some features based on business requirements. You can have a list of email customized addresses. Automate the process of sendign emails with customized featrues base on business..",
+                        "${widget.franchiesModel.requirments}",
                         style: TextStyle(fontSize: 15),
                       ),
                       SizedBox(height: 20),
@@ -134,21 +170,105 @@ class ViewFranchisesUser extends StatelessWidget {
                         style: TextStyle(fontSize: 22, color: deepBlue),
                       ),
                       SizedBox(height: 5),
-                      Wrap(
-                        spacing: 20,
-                        children: List.generate(
-                          6,
-                          (index) {
-                            return InkWell(
-                              onTap: () {
-                                print("Will show this documents");
-                              },
-                              child: Icon(Icons.upload_file,
-                                  size: 50, color: deepGrey),
+                      Container(
+                        height: 80,
+                        child: ListView.builder(
+                          itemCount:
+                              widget.franchiesModel.uploadDocuments.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Card(
+                              child: Container(
+                                  height: 50,
+                                  width: 50,
+                                  child: widget.franchiesModel.uploadDocuments[index]
+                                                  ["type"] ==
+                                              "jpg" ||
+                                          widget.franchiesModel.uploadDocuments[index]
+                                                  ["type"] ==
+                                              "jpeg" ||
+                                          widget.franchiesModel
+                                                      .uploadDocuments[index]
+                                                  ["type"] ==
+                                              "png"
+                                      ? Image.file(File(widget.franchiesModel
+                                          .uploadDocuments[index]['path']))
+                                      : Icon(Icons.file_present)),
                             );
                           },
                         ),
                       ),
+                      Container(
+                        width: double.infinity,
+                        height: 150,
+                        child: FutureBuilder(
+                          future: _initializeVideoPlayerFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              return Stack(
+                                alignment: Alignment.center,
+                                children: <Widget>[
+                                  GestureDetector(
+                                    child: VideoPlayer(_controller),
+                                    onTap: _onTapVideo,
+                                  ),
+                                  Positioned.fill(
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: _controlAlpha > 0
+                                          ? AnimatedOpacity(
+                                              opacity: _controlAlpha,
+                                              duration:  Duration(milliseconds: 250),
+                                              child: _controlView(context),
+                                            )
+                                          : Container(),
+                                    ),
+                                  ),
+                                ],
+                              );
+                              // Center(
+                              //   child: AspectRatio(
+                              //     aspectRatio: _controller.value.aspectRatio,
+                              //     child: VideoPlayer(_controller),
+                              //   ),
+                              // );
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      // ListView.builder(
+                      //   itemBuilder: (BuildContext context, int index) {
+                      //     return InkWell(
+                      //       onTap: () {
+                      //         print("Will show this documents");
+                      //       },
+                      //       child: Icon(Icons.upload_file,
+                      //           size: 50, color: deepGrey),
+                      //     );
+                      //   },
+                      // ),
+
+                      //  Container(
+                      //     height: 200,
+
+                      //                           child: VideoPlayerWidget(clips: [
+                      //       VideoClip(
+                      //           "For Bigger Fun",
+                      //           "ForBiggerFun.mp4",
+                      //           "images/ForBiggerFun.jpg",
+                      //           0,
+                      //           "https://webfume-onionai.s3.amazonaws.com/guest/public/video/605992-VID_1591354981174.mp4"),
+                      //     ]),
+                      //   ),
+
                       SizedBox(height: 20),
                       Text(
                         "Upload Video",
@@ -187,5 +307,44 @@ class ViewFranchisesUser extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _controlView(context) {
+    return IconButton(
+      onPressed: () {
+        setState(() {
+          if (_controller.value.isPlaying) {
+            _controller.pause();
+          } else {
+            _controller.play();
+          }
+        });
+      },
+      icon: Icon(_controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+          size: 80, color: deepBlue),
+    );
+  }
+
+  Timer _timerVisibleControl;
+  double _controlAlpha = 1.0;
+
+  var _playing = false;
+  bool get _isPlaying {
+    return _playing;
+  }
+
+  void _onTapVideo() {
+    debugPrint("_onTapVideo $_controlAlpha");
+    setState(() {
+      _controlAlpha = _controlAlpha > 0 ? 0 : 1;
+    });
+    _timerVisibleControl?.cancel();
+    _timerVisibleControl = Timer(Duration(seconds: 2), () {
+      if (_isPlaying) {
+        setState(() {
+          _controlAlpha = 0.0;
+        });
+      }
+    });
   }
 }

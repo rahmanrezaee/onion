@@ -5,14 +5,15 @@ import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 
 class FranchiesProvider with ChangeNotifier {
-  List<FranchiesModel> _items;
+  List<FranchiesModel> items;
 
   Dio dio = new Dio();
   Auth auth;
   FranchiesProvider(this.auth);
 
-  List<FranchiesModel> get items {
-    return _items != null ? _items : null;
+  void clearToNullList() {
+    items = null;
+    notifyListeners();
   }
 
   // Future<void> deleteAnalysis({
@@ -38,37 +39,26 @@ class FranchiesProvider with ChangeNotifier {
   //   }
   // }
 
-  // Future<bool> saveAnalysis(analysisId, region) async {
-  //   try {
-  //     print("token ${auth.token}");
-  //     final response = await APIRequest().post(
-  //       myUrl: saveAnalysisUrl,
-  //       myBody: {
-  //         "analysisId": analysisId,
-  //         "region": region,
-  //       },
-  //       myHeaders: {
-  //         "token": auth.token,
-  //         "Content-Type": "application/json",
-  //       },
-  //     );
+  Future<bool> addFranchise(data, region) async {
+    print(data);
+    try {
+      final StringBuffer url = new StringBuffer("$BASE_URL/franchies/add");
 
-  //     final extractedData = response.data["data"];
-  //     print(extractedData);
-  //     _items.add(SaveAnalModel(
-  //       id: extractedData['_id'],
-  //       region: extractedData['region'],
-  //       title: extractedData['analysisData']['title'],
-  //       category: extractedData['analysisData']['category'],
-  //       industry: extractedData['analysisData']['industry'],
-  //     ));
+      dio.options.headers = {
+        "token": auth.token,
+      };
+      final response = await dio.post(url.toString(), data: data);
 
-  //     notifyListeners();
-  //     return true;
-  //   } on DioError catch (e) {
-  //     print("Mahdi Error: ${e.response}");
-  //   }
-  // }
+      final extractedData = response.data["data"];
+      print(extractedData);
+      items.add(FranchiesModel.toJson(extractedData));
+
+      notifyListeners();
+      return true;
+    } on DioError catch (e) {
+      print("Mahdi Error: ${e.response}");
+    }
+  }
 
   // bool isDeprecated = false;
 
@@ -98,9 +88,9 @@ class FranchiesProvider with ChangeNotifier {
       final result = await dio.get(url.toString());
 
       print("Mahdi an $result");
-      final extractedData = result.data;
+      final extractedData = result.data["franchiesList"];
       if (extractedData == null) {
-        _items = [];
+        items = [];
         return false;
       }
       final List<FranchiesModel> loadedProducts = [];
@@ -109,14 +99,14 @@ class FranchiesProvider with ChangeNotifier {
         loadedProducts.add(FranchiesModel.toJson(tableData));
       });
 
-      _items = loadedProducts;
+      print("fran $loadedProducts");
+
+      items = loadedProducts;
 
       notifyListeners();
       return true;
     } on DioError catch (e) {
-
       print("Mahdi: Error ${e.response}");
-      
     }
   }
 }

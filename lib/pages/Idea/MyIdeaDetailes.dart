@@ -6,7 +6,10 @@ import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 // import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
 class MyIdeaDetails extends StatefulWidget {
+
   static String routeName = "MyIdeaDetail";
+  // MyIdeaDetails( ModalRoute.of(context).settings.arguments, arguments);
+  
 
   @override
   _MyIdeaDetailsState createState() => _MyIdeaDetailsState();

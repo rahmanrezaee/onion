@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/widgets/IdeaWiget/popupMenu.dart' as mypopup;
 
 class FranchiseItem extends StatefulWidget {
@@ -17,7 +18,8 @@ class _FranchiseItemState extends State<FranchiseItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(MyIdeaDetails.routeName);
+        Navigator.of(context).pushNamed(ViewFranchisesUser.routeName,
+            arguments: widget.franchiesModel);
       },
       child: Card(
         elevation: 4,
