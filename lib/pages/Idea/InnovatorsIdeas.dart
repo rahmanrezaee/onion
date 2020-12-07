@@ -38,58 +38,59 @@ class _InnovatorsIdeasState extends State<InnovatorsIdeas> {
                 ],
               ),
               Card(
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Industry: <IndustryName>"),
-                            Text("Implemented")
-                          ],
-                        ),
-                        Divider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [Text("Headline"), Text("Topic Name")],
-                        ),
-                        Divider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [Text("Location"), Text("Place/Location")],
-                        ),
-                        Divider(),
-                        SizedBox(height: 10),
-                        Text("Idea Details",
-                            style: TextStyle(color: deepBlue, fontSize: 18)),
-                        Text(
-                            "lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, "),
-                        SizedBox(height: 4),
-                        Text(
-                          "Read More",
-                          style: TextStyle(
-                              color: middlePurple,
-                              decoration: TextDecoration.underline),
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Total Bids: 220"),
-                            Text("Total Investors Request: 220"),
-                          ],
-                        ),
-                        SizedBox(height: 15),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Text("Post: 20-08-2020, 20:56"),
-                        )
-                      ],
-                    ),
-                  ))
+                elevation: 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Industry: <IndustryName>"),
+                          Text("Implemented")
+                        ],
+                      ),
+                      Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [Text("Headline"), Text("Topic Name")],
+                      ),
+                      Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [Text("Location"), Text("Place/Location")],
+                      ),
+                      Divider(),
+                      SizedBox(height: 10),
+                      Text("Idea Details",
+                          style: TextStyle(color: deepBlue, fontSize: 18)),
+                      Text(
+                          "lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, lorem ipsum doloe sit amit, "),
+                      SizedBox(height: 4),
+                      Text(
+                        "Read More",
+                        style: TextStyle(
+                            color: middlePurple,
+                            decoration: TextDecoration.underline),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Total Bids: 220"),
+                          Text("Total Investors Request: 220"),
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Text("Post: 20-08-2020, 20:56"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),

@@ -35,7 +35,6 @@ import '../../pages/AnalyticsOne.dart';
 import '../../pages/CustomDrawerPage.dart';
 import '../../pages/F&Q.dart';
 import '../../pages/Idea/MyIdeaId.dart';
-import '../../pages/MyMessagePage.dart';
 import '../../pages/Services.dart';
 import '../../pages/authentication/Login.dart';
 import '../../statemanagment/auth_provider.dart';
@@ -314,7 +313,7 @@ class _MyDrawerState extends State<MyDrawer> {
                         child: Text("logout"),
                         elevation: 0,
                         onPressed: () {
-                          value.logout();
+                          value.logout(context);
                         },
                       ),
                     )

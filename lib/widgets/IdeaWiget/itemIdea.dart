@@ -17,15 +17,19 @@ class ItemIdea extends StatefulWidget {
   final Function onDelete;
   final IdeasProvider ideasProvider;
   final GlobalKey<ScaffoldState> scaffoldKey;
+
   ItemIdea(this.scaffoldKey, this.ideasProvider, this.idea, this.onDelete);
+
   @override
   _ItemIdeaState createState() => _ItemIdeaState();
 }
 
 class _ItemIdeaState extends State<ItemIdea> {
   Auth authProvider;
+
   // IdeasProvider ideasProvider;
   String token;
+
   initState() {
     super.initState();
     authProvider = Provider.of<Auth>(context, listen: false);

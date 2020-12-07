@@ -23,8 +23,8 @@ class MyBigDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  
-    var analysisProvider = Provider.of<AnalyticsProvider>(context, listen: false);
+    var analysisProvider =
+        Provider.of<AnalyticsProvider>(context, listen: false);
 
     return Padding(
       padding: EdgeInsets.only(
