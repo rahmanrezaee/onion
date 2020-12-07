@@ -150,8 +150,8 @@ class _MyAppState extends State<MyApp> {
             bodyText2: TextStyle(color: Colors.black54),
           ),
         ),
-        // home: CustomDrawerPage(widget.key),
-        home: InnovatorsIdeas(),
+        home: CustomDrawerPage(widget.key),
+        // home: InnovatorsIdeas(),
         routes: {
           Login.routeName: (context) =>
               auth.token != null ? CustomDrawerPage(widget.key) : Login(),
