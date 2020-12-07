@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:onion/widgets/PlayWidget/BasicVideoPlayer.dart';
+import 'package:onion/widgets/PlayWidget/SingleVideoPlayer.dart';
 import 'package:onion/widgets/PlayWidget/VideoPlayer.dart';
 import 'package:video_player/video_player.dart';
 
@@ -21,26 +23,6 @@ class ViewFranchisesUser extends StatefulWidget {
 }
 
 class _ViewFranchisesUserState extends State<ViewFranchisesUser> {
-  VideoPlayerController _controller;
-  Future<void> _initializeVideoPlayerFuture;
-
-  @override
-  void initState() {
-    _controller = VideoPlayerController.network(
-        widget.franchiesModel.uploadVideo[0]["uriPath"]);
-    //_controller = VideoPlayerController.asset("videos/sample_video.mp4");
-    _initializeVideoPlayerFuture = _controller.initialize();
-    _controller.setLooping(true);
-    _controller.setVolume(1.0);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,8 +33,7 @@ class _ViewFranchisesUserState extends State<ViewFranchisesUser> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context)
-                .pushReplacementNamed(CustomDrawerPage.routeName);
+            Navigator.of(context).pop();
           },
         ),
         actions: [
@@ -121,7 +102,7 @@ class _ViewFranchisesUserState extends State<ViewFranchisesUser> {
                             Text("Location",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.black87)),
-                            Text("${widget.franchiesModel.location.toString()}",
+                            Text("${widget.franchiesModel.location.join(', ')}",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.black87)),
                           ]),
@@ -198,92 +179,17 @@ class _ViewFranchisesUserState extends State<ViewFranchisesUser> {
                           },
                         ),
                       ),
-                      Container(
-                        width: double.infinity,
-                        height: 150,
-                        child: FutureBuilder(
-                          future: _initializeVideoPlayerFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              return Stack(
-                                alignment: Alignment.center,
-                                children: <Widget>[
-                                  GestureDetector(
-                                    child: VideoPlayer(_controller),
-                                    onTap: _onTapVideo,
-                                  ),
-                                  Positioned.fill(
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: _controlAlpha > 0
-                                          ? AnimatedOpacity(
-                                              opacity: _controlAlpha,
-                                              duration:  Duration(milliseconds: 250),
-                                              child: _controlView(context),
-                                            )
-                                          : Container(),
-                                    ),
-                                  ),
-                                ],
-                              );
-                              // Center(
-                              //   child: AspectRatio(
-                              //     aspectRatio: _controller.value.aspectRatio,
-                              //     child: VideoPlayer(_controller),
-                              //   ),
-                              // );
-                            } else {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      // ListView.builder(
-                      //   itemBuilder: (BuildContext context, int index) {
-                      //     return InkWell(
-                      //       onTap: () {
-                      //         print("Will show this documents");
-                      //       },
-                      //       child: Icon(Icons.upload_file,
-                      //           size: 50, color: deepGrey),
-                      //     );
-                      //   },
-                      // ),
-
-                      //  Container(
-                      //     height: 200,
-
-                      //                           child: VideoPlayerWidget(clips: [
-                      //       VideoClip(
-                      //           "For Bigger Fun",
-                      //           "ForBiggerFun.mp4",
-                      //           "images/ForBiggerFun.jpg",
-                      //           0,
-                      //           "https://webfume-onionai.s3.amazonaws.com/guest/public/video/605992-VID_1591354981174.mp4"),
-                      //     ]),
-                      //   ),
-
                       SizedBox(height: 20),
                       Text(
                         "Upload Video",
                         style: TextStyle(fontSize: 22, color: deepBlue),
                       ),
                       SizedBox(height: 5),
-                      Container(
-                        width: double.infinity,
-                        height: 150,
-                        decoration: BoxDecoration(
-                          color: lightGrey,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Icon(Icons.slow_motion_video,
-                            size: 80, color: deepBlue),
+                      SingleVideoPlayer(
+                          clipsUrl: widget.franchiesModel.uploadVideo[0]
+                              ["uriPath"]),
+                      SizedBox(
+                        height: 10,
                       ),
                       SizedBox(height: 20),
                       Align(
@@ -307,44 +213,5 @@ class _ViewFranchisesUserState extends State<ViewFranchisesUser> {
         ),
       ),
     );
-  }
-
-  Widget _controlView(context) {
-    return IconButton(
-      onPressed: () {
-        setState(() {
-          if (_controller.value.isPlaying) {
-            _controller.pause();
-          } else {
-            _controller.play();
-          }
-        });
-      },
-      icon: Icon(_controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-          size: 80, color: deepBlue),
-    );
-  }
-
-  Timer _timerVisibleControl;
-  double _controlAlpha = 1.0;
-
-  var _playing = false;
-  bool get _isPlaying {
-    return _playing;
-  }
-
-  void _onTapVideo() {
-    debugPrint("_onTapVideo $_controlAlpha");
-    setState(() {
-      _controlAlpha = _controlAlpha > 0 ? 0 : 1;
-    });
-    _timerVisibleControl?.cancel();
-    _timerVisibleControl = Timer(Duration(seconds: 2), () {
-      if (_isPlaying) {
-        setState(() {
-          _controlAlpha = 0.0;
-        });
-      }
-    });
   }
 }

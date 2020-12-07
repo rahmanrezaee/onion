@@ -1,10 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:onion/const/values.dart';
 import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/widgets/IdeaWiget/popupMenu.dart' as mypopup;
+import 'package:provider/provider.dart';
 
 class FranchiseItem extends StatefulWidget {
   FranchiesModel franchiesModel;
@@ -16,6 +19,7 @@ class FranchiseItem extends StatefulWidget {
 class _FranchiseItemState extends State<FranchiseItem> {
   @override
   Widget build(BuildContext context) {
+    var auth = Provider.of<Auth>(context, listen: false);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed(ViewFranchisesUser.routeName,
@@ -32,7 +36,8 @@ class _FranchiseItemState extends State<FranchiseItem> {
                 children: [
                   CircleAvatar(
                     radius: 25,
-                    backgroundImage: NetworkImage("https://i.pravatar.cc/300"),
+                    backgroundImage:
+                        NetworkImage(BASE_URL + auth.currentUser.profile),
                   ),
                   SizedBox(width: 5),
                   Expanded(

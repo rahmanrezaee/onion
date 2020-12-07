@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:math';
 
@@ -7,27 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 
-
-class VideoClip {
-  final String fileName;
-  final String thumbName;
-  final String title;
-  final String url;
-  int runningTime;
-
-  VideoClip(this.title, this.fileName, this.thumbName, this.runningTime, this.url);
-
-  String videoPath() {
-    return "$url";
-  }
-
- 
-}
-
 class VideoPlayerWidget extends StatefulWidget {
-  VideoPlayerWidget({Key key, @required this.clips}) : super(key: key);
+  VideoPlayerWidget({Key key, @required this.clipsUrl}) : super(key: key);
 
-  final List<VideoClip> clips;
+  final String clipsUrl;
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
@@ -36,11 +18,6 @@ class VideoPlayerWidget extends StatefulWidget {
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   VideoPlayerController _controller;
 
-  List<VideoClip> get _clips {
-    return widget.clips;
-  }
-
-  var _playingIndex = -1;
   var _disposed = false;
   var _isFullScreen = false;
   var _isEndOfClip = false;
@@ -93,7 +70,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void initState() {
     Screen.keepOn(true);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-    _initializeAndPlay(0);
+    _initializeAndPlay();
     super.initState();
   }
 
@@ -121,7 +98,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void _enterFullScreen() async {
     debugPrint("enterFullScreen");
     await SystemChrome.setEnabledSystemUIOverlays([]);
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+    await SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     if (_disposed) return;
     setState(() {
       _isFullScreen = true;
@@ -138,11 +116,11 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     });
   }
 
-  void _initializeAndPlay(int index) async {
-    print("_initializeAndPlay ---------> $index");
-    final clip = _clips[index];
+  var controller;
+  void _initializeAndPlay() async {
+    print("_initializeAndPlay ---------> ");
 
-    final controller =   VideoPlayerController.network(clip.videoPath());
+    controller = VideoPlayerController.network(widget.clipsUrl);
 
     final old = _controller;
     _controller = controller;
@@ -159,7 +137,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       ..initialize().then((_) {
         debugPrint("---- controller initialized");
         old?.dispose();
-        _playingIndex = index;
+
         _duration = null;
         _position = null;
         controller.addListener(_onControllerUpdated);
@@ -194,12 +172,14 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     var position = await controller.position;
     _position = position;
     final playing = controller.value.isPlaying;
-    final isEndOfClip = position.inMilliseconds > 0 && position.inSeconds + 1 >= duration.inSeconds;
+    final isEndOfClip = position.inMilliseconds > 0 &&
+        position.inSeconds + 1 >= duration.inSeconds;
     if (playing) {
       // handle progress indicator
       if (_disposed) return;
       setState(() {
-        _progress = position.inMilliseconds.ceilToDouble() / duration.inMilliseconds.ceilToDouble();
+        _progress = position.inMilliseconds.ceilToDouble() /
+            duration.inMilliseconds.ceilToDouble();
       });
     }
 
@@ -207,22 +187,13 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     if (_isPlaying != playing || _isEndOfClip != isEndOfClip) {
       _isPlaying = playing;
       _isEndOfClip = isEndOfClip;
-      debugPrint("updated -----> isPlaying=$playing / isEndOfClip=$isEndOfClip");
+      debugPrint(
+          "updated -----> isPlaying=$playing / isEndOfClip=$isEndOfClip");
       if (isEndOfClip && !playing) {
-        debugPrint("========================== End of Clip / Handle NEXT ========================== ");
-        final isComplete = _playingIndex == _clips.length - 1;
-        if (isComplete) {
-          print("played all!!");
-          if (!_showingDialog) {
-            _showingDialog = true;
-            _showPlayedAllDialog().then((value) {
-              _exitFullScreen();
-              _showingDialog = false;
-            });
-          }
-        } else {
-          _initializeAndPlay(_playingIndex + 1);
-        }
+        debugPrint(
+            "========================== End of Clip / Handle NEXT ========================== ");
+
+        _initializeAndPlay();
       }
     }
   }
@@ -246,31 +217,16 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _isFullScreen
-          ? null
-          : AppBar(
-              title: Text("Play View"),
-            ),
-      body: _isFullScreen
-          ? Container(
-              child: Center(child: _playView(context)),
-              decoration: BoxDecoration(color: Colors.black),
-            )
-          : Column(children: <Widget>[
-              Container(
-                child: Center(child: _playView(context)),
-                decoration: BoxDecoration(color: Colors.black),
-              ),
-              Expanded(
-                child: _listView(),
-              ),
-            ]),
-    );
+    return Column(children: <Widget>[
+      Container(
+        child: Center(child: _playView(context)),
+        decoration: BoxDecoration(color: Colors.black),
+      ),
+    ]);
   }
 
-  void _onTapCard(int index) {
-    _initializeAndPlay(index);
+  void _onTapCard() {
+    _initializeAndPlay();
   }
 
   Widget _playView(BuildContext context) {
@@ -301,28 +257,31 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         child: Center(
             child: Text(
           "Preparing ...",
-          style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 18.0),
+          style: TextStyle(
+              color: Colors.white70,
+              fontWeight: FontWeight.bold,
+              fontSize: 18.0),
         )),
       );
     }
   }
 
-  Widget _listView() {
-    return ListView.builder(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      itemCount: _clips.length,
-      itemBuilder: (BuildContext context, int index) {
-        return InkWell(
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-          splashColor: Colors.blue[100],
-          onTap: () {
-            _onTapCard(index);
-          },
-          child: _buildCard(index),
-        );
-      },
-    ).build(context);
-  }
+  // Widget _listView() {
+  //   return ListView.builder(
+  //     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  //     itemCount: _clips.length,
+  //     itemBuilder: (BuildContext context, int index) {
+  //       return InkWell(
+  //         borderRadius: BorderRadius.all(Radius.circular(6)),
+  //         splashColor: Colors.blue[100],
+  //         onTap: () {
+  //           _onTapCard(index);
+  //         },
+  //         child: _buildCard(index),
+  //       );
+  //     },
+  //   ).build(context);
+  // }
 
   Widget _controlView(BuildContext context) {
     return Column(
@@ -343,10 +302,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       children: <Widget>[
         FlatButton(
           onPressed: () async {
-            final index = _playingIndex - 1;
-            if (index > 0 && _clips.length > 0) {
-              _initializeAndPlay(index);
-            }
+            _initializeAndPlay();
           },
           child: Icon(
             Icons.fast_rewind,
@@ -366,7 +322,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 final dur = _duration?.inSeconds ?? 0;
                 final isEnd = pos == dur;
                 if (isEnd) {
-                  _initializeAndPlay(_playingIndex);
+                  _initializeAndPlay();
                 } else {
                   controller.play();
                 }
@@ -382,10 +338,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         ),
         FlatButton(
           onPressed: () async {
-            final index = _playingIndex + 1;
-            if (index < _clips.length - 1) {
-              _initializeAndPlay(index);
-            }
+            // final index = _playingIndex + 1;
+            // if (index < _clips.length - 1) {
+            _initializeAndPlay();
+            // }
           },
           child: Icon(
             Icons.fast_forward,
@@ -415,7 +371,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Container(
                 decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [
-                  BoxShadow(offset: const Offset(0.0, 0.0), blurRadius: 4.0, color: Color.fromARGB(50, 0, 0, 0)),
+                  BoxShadow(
+                      offset: const Offset(0.0, 0.0),
+                      blurRadius: 4.0,
+                      color: Color.fromARGB(50, 0, 0, 0)),
                 ]),
                 child: Icon(
                   noMute ? Icons.volume_up : Icons.volume_off,
@@ -496,14 +455,14 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   Widget _buildCard(int index) {
-    final clip = _clips[index];
-    final playing = index == _playingIndex;
+    // final clip = _clips[index];
+    // final playing = 0;
     String runtime;
-    if (clip.runningTime > 60) {
-      runtime = "${clip.runningTime ~/ 60}분 ${clip.runningTime % 60}초";
-    } else {
-      runtime = "${clip.runningTime % 60}초";
-    }
+    // if (clip.runningTime > 60) {
+    //   runtime = "${clip.runningTime ~/ 60}분 ${clip.runningTime % 60}초";
+    // } else {
+    //   runtime = "${clip.runningTime % 60}초";
+    // }
     return Card(
       child: Container(
         padding: EdgeInsets.all(4),
@@ -521,16 +480,19 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(clip.title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text("clip.title",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
                     Padding(
-                      child: Text("$runtime", style: TextStyle(color: Colors.grey[500])),
+                      child: Text("$runtime",
+                          style: TextStyle(color: Colors.grey[500])),
                       padding: EdgeInsets.only(top: 3),
                     )
                   ]),
             ),
             Padding(
               padding: EdgeInsets.all(8.0),
-              child: playing
+              child: _isPlaying
                   ? Icon(Icons.play_arrow)
                   : Icon(
                       Icons.play_arrow,
