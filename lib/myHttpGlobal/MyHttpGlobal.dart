@@ -24,7 +24,7 @@ class APIRequest {
 
   Future post({
     @required String myUrl,
-    @required Map<String, String> myBody,
+    @required myBody,
     @required Map<String, String> myHeaders,
   }) {
     dio.options.headers = myHeaders;
@@ -33,7 +33,7 @@ class APIRequest {
 
   Future put({
     @required String myUrl,
-    @required Map<String, String> myBody,
+    @required dynamic myBody,
     @required Map<String, String> myHeaders,
   }) {
     dio.options.headers = myHeaders;
@@ -42,7 +42,7 @@ class APIRequest {
 
   Future delete({
     @required String myUrl,
-    @required Map<String, String> myBody,
+    @required dynamic myBody,
     @required Map<String, String> myHeaders,
   }) {
     dio.options.headers = myHeaders;

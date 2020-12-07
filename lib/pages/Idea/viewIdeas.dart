@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
+import 'package:onion/models/Idea.dart';
+import 'package:onion/utilities/linkChecker.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:onion/widgets/FiveRating.dart';
 import 'package:video_player/video_player.dart';
@@ -13,10 +15,20 @@ class ViewIdeas extends StatefulWidget {
 
 class _ViewIdeasState extends State<ViewIdeas> {
   VideoPlayerController _controller;
+  bool _isPlaying = false;
   initState() {
     super.initState();
     _controller = VideoPlayerController.network(
-        'http://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_20mb.mp4')
+      'http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_20mb.mp4',
+    )
+      ..addListener(() {
+        final bool isPlaying = _controller.value.isPlaying;
+        if (isPlaying != _isPlaying) {
+          setState(() {
+            _isPlaying = isPlaying;
+          });
+        }
+      })
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
@@ -31,6 +43,8 @@ class _ViewIdeasState extends State<ViewIdeas> {
 
   @override
   Widget build(BuildContext context) {
+    SetupIdeaModel idea = ModalRoute.of(context).settings.arguments;
+    print("this is documents: ${idea.documents}");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: middlePurple,
@@ -70,18 +84,17 @@ class _ViewIdeasState extends State<ViewIdeas> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Industry: IT Tech Management",
+                        "Industry: ${idea.category}",
                         style: TextStyle(
                           color: middlePurple,
                         ),
                       ),
                       SizedBox(height: 10),
-                      Text("Headline: Tec Gadget Rentals",
+                      Text("Headline: ${idea.ideaHeadline}",
                           style: TextStyle(color: Colors.black)),
                       SizedBox(height: 10),
                       Text("Idea Description:"),
-                      Text(
-                          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book"),
+                      Text("${idea.ideaText}"),
                       SizedBox(height: 10),
                       Align(
                         alignment: Alignment.centerRight,
@@ -119,7 +132,7 @@ class _ViewIdeasState extends State<ViewIdeas> {
                       text: 'Timelines: ',
                       style: TextStyle(color: Colors.black)),
                   TextSpan(
-                    text: ' Total Stages 2',
+                    text: ' Total Stages ${idea.timeline['details'].length}',
                     style: TextStyle(color: deepGrey, fontSize: 30),
                   )
                 ],
@@ -169,66 +182,32 @@ class _ViewIdeasState extends State<ViewIdeas> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text("Stage 1", textAlign: TextAlign.center),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text("25-08-2020", textAlign: TextAlign.center),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text("25-08-2021", textAlign: TextAlign.center),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text("Stage 2", textAlign: TextAlign.center),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text("25-08-2020", textAlign: TextAlign.center),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text("25-08-2021", textAlign: TextAlign.center),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text("Stage 2", textAlign: TextAlign.center),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text("25-08-2020", textAlign: TextAlign.center),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text("25-08-2021", textAlign: TextAlign.center),
-                      ),
-                    ],
-                  ),
-                ),
+                ...(idea.timeline['details'] as List).map((e) {
+                  int index = (idea.timeline['details'] as List).indexOf(e);
+                  return Container(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Text("Stage ${index + 1}",
+                              textAlign: TextAlign.center),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Text("${e['start']}",
+                              textAlign: TextAlign.center),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child:
+                              Text("${e['end']}", textAlign: TextAlign.center),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
               ]),
             ),
             SizedBox(height: 10),
@@ -242,20 +221,25 @@ class _ViewIdeasState extends State<ViewIdeas> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   ...List.generate(
-                    5,
-                    (index) => Row(
-                      children: [
-                        SizedBox(
-                          width: 85,
-                          height: 80,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.asset("assets/images/mobile.jpg"),
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                      ],
-                    ),
+                    idea.documents.length,
+                    (index) {
+                      return isUriImage(idea.documents[index]["uriPath"])
+                          ? Row(
+                              children: [
+                                SizedBox(
+                                  width: 85,
+                                  height: 80,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                        idea.documents[index]["uriPath"]),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                              ],
+                            )
+                          : Container();
+                    },
                   ).toList(),
                 ],
               ),

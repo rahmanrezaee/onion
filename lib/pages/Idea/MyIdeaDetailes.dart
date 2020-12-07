@@ -25,9 +25,10 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
   final double playerWidth = 640.0;
   final double playerHeight = 360.0;
   bool _isPlaying = false;
-  String token;
+  // String token;
   initState() {
-    token = Provider.of<Auth>(context).token;
+    super.initState();
+    // token = Provider.of<Auth>(context).token;
     //Video player initialize
     _controller = VideoPlayerController.network(
       'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',

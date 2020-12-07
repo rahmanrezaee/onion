@@ -118,6 +118,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         home: CustomDrawerPage(widget.key),
+        // home: AddFranchise(),
         routes: {
           Login.routeName: (context) => auth.token != null
               ? CustomDrawerPage(widget.key)

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:onion/models/Idea.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/Idea/postIdea.dart';
 import 'package:onion/pages/Idea/viewIdeas.dart';
 import 'package:onion/services/ideasServices.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
@@ -38,7 +39,8 @@ class _ItemIdeaState extends State<ItemIdea> {
       onTap: () {
         Navigator.of(context)
             .pushNamed(MyIdeaDetails.routeName, arguments: widget.idea);
-        // Navigator.of(context).pushNamed(ViewIdeas.routeName);
+        // Navigator.of(context)
+        //     .pushNamed(ViewIdeas.routeName, arguments: widget.idea);
       },
       child: Card(
         elevation: 4,
@@ -114,21 +116,29 @@ class _ItemIdeaState extends State<ItemIdea> {
                           itemBuilder: (context) => [
                             mypopup.PopupMenuItem(
                               value: 1,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  // border:
-                                  //     Border.all(color: Colors.grey[200], width: 2),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Edit",
-                                        style: TextStyle(color: Colors.white)),
-                                  ],
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                      PostIdea.routeName,
+                                      arguments: widget.idea);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    // border:
+                                    //     Border.all(color: Colors.grey[200], width: 2),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text("Edit",
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

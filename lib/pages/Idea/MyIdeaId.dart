@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
-// import 'package:onion/models/SetupIdea%20(2).dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/statemanagment/idea/ideasProviders.dart';
@@ -8,7 +7,6 @@ import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:onion/widgets/IdeaWiget/itemIdea.dart';
 import 'package:onion/services/ideasServices.dart';
 import 'package:provider/provider.dart';
-import '../../models/Idea.dart';
 
 class MyIdeaId extends StatefulWidget {
   static String routeName = "MyIdeaId";
@@ -108,6 +106,7 @@ class _MyIdeaIdState extends State<MyIdeaId> {
                           future: value.getIdeaList(token),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
+                              return Text("");
                             } else if (snapshot.hasError) {
                               return Center(
                                   child: Text(
