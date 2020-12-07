@@ -1,325 +1,178 @@
-import 'package:flutter/material.dart';
-import 'package:onion/const/color.dart';
-import 'package:onion/models/Idea.dart';
-import 'package:onion/utilities/linkChecker.dart';
-import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
-import 'package:onion/widgets/FiveRating.dart';
-import 'package:video_player/video_player.dart';
+import 'dart:math';
+import 'dart:ui';
 
-class ViewIdeas extends StatefulWidget {
-  static String routeName = "ViewIdeas";
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
+import 'package:onion/const/Size.dart';
+import 'package:onion/const/color.dart';
+import 'package:onion/const/values.dart';
+import 'package:onion/widgets/MyLittleAppbar.dart';
+
+class BadgeDecoration extends Decoration {
+  final Color badgeColor;
+  final double badgeSize;
+  final TextSpan textSpan;
+
+  const BadgeDecoration({
+    @required this.badgeColor,
+    @required this.badgeSize,
+    @required this.textSpan,
+  });
 
   @override
-  _ViewIdeasState createState() => _ViewIdeasState();
+  BoxPainter createBoxPainter([onChanged]) =>
+      _BadgePainter(badgeColor, badgeSize, textSpan);
 }
 
-class _ViewIdeasState extends State<ViewIdeas> {
-  VideoPlayerController _controller;
-  bool _isPlaying = false;
-  initState() {
-    super.initState();
-    _controller = VideoPlayerController.network(
-      'http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_20mb.mp4',
-    )
-      ..addListener(() {
-        final bool isPlaying = _controller.value.isPlaying;
-        if (isPlaying != _isPlaying) {
-          setState(() {
-            _isPlaying = isPlaying;
-          });
-        }
-      })
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
-  }
+class _BadgePainter extends BoxPainter {
+  static const double BASELINE_SHIFT = 1;
+  static const double CORNER_RADIUS = 4;
+  final Color badgeColor;
+  final double badgeSize;
+  final TextSpan textSpan;
+
+  _BadgePainter(this.badgeColor, this.badgeSize, this.textSpan);
 
   @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    canvas.save();
+    canvas.translate(
+        offset.dx + configuration.size.width - badgeSize, offset.dy);
+    canvas.drawPath(buildBadgePath(), getBadgePaint());
+    // draw text
+    final hyp = sqrt(badgeSize * badgeSize + badgeSize * badgeSize);
+    final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center);
+    textPainter.layout(minWidth: hyp, maxWidth: hyp);
+    final halfHeight = textPainter.size.height / 2;
+    final v = sqrt(halfHeight * halfHeight + halfHeight * halfHeight) +
+        BASELINE_SHIFT;
+    canvas.translate(v, -v);
+    canvas.rotate(0.785398); // 45 degrees
+    textPainter.paint(canvas, Offset.zero);
+    canvas.restore();
   }
+
+  Paint getBadgePaint() => Paint()
+    ..isAntiAlias = true
+    ..color = badgeColor;
+
+  Path buildBadgePath() => Path.combine(
+      PathOperation.difference,
+      Path()
+        ..addRRect(RRect.fromLTRBAndCorners(0, 0, badgeSize, badgeSize,
+            topRight: Radius.circular(CORNER_RADIUS))),
+      Path()
+        ..lineTo(0, badgeSize)
+        ..lineTo(badgeSize, badgeSize)
+        ..close());
+}
+
+class ViewIdeas extends StatelessWidget {
+  static const routeName = "view_ideas";
 
   @override
   Widget build(BuildContext context) {
-    SetupIdeaModel idea = ModalRoute.of(context).settings.arguments;
-    print("this is documents: ${idea.documents}");
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: middlePurple,
-        title: Text("View Ideas"),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+      appBar: PreferredSize(
+        preferredSize: const Size(double.infinity, kToolbarHeight),
+        child: MyLittleAppbar(
+          hasDrawer: false,
+          myTitle: "View Ideas",
         ),
-        actions: [
-          IconButton(
-            icon: MyAlertIcon(num: 3),
-            onPressed: () {},
-          )
-        ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SizedBox(height: 20),
+        padding: EdgeInsets.symmetric(
+          vertical: deviceSize(context).height * 0.04,
+          horizontal: deviceSize(context).width * 0.03,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
               "New Idea: Needs Investor & Service",
-              style: TextStyle(
-                fontSize: 16,
-              ),
+              textScaleFactor: 1.1,
             ),
-            SizedBox(height: 10),
-            Stack(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Industry: ${idea.category}",
-                        style: TextStyle(
-                          color: middlePurple,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text("Headline: ${idea.ideaHeadline}",
-                          style: TextStyle(color: Colors.black)),
-                      SizedBox(height: 10),
-                      Text("Idea Description:"),
-                      Text("${idea.ideaText}"),
-                      SizedBox(height: 10),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          "Post: 28-08-2020",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.only(topRight: Radius.circular(5)),
-                    child: SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: Image.asset("assets/images/new.png"),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Divider(),
-            SizedBox(height: 10),
-            RichText(
-              text: TextSpan(
-                style: TextStyle(color: Colors.black, fontSize: 36),
-                children: <TextSpan>[
-                  TextSpan(
-                      text: 'Timelines: ',
-                      style: TextStyle(color: Colors.black)),
-                  TextSpan(
-                    text: ' Total Stages ${idea.timeline['details'].length}',
-                    style: TextStyle(color: deepGrey, fontSize: 30),
-                  )
-                ],
-              ),
-              textScaleFactor: 0.5,
-            ),
-            SizedBox(height: 5),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1,
-                  color: Colors.grey,
-                ),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Column(children: [
-                Container(
-                  color: firstPurple,
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          "Stage Name",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          "Starting Date",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          "End Date",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                ...(idea.timeline['details'] as List).map((e) {
-                  int index = (idea.timeline['details'] as List).indexOf(e);
-                  return Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Text("Stage ${index + 1}",
-                              textAlign: TextAlign.center),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("${e['start']}",
-                              textAlign: TextAlign.center),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child:
-                              Text("${e['end']}", textAlign: TextAlign.center),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ]),
-            ),
-            SizedBox(height: 10),
-            Divider(),
-            SizedBox(height: 15),
-            Text("Project Images",
-                style: TextStyle(fontSize: 16, color: Colors.black)),
-            Container(
-              height: 80,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  ...List.generate(
-                    idea.documents.length,
-                    (index) {
-                      return isUriImage(idea.documents[index]["uriPath"])
-                          ? Row(
-                              children: [
-                                SizedBox(
-                                  width: 85,
-                                  height: 80,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.network(
-                                        idea.documents[index]["uriPath"]),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                              ],
-                            )
-                          : Container();
-                    },
-                  ).toList(),
-                ],
-              ),
-            ),
-            SizedBox(height: 15),
-            Text("Project Descriptive Video"),
-            SizedBox(height: 10),
-            _controller.value.initialized
-                ? AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: VideoPlayer(_controller),
-                  )
-                : Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 200,
-                    color: Colors.grey,
-                  ),
-            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Total No. of People: "),
-                Text("8 People"),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                MyFiveRating(rateVal: 4.3),
                 Text(
-                  "Review Now",
-                  style: TextStyle(
-                    color: middlePurple,
-                    decoration: TextDecoration.underline,
+                  "Industry: IT Tech Management",
+                  textScaleFactor: 1.1,
+                  style: TextStyle(color: firstPurple),
+                ),
+                Container(
+                  height: deviceSize(context).height * 0.06,
+                  width: deviceSize(context).height * 0.06,
+                  foregroundDecoration: BadgeDecoration(
+                    badgeColor: middlePurple,
+                    badgeSize: deviceSize(context).height * 0.06,
+                    textSpan: TextSpan(
+                      text: 'New',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: deviceSize(context).height * 0.017,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: OutlineButton(
-                borderSide: BorderSide(width: 2, color: Colors.grey),
-                onPressed: () {},
-                child: Text("Show Interest"),
+            Text(
+              "Headline: Tech Gadget Rentals",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            // SizedBox(height: 10),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: OutlineButton(
-                borderSide: BorderSide(width: 2, color: Colors.grey),
-                onPressed: () {},
-                child: Text("Share in Investment"),
+            SizedBox(height: deviceSize(context).height * 0.01),
+            Text(
+              "Idea Description:",
+              style: TextStyle(color: Colors.black),
+            ),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: deviceSize(context).width * 0.38,
+                maxWidth: deviceSize(context).width * 0.9,
+                minHeight: deviceSize(context).height * 0.2,
+                maxHeight: deviceSize(context).height * 0.5,
+              ),
+              child: AutoSizeText(
+                loremIpsum,
+                style: TextStyle(color: Colors.grey),
               ),
             ),
-            // SizedBox(height: 10),
+            SizedBox(height: deviceSize(context).height * 0.02),
             SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: RaisedButton(
-                color: middlePurple,
-                onPressed: () {},
-                child: Text(
-                  "Bid For The Idea",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+              width: deviceSize(context).width,
+              child: Text(
+                "Post: 28-08-2020",
+                textAlign: TextAlign.end,
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            Divider(
+              color: Colors.grey,
+              height: 50,
+            ),
+            Row(
+              children: [
+                Text(
+                  "Timelines:   ",
+                  style: TextStyle(color: Colors.black),
                 ),
-              ),
+                Text(
+                  "Total Stages 2",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
             ),
-            // RaisedButton(
-            //   shape: RoundedRectangleBorder(
-            //     border
-            //     borderRadius: BorderRadius.all(Radius.circular(5)),
-            //   ),
-            //   onPressed: (){},
-            //   child: Text("Show Interest"),
-            // ),
-          ]),
+            Table(
+              children: [],
+            )
+          ],
         ),
       ),
     );
