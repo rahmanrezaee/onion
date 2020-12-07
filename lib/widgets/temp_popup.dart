@@ -36,8 +36,6 @@ class DialogContent extends StatefulWidget {
 }
 
 class _DialogContentState extends State<DialogContent> {
- 
-  
   bool isloading = false;
   @override
   Widget build(context) {

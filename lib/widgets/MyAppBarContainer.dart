@@ -17,7 +17,7 @@ import 'AnalysisWidget/AnaylsisDropdownWidget.dart';
 
 class MyAppBarContainer extends StatelessWidget {
   @override
-  Widget build( context) {
+  Widget build(context) {
     // var pro = Provider.of<DropdownProvider>(context, listen: false);
     return Container(
       height: deviceSize(context).height * 0.16,
@@ -39,7 +39,7 @@ class MyAppBarContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Consumer<DropdownProvider>(
-            builder: ( context, dpvalue, Widget child) {
+            builder: (context, dpvalue, Widget child) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
@@ -51,71 +51,79 @@ class MyAppBarContainer extends StatelessWidget {
                                 ConnectionState.waiting) {
                               return MyEmptyText(myTxt: "Loading...");
                             } else {
-                              if (snapshot.connectionState ==  ConnectionState.done)
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done)
                                 return MyEmptyText(myTxt: "Done");
                             }
                           },
                         )
-                      : dpvalue.categoryList.isEmpty ? MyEmptyText(myTxt: "Empty"): MySmallDropdown(
-                          myisExpanded: false,
-                          myDropDownList: dpvalue.categoryList.isEmpty
-                              ? []
-                              : dpvalue.categoryList,
-                          dropDownAroundColor: Colors.white,
-                          dropDownColor: middlePurple,
-                          iconColor: Colors.white,
-                          txtColor: Colors.white,
-                          onChange: (value) async {
-                            dpvalue.categorySelected = value;
-                            await dpvalue.fetchItemsIndustry();
-                          },
-                          value: dpvalue.categorySelected,
-                          dropDownWidth: deviceSize(context).width * 0.17,
-                        ),
-                  dpvalue.idustryList != null 
-                      ? dpvalue.idustryList.isEmpty ? MyEmptyText(myTxt: "Empty"): MySmallDropdown(
-                          myisExpanded: false,
-                          myDropDownList: dpvalue.idustryList.isEmpty
-                              ? []
-                              : dpvalue.idustryList,
-                          dropDownAroundColor: Colors.white,
-                          dropDownColor: middlePurple,
-                          iconColor: Colors.white,
-                          txtColor: Colors.white,
-                          onChange: (value) async {
-                            dpvalue.idustrySelected = value;
-                            await dpvalue.fetchItemsType();
-                          },
-                          value: dpvalue.idustrySelected,
-                          dropDownWidth: deviceSize(context).width * 0.17,
-                        )
+                      : dpvalue.categoryList.isEmpty
+                          ? MyEmptyText(myTxt: "Empty")
+                          : MySmallDropdown(
+                              myisExpanded: false,
+                              myDropDownList: dpvalue.categoryList.isEmpty
+                                  ? []
+                                  : dpvalue.categoryList,
+                              dropDownAroundColor: Colors.white,
+                              dropDownColor: middlePurple,
+                              iconColor: Colors.white,
+                              txtColor: Colors.white,
+                              onChange: (value) async {
+                                dpvalue.categorySelected = value;
+                                await dpvalue.fetchItemsIndustry();
+                              },
+                              value: dpvalue.categorySelected,
+                              dropDownWidth: deviceSize(context).width * 0.17,
+                            ),
+                  dpvalue.idustryList != null
+                      ? dpvalue.idustryList.isEmpty
+                          ? MyEmptyText(myTxt: "Empty")
+                          : MySmallDropdown(
+                              myisExpanded: false,
+                              myDropDownList: dpvalue.idustryList.isEmpty
+                                  ? []
+                                  : dpvalue.idustryList,
+                              dropDownAroundColor: Colors.white,
+                              dropDownColor: middlePurple,
+                              iconColor: Colors.white,
+                              txtColor: Colors.white,
+                              onChange: (value) async {
+                                dpvalue.idustrySelected = value;
+                                await dpvalue.fetchItemsType();
+                              },
+                              value: dpvalue.idustrySelected,
+                              dropDownWidth: deviceSize(context).width * 0.17,
+                            )
                       : MyEmptyText(myTxt: "Selected Category"),
-                  dpvalue.typeList != null 
-                      ?  dpvalue.idustryList.isEmpty ? MyEmptyText(myTxt: "Empty"): AnaylsisDropDown(
-                          myisExpanded: false,
-                          myDropDownList:
-                              dpvalue.typeList.isEmpty ? [] : dpvalue.typeList,
-                          dropDownAroundColor: Colors.white,
-                          // myDropDownAnal: [],
-                          
-                          dropDownColor: middlePurple,
-                          iconColor: Colors.white,
-                          txtColor: Colors.white,
-                          onChange: (value) async {
-                            dpvalue.typeSelected = value;
-                            await dpvalue.fetchCountryType(context);
-                          },
+                  dpvalue.typeList != null
+                      ? dpvalue.idustryList.isEmpty
+                          ? MyEmptyText(myTxt: "Empty")
+                          : AnaylsisDropDown(
+                              myisExpanded: false,
+                              myDropDownList: dpvalue.typeList.isEmpty
+                                  ? []
+                                  : dpvalue.typeList,
+                              dropDownAroundColor: Colors.white,
+                              // myDropDownAnal: [],
 
-                          value: dpvalue.typeSelected,
-                          dropDownWidth: deviceSize(context).width * 0.17,
-                        )
+                              dropDownColor: middlePurple,
+                              iconColor: Colors.white,
+                              txtColor: Colors.white,
+                              onChange: (value) async {
+                                dpvalue.typeSelected = value;
+                                await dpvalue.fetchCountryType(context);
+                              },
+
+                              value: dpvalue.typeSelected,
+                              dropDownWidth: deviceSize(context).width * 0.17,
+                            )
                       : MyEmptyText(myTxt: "Selected Industry"),
                 ],
               );
             },
           ),
           Consumer<AnalysisProvider>(
-            builder: ( context, anavalue, Widget child) {
+            builder: (context, anavalue, Widget child) {
               if (anavalue.countryInList.isEmpty) {
                 return Padding(
                   padding: const EdgeInsets.only(top: 20, left: 10),

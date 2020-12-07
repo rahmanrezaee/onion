@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
 import 'package:onion/pages/Idea/viewIdeas.dart';
+import 'package:onion/pages/SearchTab/SearchTab.dart';
 import 'package:onion/pages/analysisList/analysisList.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
 import 'package:onion/pages/profile/profile_page.dart';
 import 'package:onion/pages/rating/RatingPage.dart';
 import 'package:onion/pages/viewRating.dart';
+import 'package:onion/statemanagment/ChatManagement/database.dart';
 import 'package:onion/statemanagment/RatingProvider.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
@@ -58,7 +60,6 @@ import './pages/franchises/addFranchise.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   runApp(ConnectivityAppWrapper(
     app: MultiProvider(
       providers: [
@@ -68,6 +69,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => PostIdeaValidation()),
         ChangeNotifierProvider(create: (_) => SetupIdeaValidation()),
         ChangeNotifierProvider(create: (_) => AnalysisProvider()),
+        ChangeNotifierProvider(create: (_) => RealtimeData()),
         ChangeNotifierProvider(create: (_) => DropdownProvider()),
         ChangeNotifierProxyProvider<Auth, SaveAnalProvider>(
             update: (
@@ -126,7 +128,7 @@ class _MyAppState extends State<MyApp> {
 
     return Consumer<Auth>(
       builder: (ctx, auth, _) => MaterialApp(
-        title: 'Onion.ai',
+        title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Color(0xFF7B3C8A),
@@ -180,6 +182,7 @@ class _MyAppState extends State<MyApp> {
           NotificationsList.routeName: (context) => NotificationsList(),
           PostIdea.routeName: (context) => PostIdea(),
           FandQ.routeName: (context) => FandQ(),
+          SearchTab.routeName: (context) => SearchTab(),
           Services.routeName: (context) => Services(),
           Settings.routeName: (context) => Settings(),
           RequestFranchisesUser.routeName: (context) => RequestFranchisesUser(),

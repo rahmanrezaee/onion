@@ -299,10 +299,12 @@ class MyBtn extends StatelessWidget {
 
 class MySocialIcon extends StatelessWidget {
   final String myImg;
+  final double paddingRight;
 
   const MySocialIcon({
     Key key,
     this.myImg,
+    this.paddingRight = 0.04,
   }) : super(key: key);
 
   @override

@@ -1,9 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:onion/const/Size.dart';
 import 'package:onion/pages/ProjectChat.dart';
-
 import '../const/values.dart';
 
 class NotificationsList extends StatefulWidget {
@@ -45,37 +44,67 @@ class _NotificationsListState extends State<NotificationsList> {
       //     ),
       //   ),
       // ),
-      body: count > 0 ? ListView.builder(
-        itemCount: count,
-        padding: EdgeInsets.symmetric(
-          horizontal: deviceSize(context).width * 0.03,
-          vertical: deviceSize(context).height * 0.01,
-        ),
-        itemBuilder: (BuildContext context, int index) {
-          
-          return  MyCardItem(myImageType: "rectangle") ;
-        },
-      ): Center(child:Text("List is Empty")),
+      body: count > 0
+          ? ListView.builder(
+              itemCount: count,
+              padding: EdgeInsets.symmetric(
+                horizontal: deviceSize(context).width * 0.03,
+                vertical: deviceSize(context).height * 0.01,
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                return MyCardItem(myImageType: "rectangle");
+              },
+            )
+          : Center(child: Text("List is Empty")),
     );
   }
 }
 
 class MyCardItem extends StatelessWidget {
   final String myImageType;
+  final String name;
+  final String message;
   final String clickType;
 
-  const MyCardItem({
+  MyCardItem({
     Key key,
     this.myImageType,
     this.clickType,
+    this.name,
+    this.message,
   }) : super(key: key);
+
+  createChatRoomAndStartText({
+    @required BuildContext context,
+    @required String userName,
+  }) {
+    // if (Constants.myName != null) {
+    // String chatRoomId = getChatRoomId(userName, Constants.myName);
+    // List<String> users = [userName, Constants.myName];
+    // Map<String, dynamic> chatRoomMap = {
+    //   "users": users,
+    //   "ChatRoomId": chatRoomId,
+    // };
+    // DatabaseMethods().createChatRoom(
+    //   chatRoomId: chatRoomId,
+    //   chatRoomMap: chatRoomMap,
+    // );
+    Navigator.pushNamed(
+      context,
+      ProjectChat.routeName,
+      arguments: name,
+    );
+    // } else {
+    //   print("You can n't send message to yourself");
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: clickType == "message"
           ? () {
-              Navigator.pushNamed(context, ProjectChat.routeName);
+              createChatRoomAndStartText(context: context, userName: name);
             }
           : null,
       child: Card(
@@ -104,7 +133,7 @@ class MyCardItem extends StatelessWidget {
                         child: Row(
                           children: [
                             Text(
-                              "James H. Matt",
+                              name == null ? "James H. Matt" : name,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             Spacer(),
@@ -124,9 +153,9 @@ class MyCardItem extends StatelessWidget {
                             maxWidth: deviceSize(context).width * 0.6,
                           ),
                           child: Align(
-                            alignment: Alignment.bottomCenter,
+                            alignment: Alignment.centerLeft,
                             child: AutoSizeText(
-                              loremIpsum,
+                              message == null ? loremIpsum : message,
                               textScaleFactor: 1.1,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 3,

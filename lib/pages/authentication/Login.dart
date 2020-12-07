@@ -385,7 +385,10 @@ class _LoginState extends State<Login> {
 
     try {
       await Provider.of<Auth>(context, listen: false)
-          .login(username.text, passport.text);
+          .login(username.text, passport.text)
+          .then(
+            (value) => print("I LogIn: $value"),
+          );
     } on LoginException catch (e) {
       _scaffoldKey.currentState.showSnackBar(showSnackbar(
           text: e.cause, icon: Icon(Icons.error), color: Colors.red));

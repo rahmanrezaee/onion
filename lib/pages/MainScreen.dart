@@ -1,8 +1,7 @@
-import 'package:connectivity/connectivity.dart';
-import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/pages/Analysis.dart';
+import 'package:onion/pages/DashboardPage.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Home.dart';
 import 'package:onion/pages/MyMessagePage.dart';
@@ -10,7 +9,7 @@ import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/utilities/Connectivity/MyConnectivity.dart';
 import 'package:onion/widgets/Snanckbar.dart';
 import 'package:onion/widgets/bottom_nav.dart';
-import 'package:provider/provider.dart';
+import 'package:onion/pages/SearchTab/SearchTab.dart';
 
 class MainScreen extends StatefulWidget {
   static String routeName = "mainScreen";
@@ -37,13 +36,12 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-  
     List<Widget> pageWidget = [
       HomePage(openDrawer: widget.openDrawer),
       MyMessagePage(openDrawer: widget.openDrawer),
-      Analysis(openDrawer: widget.openDrawer),
-      Dashboard(openDrawer: widget.openDrawer),
-      Center(child: Text("under development")),
+      Analysis(),
+      DashboardPage(openDrawer: widget.openDrawer),
+      SearchTab(openDrawer: widget.openDrawer),
     ];
 
     return Scaffold(
@@ -79,7 +77,7 @@ class _MainScreenState extends State<MainScreen> {
         ],
         onTap: (index) {
           // if (index == 2 || index == 3) {
-           
+
           //   setState(() {
           //     _page = _page;
           //     _index = _page;
