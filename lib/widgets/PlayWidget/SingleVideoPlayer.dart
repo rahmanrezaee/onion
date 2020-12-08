@@ -5,11 +5,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
-import 'package:onion/models/FranchiesModel.dart';
-import 'package:onion/pages/CustomDrawerPage.dart';
-import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
-import 'package:onion/widgets/PlayWidget/BasicVideoPlayer.dart';
-import 'package:onion/widgets/PlayWidget/VideoPlayer.dart';
 import 'package:video_player/video_player.dart';
 
 class SingleVideoPlayer extends StatefulWidget {
