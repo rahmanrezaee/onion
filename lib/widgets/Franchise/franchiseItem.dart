@@ -1,10 +1,17 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:onion/const/values.dart';
+import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/franchises/viewFranchisesUser.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/widgets/IdeaWiget/popupMenu.dart' as mypopup;
+import 'package:provider/provider.dart';
 
 class FranchiseItem extends StatefulWidget {
+  FranchiesModel franchiesModel;
+  FranchiseItem(this.franchiesModel);
   @override
   _FranchiseItemState createState() => _FranchiseItemState();
 }
@@ -12,9 +19,11 @@ class FranchiseItem extends StatefulWidget {
 class _FranchiseItemState extends State<FranchiseItem> {
   @override
   Widget build(BuildContext context) {
+    var auth = Provider.of<Auth>(context, listen: false);
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(MyIdeaDetails.routeName);
+        Navigator.of(context).pushNamed(ViewFranchisesUser.routeName,
+            arguments: widget.franchiesModel);
       },
       child: Card(
         elevation: 4,
@@ -27,7 +36,8 @@ class _FranchiseItemState extends State<FranchiseItem> {
                 children: [
                   CircleAvatar(
                     radius: 25,
-                    backgroundImage: NetworkImage("https://i.pravatar.cc/300"),
+                    backgroundImage:
+                        NetworkImage(BASE_URL + auth.currentUser.profile),
                   ),
                   SizedBox(width: 5),
                   Expanded(
@@ -45,7 +55,7 @@ class _FranchiseItemState extends State<FranchiseItem> {
                               ),
                             ),
                             TextSpan(
-                              text: "Some Text",
+                              text: widget.franchiesModel.industry,
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w300,
@@ -56,14 +66,14 @@ class _FranchiseItemState extends State<FranchiseItem> {
                         RichText(
                           text: TextSpan(children: [
                             TextSpan(
-                              text: "HeadLine: ",
+                              text: "Brand: ",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             TextSpan(
-                              text: "Abcedasd",
+                              text: widget.franchiesModel.brandName,
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w300,
@@ -192,8 +202,7 @@ class _FranchiseItemState extends State<FranchiseItem> {
                           ),
                         ),
                         TextSpan(
-                          text:
-                              "Flutter is Google’s mobile UI framework for crafting high-quality native interfaces on iOS and Android in record time. Flutter works with existing code, is used by developers and organizations around the world, and is free and open source.",
+                          text: widget.franchiesModel.requirments,
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w300,

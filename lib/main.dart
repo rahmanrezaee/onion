@@ -10,6 +10,8 @@ import 'package:onion/pages/Idea/viewIdeas.dart';
 import 'package:onion/pages/SearchTab/SearchTab.dart';
 import 'package:onion/pages/analysisList/analysisList.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/pages/franchises/addFranchise.dart';
+import 'package:onion/pages/franchises/myFranchises.dart';
 import 'package:onion/pages/profile/profile_page.dart';
 import 'package:onion/pages/rating/RatingPage.dart';
 import 'package:onion/pages/viewRating.dart';
@@ -18,6 +20,7 @@ import 'package:onion/statemanagment/RatingProvider.dart';
 import 'package:onion/statemanagment/SaveAnalModel.dart';
 import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/statemanagment/dropdown_provider.dart';
+import 'package:onion/statemanagment/franchise_provider.dart';
 import 'package:onion/utilities/Connectivity/ConnectionStatusSingleton.dart';
 import 'package:onion/validation/postIdeaValidation.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
@@ -96,6 +99,17 @@ void main() async {
               context,
             ) =>
                 RatingProvider(null)),
+        ChangeNotifierProxyProvider<Auth, FranchiesProvider>(
+            update: (
+              context,
+              auth,
+              previousMessages,
+            ) =>
+                FranchiesProvider(auth),
+            create: (
+               context,
+            ) =>
+                FranchiesProvider(null)),
       ],
       child: MyApp(),
     ),
@@ -130,8 +144,10 @@ class _MyAppState extends State<MyApp> {
     Provider.of<Auth>(context, listen: false).tryAutoLogin();
 
     return Consumer<Auth>(
-      builder: (ctx, auth, _) => MaterialApp(
-        title: 'Flutter Demo',
+      builder: (ctx, auth, _) {
+ 
+        return MaterialApp(
+        title: 'Onion.ai',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Color(0xFF7B3C8A),
@@ -189,18 +205,20 @@ class _MyAppState extends State<MyApp> {
           Services.routeName: (context) => Services(),
           Settings.routeName: (context) => Settings(),
           RequestFranchisesUser.routeName: (context) => RequestFranchisesUser(),
-          ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(),
+          ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(ModalRoute.of(context).settings.arguments,),
           MyIdeaId.routeName: (context) => MyIdeaId(),
-          MyIdeaDetails.routeName: (context) => MyIdeaDetails(),
+          // MyIdeaDetails.routeName: (context) => MyIdeaDetails( ModalRoute.of(context).settings.arguments,),
+          // ViewMyRequestFranchise.routeName: (context) => ViewMyRequestFranchise( ),
           RequestPage.routeName: (context) => RequestPage(),
-          AddFranchise.routeName: (context) => AddFranchise(),
+          RatingPage.routeName: (context) => RatingPage(),
           MyFranchises.routeName: (context) => MyFranchises(),
-          ViewIdeas.routeName: (context) => ViewIdeas(),
+          AddFranchise.routeName: (context) => AddFranchise(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (_) => UnderDevelopment());
         },
-      ),
+      );
+      },
     );
   }
 }

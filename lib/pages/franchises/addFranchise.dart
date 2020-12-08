@@ -4,10 +4,11 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
+import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
-import 'package:onion/services/franchisesServices.dart';
+import 'package:onion/pages/Idea/postIdea.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
-import 'package:onion/utilities/disabledFocusNode.dart';
+import 'package:onion/statemanagment/franchise_provider.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/IdeaWiget/LocationWidget.dart';
@@ -24,15 +25,12 @@ class _AddFranchiseState extends State<AddFranchise> {
   final _formKey = new GlobalKey<FormState>();
   String token;
   //Fields
-  var _industry = "";
-  List<Map> image = [];
-  String _brandName = "";
-  List _location = [];
-  var _requirment = "";
-  List _documents = [];
-  var _video;
+
+  FranchiesModel addFranch = new FranchiesModel();
+
   //For Generating Location fields
   List<String> list = new List<String>();
+  // List<String> list = new List<String>();
   List<TextEditingController> _controllers = [];
   void addField() {
     setState(() {
@@ -42,9 +40,12 @@ class _AddFranchiseState extends State<AddFranchise> {
   }
 
   Auth authProvider;
+  FranchiesProvider franchiesProvider;
+  @override
   initState() {
     super.initState();
     authProvider = Provider.of<Auth>(context, listen: false);
+    franchiesProvider = Provider.of<FranchiesProvider>(context, listen: false);
     token = authProvider.token;
     addField();
   }
@@ -82,402 +83,414 @@ class _AddFranchiseState extends State<AddFranchise> {
               : Container(),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: Form(
-              key: _formKey,
-              child: Card(
-                elevation: 3,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(children: [
-                    DropDownFormField(
-                      value: _industry != "" ? "$_industry" : "none",
-                      onSaved: (value) {
-                        setState(() {
-                          _industry = value;
-                        });
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          FocusScope.of(context).requestFocus(new FocusNode());
-                          _industry = value;
-                        });
-                      },
-                      dataSource: [
-                        {"display": 'Industry Interested', "value": 'none'},
-                        {"display": 'Industry', "value": 'Industry'},
-                        {"display": 'Learning', "value": 'Learning'},
-                        {"display": 'Technoligy', "value": 'Technoligy'},
-                        {"display": 'Art', "value": 'Art'},
-                      ],
-                      textField: 'display',
-                      valueField: 'value',
-                    ),
-                    _submitted == true && _industry == "" || _industry == "none"
-                        ? Container(
-                            padding: EdgeInsets.only(left: 10, top: 10),
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Please select industry",
-                              style: TextStyle(
-                                color: Color(0xffB00020),
-                                fontSize: 12,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: Card(
+                  elevation: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(children: [
+                      DropDownFormField(
+                        value: addFranch.industry != ""
+                            ? addFranch.industry
+                            : "none",
+                        onSaved: (value) {
+                          setState(() {
+                            addFranch.industry = value;
+                          });
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+                            addFranch.industry = value;
+                          });
+                        },
+                        dataSource: [
+                          {"display": 'Industry Interested', "value": 'none'},
+                          {"display": 'Industry', "value": 'Industry'},
+                          {"display": 'Learning', "value": 'Learning'},
+                          {"display": 'Technoligy', "value": 'Technoligy'},
+                          {"display": 'Art', "value": 'Art'},
+                        ],
+                        textField: 'display',
+                        valueField: 'value',
+                      ),
+                      _submitted == true && addFranch.industry == "" ||
+                              addFranch.industry == "none"
+                          ? Container(
+                              padding: EdgeInsets.only(left: 10, top: 10),
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Please select industry",
+                                style: TextStyle(
+                                  color: Color(0xffB00020),
+                                  fontSize: 12,
+                                ),
+                                textAlign: TextAlign.left,
                               ),
-                              textAlign: TextAlign.left,
+                            )
+                          : Container(),
+                      SizedBox(height: 15),
+                      TextFormField(
+                        // initialValue: setupIdea['aboutYourBusiness'],
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(
+                          color: Colors.purple,
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) return "Please enter brand name";
+                        },
+                        onChanged: (value) {
+                          addFranch.brandName = value;
+                        },
+                        onSaved: (value) {},
+                        decoration: InputDecoration(
+                          hintText: "Brand name",
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 10,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.black87,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.purple,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Column(
+                        children: [
+                          ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: list.length,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    LocationWidget(
+                                      // borderColor: _submitted == true &&
+                                      //         _controllers[index].text == ""
+                                      // ? Colors.red
+                                      // : Colors.black87,
+                                      text: list[index],
+                                      controller: _controllers[index],
+                                      locationRemove: () {
+                                        print(list.toString());
+                                        setState(() {
+                                          _controllers.removeAt(index);
+                                          list.removeAt(index);
+                                        });
+                                      },
+                                    ),
+                                    _submitted == true &&
+                                            _controllers[index].text == ""
+                                        ? Container(
+                                            padding: EdgeInsets.only(
+                                                left: 10, bottom: 15),
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              "Please enter location",
+                                              style: TextStyle(
+                                                color: Color(0xffB00020),
+                                                fontSize: 12,
+                                              ),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          )
+                                        : Container(),
+                                  ],
+                                );
+                              }),
+                          FlatButton(
+                            onPressed: () => addField(),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: Text("Add More"),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                      // SizedBox(height: 15),
+                      TextFormField(
+                        // initialValue: setupIdea['aboutYourBusiness'],
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(
+                          color: Colors.purple,
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) return "Please enter requirments";
+                          return null;
+                        },
+                        onChanged: (value) {
+                          addFranch.requirments = value;
+                        },
+                        onSaved: (value) {},
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                          hintText: "Requirments",
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 10,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.black87,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.purple,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              keyboardType: TextInputType.text,
+                              style: TextStyle(
+                                color: Colors.purple,
+                              ),
+                              // validator: (value) {
+                              //   if (value.isEmpty)
+                              //     return "Your Document is empty";
+                              // },
+                              // onChanged: (value) {
+                              //   validationService.changeDocument(value);
+                              // },
+                              onSaved: (value) {
+                                // user.occupation = value;
+                              },
+                              enableInteractiveSelection: false,
+                              focusNode: new AlwaysDisabledFocusNode(),
+                              decoration: InputDecoration(
+                                hintText: "Upload Documents",
+                                // errorText: validationService.document.error,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 0,
+                                  horizontal: 10,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          InkWell(
+                            onTap: () => loadAssetsDocument(),
+                            child: Container(
+                              padding: EdgeInsets.all(15),
+                              color: Theme.of(context).primaryColor,
+                              child: Text("Upload",
+                                  style: TextStyle(color: Colors.white)),
                             ),
                           )
-                        : Container(),
-                    SizedBox(height: 15),
-                    TextFormField(
-                      // initialValue: setupIdea['aboutYourBusiness'],
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(
-                        color: Colors.purple,
+                        ],
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) return "Please enter brand name";
-                      },
-                      onChanged: (value) {
-                        _brandName = value;
-                      },
-                      onSaved: (value) {},
-                      decoration: InputDecoration(
-                        hintText: "Brand name",
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 10,
-                        ),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.black87,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.purple,
-                          ),
+                      SizedBox(height: 15),
+                      Container(
+                        height: 80,
+                        child: ListView.builder(
+                          itemCount: addFranch.uploadDocuments.length + 1,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return addFranch.uploadDocuments.length > index
+                                ? Stack(
+                                    overflow: Overflow.visible,
+                                    children: [
+                                      Positioned(
+                                        bottom: 0,
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        child: Card(
+                                          child: Container(
+                                              height: 50,
+                                              width: 50,
+                                              child: addFranch.uploadDocuments[index]
+                                                              ["type"] ==
+                                                          "jpg" ||
+                                                      addFranch.uploadDocuments[index]
+                                                              ["type"] ==
+                                                          "jpeg" ||
+                                                      addFranch.uploadDocuments[
+                                                              index]["type"] ==
+                                                          "png"
+                                                  ? Image.file(File(addFranch
+                                                          .uploadDocuments[index]
+                                                      ['path']))
+                                                  : Icon(Icons.file_present)),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: IconButton(
+                                            icon: Icon(Icons.delete,
+                                                color: Colors.red),
+                                            onPressed: () {
+                                              setState(() {
+                                                addFranch.uploadDocuments
+                                                    .removeAt(index);
+                                                // postForm.documents
+                                                //     .removeAt(index);
+                                              });
+                                            }),
+                                      )
+                                    ],
+                                  )
+                                : FlatButton(
+                                    onPressed: loadAssets,
+                                    child: Container(
+                                        height: 30,
+                                        width: 30,
+                                        decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.5),
+                                                spreadRadius: 5,
+                                                blurRadius: 7,
+                                                offset: Offset(0,
+                                                    3), // changes position of shadow
+                                              ),
+                                            ],
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(50))),
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                        )),
+                                  );
+                          },
                         ),
                       ),
-                    ),
-                    SizedBox(height: 15),
-                    Column(
-                      children: [
-                        ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: list.length,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  LocationWidget(
-                                    // borderColor: _submitted == true &&
-                                    //         _controllers[index].text == ""
-                                    // ? Colors.red
-                                    // : Colors.black87,
-                                    text: list[index],
-                                    controller: _controllers[index],
-                                    locationRemove: () {
-                                      print(list.toString());
-                                      setState(() {
-                                        _controllers.removeAt(index);
-                                        list.removeAt(index);
-                                      });
-                                    },
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              keyboardType: TextInputType.url,
+                              style: TextStyle(
+                                color: Colors.purple,
+                              ),
+                              // onChanged: (value) =>
+                              //     validationService.changeVideo(value),
+                              // validator: (value) {
+                              //   if (value.isEmpty)
+                              //     return "Your Upload Video is empty";
+                              // },
+                              onSaved: (value) {
+                                // user.occupation = value;
+                              },
+                              enableInteractiveSelection: false,
+                              focusNode: new AlwaysDisabledFocusNode(),
+                              decoration: InputDecoration(
+                                hintText: "Upload Video",
+                                // errorText: validationService.video.error,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 0,
+                                  horizontal: 10,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.black87,
                                   ),
-                                  _submitted == true &&
-                                          _controllers[index].text == ""
-                                      ? Container(
-                                          padding: EdgeInsets.only(
-                                              left: 10, bottom: 15),
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            "Please enter location",
-                                            style: TextStyle(
-                                              color: Color(0xffB00020),
-                                              fontSize: 12,
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        )
-                                      : Container(),
-                                ],
-                              );
-                            }),
-                        FlatButton(
-                          onPressed: () => addField(),
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: Text("Add More"),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
-                    // SizedBox(height: 15),
-                    TextFormField(
-                      // initialValue: setupIdea['aboutYourBusiness'],
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(
-                        color: Colors.purple,
-                      ),
-                      validator: (value) {
-                        if (value.isEmpty) return "Please enter requirments";
-                        return null;
-                      },
-                      onChanged: (value) {
-                        _requirment = value;
-                      },
-                      onSaved: (value) {},
-                      maxLines: 5,
-                      decoration: InputDecoration(
-                        hintText: "Requirments",
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 10,
-                        ),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.black87,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.purple,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            keyboardType: TextInputType.text,
-                            style: TextStyle(
-                              color: Colors.purple,
-                            ),
-                            // validator: (value) {
-                            //   if (value.isEmpty)
-                            //     return "Your Document is empty";
-                            // },
-                            // onChanged: (value) {
-                            //   validationService.changeDocument(value);
-                            // },
-                            onSaved: (value) {
-                              // user.occupation = value;
-                            },
-                            enableInteractiveSelection: false,
-                            focusNode: new AlwaysDisabledFocusNode(),
-                            decoration: InputDecoration(
-                              hintText: "Upload Documents",
-                              // errorText: validationService.document.error,
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 0,
-                                horizontal: 10,
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.black87,
                                 ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.purple,
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.purple,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        InkWell(
-                          onTap: () => loadAssetsDocument(),
-                          child: Container(
-                            padding: EdgeInsets.all(15),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          RaisedButton(
+                            padding: EdgeInsets.all(13),
                             color: Theme.of(context).primaryColor,
+                            onPressed: () => loadAssetsVideo(),
                             child: Text("Upload",
                                 style: TextStyle(color: Colors.white)),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 40,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 15),
-                    Container(
-                      height: 80,
-                      child: ListView.builder(
-                        itemCount: image.length + 1,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (BuildContext context, int index) {
-                          return image.length > index
-                              ? Stack(
-                                  overflow: Overflow.visible,
-                                  children: [
-                                    Positioned(
-                                      bottom: 0,
-                                      top: 0,
-                                      left: 0,
-                                      right: 0,
-                                      child: Card(
-                                        child: Container(
-                                            height: 50,
-                                            width: 50,
-                                            child: image[index]["type"] ==
-                                                        "jpg" ||
-                                                    image[index]["type"] ==
-                                                        "jpeg" ||
-                                                    image[index]["type"] ==
-                                                        "png"
-                                                ? Image.file(
-                                                    File(image[index]['path']))
-                                                : Icon(Icons.file_present)),
-                                      ),
+                          onPressed: uploadingFile == false
+                              ? () {
+                                  addFranchise();
+                                }
+                              : () {
+                                  _scaffoldKey.currentState.showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          "Uploading File. Please wait..."),
                                     ),
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: IconButton(
-                                          icon: Icon(Icons.delete,
-                                              color: Colors.red),
-                                          onPressed: () {
-                                            setState(() {
-                                              image.removeAt(index);
-                                              // postForm.documents
-                                              //     .removeAt(index);
-                                            });
-                                          }),
-                                    )
-                                  ],
-                                )
-                              : FlatButton(
-                                  onPressed: loadAssets,
-                                  child: Container(
-                                      height: 30,
-                                      width: 30,
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.5),
-                                              spreadRadius: 5,
-                                              blurRadius: 7,
-                                              offset: Offset(0,
-                                                  3), // changes position of shadow
-                                            ),
-                                          ],
-                                          color: Theme.of(context).primaryColor,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(50))),
-                                      child: Icon(
-                                        Icons.add,
-                                        color: Colors.white,
-                                      )),
-                                );
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            keyboardType: TextInputType.url,
-                            style: TextStyle(
-                              color: Colors.purple,
-                            ),
-                            // onChanged: (value) =>
-                            //     validationService.changeVideo(value),
-                            // validator: (value) {
-                            //   if (value.isEmpty)
-                            //     return "Your Upload Video is empty";
-                            // },
-                            onSaved: (value) {
-                              // user.occupation = value;
-                            },
-                            enableInteractiveSelection: false,
-                            focusNode: new AlwaysDisabledFocusNode(),
-                            decoration: InputDecoration(
-                              hintText: "Upload Video",
-                              // errorText: validationService.video.error,
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 0,
-                                horizontal: 10,
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.purple,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        RaisedButton(
-                          padding: EdgeInsets.all(13),
-                          color: Theme.of(context).primaryColor,
-                          onPressed: () => loadAssetsVideo(),
-                          child: Text("Upload",
-                              style: TextStyle(color: Colors.white)),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 40,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        onPressed: uploadingFile == false
-                            ? () {
-                                addFranchise();
-                              }
-                            : () {
-                                _scaffoldKey.currentState.showSnackBar(
-                                  SnackBar(
-                                    content:
-                                        Text("Uploading File. Please wait..."),
+                                  );
+                                },
+                          child: _isLoading == true
+                              ? CircularProgressIndicator()
+                              : Text(
+                                  "Add Franchise",
+                                  style: TextStyle(
+                                    color: Colors.white,
                                   ),
-                                );
-                              },
-                        child: _isLoading == true
-                            ? CircularProgressIndicator()
-                            : Text(
-                                "Add Franchise",
-                                style: TextStyle(
-                                  color: Colors.white,
                                 ),
-                              ),
-                        color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).primaryColor,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                  ]),
+                      SizedBox(
+                        height: 10,
+                      ),
+                    ]),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -499,18 +512,18 @@ class _AddFranchiseState extends State<AddFranchise> {
       List<PlatformFile> file = result.files;
       file.forEach((element) {
         setState(() {
-          image.add({
+          addFranch.uploadDocuments.add({
             "name": element.name,
             "path": element.path,
             "type": element.extension,
           });
         });
       });
-      print("the result is not null and we are uploading files.............");
+
       List<File> files = result.paths.map((path) => File(path)).toList();
       for (int i = 0; i < files.length; i++) {
         authProvider.uploadFile(files[i], "document").then((value) {
-          _documents.add(value);
+          // _documents.add(value);
           setState(() {
             uploadingFile = false;
           });
@@ -536,7 +549,7 @@ class _AddFranchiseState extends State<AddFranchise> {
 
       file.forEach((element) {
         setState(() {
-          image.add({
+          addFranch.uploadDocuments.add({
             "name": element.name,
             "path": element.path,
             "type": element.extension,
@@ -549,8 +562,10 @@ class _AddFranchiseState extends State<AddFranchise> {
       });
       List<File> files = result.paths.map((path) => File(path)).toList();
       for (int i = 0; i < files.length; i++) {
+        print(files[i]);
+
         authProvider.uploadFile(files[i], "document").then((value) {
-          _documents.add(value);
+          // _documents.add(value);
           setState(() {
             uploadingFile = false;
           });
@@ -594,7 +609,7 @@ class _AddFranchiseState extends State<AddFranchise> {
       List<File> files = result.paths.map((path) => File(path)).toList();
       for (int i = 0; i < files.length; i++) {
         authProvider.uploadFile(files[i], "video").then((value) {
-          _video = value;
+          addFranch.uploadVideo.add(value);
           print("Video data $value");
           setState(() {
             uploadingFile = false;
@@ -607,58 +622,51 @@ class _AddFranchiseState extends State<AddFranchise> {
   bool _submitted = false;
   //Subite the form
   addFranchise() {
-    _location = [];
+    addFranch.location = [];
     setState(() {
       _submitted = true;
     });
-    // bool locationAdded = true;
-    // _controllers.forEach((TextEditingController controller) {
-    //   if (controller.text == '') {
-    //     locationAdded = false;
-    //   } else {
-    //     _location.add("${controller.text}");
-    //   }
-    // });
+    bool locationAdded = true;
+    _controllers.forEach((TextEditingController controller) {
+      if (controller.text == '') {
+        locationAdded = false;
+      } else {
+        addFranch.location.add("${controller.text}");
+      }
+    });
     for (final controller in _controllers) {
       if (controller.text == "" || controller.text == null) {
-        // locationAdded = false;
-        _location = null;
+        locationAdded = false;
+        addFranch.location = null;
         break;
       } else {
-        _location.add("${controller.text}");
+        addFranch.location.add("${controller.text}");
       }
     }
-    print("Locations $_location");
+    // print("Locations $_location");
     if (_formKey.currentState.validate() &&
-        _industry != "" &&
-        _industry != "none" &&
-        _location != [] &&
-        _location != null) {
-      var data = {
-        "industry": _industry,
-        "brandName": _brandName,
-        "location": _location.toString(),
-        "requirments": _requirment,
-        "uploadDocuments": _documents.toString(),
-        "uploadVideo": _video.toString(),
-      };
+        addFranch.location != "" &&
+        addFranch.industry != "none" &&
+        addFranch.location != [] &&
+        addFranch.location != null) {
       setState(() {
         _isLoading = true;
       });
-      FranchisesServices().addFranchise(data, token).then((result) {
+
+      franchiesProvider.addFranchise(addFranch.sendMap(), token).then((result) {
         setState(() {
           _isLoading = false;
         });
-        if (result = true) {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text("Successfuly added."),
-            duration: Duration(seconds: 3),
-          ));
-          Timer(Duration(seconds: 3), () {
-            Navigator.of(context)
-                .pushReplacementNamed(CustomDrawerPage.routeName);
-          });
-        }
+        // if (result = true) {
+        //   _scaffoldKey.currentState.showSnackBar(SnackBar(
+        //     content: Text("Successfuly added."),
+        //     duration: Duration(seconds: 3),
+        //   ));
+        //   Timer(Duration(seconds: 3), () {
+        //     Navigator.of(context)
+        //         .pushReplacementNamed(CustomDrawerPage.routeName);
+        //   });
+        // }
       }).catchError((error) {
         setState(() {
           _isLoading = false;

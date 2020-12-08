@@ -13,7 +13,10 @@ import '../../models/Idea.dart';
 import 'package:video_player/video_player.dart';
 
 class MyIdeaDetails extends StatefulWidget {
+
   static String routeName = "MyIdeaDetail";
+  // MyIdeaDetails( ModalRoute.of(context).settings.arguments, arguments);
+  
 
   @override
   _MyIdeaDetailsState createState() => _MyIdeaDetailsState();
