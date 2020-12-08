@@ -24,14 +24,17 @@ class MyMessagePage extends StatefulWidget {
 
 class _MyMessagePageState extends State<MyMessagePage> {
   Future<void> myFuture;
-
+  String firebaseId = "";
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      String firebaseId = Provider.of<Auth>(context, listen: false).firebaseId;
+      firebaseId = Provider.of<Auth>(context, listen: false).firebaseId;
       myFuture = Provider.of<RealtimeData>(context, listen: false)
           .getUserInfo(firebaseId);
+
+      Provider.of<RealtimeData>(context, listen: false)
+          .getUserChangeListener(firebaseId);
     });
   }
 
@@ -60,20 +63,23 @@ class _MyMessagePageState extends State<MyMessagePage> {
                       builder: (BuildContext context, value, Widget child) {
                         if (value?.userInfo?.isNotEmpty ?? true) {
                           return ListView.builder(
-                            itemCount: value.userInfo['groups'].length,
+                            itemCount: value.userInfo.length,
                             padding: EdgeInsets.symmetric(
                               horizontal: deviceSize(context).width * 0.03,
                               vertical: deviceSize(context).height * 0.01,
                             ),
                             itemBuilder: (BuildContext context, int index) {
-                              String key = value.userInfo['groups'].keys
-                                  .elementAt(index);
+                              print("Mahdi getAllContacts: ${value.userInfo}");
+
+                              String key = value.userInfo.keys.elementAt(index);
                               print("Mahdi getAllContacts: $key");
                               return MyCardItem(
+                                imageUrl: firebaseId,
                                 myImageType: "circle",
                                 clickType: "message",
                                 name: "$key",
-                                message: "",
+                                message:
+                                    "${value.userInfo[key]["lastMessage"]}",
                                 // message:
                                 //     "${value.searchSnapshot.documents[index].get('email')}",
                               );

@@ -18,16 +18,37 @@ class RealtimeData extends ChangeNotifier {
     return _userInfo;
   }
 
+  void getUserChangeListener(String firebaseId) {
+    databaseReference
+        .child("root")
+        .child("users")
+        .child("$firebaseId")
+        .child("groups")
+        .onChildChanged
+        .listen((event) {
+      print(
+          "Mahdi: getUserChangeListener ${event.snapshot.key} : ${event.snapshot.value}");
+      _userInfo[event.snapshot.key] = event.snapshot.value;
+      print("Mahdi: getUserChangeListener $_userInfo");
+      notifyListeners();
+    });
+  }
+
   Future<void> getUserInfo(String firebaseId) async {
     try {
       await databaseReference
           .child("root")
           .child("users")
           .child("$firebaseId")
-          // .child("$firebaseId")
-          .once()
-          .then((value) {
-        _userInfo = value.value;
+          .child("groups")
+          .onChildAdded
+          .listen((event) {
+        print(
+            "Mahdi: getUserInfo server ${event.snapshot.key} : ${event.snapshot.value}");
+        print(
+            "Mahdi: getUserInfo ${_userInfo.keys} : ${_userInfo.values}");
+
+        _userInfo[event.snapshot.key] = event.snapshot.value;
         notifyListeners();
       });
     } catch (e) {
@@ -45,6 +66,8 @@ class RealtimeData extends ChangeNotifier {
       print("Error clearUserInfo: $e");
     }
   }
+
+  //===============================================
 
   Map<dynamic, dynamic> _myMessage = {};
 
@@ -64,6 +87,7 @@ class RealtimeData extends ChangeNotifier {
         print("Hello:: newValue: ${event.snapshot.key}");
 
         _myMessage['${event.snapshot.key}'] = {
+          "firebaseId": event.snapshot.value["firebaseId"],
           "message": event.snapshot.value["message"],
           "sendBy": event.snapshot.value["sendBy"],
         };
@@ -79,6 +103,7 @@ class RealtimeData extends ChangeNotifier {
     @required String key,
     @required String editMessage,
     @required String groupName,
+    @required String firebaseId,
   }) async {
     print("I am Edit Method");
     try {
@@ -88,20 +113,12 @@ class RealtimeData extends ChangeNotifier {
           .child("$groupName")
           .child(key)
           .set({'sendBy': _myMessage[key]['sendBy'], 'message': editMessage});
-      // databaseReference
-      //     .child("chats")
-      //     .child("chat_123")
-      //     .onChildChanged
-      //     .listen((event) {
-      //   _myMessage[key]["message"] = ;
-      //   notifyListeners();
-      // });
     } catch (e) {
       print("Mahdi Error newValue $e");
     }
   }
 
-  void editListener(String groupName) {
+  void editListener(String groupName, String firebaseId) {
     try {
       databaseReference
           .child("root")
@@ -112,6 +129,23 @@ class RealtimeData extends ChangeNotifier {
         print("Mahdi editListener ${event.snapshot.value["message"]}");
         _myMessage[event.snapshot.key]["message"] =
             event.snapshot.value["message"];
+
+        String tempKey = "";
+        _myMessage.forEach((key, value) {
+          tempKey = key;
+        });
+
+        if (tempKey == event.snapshot.key) {
+          databaseReference
+              .child("root")
+              .child("users")
+              .child("$firebaseId")
+              .child("groups")
+              .child("$groupName")
+              .child("lastMessage")
+              .set(event.snapshot.value["message"]);
+        }
+
         notifyListeners();
       });
     } catch (e) {
@@ -119,7 +153,7 @@ class RealtimeData extends ChangeNotifier {
     }
   }
 
-  void deleteListener(String groupName) {
+  void deleteListener(String groupName, String firebaseId) {
     try {
       databaseReference
           .child("root")
@@ -128,6 +162,22 @@ class RealtimeData extends ChangeNotifier {
           .onChildRemoved
           .listen((event) {
         print("Mahdi deleteValue: ${event.snapshot.key}");
+
+        String tempKey = "";
+        _myMessage.forEach((key, value) {
+          tempKey = key;
+        });
+
+        if (tempKey == event.snapshot.key) {
+          databaseReference
+              .child("root")
+              .child("users")
+              .child("$firebaseId")
+              .child("groups")
+              .child("$groupName")
+              .child("lastMessage")
+              .set("Message Deleted");
+        }
 
         _myMessage.remove(event.snapshot.key);
         notifyListeners();
@@ -153,16 +203,37 @@ class RealtimeData extends ChangeNotifier {
   void sendMessage({
     @required Map<String, String> sendProperty,
     String groupName,
-  }) {
-    databaseReference
-        .child("root")
-        .child("messages")
-        .child("$groupName")
-        .child(sendProperty['time'])
-        .set({
-      'sendBy': sendProperty['sendBy'],
-      'message': sendProperty['message']
-    });
+  }) async {
+    try {
+      await databaseReference
+          .child("root")
+          .child("messages")
+          .child("$groupName")
+          .child(sendProperty['time'])
+          .set({
+        'sendBy': sendProperty['sendBy'],
+        'message': sendProperty['message'],
+        'firebaseId': sendProperty['firebaseId'],
+      });
+
+      databaseReference
+          .child("root")
+          .child("users")
+          .child("${sendProperty['firebaseId']}")
+          .child("groups")
+          .child("$groupName")
+          .child("lastMessage")
+          .set(sendProperty['message']);
+
+      databaseReference
+          .child("root")
+          .child("groups")
+          .child("$groupName")
+          .child("lastMessage")
+          .set(sendProperty['message']);
+    } catch (e) {
+      print("Mahdi: sendMessage $e");
+    }
   }
 
   void clearMyMessage() {

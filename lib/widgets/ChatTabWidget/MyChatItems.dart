@@ -1,5 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:onion/const/MyUrl.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../const/Size.dart';
 import '../../const/color.dart';
@@ -10,6 +13,7 @@ class MyChatItems extends StatelessWidget {
   final String message;
   final String date;
   final String hour;
+  final String firebaseId;
 
   const MyChatItems({
     Key key,
@@ -17,6 +21,7 @@ class MyChatItems extends StatelessWidget {
     this.message,
     this.date,
     this.hour,
+    this.firebaseId,
   }) : super(key: key);
 
   @override
@@ -33,12 +38,20 @@ class MyChatItems extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // {{baseURL}}/user/avatar/{{userID}}
               SizedBox(
                 height: deviceSize(context).height * 0.08,
                 width: deviceSize(context).height * 0.08,
-                child: CircleAvatar(
-                  backgroundImage:
-                      AssetImage("assets/images/empty_profile.jpg"),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    deviceSize(context).height * 0.06,
+                  ),
+                  child: FadeInImage(
+                    placeholder: AssetImage("assets/images/empty_profile.jpg"),
+                    image: NetworkImage(
+                      "$baseImageAvatar$firebaseId",
+                    ),
+                  ),
                 ),
               ),
               SizedBox(width: deviceSize(context).width * 0.02),

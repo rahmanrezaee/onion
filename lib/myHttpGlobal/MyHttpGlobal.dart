@@ -8,10 +8,6 @@ class APIRequest {
     @required String myUrl,
     token,
   }) {
-   
-
-    
-
     try {
       if (token == null) {
         return dio.get(myUrl);

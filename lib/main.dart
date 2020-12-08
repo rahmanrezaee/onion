@@ -109,21 +109,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   void initState() {
     super.initState();
-    // _firebaseMessaging.configure(
-    //   onMessage: (message) async {
-    //     Navigator.pushNamed(context, NotificationsList.routeName);
-    //     print("You have a new notification:$message");
-    //   },
-    //   onResume: (message) async {
-    //     Navigator.pushNamed(context, NotificationsList.routeName);
-    //     print("You have a new notification:$message");
-    //   },
-    // );
   }
 
   @override
