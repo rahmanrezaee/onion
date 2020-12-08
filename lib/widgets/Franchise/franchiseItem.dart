@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:onion/const/values.dart';
 import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/franchises/addFranchise.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:onion/statemanagment/franchise_provider.dart';
 import 'package:onion/widgets/IdeaWiget/popupMenu.dart' as mypopup;
 import 'package:provider/provider.dart';
 
@@ -20,6 +22,7 @@ class _FranchiseItemState extends State<FranchiseItem> {
   @override
   Widget build(BuildContext context) {
     var auth = Provider.of<Auth>(context, listen: false);
+    var franchies = Provider.of<FranchiesProvider>(context, listen: false);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed(ViewFranchisesUser.routeName,
@@ -90,34 +93,42 @@ class _FranchiseItemState extends State<FranchiseItem> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        mypopup.PopupMenuButton<int>(
+                        mypopup.PopupMenuButton<String>(
                           elevation: 20,
                           padding: EdgeInsets.all(10),
-                          onSelected: (value) {},
                           offset: Offset(50, 50),
                           itemBuilder: (context) => [
                             mypopup.PopupMenuItem(
-                              value: 1,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  // border:
-                                  //     Border.all(color: Colors.grey[200], width: 2),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Edit",
-                                        style: TextStyle(color: Colors.white)),
-                                  ],
+                              value: "edit",
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.pushNamed(
+                                      context, AddFranchise.routeName,
+                                      arguments: widget.franchiesModel);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    // border:
+                                    //     Border.all(color: Colors.grey[200], width: 2),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text("Edit",
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                             mypopup.PopupMenuItem(
-                              value: 2,
+                              value: "view",
                               child: Container(
                                 padding: EdgeInsets.symmetric(vertical: 10),
                                 decoration: BoxDecoration(
@@ -136,7 +147,7 @@ class _FranchiseItemState extends State<FranchiseItem> {
                               ),
                             ),
                             mypopup.PopupMenuItem(
-                              value: 2,
+                              value: "franchies",
                               child: Container(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 10),
@@ -156,22 +167,61 @@ class _FranchiseItemState extends State<FranchiseItem> {
                               ),
                             ),
                             mypopup.PopupMenuItem(
-                              value: 2,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  // color: ,
-                                  border: Border.all(
-                                      color: Colors.grey[200], width: 2),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Delete"),
-                                  ],
+                              value: "delete",
+                              child: InkWell(
+                                onTap: () {
+                                  Widget okButton = FlatButton(
+                                    child: Text("OK"),
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                      franchies.deleteFranchies(
+                                          id: widget.franchiesModel.id);
+                                      Navigator.pop(context);
+                                    },
+                                  );
+
+                                  Widget cancelButton = FlatButton(
+                                    child: Text("Cancel"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  );
+
+                                  // set up the AlertDialog
+                                  AlertDialog alert = AlertDialog(
+                                    title: Text("Delete"),
+                                    content: Text(
+                                        "Do you want to delete this Analysis?"),
+                                    actions: [
+                                      cancelButton,
+                                      okButton,
+                                    ],
+                                  );
+
+                                  // show the dialog
+                                  return showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return alert;
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    // color: ,
+                                    border: Border.all(
+                                        color: Colors.grey[200], width: 2),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text("Delete"),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

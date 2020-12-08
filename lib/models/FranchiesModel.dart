@@ -27,6 +27,7 @@ class FranchiesModel {
     this.industry = json["industry"];
     this.brandName = json["brandName"];
     this.requirments = json["requirments"];
+    this.location = json["location"];
     this.uploadDocuments = json["uploadDocuments"];
     this.uploadVideo = json["uploadVideo"];
   }

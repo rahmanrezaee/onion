@@ -16,6 +16,8 @@ import 'package:provider/provider.dart';
 
 class AddFranchise extends StatefulWidget {
   static String routeName = "AddFranchise";
+  FranchiesModel editFile;
+  AddFranchise({this.editFile});
   @override
   _AddFranchiseState createState() => _AddFranchiseState();
 }
@@ -32,10 +34,12 @@ class _AddFranchiseState extends State<AddFranchise> {
   List<String> list = new List<String>();
   // List<String> list = new List<String>();
   List<TextEditingController> _controllers = [];
-  void addField() {
+  void addField({text}) {
     setState(() {
-      this.list.add("");
-      this._controllers.add(new TextEditingController());
+      this.list.add(text != null ? text.toString() : "");
+      var textController = new TextEditingController();
+      textController.text = text;
+      this._controllers.add(textController);
     });
   }
 
@@ -44,10 +48,23 @@ class _AddFranchiseState extends State<AddFranchise> {
   @override
   initState() {
     super.initState();
+
+    if (widget.editFile != null) {
+      addFranch = widget.editFile;
+      print("franchies ${addFranch.location}");
+      if (addFranch.location.isNotEmpty) {
+        addFranch.location.forEach((elemen) {
+          setState(() {
+            addField(text: elemen);
+          });
+        });
+      }
+    } else {
+      addField();
+    }
     authProvider = Provider.of<Auth>(context, listen: false);
     franchiesProvider = Provider.of<FranchiesProvider>(context, listen: false);
     token = authProvider.token;
-    addField();
   }
 
   bool uploadingFile = false;
@@ -58,7 +75,8 @@ class _AddFranchiseState extends State<AddFranchise> {
       key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: middlePurple,
-        title: Text("Add Franchise"),
+        title:
+            Text(widget.editFile == null ? "Add Franchise" : "Edit Franchise"),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
@@ -138,7 +156,9 @@ class _AddFranchiseState extends State<AddFranchise> {
                           : Container(),
                       SizedBox(height: 15),
                       TextFormField(
-                        // initialValue: setupIdea['aboutYourBusiness'],
+                        initialValue: addFranch.brandName != null
+                            ? addFranch.brandName
+                            : "",
                         keyboardType: TextInputType.text,
                         style: TextStyle(
                           color: Colors.purple,
@@ -226,7 +246,9 @@ class _AddFranchiseState extends State<AddFranchise> {
                       ),
                       // SizedBox(height: 15),
                       TextFormField(
-                        // initialValue: setupIdea['aboutYourBusiness'],
+                        initialValue: addFranch.requirments != null
+                            ? addFranch.requirments
+                            : "",
                         keyboardType: TextInputType.text,
                         style: TextStyle(
                           color: Colors.purple,
@@ -460,7 +482,9 @@ class _AddFranchiseState extends State<AddFranchise> {
                           ),
                           onPressed: uploadingFile == false
                               ? () {
-                                  addFranchise();
+                                  widget.editFile == null
+                                      ? addFranchise()
+                                      : editFranchise();
                                 }
                               : () {
                                   _scaffoldKey.currentState.showSnackBar(
@@ -473,7 +497,9 @@ class _AddFranchiseState extends State<AddFranchise> {
                           child: _isLoading == true
                               ? CircularProgressIndicator()
                               : Text(
-                                  "Add Franchise",
+                                  widget.editFile == null
+                                      ? "Add Franchise"
+                                      : "Edit Franchise",
                                   style: TextStyle(
                                     color: Colors.white,
                                   ),
@@ -622,28 +648,11 @@ class _AddFranchiseState extends State<AddFranchise> {
   bool _submitted = false;
   //Subite the form
   addFranchise() {
-    addFranch.location = [];
     setState(() {
       _submitted = true;
     });
-    bool locationAdded = true;
-    _controllers.forEach((TextEditingController controller) {
-      if (controller.text == '') {
-        locationAdded = false;
-      } else {
-        addFranch.location.add("${controller.text}");
-      }
-    });
-    for (final controller in _controllers) {
-      if (controller.text == "" || controller.text == null) {
-        locationAdded = false;
-        addFranch.location = null;
-        break;
-      } else {
-        addFranch.location.add("${controller.text}");
-      }
-    }
-    // print("Locations $_location");
+    addFranch.location = list;
+
     if (_formKey.currentState.validate() &&
         addFranch.location != "" &&
         addFranch.industry != "none" &&
@@ -653,7 +662,7 @@ class _AddFranchiseState extends State<AddFranchise> {
         _isLoading = true;
       });
 
-      franchiesProvider.addFranchise(addFranch.sendMap(), token).then((result) {
+      franchiesProvider.addFranchise(addFranch.sendMap(),addFranch.id).then((result) {
         setState(() {
           _isLoading = false;
         });
@@ -667,6 +676,47 @@ class _AddFranchiseState extends State<AddFranchise> {
         //         .pushReplacementNamed(CustomDrawerPage.routeName);
         //   });
         // }
+      }).catchError((error) {
+        setState(() {
+          _isLoading = false;
+        });
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text("Something went wrong!! Please try again later."),
+          duration: Duration(seconds: 4),
+        ));
+      });
+    } else {}
+  }
+
+  editFranchise() {
+    setState(() {
+      _submitted = true;
+    });
+    addFranch.location = list;
+
+    if (_formKey.currentState.validate() &&
+        addFranch.location != "" &&
+        addFranch.industry != "none" &&
+        addFranch.location != [] &&
+        addFranch.location != null) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      franchiesProvider.editFranchise(addFranch).then((result) {
+        setState(() {
+          _isLoading = false;
+        });
+        if (result = true) {
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text("Successfuly Edited."),
+            duration: Duration(seconds: 3),
+          ));
+          Timer(Duration(seconds: 3), () {
+            Navigator.of(context)
+                .pushReplacementNamed(CustomDrawerPage.routeName);
+          });
+        }
       }).catchError((error) {
         setState(() {
           _isLoading = false;

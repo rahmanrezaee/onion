@@ -16,42 +16,64 @@ class FranchiesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> deleteAnalysis({
-  //   String id,
-  // }) async {
-  //   try {
-  //     final response = await dio.post(
-
-  //       myBody: null,
-  //       myHeaders: {"token": this.auth.token},
-  //     );
-  //     print("MLenght: ${_items.length}");
-  //     _items.removeWhere((element) {
-  //       print("Mmahdi: ${element.id} == $id");
-  //       return element.id == id;
-  //     });
-  //     print("MLenght: ${_items.length}");
-
-  //     notifyListeners();
-  //     print("Mahdi Deleted: $response");
-  //   } catch (e) {
-  //     print("Mahdi Error $e");
-  //   }
-  // }
-
-  Future<bool> addFranchise(data, region) async {
-    print(data);
+  Future<bool> deleteFranchies({
+    String id,
+  }) async {
     try {
-      final StringBuffer url = new StringBuffer("$BASE_URL/franchies/add");
+      final StringBuffer url = new StringBuffer("$BASE_URL/franchies/$id");
 
       dio.options.headers = {
         "token": auth.token,
       };
-      final response = await dio.post(url.toString(), data: data);
+      final response = await dio.delete(url.toString());
+
+      items.removeWhere((element) {
+        return element.id == id;
+      });
+
+      notifyListeners();
+    } catch (e) {
+      print("Mahdi Error $e");
+    }
+  }
+
+  Future<bool> addFranchise(data, id) async {
+    print(data);
+    try {
+      final StringBuffer url = new StringBuffer("$BASE_URL/franchies/$id");
+
+      dio.options.headers = {
+        "token": auth.token,
+      };
+      final response = await dio.put(url.toString(), data: data);
 
       final extractedData = response.data["data"];
       print(extractedData);
       items.add(FranchiesModel.toJson(extractedData));
+
+      notifyListeners();
+      return true;
+    } on DioError catch (e) {
+      print("Mahdi Error: ${e.response}");
+    }
+  }
+
+  Future<bool> editFranchise(FranchiesModel data) async {
+    print(data);
+    try {
+      final StringBuffer url =
+          new StringBuffer("$BASE_URL/franchies/${data.id}");
+
+      dio.options.headers = {
+        "token": auth.token,
+      };
+      final response = await dio.post(url.toString(), data: data.sendMap());
+
+      items.removeWhere((element) {
+        return element.id == data.id;
+      });
+
+      items.add(data);
 
       notifyListeners();
       return true;
@@ -78,10 +100,14 @@ class FranchiesProvider with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<bool> getFranchies() async {
+  Future<bool> getFranchies({isMyList}) async {
     try {
-      final StringBuffer url = new StringBuffer("$BASE_URL/franchies/list");
+      String url = "$BASE_URL/franchies/list";
 
+      if (isMyList != null && isMyList) {
+        url = url.toString() + "?list=my";
+      }
+      print(url.toString());
       dio.options.headers = {
         "token": auth.token,
       };
@@ -89,6 +115,7 @@ class FranchiesProvider with ChangeNotifier {
 
       print("Mahdi an $result");
       final extractedData = result.data["franchiesList"];
+      print("fran $extractedData");
       if (extractedData == null) {
         items = [];
         return false;
@@ -98,8 +125,6 @@ class FranchiesProvider with ChangeNotifier {
       extractedData.forEach((tableData) {
         loadedProducts.add(FranchiesModel.toJson(tableData));
       });
-
-      print("fran $loadedProducts");
 
       items = loadedProducts;
 

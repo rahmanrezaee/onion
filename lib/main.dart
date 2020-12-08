@@ -65,7 +65,7 @@ import './pages/franchises/addFranchise.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  SharedPreferences.setMockInitialValues({});
   runApp(ConnectivityAppWrapper(
     app: MultiProvider(
       providers: [
@@ -107,7 +107,7 @@ void main() async {
             ) =>
                 FranchiesProvider(auth),
             create: (
-               context,
+              context,
             ) =>
                 FranchiesProvider(null)),
       ],
@@ -145,79 +145,84 @@ class _MyAppState extends State<MyApp> {
 
     return Consumer<Auth>(
       builder: (ctx, auth, _) {
- 
         return MaterialApp(
-        title: 'Onion.ai',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: Color(0xFF7B3C8A),
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          pageTransitionsTheme: PageTransitionsTheme(builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-          }),
-          textTheme: TextTheme(
-            headline6: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500),
-            headline5: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
-            headline4: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w600),
-            headline3: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
-            headline2: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w700),
-            headline1: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w800),
-            bodyText2: TextStyle(color: Colors.black54),
+          title: 'Onion.ai',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primaryColor: Color(0xFF7B3C8A),
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+            pageTransitionsTheme: PageTransitionsTheme(builders: {
+              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+            }),
+            textTheme: TextTheme(
+              headline6: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500),
+              headline5: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+              headline4: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w600),
+              headline3: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+              headline2: TextStyle(fontSize: 19.0, fontWeight: FontWeight.w700),
+              headline1: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w800),
+              bodyText2: TextStyle(color: Colors.black54),
+            ),
           ),
-        ),
-        // home: CustomDrawerPage(widget.key),
-        home: CustomDrawerPage(widget.key),
-        routes: {
-          Login.routeName: (context) =>
-              auth.token != null ? CustomDrawerPage(widget.key) : Login(),
-          MyIdeaId.routeName: (context) => MyIdeaId(),
-          AnalysisList.routeName: (context) => AnalysisList(),
-          ProfilePage.routeName: (context) => ProfilePage(),
-          RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
-          SignUp.routeName: (context) =>
-              auth.token != null ? CustomDrawerPage(widget.key) : SignUp(),
-          ComplateProfile.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(widget.key)
-              : ComplateProfile(
+          // home: CustomDrawerPage(widget.key),
+          home: CustomDrawerPage(widget.key),
+          routes: {
+            Login.routeName: (context) =>
+                auth.token != null ? CustomDrawerPage(widget.key) : Login(),
+            MyIdeaId.routeName: (context) => MyIdeaId(),
+            AnalysisList.routeName: (context) => AnalysisList(),
+            ProfilePage.routeName: (context) => ProfilePage(),
+            RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
+            SignUp.routeName: (context) =>
+                auth.token != null ? CustomDrawerPage(widget.key) : SignUp(),
+            ComplateProfile.routeName: (context) => auth.token != null
+                ? CustomDrawerPage(widget.key)
+                : ComplateProfile(
+                    ModalRoute.of(context).settings.arguments,
+                  ),
+            CustomDrawerPage.routeName: (context) =>
+                CustomDrawerPage(widget.key),
+            AnalyticsOne.routeName: (context) => AnalyticsOne(),
+            Analysis.routeName: (context) => Analysis(),
+            RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
+            ForgetPassword.routeName: (context) => auth.token != null
+                ? CustomDrawerPage(widget.key)
+                : ForgetPassword(),
+            ChangePassword.routeName: (context) => auth.token != null
+                ? CustomDrawerPage(widget.key)
+                : ChangePassword(
+                    ModalRoute.of(context).settings.arguments,
+                  ),
+            SendInvRequest.routeName: (context) => SendInvRequest(),
+            SetupIdea.routeName: (context) => SetupIdea(),
+            PostIdea.routeName: (context) => PostIdea(),
+            ProjectChat.routeName: (context) => ProjectChat(),
+            MyMessagePage.routeName: (context) => MyMessagePage(),
+            NotificationsList.routeName: (context) => NotificationsList(),
+            PostIdea.routeName: (context) => PostIdea(),
+            FandQ.routeName: (context) => FandQ(),
+            SearchTab.routeName: (context) => SearchTab(),
+            Services.routeName: (context) => Services(),
+            Settings.routeName: (context) => Settings(),
+            RequestFranchisesUser.routeName: (context) =>
+                RequestFranchisesUser(),
+            ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(
                   ModalRoute.of(context).settings.arguments,
                 ),
-          CustomDrawerPage.routeName: (context) => CustomDrawerPage(widget.key),
-          AnalyticsOne.routeName: (context) => AnalyticsOne(),
-          Analysis.routeName: (context) => Analysis(),
-          RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-          ForgetPassword.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(widget.key)
-              : ForgetPassword(),
-          ChangePassword.routeName: (context) => auth.token != null
-              ? CustomDrawerPage(widget.key)
-              : ChangePassword(
-                  ModalRoute.of(context).settings.arguments,
+            MyIdeaId.routeName: (context) => MyIdeaId(),
+            // MyIdeaDetails.routeName: (context) => MyIdeaDetails( ModalRoute.of(context).settings.arguments,),
+            // ViewMyRequestFranchise.routeName: (context) => ViewMyRequestFranchise( ),
+            RequestPage.routeName: (context) => RequestPage(),
+            RatingPage.routeName: (context) => RatingPage(),
+            MyFranchises.routeName: (context) => MyFranchises(),
+            AddFranchise.routeName: (context) => AddFranchise(
+                  editFile: ModalRoute.of(context).settings.arguments,
                 ),
-          SendInvRequest.routeName: (context) => SendInvRequest(),
-          SetupIdea.routeName: (context) => SetupIdea(),
-          PostIdea.routeName: (context) => PostIdea(),
-          ProjectChat.routeName: (context) => ProjectChat(),
-          MyMessagePage.routeName: (context) => MyMessagePage(),
-          NotificationsList.routeName: (context) => NotificationsList(),
-          PostIdea.routeName: (context) => PostIdea(),
-          FandQ.routeName: (context) => FandQ(),
-          SearchTab.routeName: (context) => SearchTab(),
-          Services.routeName: (context) => Services(),
-          Settings.routeName: (context) => Settings(),
-          RequestFranchisesUser.routeName: (context) => RequestFranchisesUser(),
-          ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(ModalRoute.of(context).settings.arguments,),
-          MyIdeaId.routeName: (context) => MyIdeaId(),
-          // MyIdeaDetails.routeName: (context) => MyIdeaDetails( ModalRoute.of(context).settings.arguments,),
-          // ViewMyRequestFranchise.routeName: (context) => ViewMyRequestFranchise( ),
-          RequestPage.routeName: (context) => RequestPage(),
-          RatingPage.routeName: (context) => RatingPage(),
-          MyFranchises.routeName: (context) => MyFranchises(),
-          AddFranchise.routeName: (context) => AddFranchise(),
-        },
-        onUnknownRoute: (settings) {
-          return MaterialPageRoute(builder: (_) => UnderDevelopment());
-        },
-      );
+          },
+          onUnknownRoute: (settings) {
+            return MaterialPageRoute(builder: (_) => UnderDevelopment());
+          },
+        );
       },
     );
   }

@@ -43,7 +43,7 @@ class _MyFranchisesState extends State<MyFranchises> {
         return RefreshIndicator(
           onRefresh: () async {
             // value.clearToNullList();
-            await value.getFranchies();
+            await value.getFranchies(isMyList: true);
           },
           child: Column(
             // padding: EdgeInsets.only(left: 10, right: 10, top: 15),
@@ -60,19 +60,29 @@ class _MyFranchisesState extends State<MyFranchises> {
               ),
               Expanded(
                 child: value.items != null
-                    ? ListView.builder(
-                        itemCount: value.items.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Column(
+                    ? value.items.isEmpty
+                        ? ListView(
                             children: [
-                              FranchiseItem(value.items[index]),
-                              SizedBox(height: 10),
+                              Container(
+                                height: 80,
+                                alignment: Alignment.center,
+                                child: Text("Empty List"),
+                              ),
                             ],
-                          );
-                        },
-                      )
+                          )
+                        : ListView.builder(
+                            itemCount: value.items.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Column(
+                                children: [
+                                  FranchiseItem(value.items[index]),
+                                  SizedBox(height: 10),
+                                ],
+                              );
+                            },
+                          )
                     : FutureBuilder(
-                        future: value.getFranchies(),
+                        future: value.getFranchies(isMyList: true),
                         builder: (context, AsyncSnapshot<dynamic> snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
