@@ -62,7 +62,6 @@ import './pages/franchises/addFranchise.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  SharedPreferences.setMockInitialValues({});
 
   runApp(ConnectivityAppWrapper(
     app: MultiProvider(
@@ -151,7 +150,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         // home: CustomDrawerPage(widget.key),
-        home: InnovatorsIdeas(),
+        home: CustomDrawerPage(widget.key),
         routes: {
           Login.routeName: (context) =>
               auth.token != null ? CustomDrawerPage(widget.key) : Login(),
