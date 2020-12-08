@@ -1,20 +1,50 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:onion/models/Idea.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/Idea/postIdea.dart';
+import 'package:onion/pages/Idea/viewIdeas.dart';
+import 'package:onion/services/ideasServices.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:onion/statemanagment/idea/ideasProviders.dart';
 import 'package:onion/widgets/IdeaWiget/popupMenu.dart' as mypopup;
+import 'package:provider/provider.dart';
+import '../../models/Idea.dart';
 
 class ItemIdea extends StatefulWidget {
+  final SetupIdeaModel idea;
+  final Function onDelete;
+  final IdeasProvider ideasProvider;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  ItemIdea(this.scaffoldKey, this.ideasProvider, this.idea, this.onDelete);
+
   @override
   _ItemIdeaState createState() => _ItemIdeaState();
 }
 
 class _ItemIdeaState extends State<ItemIdea> {
+  Auth authProvider;
+
+  // IdeasProvider ideasProvider;
+  String token;
+
+  initState() {
+    super.initState();
+    authProvider = Provider.of<Auth>(context, listen: false);
+    // ideasProvider = Provider.of<IdeasProvider>(context, listen: true);
+    token = authProvider.token;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(MyIdeaDetails.routeName);
+        Navigator.of(context)
+            .pushNamed(MyIdeaDetails.routeName, arguments: widget.idea);
+        // Navigator.of(context)
+        //     .pushNamed(ViewIdeas.routeName, arguments: widget.idea);
       },
       child: Card(
         elevation: 4,
@@ -27,8 +57,9 @@ class _ItemIdeaState extends State<ItemIdea> {
                 children: [
                   CircleAvatar(
                     radius: 25,
-                    backgroundImage:
-                        AssetImage("assets/images/empty_profile.jpg"),
+                    backgroundImage: NetworkImage(authProvider
+                            .currentUser.profile ??
+                        "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"),
                   ),
                   SizedBox(width: 5),
                   Expanded(
@@ -46,7 +77,7 @@ class _ItemIdeaState extends State<ItemIdea> {
                               ),
                             ),
                             TextSpan(
-                              text: "Some Text",
+                              text: "${widget.idea.category}",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w300,
@@ -64,7 +95,7 @@ class _ItemIdeaState extends State<ItemIdea> {
                               ),
                             ),
                             TextSpan(
-                              text: "Abcedasd",
+                              text: "${widget.idea.ideaHeadline}",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w300,
@@ -89,21 +120,29 @@ class _ItemIdeaState extends State<ItemIdea> {
                           itemBuilder: (context) => [
                             mypopup.PopupMenuItem(
                               value: 1,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  // border:
-                                  //     Border.all(color: Colors.grey[200], width: 2),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Edit",
-                                        style: TextStyle(color: Colors.white)),
-                                  ],
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                      PostIdea.routeName,
+                                      arguments: widget.idea);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    // border:
+                                    //     Border.all(color: Colors.grey[200], width: 2),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text("Edit",
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -166,22 +205,135 @@ class _ItemIdeaState extends State<ItemIdea> {
                               ),
                             ),
                             mypopup.PopupMenuItem(
+                              onClick: () {
+                                print("Ali Azad");
+                                // showDialog(
+                                //     context: context,
+                                //     builder: (context) {
+                                //       return AlertDialog(
+                                //           title: Text("Are you sure?"),
+                                //           actions: [
+                                //             FlatButton(
+                                //               child: Text("Yes"),
+                                //               onPressed: () {
+                                //                 IdeasServices().deleteIdea(
+                                //                   widget.idea.id,
+                                //                   token,
+                                //                 );
+                                //               },
+                                //             ),
+                                //             FlatButton(
+                                //               child: Text("Cancel"),
+                                //               onPressed: () {
+                                //                 Navigator.of(context).pop();
+                                //               },
+                                //             ),
+                                //           ]);
+                                //     });
+                              },
                               value: 2,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  // color: ,
-                                  border: Border.all(
-                                      color: Colors.grey[200], width: 2),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Delete"),
-                                  ],
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                            title: Text("Are you sure?"),
+                                            actions: [
+                                              FlatButton(
+                                                child: Text("Yes"),
+                                                onPressed: () {
+                                                  widget
+                                                      .scaffoldKey.currentState
+                                                      .showSnackBar(SnackBar(
+                                                    content: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text("Waiting"),
+                                                          CircularProgressIndicator(),
+                                                        ]),
+                                                    duration: Duration(
+                                                      minutes: 1000,
+                                                    ),
+                                                  ));
+                                                  widget.ideasProvider
+                                                      .deleteIdea(
+                                                          widget.idea.id, token)
+                                                      .then((status) {
+                                                    if (status == true) {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      widget.scaffoldKey
+                                                          .currentState
+                                                          .hideCurrentSnackBar();
+                                                    } else {
+                                                      widget.scaffoldKey
+                                                          .currentState
+                                                          .showSnackBar(
+                                                              SnackBar(
+                                                        content: Text(
+                                                            "Something went wrong!! Please try again later."),
+                                                        backgroundColor:
+                                                            Colors.red,
+                                                      ));
+                                                    }
+                                                  }).catchError((e) {
+                                                    widget.scaffoldKey
+                                                        .currentState
+                                                        .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          "Something went wrong!! Please try again later."),
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                    ));
+                                                  });
+                                                  // IdeasServices()
+                                                  //     .deleteIdea(
+                                                  //         widget.idea.id, token)
+                                                  //     .then((status) {
+                                                  //   if (status == true) {
+                                                  //     Navigator.of(context)
+                                                  //         .pop();
+                                                  //     widget.onDelete();
+                                                  //     setState(() {});
+                                                  //   } else {
+                                                  //     setState(() {});
+                                                  //     Navigator.of(context)
+                                                  //         .pop();
+                                                  //     print("Not working");
+                                                  //   }
+                                                  // });
+                                                },
+                                              ),
+                                              FlatButton(
+                                                child: Text("Cancel"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ]);
+                                      });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    // color: ,
+                                    border: Border.all(
+                                        color: Colors.grey[200], width: 2),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text("Delete"),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -212,8 +364,7 @@ class _ItemIdeaState extends State<ItemIdea> {
                           ),
                         ),
                         TextSpan(
-                          text:
-                              "Flutter is Google’s mobile UI framework for crafting high-quality native interfaces on iOS and Android in record time. Flutter works with existing code, is used by developers and organizations around the world, and is free and open source.",
+                          text: "${widget.idea.ideaText}",
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w300,

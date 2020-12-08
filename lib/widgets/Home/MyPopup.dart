@@ -10,6 +10,7 @@ import '../../const/Size.dart';
 import '../../const/color.dart';
 
 import '../MyAppBarContainer.dart';
+import '../SmallDropDown.dart';
 
 Future<void> showMyDialog({@required  context}) async {
   return showDialog<void>(
@@ -145,14 +146,13 @@ class DialogContent extends StatelessWidget {
                   builder: ( context, anavalue, Widget child) {
                     if (anavalue.countryInList.isEmpty) {
                       return DropDownFormField(
-                              value: "no Item",
-                              dataSource: [
-                                {"display": "no Item", "value": "no Item"}
-                              ],
-                              textField: 'display',
-                              valueField: 'value',
-                            )
-                          ;
+                        value: "no Item",
+                        dataSource: [
+                          {"display": "no Item", "value": "no Item"}
+                        ],
+                        textField: 'display',
+                        valueField: 'value',
+                      );
                     } else {
                       return Column(
                         children: [
@@ -167,7 +167,6 @@ class DialogContent extends StatelessWidget {
                                   anavalue.changeCountryColors(element);
                                 }
                               });
-                              
                             },
                             dataSource: anavalue.countryInList.map((data) {
                               return {

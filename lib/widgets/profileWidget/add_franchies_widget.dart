@@ -4,6 +4,7 @@ import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/models/FranchiesModelProfile.dart';
 import 'package:onion/pages/Idea/postIdea.dart';
+import 'package:onion/utilities/disabledFocusNode.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/IdeaWiget/LocationWidget.dart';
 
@@ -390,7 +391,7 @@ class _AddFranchiesWidgetState extends State<AddFranchiesWidget> {
                             Expanded(
                               child: TextFormField(
                                 enableInteractiveSelection: false,
-                                focusNode: new AlwaysDisabledFocusNode(),
+                                // focusNode: new AlwaysDisabledFocusNode(),
                                 keyboardType: TextInputType.url,
                                 style: TextStyle(
                                   color: Colors.purple,

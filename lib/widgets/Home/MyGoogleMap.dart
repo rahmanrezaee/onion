@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:core';
+
 import 'package:connectivity/connectivity.dart';
 
 ///Flutter package imports

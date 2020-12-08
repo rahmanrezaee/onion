@@ -32,7 +32,6 @@ class _DashboardPageState extends State<DashboardPage> {
     }
 
     print("Mahdi:After ${myController.text}");
-    
   }
 
   @override
@@ -301,11 +300,11 @@ class MyBtn extends StatelessWidget {
 
 class MySocialIcon extends StatelessWidget {
   final String myImg;
+  final double paddingRight;
 
-  const MySocialIcon({
-    Key key,
-    this.myImg,
-  }) : super(key: key);
+  MySocialIcon({
+    this.paddingRight = 0.04, this.myImg,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -356,9 +355,8 @@ class MyCardItem extends StatelessWidget {
                 Widget okButton = FlatButton(
                   child: Text("OK"),
                   onPressed: () async {
-                  
                     Provider.of<SaveAnalProvider>(context, listen: false)
-                        .deleteAnalysis( id: id);
+                        .deleteAnalysis(id: id);
 
                     Navigator.pop(context);
                   },

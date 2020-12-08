@@ -34,7 +34,6 @@ import '../../pages/AnalyticsOne.dart';
 import '../../pages/CustomDrawerPage.dart';
 import '../../pages/F&Q.dart';
 import '../../pages/Idea/MyIdeaId.dart';
-import '../../pages/MyMessagePage.dart';
 import '../../pages/Services.dart';
 import '../../pages/authentication/Login.dart';
 import '../../statemanagment/auth_provider.dart';
@@ -181,8 +180,8 @@ class _MyDrawerState extends State<MyDrawer> {
                               style: TextStyle(color: Colors.white),
                             )
                           : FlatButton(
-                              onPressed: () =>
-                                  Navigator.pushNamed(context, Login.routeName),
+                              onPressed: () => Navigator.pushReplacementNamed(
+                                  context, Login.routeName),
                               child: Text(
                                 "click to login..",
                                 textScaleFactor: 1.2,
@@ -252,9 +251,10 @@ class _MyDrawerState extends State<MyDrawer> {
                 context: context,
                 name: "Services",
                 icon: Icons.done,
-                routeName: Services.routeName,
+                // routeName: Services.routeName,
+                routeName: MyFranchises.routeName,
                 justPush: true,
-                hasDrawer: true,
+                hasDrawer: false,
               ),
               myListTile(
                   context: context,
@@ -317,7 +317,7 @@ class _MyDrawerState extends State<MyDrawer> {
                         child: Text("logout"),
                         elevation: 0,
                         onPressed: () {
-                          value.logout();
+                          value.logout(context);
                         },
                       ),
                     )

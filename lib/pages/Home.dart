@@ -1,7 +1,4 @@
-import 'dart:async';
-import 'dart:convert';
 import 'dart:ui';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/pages/Analysis.dart';
@@ -10,10 +7,8 @@ import 'package:onion/statemanagment/analysis_provider.dart';
 import 'package:onion/widgets/Home/MyGoogleMap.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/Home/MyAutoTextSize.dart';
 import '../widgets/Home/MyCardListItem.dart';
 import '../widgets/Home/MyGoogleMap.dart';
-import '../GeoJson.dart';
 import './Idea/setupIdea.dart';
 import './authentication/Login.dart';
 import '../statemanagment/auth_provider.dart';

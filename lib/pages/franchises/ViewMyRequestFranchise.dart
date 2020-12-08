@@ -3,6 +3,10 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:onion/pages/franchises/MyTxtDateRef.dart';
+import 'package:onion/widgets/Franchise/MyVideoPlayer.dart';
+import 'package:onion/widgets/ImageListView.dart';
+import 'package:onion/widgets/SearchTab/IndustryCard.dart';
 
 import '../../const/Size.dart';
 import '../../const/color.dart';

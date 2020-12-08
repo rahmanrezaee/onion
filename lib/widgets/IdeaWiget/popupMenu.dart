@@ -1,11 +1,8 @@
-
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
 
 const Duration _kMenuDuration = Duration(milliseconds: 300);
 const double _kBaselineOffsetFromBottom = 20.0;
@@ -28,7 +25,6 @@ abstract class PopupMenuEntry<T> extends StatefulWidget {
 }
 
 class PopupMenuDivider extends PopupMenuEntry<Null> {
- 
   const PopupMenuDivider({Key key, this.height = _kMenuDividerHeight})
       : super(key: key);
 
@@ -48,19 +44,19 @@ class _PopupMenuDividerState extends State<PopupMenuDivider> {
 }
 
 class PopupMenuItem<T> extends PopupMenuEntry<T> {
- 
   const PopupMenuItem({
     Key key,
     this.value,
     this.enabled = true,
     this.height = _kMenuItemHeight,
+    this.onClick,
     @required this.child,
   })  : assert(enabled != null),
         assert(height != null),
         super(key: key);
 
   final T value;
-
+  final Function onClick;
   final bool enabled;
 
   @override
@@ -77,12 +73,12 @@ class PopupMenuItem<T> extends PopupMenuEntry<T> {
 }
 
 class PopupMenuItemState<T, W extends PopupMenuItem<T>> extends State<W> {
- 
   @protected
   Widget buildChild() => widget.child;
 
   @protected
   void handleTap() {
+    widget.onClick();
     Navigator.pop<T>(context, widget.value);
   }
 
@@ -122,7 +118,6 @@ class PopupMenuItemState<T, W extends PopupMenuItem<T>> extends State<W> {
 }
 
 class CheckedPopupMenuItem<T> extends PopupMenuItem<T> {
- 
   const CheckedPopupMenuItem({
     Key key,
     T value,
@@ -137,7 +132,6 @@ class CheckedPopupMenuItem<T> extends PopupMenuItem<T> {
           child: child,
         );
 
- 
   final bool checked;
 
   @override
@@ -182,7 +176,6 @@ class _CheckedPopupMenuItemState<T>
         child: Icon(_controller.isDismissed ? null : Icons.done),
       ),
       title: widget.child,
-      
     );
   }
 }
@@ -282,16 +275,15 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
   _PopupMenuRouteLayout(
       this.position, this.selectedItemOffset, this.textDirection);
 
-   final RelativeRect position;
+  final RelativeRect position;
 
   final double selectedItemOffset;
 
- final TextDirection textDirection;
+  final TextDirection textDirection;
 
-  
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-   return BoxConstraints.loose(constraints.biggest -
+    return BoxConstraints.loose(constraints.biggest -
         const Offset(_kMenuScreenPadding * 2.0, _kMenuScreenPadding * 2.0));
   }
 
@@ -437,7 +429,7 @@ Future<T> showMenu<T>({
       label = semanticLabel;
       break;
     case TargetPlatform.android:
- 
+
     case TargetPlatform.linux:
       // TODO: Handle this case.
       break;
@@ -474,7 +466,6 @@ typedef PopupMenuItemBuilder<T> = List<PopupMenuEntry<T>> Function(
     BuildContext context);
 
 class PopupMenuButton<T> extends StatefulWidget {
- 
   const PopupMenuButton({
     Key key,
     @required this.itemBuilder,
@@ -501,13 +492,13 @@ class PopupMenuButton<T> extends StatefulWidget {
 
   final PopupMenuItemSelected<T> onSelected;
 
- final PopupMenuCanceled onCanceled;
+  final PopupMenuCanceled onCanceled;
 
   final String tooltip;
 
   final double elevation;
 
-   final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry padding;
 
   final Widget child;
 
@@ -515,7 +506,7 @@ class PopupMenuButton<T> extends StatefulWidget {
 
   final Offset offset;
 
- final bool enabled;
+  final bool enabled;
 
   @override
   _PopupMenuButtonState<T> createState() => _PopupMenuButtonState<T>();

@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/models/Idea.dart';
 import 'package:onion/pages/Home.dart';
+import 'package:onion/statemanagment/idea/ideasProviders.dart';
+import 'package:onion/utilities/linkChecker.dart';
 import 'package:onion/models/setupIdea.dart' as setupIdeaModel;
 import 'package:onion/services/ideasServices.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
@@ -30,7 +32,7 @@ class PostIdea extends StatefulWidget {
 SetupIdeaModel postForm = new SetupIdeaModel();
 
 class _PostIdeaState extends State<PostIdea> {
-  List<Map> image = [];
+  List image = [];
   List<String> list = new List<String>();
   List<TextEditingController> _controllers = [];
 
@@ -49,6 +51,7 @@ class _PostIdeaState extends State<PostIdea> {
   void initState() {
     authProvider = Provider.of<Auth>(context, listen: false);
     token = authProvider.token;
+    print("this is the token bor: $token");
     addField();
     super.initState();
   }
@@ -61,13 +64,27 @@ class _PostIdeaState extends State<PostIdea> {
   int stages = 0;
   // List<File> documents = [];
   File video;
+  SetupIdeaModel idea;
+  bool first = true;
   @override
   Widget build( context) {
-    // Map<String, String> setupIdea = ModalRoute.of(context).settings.arguments;
-    // Map<String, String> setupIdea = ModalRoute.of(context).settings.arguments;
-    final validationService = Provider.of<PostIdeaValidation>(context);
     // print("Setup Idea: ${setupIdea['category']}");
-
+    if (ModalRoute.of(context).settings.arguments != null) {
+      idea = ModalRoute.of(context).settings.arguments;
+      if (first == true) {
+        setState(() {
+          postForm = idea;
+          image = postForm.documents;
+          stages = (postForm.timeline["details"] as List).length;
+          // postForm.documents.forEach((element) {
+          // image.add(element);
+          // if (isUriImage(element["uriPath"])) {
+          // }
+          // });
+        });
+        print(idea);
+      }
+    }
     return Scaffold(
       key: _scaffoldKey,
       appBar: PreferredSize(
@@ -185,7 +202,7 @@ class _PostIdeaState extends State<PostIdea> {
                             dataSource: [
                               {"display": 'Industry', "value": 'Industry'},
                               {"display": 'Technalogy', "value": 'Technalogy'},
-                              {"display": 'Learn2ing', "value": 'Learning'},
+                              {"display": 'Learning', "value": 'Learning'},
                             ],
                             textField: 'display',
                             valueField: 'value',
@@ -205,7 +222,7 @@ class _PostIdeaState extends State<PostIdea> {
                             children: [
                               Expanded(
                                 child: TextFormField(
-                                  // initialValue: setupIdea['experienceYear'],
+                                  initialValue: postForm.experienceYear,
                                   inputFormatters: [
                                     new LengthLimitingTextInputFormatter(
                                         2), // for mobile
@@ -229,7 +246,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   },
                                   decoration: InputDecoration(
                                     hintText: "Year",
-                                    errorText: validationService.year.error,
+                                    // errorText: validationService.year.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -252,7 +269,7 @@ class _PostIdeaState extends State<PostIdea> {
                               ),
                               Expanded(
                                 child: TextFormField(
-                                  // initialValue: setupIdea['experienceMonth'],
+                                  initialValue: postForm.experienceMonth,
                                   inputFormatters: [
                                     new LengthLimitingTextInputFormatter(
                                         2), // for mobile
@@ -262,7 +279,7 @@ class _PostIdeaState extends State<PostIdea> {
                                     color: Colors.purple,
                                   ),
                                   onChanged: (value) {
-                                    validationService.changeMonth(value);
+                                    // validationService.changeMonth(value);
                                     postForm.experienceMonth = value;
                                   },
                                   validator: (value) {
@@ -276,7 +293,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   },
                                   decoration: InputDecoration(
                                     hintText: "Month",
-                                    errorText: validationService.month.error,
+                                    // errorText: validationService.month.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -300,7 +317,7 @@ class _PostIdeaState extends State<PostIdea> {
                             height: 10,
                           ),
                           TextFormField(
-                            // initialValue: setupIdea['teamSize'].toString(),
+                            initialValue: postForm.ideaHeadline,
                             // keyboardType: TextInputType.number,
                             style: TextStyle(
                               color: Colors.purple,
@@ -322,7 +339,7 @@ class _PostIdeaState extends State<PostIdea> {
                             },
                             decoration: InputDecoration(
                               hintText: "Idea Headline",
-                              errorText: validationService.teamSize.error,
+                          //    errorText: validationService.teamSize.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 0,
                                 horizontal: 10,
@@ -343,7 +360,7 @@ class _PostIdeaState extends State<PostIdea> {
                             height: 10,
                           ),
                           TextFormField(
-                            // initialValue: setupIdea['aboutYourBusiness'],
+                            initialValue: postForm.ideaText,
                             keyboardType: TextInputType.text,
                             style: TextStyle(
                               color: Colors.purple,
@@ -352,7 +369,7 @@ class _PostIdeaState extends State<PostIdea> {
                               if (value.isEmpty) return "Your Idea is empty";
                             },
                             onChanged: (value) {
-                              validationService.changeAbout(value);
+                              // validationService.changeAbout(value);
                               postForm.ideaText = value;
                             },
                             onSaved: (value) {
@@ -361,7 +378,7 @@ class _PostIdeaState extends State<PostIdea> {
                             maxLines: 5,
                             decoration: InputDecoration(
                               hintText: "Idea",
-                              errorText: validationService.about.error,
+                              // errorText: validationService.about.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 10,
                                 horizontal: 10,
@@ -452,11 +469,27 @@ class _PostIdeaState extends State<PostIdea> {
                                       InkWell(
                                         onTap: () async {
                                           print("Ali Aad");
+                                          FocusScope.of(context)
+                                              .requestFocus(new FocusNode());
                                           DateTime date = await showDatePicker(
                                             context: context,
                                             initialDate: DateTime.now(),
                                             firstDate: DateTime.now(),
                                             lastDate: DateTime(3200),
+                                            builder: (BuildContext context,
+                                                Widget child) {
+                                              return Theme(
+                                                data:
+                                                    ThemeData.light().copyWith(
+                                                  primaryColor: middlePurple,
+                                                  accentColor: thirdPurple,
+                                                  buttonTheme: ButtonThemeData(
+                                                      textTheme: ButtonTextTheme
+                                                          .primary),
+                                                ),
+                                                child: child,
+                                              );
+                                            },
                                           );
                                           if (date != null) {
                                             setState(() {
@@ -511,8 +544,7 @@ class _PostIdeaState extends State<PostIdea> {
                                                   : null,
                                               hintStyle: TextStyle(
                                                   color: Colors.black),
-                                              errorText:
-                                                  validationService.about.error,
+                                              // errorText: validationService.about.error,
                                               contentPadding:
                                                   const EdgeInsets.symmetric(
                                                 vertical: 10,
@@ -581,90 +613,119 @@ class _PostIdeaState extends State<PostIdea> {
                                             Text(
                                                 "Enter Start Date for Stage ${index + 1}"),
                                             SizedBox(height: 5),
-                                            TextFormField(
-                                              onTap: () async {
-                                                DateTime date =
-                                                    await showDatePicker(
-                                                  context: context,
-                                                  initialDate: DateTime.now(),
-                                                  firstDate: DateTime.now(),
-                                                  lastDate: DateTime(3200),
-                                                );
-                                                if (date != null) {
-                                                  setState(() {
-                                                    (postForm.timeline[
-                                                                    'details']
-                                                                as List)[index]
-                                                            ['start'] =
-                                                        DateFormat.yMMMd()
-                                                            .format(date);
-                                                  });
-                                                }
-                                              },
-                                              enableInteractiveSelection: false,
-                                              focusNode:
-                                                  new AlwaysDisabledFocusNode(),
-                                              // initialValue: postForm.timeline[
-                                              //                 'details'] !=
-                                              //             null &&
-                                              //         postForm.timeline[
-                                              //                     'details']
-                                              //                 ['start'] !=
-                                              //             null
-                                              //     ? postForm.timeline['details']
-                                              //         ['start']
-                                              //     : null,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              style: TextStyle(
-                                                color: Colors.purple,
+                                            Theme(
+                                              data: Theme.of(context).copyWith(
+                                                primaryColor: Colors.amber,
                                               ),
-                                              // validator: (value) {
-                                              //   if (value.isEmpty)
-                                              //     return "It's empty";
-                                              //   return null;
-                                              // },
-                                              onChanged: (value) {
-                                                // validationService.changeAbout(value);
-                                                (postForm.timeline['details']
-                                                        as List)[index]
-                                                    ['start'] = value;
-                                              },
-                                              onSaved: (value) {
-                                                // user.occupation = value;
-                                              },
-                                              decoration: InputDecoration(
-                                                hintText: (postForm.timeline[
-                                                                    'details']
-                                                                as List) !=
-                                                            null &&
-                                                        (postForm.timeline[
-                                                                        'details']
-                                                                    as List)[index]
-                                                                ['start'] !=
-                                                            null
-                                                    ? (postForm
-                                                            .timeline['details']
-                                                        as List)[index]['start']
-                                                    : '',
-                                                hintStyle: TextStyle(
-                                                    color: Colors.black),
-                                                errorText: validationService
-                                                    .about.error,
-                                                contentPadding:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 10,
-                                                  horizontal: 10,
+                                              child: TextFormField(
+                                                onTap: () async {
+                                                  FocusScope.of(context)
+                                                      .requestFocus(
+                                                          new FocusNode());
+                                                  DateTime date =
+                                                      await showDatePicker(
+                                                    context: context,
+                                                    initialDate: DateTime.now(),
+                                                    firstDate: DateTime.now(),
+                                                    lastDate: DateTime(3200),
+                                                    builder:
+                                                        (BuildContext context,
+                                                            Widget child) {
+                                                      return Theme(
+                                                        data: ThemeData.light()
+                                                            .copyWith(
+                                                          primaryColor:
+                                                              middlePurple,
+                                                          accentColor:
+                                                              thirdPurple,
+                                                          buttonTheme: ButtonThemeData(
+                                                              textTheme:
+                                                                  ButtonTextTheme
+                                                                      .primary),
+                                                        ),
+                                                        child: child,
+                                                      );
+                                                    },
+                                                  );
+                                                  if (date != null) {
+                                                    setState(() {
+                                                      (postForm.timeline[
+                                                                      'details']
+                                                                  as List)[
+                                                              index]['start'] =
+                                                          DateFormat.yMMMd()
+                                                              .format(date);
+                                                    });
+                                                  }
+                                                },
+                                                enableInteractiveSelection:
+                                                    false,
+                                                focusNode:
+                                                    new AlwaysDisabledFocusNode(),
+                                                // initialValue: postForm.timeline[
+                                                //                 'details'] !=
+                                                //             null &&
+                                                //         postForm.timeline[
+                                                //                     'details']
+                                                //                 ['start'] !=
+                                                //             null
+                                                //     ? postForm.timeline['details']
+                                                //         ['start']
+                                                //     : null,
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                style: TextStyle(
+                                                  color: Colors.purple,
                                                 ),
-                                                border: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Colors.black87,
+                                                // validator: (value) {
+                                                //   if (value.isEmpty)
+                                                //     return "It's empty";
+                                                //   return null;
+                                                // },
+                                                onChanged: (value) {
+                                                  // validationService.changeAbout(value);
+                                                  (postForm.timeline['details']
+                                                          as List)[index]
+                                                      ['start'] = value;
+                                                },
+                                                onSaved: (value) {
+                                                  // user.occupation = value;
+                                                },
+                                                decoration: InputDecoration(
+                                                  hintText: (postForm.timeline[
+                                                                      'details']
+                                                                  as List) !=
+                                                              null &&
+                                                          (postForm.timeline[
+                                                                          'details']
+                                                                      as List)[index]
+                                                                  ['start'] !=
+                                                              null
+                                                      ? (postForm.timeline[
+                                                                  'details']
+                                                              as List)[index]
+                                                          ['start']
+                                                      : '',
+                                                  hintStyle: TextStyle(
+                                                      color: Colors.black),
+                                                  // errorText: validationService
+                                                      // .about.error,
+                                                  contentPadding:
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 10,
                                                   ),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Colors.purple,
+                                                  border: OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      color: Colors.purple,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -677,12 +738,33 @@ class _PostIdeaState extends State<PostIdea> {
                                             SizedBox(height: 5),
                                             TextFormField(
                                               onTap: () async {
+                                                FocusScope.of(context)
+                                                    .requestFocus(
+                                                        new FocusNode());
                                                 DateTime date =
                                                     await showDatePicker(
                                                   context: context,
                                                   initialDate: DateTime.now(),
                                                   firstDate: DateTime.now(),
                                                   lastDate: DateTime(3200),
+                                                  builder:
+                                                      (BuildContext context,
+                                                          Widget child) {
+                                                    return Theme(
+                                                      data: ThemeData.light()
+                                                          .copyWith(
+                                                        primaryColor:
+                                                            middlePurple,
+                                                        accentColor:
+                                                            thirdPurple,
+                                                        buttonTheme: ButtonThemeData(
+                                                            textTheme:
+                                                                ButtonTextTheme
+                                                                    .primary),
+                                                      ),
+                                                      child: child,
+                                                    );
+                                                  },
                                                 );
                                                 if (date != null) {
                                                   setState(() {
@@ -743,8 +825,8 @@ class _PostIdeaState extends State<PostIdea> {
                                                     : '',
                                                 hintStyle: TextStyle(
                                                     color: Colors.black),
-                                                errorText: validationService
-                                                    .about.error,
+                                                // errorText: validationService
+                                                //     .about.error,
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
                                                   vertical: 10,
@@ -796,7 +878,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   focusNode: new AlwaysDisabledFocusNode(),
                                   decoration: InputDecoration(
                                     hintText: "Upload Documents",
-                                    errorText: validationService.document.error,
+                                    // errorText: validationService.document.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -926,7 +1008,6 @@ class _PostIdeaState extends State<PostIdea> {
                               },
                             ),
                           ),
-
                           SizedBox(
                             height: 10,
                           ),
@@ -953,7 +1034,7 @@ class _PostIdeaState extends State<PostIdea> {
                                   focusNode: new AlwaysDisabledFocusNode(),
                                   decoration: InputDecoration(
                                     hintText: "Upload Video",
-                                    errorText: validationService.video.error,
+                                    // errorText: validationService.video.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -1004,6 +1085,7 @@ class _PostIdeaState extends State<PostIdea> {
                             ),
                           ),
                           TextFormField(
+                            initialValue: postForm.location,
                             // keyboardType: TextInputType.number,
                             style: TextStyle(
                               color: Colors.purple,
@@ -1023,7 +1105,7 @@ class _PostIdeaState extends State<PostIdea> {
                             },
                             decoration: InputDecoration(
                               hintText: "Location",
-                              errorText: validationService.teamSize.error,
+                              // errorText: validationService.teamSize.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 0,
                                 horizontal: 10,
@@ -1074,6 +1156,7 @@ class _PostIdeaState extends State<PostIdea> {
                           // ),
 
                           TextFormField(
+                            initialValue: postForm.estimatedPeople,
                             keyboardType: TextInputType.number,
                             style: TextStyle(
                               color: Colors.purple,
@@ -1094,7 +1177,7 @@ class _PostIdeaState extends State<PostIdea> {
                             },
                             decoration: InputDecoration(
                               hintText: "No of estimated people",
-                              errorText: validationService.teamSize.error,
+                              // errorText: validationService.teamSize.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 0,
                                 horizontal: 10,
@@ -1138,8 +1221,8 @@ class _PostIdeaState extends State<PostIdea> {
                                   // },
                                   decoration: InputDecoration(
                                     hintText: "Upload White Paper",
-                                    errorText:
-                                        validationService.whitePaper.error,
+                                    // errorText:
+                                    //     validationService.whitePaper.error,
                                     contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0,
                                       horizontal: 10,
@@ -1250,7 +1333,7 @@ class _PostIdeaState extends State<PostIdea> {
                                       _scaffoldKey.currentState.showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                              "Uploading file. Please wait."),
+                                              "Uploading file. Please wait..."),
                                         ),
                                       );
                                     },
@@ -1310,7 +1393,12 @@ class _PostIdeaState extends State<PostIdea> {
       List<File> files = result.paths.map((path) => File(path)).toList();
       for (int i = 0; i < files.length; i++) {
         authProvider.uploadFile(files[i], "document").then((value) {
-          postForm.documents.add(value);
+          Map sendMap = {
+            "_id": value["_id"],
+            "uriPath": value["uriPath"],
+          };
+          postForm.documents.add(sendMap);
+          // postForm.documents.add(value);
           setState(() {
             uploadingFile = false;
           });
@@ -1348,7 +1436,12 @@ class _PostIdeaState extends State<PostIdea> {
       List<File> files = result.paths.map((path) => File(path)).toList();
       for (int i = 0; i < files.length; i++) {
         authProvider.uploadFile(files[i], "document").then((value) {
-          postForm.documents.add(value);
+          Map sendMap = {
+            "_id": value["_id"],
+            "uriPath": value["uriPath"],
+          };
+          postForm.documents.add(sendMap);
+          // postForm.documents.add(value);
           setState(() {
             uploadingFile = false;
           });
@@ -1358,9 +1451,28 @@ class _PostIdeaState extends State<PostIdea> {
   }
 
   Future<void> loadWhitePaper() async {
-    FocusScope.of(context).requestFocus(new FocusNode());
-    FilePickerResult result =
-        await FilePicker.platform.pickFiles(type: FileType.any);
+    // FilePickerResult result = await FilePicker.platform.pickFiles();
+    setState(() {
+      uploadingFile = true;
+    });
+    FilePickerResult result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      print("the result is not null and we are uploading files.............");
+      List<File> files = result.paths.map((path) => File(path)).toList();
+      for (int i = 0; i < files.length; i++) {
+        authProvider.uploadFile(files[i], "video").then((value) {
+          Map sendMap = {
+            "uriPath": value["uriPath"],
+          };
+          postForm.whitePaper = sendMap;
+          print("Video data $value");
+          setState(() {
+            uploadingFile = false;
+          });
+        });
+      }
+    }
   }
 
   Future<void> loadAssetsVideo() async {
@@ -1375,8 +1487,6 @@ class _PostIdeaState extends State<PostIdea> {
       "MP2",
       "MPEG",
       "MPE",
-      "MPV",
-      "OGG",
       "MP4",
       "M4P",
       "M4V",
@@ -1394,7 +1504,11 @@ class _PostIdeaState extends State<PostIdea> {
       List<File> files = result.paths.map((path) => File(path)).toList();
       for (int i = 0; i < files.length; i++) {
         authProvider.uploadFile(files[i], "video").then((value) {
-          postForm.uploadVideo = value;
+          Map sendMap = {
+            "_id": value["_id"],
+            "uriPath": value["uriPath"],
+          };
+          postForm.uploadVideo = sendMap;
           print("Video data $value");
           setState(() {
             uploadingFile = false;
@@ -1424,32 +1538,80 @@ class _PostIdeaState extends State<PostIdea> {
       //   // backgroundColor: Colors.red,
       // ));
       print("postFOrm: ${postForm.toSendMap()}");
-      IdeasServices().postIdea(postForm.toSendMap(), token).then((status) {
-        if (status == true) {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text("Your Idea Posted."),
-            duration: Duration(seconds: 4),
-          ));
-          setState(() {
-            isLoading = false;
-          });
-          Timer(Duration(seconds: 4), () {
-            Navigator.pushNamed(context, "/");
-          });
-        } else {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            duration: Duration(seconds: 5),
-            content: Text("Something went wrong. Try again"),
-            backgroundColor: Colors.red,
-          ));
-        }
-      }).catchError((e) {
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-          duration: Duration(seconds: 5),
-          content: Text("Something went wrong. Try again"),
-          backgroundColor: Colors.red,
-        ));
-      });
+      //Update an idea
+      idea != null
+          ? IdeasProvider()
+              .updateIdea(postForm.id, token, postForm.toSendMap())
+              .then((status) {
+              if (status == true) {
+                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  content: Text("Your Idea Updated."),
+                  duration: Duration(seconds: 4),
+                ));
+                setState(() {
+                  isLoading = false;
+                });
+                Timer(Duration(seconds: 4), () {
+                  // Navigator.pushNamed(context, "/");
+                  Navigator.pop(context);
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  duration: Duration(seconds: 5),
+                  content: Text("Something went wrong. Try again"),
+                  backgroundColor: Colors.red,
+                ));
+              }
+            }).catchError((e) {
+              setState(() {
+                isLoading = false;
+              });
+              print("this is the error: $e");
+              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                duration: Duration(seconds: 5),
+                content: Text("Something went wrong. Try again"),
+                backgroundColor: Colors.red,
+              ));
+            })
+          //Post an Idea
+          : IdeasServices()
+              .postIdea(postForm.toSendMap(), token)
+              .then((status) {
+              if (status == true) {
+                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  content: Text("Your Idea Posted."),
+                  duration: Duration(seconds: 4),
+                ));
+                setState(() {
+                  isLoading = false;
+                });
+                Timer(Duration(seconds: 4), () {
+                  Navigator.pushNamed(context, "/");
+                });
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  duration: Duration(seconds: 5),
+                  content: Text("Something went wrong. Try again"),
+                  backgroundColor: Colors.red,
+                ));
+              }
+            }).catchError((e) {
+              setState(() {
+                isLoading = false;
+              });
+              print("this is the error: $e");
+              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                duration: Duration(seconds: 5),
+                content: Text("Something went wrong. Try again"),
+                backgroundColor: Colors.red,
+              ));
+            });
     } else {
       setState(() {
         _autoValidate = true;

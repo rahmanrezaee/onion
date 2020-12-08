@@ -13,7 +13,6 @@ class APIRequest {
     
 
     try {
-      
       if (token == null) {
         return dio.get(myUrl);
       } else {
@@ -27,7 +26,7 @@ class APIRequest {
 
   Future post({
     @required String myUrl,
-    @required Map<String, String> myBody,
+    @required myBody,
     @required Map<String, String> myHeaders,
   }) {
     dio.options.headers = myHeaders;
@@ -36,10 +35,19 @@ class APIRequest {
 
   Future put({
     @required String myUrl,
-    @required Map<String, String> myBody,
+    @required dynamic myBody,
     @required Map<String, String> myHeaders,
   }) {
     dio.options.headers = myHeaders;
     return dio.put(myUrl, data: myBody);
+  }
+
+  Future delete({
+    @required String myUrl,
+    @required dynamic myBody,
+    @required Map<String, String> myHeaders,
+  }) {
+    dio.options.headers = myHeaders;
+    return dio.delete(myUrl, data: myBody);
   }
 }

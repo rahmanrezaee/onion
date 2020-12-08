@@ -378,14 +378,17 @@ class _LoginState extends State<Login> {
       // Invalid!
       return;
     }
-    _formKey.currentState.save();
     setState(() {
       _isloading = true;
     });
+    _formKey.currentState.save();
 
     try {
       await Provider.of<Auth>(context, listen: false)
-          .login(username.text, passport.text);
+          .login(username.text, passport.text)
+          .then(
+            (value) => print("I LogIn: $value"),
+          );
     } on LoginException catch (e) {
       _scaffoldKey.currentState.showSnackBar(showSnackbar(
           text: e.cause, icon: Icon(Icons.error), color: Colors.red));
@@ -403,14 +406,12 @@ class _LoginState extends State<Login> {
 
     try {
       fi.User result = await signInWithGoogle();
-
+      print("${result}");
       if (result != null) {
         user.User newUser = new user.User();
-
         newUser.name = result.displayName;
         newUser.email = result.email;
         newUser.phone = result.phoneNumber;
-
         newUser.profile = result.photoURL;
         Navigator.pushNamed(context, ComplateProfile.routeName,
             arguments: newUser);
