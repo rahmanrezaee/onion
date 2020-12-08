@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/const/values.dart';
 import 'package:onion/models/FranchiesModel.dart';
+import 'package:onion/models/requestFranchiesModel.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 
 class FranchiesProvider with ChangeNotifier {
@@ -37,15 +38,15 @@ class FranchiesProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> addFranchise(data, id) async {
-    print(data);
+  Future<bool> addFranchise(data) async {
+    print("data add $data");
     try {
-      final StringBuffer url = new StringBuffer("$BASE_URL/franchies/$id");
-
+      final StringBuffer url = new StringBuffer("$BASE_URL/franchies/add");
+      print(url.toString());
       dio.options.headers = {
         "token": auth.token,
       };
-      final response = await dio.put(url.toString(), data: data);
+      final response = await dio.post(url.toString(), data: data);
 
       final extractedData = response.data["data"];
       print(extractedData);
@@ -134,4 +135,47 @@ class FranchiesProvider with ChangeNotifier {
       print("Mahdi: Error ${e.response}");
     }
   }
+
+  Future<bool> addFranchiseRequest(data) async {
+    print("data request add $data");
+    try {
+      final StringBuffer url = new StringBuffer("$BASE_URL/franchies/request");
+      print(url.toString());
+      dio.options.headers = {
+        "token": auth.token,
+      };
+      final response = await dio.post(url.toString(), data: data);
+
+      final extractedData = response.data["data"];
+
+      // items.add(FranchiesModel.toJson(extractedData));
+
+      notifyListeners();
+      return true;
+    } on DioError catch (e) {
+      print("Mahdi Error: ${e.response}");
+    }
+  }
+
+  
+  Future<List<RequestFranchiesModel>> getReqestedFrenchies(String id) async {
+    try {
+      final StringBuffer url = new StringBuffer("$BASE_URL/franchies/$id");
+      print(url.toString());
+      dio.options.headers = {
+        "token": auth.token,
+      };
+      final response = await dio.get(url.toString());
+
+      final extractedData = response.data["data"];
+
+      // items.add(FranchiesModel.toJson(extractedData));
+
+      notifyListeners();
+      // return true;
+    } on DioError catch (e) {
+      print("Mahdi Error: ${e.response}");
+    }
+  }
+
 }

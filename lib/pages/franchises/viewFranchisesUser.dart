@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
 import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
+import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:onion/widgets/PlayWidget/BasicVideoPlayer.dart';
 import 'package:onion/widgets/PlayWidget/SingleVideoPlayer.dart';
@@ -198,7 +199,12 @@ class _ViewFranchisesUserState extends State<ViewFranchisesUser> {
                           width: MediaQuery.of(context).size.width / 1.5,
                           child: RaisedButton(
                             color: middlePurple,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                  RequestFranchisesUser.routeName,
+                                  arguments: widget.franchiesModel);
+                              //
+                            },
                             child: Text("Request",
                                 style: TextStyle(color: Colors.white)),
                           ),
