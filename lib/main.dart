@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/InnovatorsIdeas.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/Idea/bidonIdea.dart';
 import 'package:onion/pages/Idea/findIdea.dart';
+import 'package:onion/pages/Idea/myBiddedIdea.dart';
 import 'package:onion/pages/Idea/viewIdeas.dart';
 import 'package:onion/pages/SearchTab/SearchTab.dart';
 import 'package:onion/pages/analysisList/analysisList.dart';
@@ -36,6 +38,7 @@ import './pages/underDevelopment.dart';
 import './pages/Home.dart';
 import './pages/Idea/postIdea.dart';
 import './pages/Idea/MyIdeaId.dart';
+import './pages/Idea/requestedIdeas.dart';
 import './pages/authentication/ComplateProfile.dart';
 import './pages/Settings.dart';
 import './pages/F&Q.dart';
@@ -58,6 +61,8 @@ import './pages/Analysis.dart';
 import './pages/request.dart';
 import './pages/franchises/myFranchises.dart';
 import './pages/franchises/addFranchise.dart';
+import './statemanagment/idea/ideasProviders.dart';
+import './pages/idea/biddedIdeas.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,6 +80,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AnalysisProvider()),
         ChangeNotifierProvider(create: (_) => RealtimeData()),
         ChangeNotifierProvider(create: (_) => DropdownProvider()),
+        ChangeNotifierProvider(create: (_) => IdeasProvider()),
         ChangeNotifierProxyProvider<Auth, SaveAnalProvider>(
             update: (
               context,
@@ -151,7 +157,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         // home: CustomDrawerPage(widget.key),
-        home: InnovatorsIdeas(),
+        home: MyBiddedIdeaPage(),
         routes: {
           Login.routeName: (context) =>
               auth.token != null ? CustomDrawerPage(widget.key) : Login(),
@@ -197,6 +203,10 @@ class _MyAppState extends State<MyApp> {
           AddFranchise.routeName: (context) => AddFranchise(),
           MyFranchises.routeName: (context) => MyFranchises(),
           ViewIdeas.routeName: (context) => ViewIdeas(),
+          RequestedIdeas.routeName: (context) => RequestedIdeas(),
+          BiddedIdeas.routeName: (context) => BiddedIdeas(),
+          BidOnIdeaPage.routeName: (context) => BidOnIdeaPage(),
+          MyBiddedIdeaPage.routeName: (context) => MyBiddedIdeaPage(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (_) => UnderDevelopment());

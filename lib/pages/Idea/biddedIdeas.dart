@@ -8,15 +8,15 @@ import 'package:onion/widgets/IdeaWiget/itemIdea.dart';
 import 'package:onion/services/ideasServices.dart';
 import 'package:provider/provider.dart';
 
-class MyIdeaId extends StatefulWidget {
-  static String routeName = "MyIdeaId";
+class BiddedIdeas extends StatefulWidget {
+  static String routeName = "BiddedIdeas";
   @override
-  _MyIdeaIdState createState() => _MyIdeaIdState();
+  _BiddedIdeasState createState() => _BiddedIdeasState();
 }
 
 GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-class _MyIdeaIdState extends State<MyIdeaId> {
+class _BiddedIdeasState extends State<BiddedIdeas> {
   Future getIdeasList;
   String token;
   Auth authProvider;
@@ -24,24 +24,25 @@ class _MyIdeaIdState extends State<MyIdeaId> {
   initState() {
     super.initState();
     authProvider = Provider.of<Auth>(context, listen: false);
-
     token = authProvider.token;
     getIdeasList = IdeasServices().getIdeaList(token);
+    first = false;
   }
 
+  bool first = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: middlePurple,
-        title: Text("My Idea Id"),
+        title: Text("Requested Ideas"),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context)
-                .pushReplacementNamed(CustomDrawerPage.routeName);
+            // Navigator.of(context)
+            //     .pushReplacementNamed(CustomDrawerPage.routeName);
           },
         ),
         actions: [
@@ -77,13 +78,11 @@ class _MyIdeaIdState extends State<MyIdeaId> {
                                 return Column(
                                   children: [
                                     ItemIdea(
-                                      _scaffoldKey,
-                                      value,
-                                      value.ideas[index],
+                                      _scaffoldKey, value, value.ideas[index],
                                       () {
                                         setState(() {});
                                       },
-                                      true,
+                                      false,
                                       // SetupIdeaModel(
                                       //   id: ideas[index]["_id"],
                                       //   userId: ideas[index]["userId"],
