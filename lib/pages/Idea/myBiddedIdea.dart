@@ -4,7 +4,9 @@ import 'package:onion/const/color.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:onion/widgets/Checkbox/GlowCheckbox.dart';
 import 'package:onion/widgets/FiveRating.dart';
+import 'package:onion/widgets/PlayWidget/VideoPlayer.dart';
 import 'package:onion/widgets/T&C_widget.dart';
+import 'package:video_player/video_player.dart';
 // import 'package:syncfusion_flutter_charts/charts.dart';
 // import 'CustomDrawerPage.dart';
 
@@ -242,6 +244,10 @@ class _MyBiddedIdeaPageState extends State<MyBiddedIdeaPage> {
                             ),
                           ),
                           SizedBox(height: 15),
+                          VideoPlayerWidget(
+                            clipsUrl:
+                                "https://www.sample-videos.com/video123/mp4/240/big_buck_bunny_240p_30mb.mp4",
+                          ),
                           SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
