@@ -152,7 +152,7 @@ class _ProjectChatState extends State<ProjectChat> {
       Timer(
         Duration(milliseconds: time),
         () => _listViewController.animateTo(
-          _listViewController.position.maxScrollExtent,
+          0.0,
           curve: Curves.easeOut,
           duration: const Duration(milliseconds: 300),
         ),
@@ -189,9 +189,11 @@ class _ProjectChatState extends State<ProjectChat> {
                           return ListView.builder(
                             controller: _listViewController,
                             itemCount: value.myMessage.length,
+                            reverse: true,
                             itemBuilder: (ctx, index) {
-                              String key =
-                                  value.myMessage.keys.elementAt(index);
+                              String key = value.myMessage.keys.elementAt(
+                                value.myMessage.length - index - 1,
+                              );
                               String getPreviuosdate = "";
                               if (index > 0) {
                                 String previouskey =
@@ -217,8 +219,6 @@ class _ProjectChatState extends State<ProjectChat> {
                               bool isMeFlag = value.myMessage[key]
                                       ["firebaseId"] ==
                                   firebaseId;
-                              String firebaseUserId =
-                                  isMeFlag ? firebaseId : "";
 
                               return GestureDetector(
                                 onTapDown: _storePosition,
@@ -236,7 +236,7 @@ class _ProjectChatState extends State<ProjectChat> {
                                   date: "$chatDate",
                                   hour:
                                       "${date.substring(date.indexOf(" "), date.lastIndexOf(":"))}",
-                                  firebaseId:  firebaseUserId,
+                                  firebaseId: firebaseId,
                                 ),
                               );
                             },

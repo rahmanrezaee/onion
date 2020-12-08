@@ -45,8 +45,7 @@ class RealtimeData extends ChangeNotifier {
           .listen((event) {
         print(
             "Mahdi: getUserInfo server ${event.snapshot.key} : ${event.snapshot.value}");
-        print(
-            "Mahdi: getUserInfo ${_userInfo.keys} : ${_userInfo.values}");
+        print("Mahdi: getUserInfo ${_userInfo.keys} : ${_userInfo.values}");
 
         _userInfo[event.snapshot.key] = event.snapshot.value;
         notifyListeners();
@@ -112,7 +111,11 @@ class RealtimeData extends ChangeNotifier {
           .child("messages")
           .child("$groupName")
           .child(key)
-          .set({'sendBy': _myMessage[key]['sendBy'], 'message': editMessage});
+          .set({
+        'sendBy': _myMessage[key]['sendBy'],
+        'message': editMessage,
+        'firebaseId': firebaseId,
+      });
     } catch (e) {
       print("Mahdi Error newValue $e");
     }

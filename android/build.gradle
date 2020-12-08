@@ -15,7 +15,6 @@ buildscript {
         // Example existing classpath
         classpath 'com.android.tools.build:gradle:4.0.2'
         // Add the google services classpath
-        classpath 'com.google.gms:google-services:4.3.4'
     }
 }
 

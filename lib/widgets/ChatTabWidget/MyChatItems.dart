@@ -26,6 +26,7 @@ class MyChatItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Mahdi: MyChatItems $baseImageAvatar$firebaseId");
     return Directionality(
       textDirection: isMe ? TextDirection.rtl : TextDirection.ltr,
       child: Column(
