@@ -40,6 +40,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: ConnectivityWidgetWrapper(
         child: Stack(
           alignment: Alignment.center,

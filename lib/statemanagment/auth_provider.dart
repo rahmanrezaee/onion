@@ -288,12 +288,16 @@ class Auth with ChangeNotifier {
       FormData formData = FormData.fromMap(
         {
           "uploadFile": await MultipartFile.fromFile(imageFile.path),
-          "token": UNTOKEN,
+          // "token": UNTOKEN,
           "category": category
         },
       );
 
       print(url.toString());
+
+      dio.options.headers = {
+        "token":token
+      };
       var response = await dio.post(
         url.toString(),
         data: formData,

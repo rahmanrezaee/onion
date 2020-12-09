@@ -41,7 +41,7 @@ class _RequestOnFranchiseState extends State<RequestOnFranchise> {
           },
           child: Column(
             children: [
-              Description(),
+              Description(widget.franchiesModel),
               FutureBuilder(
                 future: franchRequest
                     .getReqestedFrenchies(widget.franchiesModel.id),
@@ -50,7 +50,7 @@ class _RequestOnFranchiseState extends State<RequestOnFranchise> {
                   if (snapshot.connectionState == ConnectionState.done) {
                     List<RequestFranchiesModel> dat = snapshot.data;
 
-                    return dat.isEmpty
+                    return snapshot.data == null && dat.isEmpty
                         ? ListView(
                             children: [
                               Container(
@@ -65,7 +65,9 @@ class _RequestOnFranchiseState extends State<RequestOnFranchise> {
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: dat.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return CardListItem(dat[index]);
+                              return CardListItem({
+                                "franch": widget.franchiesModel,
+                                "request":dat[index]});
                             },
                           );
                     // return Column(

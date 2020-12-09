@@ -560,6 +560,8 @@ class _AddFranchiseState extends State<AddFranchise> {
 
   //Show Loaded documnets and images in bottom of Upload bottom
   /////////////////////////////////////////
+  ///
+
   Future<void> loadAssets() async {
     FocusScope.of(context).requestFocus(new FocusNode());
     // FilePickerResult result = await FilePicker.platform.pickFiles();
@@ -571,27 +573,12 @@ class _AddFranchiseState extends State<AddFranchise> {
     );
 
     if (result != null) {
-      List<PlatformFile> file = result.files;
-
-      file.forEach((element) {
-        setState(() {
-          addFranch.uploadDocuments.add({
-            "name": element.name,
-            "path": element.path,
-            "type": element.extension,
-          });
-        });
-      });
-      print("the result is not null and we are uploading files.............");
-      setState(() {
-        uploadingFile = true;
-      });
       List<File> files = result.paths.map((path) => File(path)).toList();
       for (int i = 0; i < files.length; i++) {
         print(files[i]);
 
         authProvider.uploadFile(files[i], "document").then((value) {
-          // _documents.add(value);
+          addFranch.uploadDocuments.add(value);
           setState(() {
             uploadingFile = false;
           });
@@ -719,8 +706,7 @@ class _AddFranchiseState extends State<AddFranchise> {
             duration: Duration(seconds: 3),
           ));
           Timer(Duration(seconds: 3), () {
-              Navigator.of(context)
-                .pop();
+            Navigator.of(context).pop();
           });
         }
       }).catchError((error) {

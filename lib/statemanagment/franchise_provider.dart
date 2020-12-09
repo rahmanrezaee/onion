@@ -7,6 +7,16 @@ import 'package:onion/statemanagment/auth_provider.dart';
 
 class FranchiesProvider with ChangeNotifier {
   List<FranchiesModel> items;
+  List<FranchiesModel> itemsAll;
+
+  String search = "";
+
+  setSearchKeyword(text) {
+    itemsAll = null;
+    search = text;
+    notifyListeners();
+    getFranchies(isMyList: false);
+  }
 
   Dio dio = new Dio();
   Auth auth;
@@ -107,8 +117,16 @@ class FranchiesProvider with ChangeNotifier {
 
       if (isMyList != null && isMyList) {
         url = url.toString() + "?list=my";
+        if (search != "") {
+          url += "&search=$search";
+        }
+      } else {
+        if (search != "") {
+          url += "?search=$search";
+        }
       }
-      print(url.toString());
+
+      print("url ${url.toString()}");
       dio.options.headers = {
         "token": auth.token,
       };
@@ -116,18 +134,33 @@ class FranchiesProvider with ChangeNotifier {
 
       print("Mahdi an $result");
       final extractedData = result.data["franchiesList"];
-      print("fran $extractedData");
-      if (extractedData == null) {
-        items = [];
-        return false;
+
+      if (isMyList) {
+        print("fran $extractedData");
+        if (extractedData == null) {
+          items = [];
+          return false;
+        }
+        final List<FranchiesModel> loadedProducts = [];
+
+        extractedData.forEach((tableData) {
+          loadedProducts.add(FranchiesModel.toJson(tableData));
+        });
+
+        items = loadedProducts;
+      } else {
+        if (extractedData == null) {
+          itemsAll = [];
+          return false;
+        }
+        final List<FranchiesModel> loadedProducts = [];
+
+        extractedData.forEach((tableData) {
+          loadedProducts.add(FranchiesModel.toJson(tableData));
+        });
+
+        itemsAll = loadedProducts;
       }
-      final List<FranchiesModel> loadedProducts = [];
-
-      extractedData.forEach((tableData) {
-        loadedProducts.add(FranchiesModel.toJson(tableData));
-      });
-
-      items = loadedProducts;
 
       notifyListeners();
       return true;
@@ -167,15 +200,34 @@ class FranchiesProvider with ChangeNotifier {
       };
       final response = await dio.get(url.toString());
 
-      final extractedData = response.data["requestsData"];
+      final extractedData = response.data["data"]["requests"];
       print("extractedData $extractedData");
       final List<RequestFranchiesModel> loadedProducts = [];
 
       extractedData.forEach((tableData) {
+        // print("json $tableData");
         loadedProducts.add(RequestFranchiesModel.toJson(tableData));
       });
-
+      print("loadedProducts $loadedProducts");
       return Future.value(loadedProducts);
+      // return true;
+    } on DioError catch (e) {
+      print("Mahdi Error: ${e.response}");
+    }
+  }
+
+  Future pendingRequestFrenchies(id, bool result) async {
+    // {{base_url}}/franchies//5fcf63966a9dcf0011e46c15
+    try {
+      final StringBuffer url =
+          new StringBuffer("$BASE_URL/franchies/request/$id");
+      print(url.toString());
+      dio.options.headers = {
+        "token": auth.token,
+      };
+      final response = await dio.post(url.toString(), data: {"result": result});
+      print("response.data ${response.data}");
+      return Future.value(response.data);
       // return true;
     } on DioError catch (e) {
       print("Mahdi Error: ${e.response}");

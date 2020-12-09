@@ -13,6 +13,7 @@ import 'package:onion/pages/Services.dart';
 import 'package:onion/pages/Settings.dart';
 import 'package:onion/pages/authentication/Login.dart';
 import 'package:onion/pages/franchises/FranchiesList.dart';
+import 'package:onion/pages/franchises/RequestFranchies.dart';
 import 'package:onion/pages/franchises/myFranchises.dart';
 import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
@@ -274,7 +275,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   context: context,
                   name: " Franchies List",
                   icon: Icons.ac_unit,
-                  routeName: FranchiesList.routeName,
+                  routeName: RequestFranchiesList.routeName,
                   justPush: true),
 
               value.token != null
