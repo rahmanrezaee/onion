@@ -17,8 +17,10 @@ class ItemIdea extends StatefulWidget {
   final Function onDelete;
   final IdeasProvider ideasProvider;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final bool itsMyIdea;
 
-  ItemIdea(this.scaffoldKey, this.ideasProvider, this.idea, this.onDelete);
+  ItemIdea(this.scaffoldKey, this.ideasProvider, this.idea, this.onDelete,
+      this.itsMyIdea);
 
   @override
   _ItemIdeaState createState() => _ItemIdeaState();
@@ -106,12 +108,15 @@ class _ItemIdeaState extends State<ItemIdea> {
                       ],
                     ),
                   ),
+
+                  //The PopUp
                   Container(
                     alignment: Alignment.topLeft,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        widget.itsMyIdea == true ?
                         mypopup.PopupMenuButton<int>(
                           elevation: 20,
                           padding: EdgeInsets.all(10),
@@ -337,6 +342,71 @@ class _ItemIdeaState extends State<ItemIdea> {
                                 ),
                               ),
                             ),
+                          ],
+                        ): mypopup.PopupMenuButton<int>(
+                          elevation: 20,
+                          padding: EdgeInsets.all(10),
+                          onSelected: (value) {},
+                          offset: Offset(50, 50),
+                          itemBuilder: (context) => [
+                            mypopup.PopupMenuItem(
+                              value: 2,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                decoration: BoxDecoration(
+                                  // color: ,
+                                  border: Border.all(
+                                      color: Colors.grey[200], width: 2),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text("View Profile"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            mypopup.PopupMenuItem(
+                              value: 2,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                decoration: BoxDecoration(
+                                  // color: ,
+                                  border: Border.all(
+                                      color: Colors.grey[200], width: 2),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text("Message"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            mypopup.PopupMenuItem(
+                              value: 2,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                decoration: BoxDecoration(
+                                  // color: ,
+                                  border: Border.all(
+                                      color: Colors.grey[200], width: 2),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text("View"),
+                                  ],
+                                ),
+                              ),
+                              ),
                           ],
                         ),
                         Text(

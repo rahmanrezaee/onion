@@ -13,42 +13,19 @@ import '../../models/Idea.dart';
 //
 import 'package:video_player/video_player.dart';
 
-class MyIdeaDetails extends StatefulWidget {
-  static String routeName = "MyIdeaDetail";
-  // MyIdeaDetails( ModalRoute.of(context).settings.arguments, arguments);
+class Bid extends StatefulWidget {
+  static String routeName = "Bid";
+  // Bid( ModalRoute.of(context).settings.arguments, arguments);
 
   @override
-  _MyIdeaDetailsState createState() => _MyIdeaDetailsState();
+  _BidState createState() => _BidState();
 }
 
-class _MyIdeaDetailsState extends State<MyIdeaDetails> {
-  VideoPlayerController _controller;
-  //Video player controller
-  final double playerWidth = 640.0;
-  final double playerHeight = 360.0;
-  bool _isPlaying = false;
+class _BidState extends State<Bid> {
   // String token;
   initState() {
     super.initState();
     // token = Provider.of<Auth>(context).token;
-    //Video player initialize
-    _controller = VideoPlayerController.network(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-      // closedCaptionFile: _loadCaptions(),
-      videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
-    );
-
-    _controller.addListener(() {
-      setState(() {});
-    });
-    _controller.setLooping(true);
-    _controller.initialize();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -58,12 +35,12 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: middlePurple,
-        title: Text("My Idea Details"),
+        title: Text("Bid"),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed(MyIdeaId.routeName);
+            Navigator.of(context).pop();
           },
         ),
         actions: [
@@ -326,34 +303,6 @@ class _MyIdeaDetailsState extends State<MyIdeaDetails> {
                         ),
                         SizedBox(height: 10),
                         Stack(alignment: Alignment.center, children: [
-                          SizedBox(
-                            width: double.infinity,
-                            height: 120,
-                            child: GestureDetector(
-                              onTap: () {
-                                // setState(() {
-                                //   _videoController.pause();
-                                //   _isPlaying = false;
-                                //   print("ALi Azad");
-                                // });
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                // child: new VlcPlayer(
-                                //   options: [],
-                                //   aspectRatio: 16 / 9,
-                                //   url: urlToStreamVideo,
-                                //   controller: _videoController,
-                                //   placeholder: Center(
-                                //       child: CircularProgressIndicator()),
-                                // ),
-                                child: AspectRatio(
-                                  aspectRatio: _controller.value.aspectRatio,
-                                  child: VideoPlayer(_controller),
-                                ),
-                              ),
-                            ),
-                          ),
                           VideoPlayerWidget(
                             clipsUrl:
                                 "https://www.sample-videos.com/video123/mp4/240/big_buck_bunny_240p_30mb.mp4",
