@@ -22,7 +22,6 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.google.gms.google-services'
@@ -43,7 +42,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.onion"
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -63,23 +62,26 @@ flutter {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
+    // testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.gms:play-services-basement:17.5.0'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
     implementation 'androidx.core:core:1.3.2'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.google.android.material:material:1.2.1'
+    // implementation 'com.google.android.material:material:1.2.1'
 
 
 
     // Firebase Cloud Messaging (Kotlin)
-    implementation 'com.google.firebase:firebase-messaging-ktx'
+    // implementation 'com.google.firebase:firebase-messaging-ktx'
 
-    implementation 'com.google.firebase:firebase-installations-ktx:16.3.4'
+    // implementation 'com.google.firebase:firebase-installations-ktx:16.3.4'
 
-    implementation 'android.arch.work:work-runtime:1.0.1'
+    // implementation 'android.arch.work:work-runtime:1.0.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.google.android.gms:play-services-basement:17.5.0'
+
 }

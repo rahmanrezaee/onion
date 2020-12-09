@@ -3,7 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
-import 'package:onion/statemanagment/SaveAnalysis.dart';
+import 'package:onion/statemanagment/SaveAnalModel.dart';
+// import 'package:onion/statemanagment/SaveAnalysis.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/widgets/AnalysisWidget/extra/MyEmptyText.dart';
 import 'package:onion/widgets/MyAppBarContainer.dart';
@@ -56,8 +57,8 @@ class _DashboardPageState extends State<DashboardPage> {
         preferredSize: const Size(double.infinity, kToolbarHeight),
         child: MyLittleAppbar(
           myTitle: "Dashboard",
-          openDrawer: widget.openDrawer,
-          hasDrawer: true,
+          // openDrawer: widget.openDrawer,
+          // hasDrawer: true,
         ),
       ),
       body: SingleChildScrollView(
@@ -95,7 +96,7 @@ class _DashboardPageState extends State<DashboardPage> {
               future: Provider.of<SaveAnalProvider>(
                 context,
                 listen: false,
-              ).getAnalysis(token: token),
+              ).getAnalysis(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -301,11 +302,9 @@ class MySocialIcon extends StatelessWidget {
   final String myImg;
   final double paddingRight;
 
-  const MySocialIcon({
-    Key key,
-    this.myImg,
-    this.paddingRight = 0.04,
-  }) : super(key: key);
+  MySocialIcon({
+    this.paddingRight = 0.04, this.myImg,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -356,10 +355,8 @@ class MyCardItem extends StatelessWidget {
                 Widget okButton = FlatButton(
                   child: Text("OK"),
                   onPressed: () async {
-                    String token =
-                        Provider.of<Auth>(context, listen: false).token;
                     Provider.of<SaveAnalProvider>(context, listen: false)
-                        .deleteAnalysis(token: token, id: id);
+                        .deleteAnalysis(id: id);
 
                     Navigator.pop(context);
                   },

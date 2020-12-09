@@ -40,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
       HomePage(openDrawer: widget.openDrawer),
       MyMessagePage(openDrawer: widget.openDrawer),
       Analysis(),
-      DashboardPage(openDrawer: widget.openDrawer),
+      Dashboard(openDrawer: widget.openDrawer),
       SearchTab(openDrawer: widget.openDrawer),
     ];
 
