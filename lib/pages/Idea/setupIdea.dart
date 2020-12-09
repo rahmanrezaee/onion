@@ -7,6 +7,7 @@ import 'package:onion/models/SetupIdea.dart';
 import 'package:onion/pages/Idea/postIdea.dart';
 import 'package:onion/services/ideasServices.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:onion/statemanagment/idea/ideasProviders.dart';
 import 'package:onion/validation/setupIdeaValidation.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/IdeaWiget/LocationWidget.dart';
@@ -40,15 +41,23 @@ class _SetupIdeaState extends State<SetupIdea> {
   @override
   void initState() {
     token = Provider.of<Auth>(context, listen: false).token;
+    print(
+        "setub idea ${Provider.of<Auth>(context, listen: false).currentUser.setupIdea}");
+    if (Provider.of<Auth>(context, listen: false).currentUser.setupIdea ==
+        true) {
+      Navigator.of(context).pushNamed(PostIdea.routeName);
+    }
     addField();
     super.initState();
   }
 
   bool _autoValidate = false;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  IdeasProvider ideasProvider;
   @override
   Widget build(BuildContext context) {
     final validationService = Provider.of<SetupIdeaValidation>(context);
+    ideasProvider = Provider.of<IdeasProvider>(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -425,7 +434,7 @@ class _SetupIdeaState extends State<SetupIdea> {
       setState(() {
         loading = true;
       });
-      IdeasServices().setupIdea(formIdea.sendMap(), token).then((bool status) {
+      ideasProvider.setupIdea(formIdea.sendMap(), token).then((bool status) {
         if (status == true) {
           setState(() {
             loading = false;

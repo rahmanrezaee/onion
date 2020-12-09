@@ -48,7 +48,6 @@ class _SignUpState extends State<SignUp> {
   List interstedList;
   List locationList;
   List state;
-
   void getInitData() {
     fetchDataForSignup = Auth().getDataSignup();
   }

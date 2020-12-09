@@ -8,6 +8,7 @@ import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/statemanagment/idea/ideasProviders.dart';
 import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
+import 'package:onion/widgets/IdeasWidget/findIdeaWidget.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
 import 'package:provider/provider.dart';
 
@@ -19,13 +20,15 @@ class FindIdea extends StatefulWidget {
 class _FindIdeaState extends State<FindIdea> {
   String token;
   Auth authProvider;
-
+  IdeasProvider ideasProvider;
   initState() {
     super.initState();
     authProvider = Provider.of<Auth>(context, listen: false);
+    ideasProvider = Provider.of<IdeasProvider>(context, listen: false);
     token = authProvider.token;
   }
 
+  String searchKey;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,6 +60,14 @@ class _FindIdeaState extends State<FindIdea> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextField(
+                    onChanged: (v) {
+                      if (v == null || v == "") {
+                        ideasProvider.getAllIdeaList(token);
+                      }
+                      setState(() {
+                        searchKey = v;
+                      });
+                    },
                     decoration: InputDecoration(
                       border: new OutlineInputBorder(
                         borderRadius: const BorderRadius.all(
@@ -68,7 +79,11 @@ class _FindIdeaState extends State<FindIdea> {
                       hintStyle: TextStyle(color: Colors.black),
                       hintText: "Search by locaion, Industrty",
                       fillColor: Colors.white,
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: InkWell(
+                          onTap: () {
+                            findIdea(searchKey);
+                          },
+                          child: Icon(Icons.search)),
                     ),
                   ),
                   SizedBox(height: 30),
@@ -90,7 +105,7 @@ class _FindIdeaState extends State<FindIdea> {
               builder: (BuildContext context, value, Widget child) {
                 return value.allIdeas != null
                     ? value.allIdeas.length < 1
-                        ? Center(child: Text("Your idea list is empty"))
+                        ? Center(child: Text("Nothing Found!"))
                         : ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
@@ -118,7 +133,8 @@ class _FindIdeaState extends State<FindIdea> {
                           } else {
                             return Center(child: CircularProgressIndicator());
                           }
-                        });
+                        },
+                      );
               },
             ),
             // ListView.builder(
@@ -134,100 +150,8 @@ class _FindIdeaState extends State<FindIdea> {
       ),
     );
   }
-}
 
-class FindIdeaWidget extends StatelessWidget {
-  final SetupIdeaModel idea;
-  const FindIdeaWidget(this.idea);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pushNamed(ViewIdeas.routeName, arguments: idea);
-      },
-      child: Stack(
-        children: [
-          Card(
-            elevation: 3,
-            child: Container(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Industry: ${idea.category}",
-                    style: TextStyle(
-                      color: middlePurple,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text("Headline: ${idea.ideaHeadline}",
-                      style: TextStyle(color: Colors.black)),
-                  SizedBox(height: 10),
-                  Text("Idea: ", style: TextStyle(fontSize: 18)),
-                  SizedBox(height: 5),
-                  DropCapText(
-                    "${idea.ideaText}",
-                    dropCapPosition: DropCapPosition.end,
-                    dropCap: DropCap(
-                      width: 120,
-                      height: 150,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            width: 120,
-                            child: RaisedButton(
-                                color: middlePurple,
-                                onPressed: () {},
-                                child: Text("View Profile",
-                                    style: TextStyle(color: Colors.white))),
-                          ),
-                          SizedBox(
-                              width: 120,
-                              child: OutlineButton(
-                                  onPressed: () {}, child: Text("Message"))),
-                          SizedBox(
-                            width: 120,
-                            child: OutlineButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {},
-                                child: Text("View Franchies")),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  // Text(
-                  //     "Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, "),
-                  SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      "Post: 28-08-2020",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(topRight: Radius.circular(5)),
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: Image.asset("assets/images/new.png"),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  findIdea(key) {
+    ideasProvider.findIdea(key, token);
   }
 }

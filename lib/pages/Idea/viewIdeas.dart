@@ -4,6 +4,8 @@ import 'package:onion/models/Idea.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
 import 'package:onion/widgets/FiveRating.dart';
 import '../../utilities/linkChecker.dart';
+import '../../widgets/PlayWidget/videoPlayer.dart';
+import '../idea/bid.dart';
 
 class ViewIdeas extends StatefulWidget {
   static String routeName = "ViewIdeas";
@@ -234,11 +236,19 @@ class _ViewIdeasState extends State<ViewIdeas> {
               SizedBox(height: 15),
               Text("Project Descriptive Video"),
               SizedBox(height: 10),
+              idea.uploadVideo == null
+                  ? Center(
+                      child: Text("Video is not found"),
+                    )
+                  : VideoPlayerWidget(
+                      clipsUrl: "${idea.uploadVideo['uriPath']}",
+                    ),
+              SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Total No. of People: "),
-                  Text("8 People"),
+                  Text("${idea.estimatedPeople} People"),
                 ],
               ),
               SizedBox(height: 10),
@@ -278,7 +288,10 @@ class _ViewIdeasState extends State<ViewIdeas> {
                 width: MediaQuery.of(context).size.width,
                 child: RaisedButton(
                   color: middlePurple,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamed(Bid.routeName, arguments: idea);
+                  },
                   child: Text(
                     "Bid For The Idea",
                     style: TextStyle(
