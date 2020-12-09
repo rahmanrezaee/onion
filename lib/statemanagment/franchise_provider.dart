@@ -157,25 +157,28 @@ class FranchiesProvider with ChangeNotifier {
     }
   }
 
-  
   Future<List<RequestFranchiesModel>> getReqestedFrenchies(String id) async {
     try {
-      final StringBuffer url = new StringBuffer("$BASE_URL/franchies/$id");
+      final StringBuffer url =
+          new StringBuffer("$BASE_URL/franchies/$id?requests=true");
       print(url.toString());
       dio.options.headers = {
         "token": auth.token,
       };
       final response = await dio.get(url.toString());
 
-      final extractedData = response.data["data"];
+      final extractedData = response.data["requestsData"];
+      print("extractedData $extractedData");
+      final List<RequestFranchiesModel> loadedProducts = [];
 
-      // items.add(FranchiesModel.toJson(extractedData));
+      extractedData.forEach((tableData) {
+        loadedProducts.add(RequestFranchiesModel.toJson(tableData));
+      });
 
-      notifyListeners();
+      return Future.value(loadedProducts);
       // return true;
     } on DioError catch (e) {
       print("Mahdi Error: ${e.response}");
     }
   }
-
 }

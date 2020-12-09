@@ -26,6 +26,7 @@ class RequestFranchiesModel {
     this.id = json["_id"];
     this.franchiesId = json["franchiesId"];
     this.message = json["message"];
+    this.date = json["date"];
    
     this.uploadDocuments = json["uploadDocuments"];
     this.users = json["references"];

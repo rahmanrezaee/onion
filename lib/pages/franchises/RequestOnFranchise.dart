@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:onion/models/FranchiesModel.dart';
+import 'package:onion/models/requestFranchiesModel.dart';
 import 'package:onion/statemanagment/franchise_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -23,8 +24,7 @@ class RequestOnFranchise extends StatefulWidget {
 class _RequestOnFranchiseState extends State<RequestOnFranchise> {
   @override
   Widget build(BuildContext context) {
-
-    var franchRequest = Provider.of<FranchiesProvider>(context,listen:false);
+    var franchRequest = Provider.of<FranchiesProvider>(context, listen: false);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, kToolbarHeight),
@@ -39,18 +39,50 @@ class _RequestOnFranchiseState extends State<RequestOnFranchise> {
             // value.clearToNullList();
             // await value.getFranchies(isMyList: true);
           },
-          child: FutureBuilder(
-            future: franchRequest.getReqestedFrenchies(widget.franchiesModel.id),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              return Column(
-                children: [
-                  Description(),
-                  CardListItem(),
-                  CardListItem(),
-                  CardListItem(),
-                ],
-              );
-            },
+          child: Column(
+            children: [
+              Description(),
+              FutureBuilder(
+                future: franchRequest
+                    .getReqestedFrenchies(widget.franchiesModel.id),
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    List<RequestFranchiesModel> dat = snapshot.data;
+
+                    return dat.isEmpty
+                        ? ListView(
+                            children: [
+                              Container(
+                                height: 80,
+                                alignment: Alignment.center,
+                                child: Text("Empty List"),
+                              ),
+                            ],
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: dat.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return CardListItem(dat[index]);
+                            },
+                          );
+                    // return Column(
+                    //   children: [
+                    //
+
+                    //   ],
+                    // );
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    return Center(child: Text("Head Problem Try Again"));
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),
