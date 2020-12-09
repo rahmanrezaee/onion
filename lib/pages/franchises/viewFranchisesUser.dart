@@ -1,10 +1,29 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/const/color.dart';
+import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/CustomDrawerPage.dart';
+import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/widgets/AnalysisWidget/MyAlert.dart';
+import 'package:onion/widgets/PlayWidget/BasicVideoPlayer.dart';
+import 'package:onion/widgets/PlayWidget/SingleVideoPlayer.dart';
+import 'package:onion/widgets/PlayWidget/VideoPlayer.dart';
+import 'package:video_player/video_player.dart';
 
-class ViewFranchisesUser extends StatelessWidget {
+class ViewFranchisesUser extends StatefulWidget {
   static String routeName = "ViewFranchisesUser";
+  FranchiesModel franchiesModel;
+  ViewFranchisesUser(this.franchiesModel);
+
+  @override
+  _ViewFranchisesUserState createState() => _ViewFranchisesUserState();
+}
+
+class _ViewFranchisesUserState extends State<ViewFranchisesUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,8 +34,7 @@ class ViewFranchisesUser extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context)
-                .pushReplacementNamed(CustomDrawerPage.routeName);
+            Navigator.of(context).pop();
           },
         ),
         actions: [
@@ -62,7 +80,7 @@ class ViewFranchisesUser extends StatelessWidget {
                         children: [
                           Text("Industry: ", style: TextStyle(fontSize: 15)),
                           Text(
-                            "<IndustryName>",
+                            "<${widget.franchiesModel.industry}>",
                             style: TextStyle(fontSize: 15),
                           ),
                         ],
@@ -74,7 +92,7 @@ class ViewFranchisesUser extends StatelessWidget {
                             Text("Brand",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.black87)),
-                            Text("Brand Name",
+                            Text("${widget.franchiesModel.brandName}",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.black87)),
                           ]),
@@ -85,7 +103,7 @@ class ViewFranchisesUser extends StatelessWidget {
                             Text("Location",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.black87)),
-                            Text("Place/Location",
+                            Text("${widget.franchiesModel.location.join(', ')}",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.black87)),
                           ]),
@@ -125,7 +143,7 @@ class ViewFranchisesUser extends StatelessWidget {
                       ),
                       SizedBox(height: 5),
                       Text(
-                        "Automate th eprocess of sending emails with some features based on business requirements. You can have a list of email customized addresses. Automate the process of sendign emails with customized featrues base on business..",
+                        "${widget.franchiesModel.requirments}",
                         style: TextStyle(fontSize: 15),
                       ),
                       SizedBox(height: 20),
@@ -134,17 +152,30 @@ class ViewFranchisesUser extends StatelessWidget {
                         style: TextStyle(fontSize: 22, color: deepBlue),
                       ),
                       SizedBox(height: 5),
-                      Wrap(
-                        spacing: 20,
-                        children: List.generate(
-                          6,
-                          (index) {
-                            return InkWell(
-                              onTap: () {
-                                print("Will show this documents");
-                              },
-                              child: Icon(Icons.upload_file,
-                                  size: 50, color: deepGrey),
+                      Container(
+                        height: 80,
+                        child: ListView.builder(
+                          itemCount:
+                              widget.franchiesModel.uploadDocuments.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Card(
+                              child: Container(
+                                  height: 50,
+                                  width: 50,
+                                  child: widget.franchiesModel.uploadDocuments[index]
+                                                  ["type"] ==
+                                              "jpg" ||
+                                          widget.franchiesModel.uploadDocuments[index]
+                                                  ["type"] ==
+                                              "jpeg" ||
+                                          widget.franchiesModel
+                                                      .uploadDocuments[index]
+                                                  ["type"] ==
+                                              "png"
+                                      ? Image.file(File(widget.franchiesModel
+                                          .uploadDocuments[index]['path']))
+                                      : Icon(Icons.file_present)),
                             );
                           },
                         ),
@@ -155,15 +186,11 @@ class ViewFranchisesUser extends StatelessWidget {
                         style: TextStyle(fontSize: 22, color: deepBlue),
                       ),
                       SizedBox(height: 5),
-                      Container(
-                        width: double.infinity,
-                        height: 150,
-                        decoration: BoxDecoration(
-                          color: lightGrey,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Icon(Icons.slow_motion_video,
-                            size: 80, color: deepBlue),
+                      SingleVideoPlayer(
+                          clipsUrl: widget.franchiesModel.uploadVideo[0]
+                              ["uriPath"]),
+                      SizedBox(
+                        height: 10,
                       ),
                       SizedBox(height: 20),
                       Align(
@@ -172,7 +199,12 @@ class ViewFranchisesUser extends StatelessWidget {
                           width: MediaQuery.of(context).size.width / 1.5,
                           child: RaisedButton(
                             color: middlePurple,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                  RequestFranchisesUser.routeName,
+                                  arguments: widget.franchiesModel);
+                              //
+                            },
                             child: Text("Request",
                                 style: TextStyle(color: Colors.white)),
                           ),
