@@ -32,8 +32,8 @@ class Auth with ChangeNotifier {
     return token != null ? true : false;
   }
 
-  String get userEmail {
-    return currentUser.email;
+  String get getName {
+    return currentUser.name;
   }
 
   String get firebaseId {
@@ -69,6 +69,7 @@ class Auth with ChangeNotifier {
 
       currentUser = user;
       currentUser.email = user.email;
+      currentUser.name = user.name;
 
       userDataField = {
         'firebaseId': _firebaseId,

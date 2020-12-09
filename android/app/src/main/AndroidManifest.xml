@@ -10,18 +10,17 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-
         android:name="io.flutter.app.FlutterApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="onion">
 
-         <!-- <meta-data android:name="com.facebook.sdk.ApplicationId" 
-            android:value="@string/facebook_app_id"/>
-        
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                    "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" /> -->
+        <!-- <meta-data android:name="com.facebook.sdk.ApplicationId"
+           android:value="@string/facebook_app_id"/>
+
+       <activity android:name="com.facebook.FacebookActivity"
+           android:configChanges=
+                   "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+           android:label="@string/app_name" /> -->
         <!-- <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
@@ -33,13 +32,9 @@
             </intent-filter>
         </activity> -->
 
-
-
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyANhuhlGahkeWvVIdJvjDu7gfTfMkoTbWk" />
-        
 
         <activity
             android:name=".MainActivity"
@@ -63,13 +58,15 @@
             <meta-data
                 android:name="io.flutter.embedding.android.SplashScreenDrawable"
                 android:resource="@drawable/launch_background" />
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
             <intent-filter>
                 <action android:name="FLUTTER_NOTIFICATION_CLICK" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
