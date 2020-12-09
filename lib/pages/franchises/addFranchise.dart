@@ -647,11 +647,18 @@ class _AddFranchiseState extends State<AddFranchise> {
 
   bool _submitted = false;
   //Subite the form
+
   addFranchise() {
+    addFranch.location = [];
+    _controllers.forEach((TextEditingController controller) {
+      if (controller.text != '') {
+        addFranch.location.add("${controller.text}");
+      }
+    });
+
     setState(() {
       _submitted = true;
     });
-    addFranch.location = list;
 
     if (_formKey.currentState.validate() &&
         addFranch.location != "" &&
@@ -662,20 +669,19 @@ class _AddFranchiseState extends State<AddFranchise> {
         _isLoading = true;
       });
 
-      franchiesProvider.addFranchise(addFranch.sendMap(),addFranch.id).then((result) {
+      franchiesProvider.addFranchise(addFranch.sendMap()).then((result) {
         setState(() {
           _isLoading = false;
         });
-        // if (result = true) {
-        //   _scaffoldKey.currentState.showSnackBar(SnackBar(
-        //     content: Text("Successfuly added."),
-        //     duration: Duration(seconds: 3),
-        //   ));
-        //   Timer(Duration(seconds: 3), () {
-        //     Navigator.of(context)
-        //         .pushReplacementNamed(CustomDrawerPage.routeName);
-        //   });
-        // }
+        if (result = true) {
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text("Successfuly added."),
+            duration: Duration(seconds: 3),
+          ));
+          Timer(Duration(seconds: 3), () {
+            Navigator.of(context).pop();
+          });
+        }
       }).catchError((error) {
         setState(() {
           _isLoading = false;
@@ -713,8 +719,8 @@ class _AddFranchiseState extends State<AddFranchise> {
             duration: Duration(seconds: 3),
           ));
           Timer(Duration(seconds: 3), () {
-            Navigator.of(context)
-                .pushReplacementNamed(CustomDrawerPage.routeName);
+              Navigator.of(context)
+                .pop();
           });
         }
       }).catchError((error) {

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:onion/models/requestFranchiesModel.dart';
 
 import '../../const/Size.dart';
 import '../../const/color.dart';
@@ -8,7 +9,9 @@ import '../../const/values.dart';
 import '../MRaiseButton.dart';
 
 class CardListItem extends StatefulWidget {
-  const CardListItem({
+  RequestFranchiesModel dat;
+  CardListItem(
+    this.dat, {
     Key key,
   }) : super(key: key);
 
@@ -70,61 +73,64 @@ class _CardListItemState extends State<CardListItem> {
       child: Padding(
         padding: EdgeInsets.all(deviceSize(context).height * 0.02),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(
-              height: deviceSize(context).height * 0.08,
-              child: Row(
-                children: [
-                  SizedBox(
-                    height: deviceSize(context).height * 0.08,
-                    width: deviceSize(context).height * 0.08,
-                    child: CircleAvatar(
-                      backgroundImage: AssetImage(
-                        'assets/images/empty_profile.jpg',
-                      ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: deviceSize(context).height * 0.08,
+                  width: deviceSize(context).height * 0.08,
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage(
+                      'assets/images/empty_profile.jpg',
                     ),
                   ),
-                  SizedBox(width: deviceSize(context).width * 0.01),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                ),
+                SizedBox(width: deviceSize(context).width * 0.01),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    MyRichText(
+                      firstTxt: "Name",
+                      secondTxt: "Stephen",
+                    ),
+                    MyRichText(
+                      firstTxt: "Date",
+                      secondTxt: "${widget.dat.date}",
+                    ),
+                  ],
+                ),
+                Spacer(),
+                Container(
+                  color: Colors.blue,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      MyRichText(
-                        firstTxt: "Name",
-                        secondTxt: "Stephen",
+                      GestureDetector(
+                        child: button,
+                        onTap: () {
+                          dynamic state = _menuKey.currentState;
+                          state.showButtonMenu();
+                        },
                       ),
-                      MyRichText(
-                        firstTxt: "Brand",
-                        secondTxt: "Abcdxyz",
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(right: 3.0),
+                      //   child: Text(
+                      //     "30/08/2020-11:00AM",
+                      //     textScaleFactor: 0.8,
+                      //     style: TextStyle(color: Colors.grey),
+                      //   ),
+                      // )
                     ],
                   ),
-                  Spacer(),
-                  Container(
-                    color: Colors.blue,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          child: button,
-                          onTap: () {
-                            dynamic state = _menuKey.currentState;
-                            state.showButtonMenu();
-                          },
-                        ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(right: 3.0),
-                        //   child: Text(
-                        //     "30/08/2020-11:00AM",
-                        //     textScaleFactor: 0.8,
-                        //     style: TextStyle(color: Colors.grey),
-                        //   ),
-                        // )
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                )
+              ],
             ),
             ConstrainedBox(
               constraints: BoxConstraints(
@@ -140,7 +146,7 @@ class _CardListItemState extends State<CardListItem> {
                   ),
                   children: [
                     TextSpan(
-                      text: loremIpsum,
+                      text: "${widget.dat.message}",
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 13,

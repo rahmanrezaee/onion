@@ -1,17 +1,25 @@
+import 'dart:math';
+import 'dart:ui';
 import 'package:drop_cap_text/drop_cap_text.dart';
 import 'package:flutter/material.dart';
-import 'package:onion/const/Size.dart';
-import 'package:onion/const/color.dart';
-import 'package:onion/models/FranchiesModel.dart';
-import 'package:onion/pages/franchises/viewFranchisesUser.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:onion/pages/Idea/findIdea.dart';
+import 'package:onion/statemanagment/franchise_provider.dart';
+import 'package:onion/widgets/Franchise/CardListItem.dart';
+import 'package:onion/widgets/Franchise/Discription.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
+import 'package:onion/widgets/SearchTab/MyCardItemR.dart';
+import 'package:onion/widgets/SearchTab/MyCardItemT.dart';
+import 'package:provider/provider.dart';
 
-class FindIdea extends StatefulWidget {
-  @override
-  _FindIdeaState createState() => _FindIdeaState();
-}
+import '../../const/Size.dart';
+import '../../const/color.dart';
+import '../../widgets/MyAppBar.dart';
 
-class _FindIdeaState extends State<FindIdea> {
+class FranchiesList extends StatelessWidget {
+  static const routeName = "franchiesList";
+
+  FranchiesList();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +27,7 @@ class _FindIdeaState extends State<FindIdea> {
         preferredSize: const Size(double.infinity, kToolbarHeight + 100),
         child: Column(
           children: [
-            MyLittleAppbar(myTitle: "Find Ideas"),
+            MyLittleAppbar(myTitle: "Find Franchies"),
             // SizedBox(height: 10),
             Container(
               alignment: Alignment.bottomCenter,
@@ -66,20 +74,81 @@ class _FindIdeaState extends State<FindIdea> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(15),
+          padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                // color: ,
+                border:
+                    Border.all(color: Theme.of(context).primaryColor, width: 2),
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("View Analysis"),
+                ],
+              ),
+            ),
+            SizedBox(height: 5),
             Text("Search Recommendation",
                 style: TextStyle(fontSize: 16, color: Colors.black)),
             SizedBox(height: 10),
-            ListView.builder(
-              itemCount: 10,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, i) {
-                return FindIdeaWidget();
-              },
-            ),
+            Consumer<FranchiesProvider>(
+                builder: (BuildContext context, value, Widget child) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  // value.clearToNullList();
+                  await value.getFranchies(isMyList: true);
+                },
+                child: value.items != null
+                    ? value.items.isEmpty
+                        ? ListView(
+                            children: [
+                              Container(
+                                height: 80,
+                                alignment: Alignment.center,
+                                child: Text("Empty List"),
+                              ),
+                            ],
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: value.items.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Column(
+                                children: [
+                                  FindIdeaWidget(franch:value.items[index]),
+                                  // (),
+                                  SizedBox(height: 10),
+                                ],
+                              );
+                            },
+                          )
+                    : FutureBuilder(
+                        future: value.getFranchies(isMyList: true),
+                        builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Container(
+                              height: 80,
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator(),
+                            );
+                          } else {
+                            return Container(
+                              height: 80,
+                              alignment: Alignment.center,
+                              child: Text("Error In Fetch Data"),
+                            );
+                          }
+                        },
+                      ),
+              );
+            }),
           ]),
         ),
       ),
@@ -87,10 +156,8 @@ class _FindIdeaState extends State<FindIdea> {
   }
 }
 
-class FindIdeaWidget extends StatelessWidget {
-  FranchiesModel franch;
-  FindIdeaWidget({
-    this.franch,
+class FindFranchiesWidget extends StatelessWidget {
+  const FindFranchiesWidget({
     Key key,
   }) : super(key: key);
 
@@ -106,19 +173,19 @@ class FindIdeaWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Industry: ${franch.industry}",
+                  "Industry: <IndustryName>",
                   style: TextStyle(
                     color: middlePurple,
                   ),
                 ),
                 SizedBox(height: 10),
-                Text("BrandName: ${franch.brandName}",
+                Text("Headline: <Tapic Name>",
                     style: TextStyle(color: Colors.black)),
                 SizedBox(height: 10),
-                Text("Requirment: ", style: TextStyle(fontSize: 18)),
+                Text("Idea: ", style: TextStyle(fontSize: 18)),
                 SizedBox(height: 5),
                 DropCapText(
-                  "${franch.requirments}",
+                  "Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, ",
                   dropCapPosition: DropCapPosition.end,
                   dropCap: DropCap(
                     width: 120,
@@ -142,9 +209,7 @@ class FindIdeaWidget extends StatelessWidget {
                           width: 120,
                           child: OutlineButton(
                               padding: EdgeInsets.zero,
-                              onPressed: () => Navigator.of(context).pushNamed(
-                                  ViewFranchisesUser.routeName,
-                                  arguments: franch),
+                              onPressed: () {},
                               child: Text("View Franchies")),
                         ),
                       ],

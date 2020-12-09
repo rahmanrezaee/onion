@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/franchises/MyTxtDateRef.dart';
 import 'package:onion/widgets/Franchise/MyVideoPlayer.dart';
 import 'package:onion/widgets/ImageListView.dart';
@@ -15,9 +16,16 @@ import '../../widgets/Franchise/Discription.dart';
 import '../../widgets/MRaiseButton.dart';
 import '../../widgets/MyLittleAppbar.dart';
 
-class ViewMyRequestFranchise extends StatelessWidget {
+class ViewMyRequestFranchise extends StatefulWidget {
+   FranchiesModel franchiesModel;
+  ViewMyRequestFranchise(this.franchiesModel);
   static const routeName = "view_my_request_franchise";
 
+  @override
+  _ViewMyRequestFranchiseState createState() => _ViewMyRequestFranchiseState();
+}
+
+class _ViewMyRequestFranchiseState extends State<ViewMyRequestFranchise> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -11,7 +11,9 @@ import 'package:onion/pages/Idea/myBiddedIdea.dart';
 import 'package:onion/pages/Idea/viewIdeas.dart';
 import 'package:onion/pages/SearchTab/SearchTab.dart';
 import 'package:onion/pages/analysisList/analysisList.dart';
+import 'package:onion/pages/franchises/FranchiesList.dart';
 import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/pages/franchises/ViewMyRequestFranchise.dart';
 import 'package:onion/pages/franchises/addFranchise.dart';
 import 'package:onion/pages/franchises/myFranchises.dart';
 import 'package:onion/pages/profile/profile_page.dart';
@@ -178,7 +180,7 @@ class _MyAppState extends State<MyApp> {
             MyIdeaId.routeName: (context) => MyIdeaId(),
             AnalysisList.routeName: (context) => AnalysisList(),
             ProfilePage.routeName: (context) => ProfilePage(),
-            RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
+            RequestOnFranchise.routeName: (context) => RequestOnFranchise( ModalRoute.of(context).settings.arguments,),
             SignUp.routeName: (context) =>
                 auth.token != null ? CustomDrawerPage(widget.key) : SignUp(),
             ComplateProfile.routeName: (context) => auth.token != null
@@ -209,15 +211,17 @@ class _MyAppState extends State<MyApp> {
             FandQ.routeName: (context) => FandQ(),
             SearchTab.routeName: (context) => SearchTab(),
             Services.routeName: (context) => Services(),
+            FranchiesList.routeName: (context) => FranchiesList(),
             Settings.routeName: (context) => Settings(),
-            RequestFranchisesUser.routeName: (context) =>
-                RequestFranchisesUser(),
+            RequestFranchisesUser.routeName: (context) => RequestFranchisesUser(
+                  ModalRoute.of(context).settings.arguments,
+                ),
             ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(
                   ModalRoute.of(context).settings.arguments,
                 ),
             MyIdeaId.routeName: (context) => MyIdeaId(),
             // MyIdeaDetails.routeName: (context) => MyIdeaDetails( ModalRoute.of(context).settings.arguments,),
-            // ViewMyRequestFranchise.routeName: (context) => ViewMyRequestFranchise( ),
+            ViewMyRequestFranchise.routeName: (context) => ViewMyRequestFranchise( ModalRoute.of(context).settings.arguments,),
             RequestPage.routeName: (context) => RequestPage(),
             RatingPage.routeName: (context) => RatingPage(),
             MyFranchises.routeName: (context) => MyFranchises(),
