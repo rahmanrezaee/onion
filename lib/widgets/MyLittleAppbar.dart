@@ -37,7 +37,13 @@ class MyLittleAppbar extends StatelessWidget {
               color: Colors.white,
               onPressed: openDrawer,
             )
-          : SizedBox.shrink(),
+          : IconButton(
+              icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+              color: Colors.white,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
       actions: [
         Padding(
           padding: EdgeInsets.all(15.0),

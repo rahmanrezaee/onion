@@ -6,6 +6,8 @@ import 'package:onion/models/Idea.dart';
 import 'package:onion/pages/Idea/ViewIdeas.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
 import 'package:onion/statemanagment/idea/ideasProviders.dart';
+import 'package:onion/models/FranchiesModel.dart';
+import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
 import 'package:provider/provider.dart';
 

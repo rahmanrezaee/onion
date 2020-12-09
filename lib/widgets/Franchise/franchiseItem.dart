@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:onion/const/values.dart';
 import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/franchises/RequestOnFranchise.dart';
+import 'package:onion/pages/franchises/ViewMyRequestFranchise.dart';
 import 'package:onion/pages/franchises/addFranchise.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/statemanagment/auth_provider.dart';
@@ -40,7 +42,7 @@ class _FranchiseItemState extends State<FranchiseItem> {
                   CircleAvatar(
                     radius: 25,
                     backgroundImage:
-                        NetworkImage(BASE_URL + auth.currentUser.profile),
+                        NetworkImage(BASE_URL + "/user/avatar/${auth.id}"),
                   ),
                   SizedBox(width: 5),
                   Expanded(
@@ -148,21 +150,29 @@ class _FranchiseItemState extends State<FranchiseItem> {
                             ),
                             mypopup.PopupMenuItem(
                               value: "franchies",
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  // color: ,
-                                  border: Border.all(
-                                      color: Colors.grey[200], width: 2),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("View Franchise"),
-                                  ],
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.pushNamed(
+                                      context, RequestOnFranchise.routeName,
+                                      arguments: widget.franchiesModel);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    // color: ,
+                                    border: Border.all(
+                                        color: Colors.grey[200], width: 2),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text("View Franchise"),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

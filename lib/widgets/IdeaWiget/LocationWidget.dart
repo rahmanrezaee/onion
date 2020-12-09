@@ -6,14 +6,18 @@ class LocationWidget extends StatefulWidget {
   TextEditingController controller;
   Function valided;
   Function change;
+  String hintText;
   Function save;
+  bool hasLocationIcon;
   Color borderColor;
 
   LocationWidget({
     @required String text,
     this.change,
     this.save,
+    this.hintText,
     this.controller,
+    this.hasLocationIcon = true,
     this.valided,
     @required this.locationRemove,
     this.borderColor,
@@ -47,8 +51,10 @@ class _LocationWidgetState extends State<LocationWidget> {
                 onSaved: this.widget.save,
                 validator: this.widget.valided,
                 decoration: InputDecoration(
-                  hintText: "Location",
-                  suffixIcon: Icon(Icons.location_on),
+                  hintText:
+                      widget.hintText != null ? widget.hintText : "Location",
+                  suffixIcon:
+                      widget.hasLocationIcon ? Icon(Icons.location_on) : null,
                   errorText: errorText,
                   contentPadding: const EdgeInsets.symmetric(
                     vertical: 0,

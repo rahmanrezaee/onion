@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,9 +29,10 @@ class _ProjectChatState extends State<ProjectChat> {
   bool isEditMode = false;
   String editKey;
   FocusNode _focusNode = FocusNode();
-  final _listViewController = ScrollController();
-  String userEmail;
+  String getName;
+  String firebaseId;
   RealtimeData realTimeData;
+  final _listViewController = ScrollController();
 
   sendMessage({String chatRoomId}) async {
     print("Mahdi sendMessage1");
@@ -39,28 +42,22 @@ class _ProjectChatState extends State<ProjectChat> {
     if (!isEditMode) {
       Map<String, String> messageMap = {
         "message": sendTxt.text,
-        "sendBy": userEmail,
+        "sendBy": getName,
         "time": DateTime.now().millisecondsSinceEpoch.toString(),
+        "firebaseId": firebaseId,
       };
 
       await RealtimeData().sendMessage(
         sendProperty: messageMap,
         groupName: args,
       );
+      gotoLast(50);
     } else if (editKey != null) {
       realTimeData.editValue(
         key: editKey,
         editMessage: sendTxt.text,
         groupName: args,
-      );
-      // await Provider.of<RealtimeData>(context, listen: false).editValue(
-      //   editMessage: sendTxt.text,
-      //   key: editKey,
-      // );
-    }
-    if (_listViewController.hasClients) {
-      _listViewController.jumpTo(
-        _listViewController.position.maxScrollExtent,
+        firebaseId: firebaseId,
       );
     }
 
@@ -77,16 +74,47 @@ class _ProjectChatState extends State<ProjectChat> {
       realTimeData = Provider.of<RealtimeData>(context, listen: false);
       realTimeData.clearMyMessage();
       args = ModalRoute.of(context).settings.arguments;
-      realTimeData.deleteListener(args);
-      realTimeData.editListener(args);
 
       myFuture = realTimeData.getMyMessage(args);
-      userEmail = Provider.of<Auth>(context, listen: false).userEmail;
+      getName = Provider.of<Auth>(context, listen: false).getName;
+      firebaseId = Provider.of<Auth>(context, listen: false).firebaseId;
+      realTimeData.deleteListener(args, firebaseId);
+      realTimeData.editListener(args, firebaseId);
     });
   }
 
   void _storePosition(TapDownDetails details) {
     _tapPosition = details.globalPosition;
+  }
+
+  showAlertDialog(BuildContext context, String key) {
+    Widget okBtn = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        realTimeData.deleteValue(key: key, groupName: args);
+        Navigator.pop(context);
+      },
+    );
+
+    Widget cancelBtn = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Are you sure?"),
+      content: Text("Do you want to delete this message?"),
+      actions: [cancelBtn, okBtn],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   showMyPopUp(BuildContext context, String key, String message) async {
@@ -109,14 +137,26 @@ class _ProjectChatState extends State<ProjectChat> {
         ),
       ],
     );
-    final myFutureTemp = realTimeData;
     if (value == 0) {
-      myFutureTemp.deleteValue(key: key, groupName: args);
+      showAlertDialog(context, key);
     } else if (value == 1) {
       isEditMode = true;
       sendTxt.text = message;
       FocusScope.of(context).requestFocus(_focusNode);
       // myFutureTemp.editValue(key);
+    }
+  }
+
+  void gotoLast(int time) {
+    if (_listViewController.hasClients) {
+      Timer(
+        Duration(milliseconds: time),
+        () => _listViewController.animateTo(
+          0.0,
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 300),
+        ),
+      );
     }
   }
 
@@ -149,12 +189,11 @@ class _ProjectChatState extends State<ProjectChat> {
                           return ListView.builder(
                             controller: _listViewController,
                             itemCount: value.myMessage.length,
+                            reverse: true,
                             itemBuilder: (ctx, index) {
-                              String key =
-                                  value.myMessage.keys.elementAt(index);
-                              print("Mahdi ListView:: $key");
-                              print(
-                                  "Mahdi ListView::  ${value.myMessage[key]}");
+                              String key = value.myMessage.keys.elementAt(
+                                value.myMessage.length - index - 1,
+                              );
                               String getPreviuosdate = "";
                               if (index > 0) {
                                 String previouskey =
@@ -171,30 +210,33 @@ class _ProjectChatState extends State<ProjectChat> {
                               String date = DateTime.fromMillisecondsSinceEpoch(
                                 int.parse(key),
                               ).toString();
+                              print("Mahdi ListView: $date");
                               String chatDate =
                                   date.substring(0, date.indexOf(" ")) !=
                                           getPreviuosdate
                                       ? date.substring(0, date.indexOf(" "))
                                       : "";
+                              bool isMeFlag = value.myMessage[key]
+                                      ["firebaseId"] ==
+                                  firebaseId;
 
                               return GestureDetector(
                                 onTapDown: _storePosition,
-                                onTap: () => showMyPopUp(
-                                  context,
-                                  key,
-                                  value.myMessage[key]["message"],
-                                ),
+                                onTap: isMeFlag
+                                    ? () => showMyPopUp(
+                                          context,
+                                          key,
+                                          value.myMessage[key]["message"],
+                                        )
+                                    : null,
                                 child: MyChatItems(
-                                  isMe: value.myMessage[key]["sendBy"]
-                                          .toString() ==
-                                      userEmail.toString(),
+                                  isMe: isMeFlag,
                                   message:
                                       "${value.myMessage[key.toString()]["message"]}",
-                                  // date: "",
-                                  // hour: "",
                                   date: "$chatDate",
                                   hour:
                                       "${date.substring(date.indexOf(" "), date.lastIndexOf(":"))}",
+                                  firebaseId: firebaseId,
                                 ),
                               );
                             },

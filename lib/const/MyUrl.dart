@@ -7,3 +7,4 @@ final getAnalysis = "$baseUrl/public/analysis";
 final myAnalysisUrl = "$baseUrl/analysis/list";
 final saveAnalysisUrl = "$baseUrl/analysis/save";
 final deleteAnalysisUrl = "$baseUrl/analysis/delete";
+final baseImageAvatar = "$baseUrl/user/avatar/";

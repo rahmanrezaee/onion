@@ -12,6 +12,7 @@ import 'package:onion/pages/MainScreen.dart';
 import 'package:onion/pages/Services.dart';
 import 'package:onion/pages/Settings.dart';
 import 'package:onion/pages/authentication/Login.dart';
+import 'package:onion/pages/franchises/FranchiesList.dart';
 import 'package:onion/pages/franchises/myFranchises.dart';
 import 'package:onion/pages/franchises/requestFranchisesUser.dart';
 import 'package:onion/pages/franchises/viewFranchisesUser.dart';
@@ -272,6 +273,13 @@ class _MyDrawerState extends State<MyDrawer> {
                       routeName: MyFranchises.routeName,
                       justPush: true)
                   : Container(),
+              myListTile(
+                  context: context,
+                  name: " Franchies List",
+                  icon: Icons.ac_unit,
+                  routeName: FranchiesList.routeName,
+                  justPush: true),
+
               value.token != null
                   ? myListTile(
                       context: context,

@@ -68,14 +68,12 @@ dependencies:
   flutter_sticky_header: ^0.5.0
   firebase_core: ^0.5.2+1
   firebase_auth: ^0.18.3+1
-  firebase_messaging: ^7.0.3
   firebase_database: ^4.3.0
   cloud_firestore: ^0.14.3+1
-  # firebase_messaging: ^0.8.0
   video_player: ^1.0.0
   cupertino_icons: ^1.0.0
-  # syncfusion_flutter_charts: ^18.3.47
   drop_cap_text: ^1.0.7
+  firebase_messaging: ^7.0.3
   # search_place_autocomplete:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -98,7 +96,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/australia.json
-    - assets/images/new.png
+    - assets/images/
     - assets/images/mobile.jpg
     - assets/anim/app-developer.json
     - assets/anim/coding-in-office.json

@@ -23,6 +23,7 @@ class Auth with ChangeNotifier {
   String token;
   String _firebaseId;
   Map userDataField;
+  String id;
   User currentUser = new User();
   AuthMethods authMethods = new AuthMethods();
 
@@ -31,8 +32,8 @@ class Auth with ChangeNotifier {
     return token != null ? true : false;
   }
 
-  String get userEmail {
-    return currentUser.email;
+  String get getName {
+    return currentUser.name;
   }
 
   String get firebaseId {
@@ -68,6 +69,7 @@ class Auth with ChangeNotifier {
 
       currentUser = user;
       currentUser.email = user.email;
+      currentUser.name = user.name;
 
       userDataField = {
         'firebaseId': _firebaseId,
@@ -166,6 +168,8 @@ class Auth with ChangeNotifier {
         },
       );
 
+      print("user data ${responseData['data']}");
+      id = responseData['data']['_id'];
       currentUser.name = responseData['data']['username'];
       currentUser.email = responseData['data']['email'];
       currentUser.country = responseData['data']['country'];
@@ -275,8 +279,6 @@ class Auth with ChangeNotifier {
   }
 
   Future<Map> uploadFile(File imageFile, String category) async {
-
-
     final StringBuffer url = new StringBuffer(BASE_URL + "/upload");
     Dio dio = new Dio();
 

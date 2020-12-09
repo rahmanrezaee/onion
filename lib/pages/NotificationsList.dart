@@ -1,8 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:onion/const/MyUrl.dart';
 
 import 'package:onion/const/Size.dart';
 import 'package:onion/pages/ProjectChat.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:provider/provider.dart';
 import '../const/values.dart';
 
 class NotificationsList extends StatefulWidget {
@@ -65,6 +68,7 @@ class MyCardItem extends StatelessWidget {
   final String name;
   final String message;
   final String clickType;
+  final String imageUrl;
 
   MyCardItem({
     Key key,
@@ -72,6 +76,7 @@ class MyCardItem extends StatelessWidget {
     this.clickType,
     this.name,
     this.message,
+    this.imageUrl,
   }) : super(key: key);
 
   createChatRoomAndStartText({
@@ -122,7 +127,9 @@ class MyCardItem extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                myImageType == "rectangle" ? RectangleImage() : MyCircleImage(),
+                myImageType == "rectangle"
+                    ? RectangleImage()
+                    : MyCircleImage(imageUrl),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,14 +162,11 @@ class MyCardItem extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: AutoSizeText(
-                              message == null ? loremIpsum : message,
-                              textScaleFactor: 1.1,
+                              message == null ? "" : message,
+                              textScaleFactor: 1,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 3,
-                              style: TextStyle(
-                                color: Colors.black,
-                                height: 1.3,
-                              ),
+                              style: TextStyle(height: 1.3),
                             ),
                           ),
                         ),
@@ -180,6 +184,10 @@ class MyCardItem extends StatelessWidget {
 }
 
 class MyCircleImage extends StatelessWidget {
+  final String firebaseId;
+
+  const MyCircleImage(this.firebaseId);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -189,8 +197,16 @@ class MyCircleImage extends StatelessWidget {
       height: deviceSize(context).height * 0.08,
       width: deviceSize(context).height * 0.08,
       child: SizedBox(
-        child: CircleAvatar(
-          backgroundImage: AssetImage("assets/images/empty_profile.jpg"),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(
+            deviceSize(context).height * 0.06,
+          ),
+          child: FadeInImage(
+            placeholder: AssetImage("assets/images/empty_profile.jpg"),
+            image: NetworkImage(
+              "$baseImageAvatar${firebaseId}",
+            ),
+          ),
         ),
       ),
     );
