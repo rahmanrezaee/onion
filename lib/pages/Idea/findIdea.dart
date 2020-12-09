@@ -2,7 +2,12 @@ import 'package:drop_cap_text/drop_cap_text.dart';
 import 'package:flutter/material.dart';
 import 'package:onion/const/Size.dart';
 import 'package:onion/const/color.dart';
+import 'package:onion/models/Idea.dart';
+import 'package:onion/pages/Idea/ViewIdeas.dart';
+import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:onion/statemanagment/idea/ideasProviders.dart';
 import 'package:onion/widgets/MyLittleAppbar.dart';
+import 'package:provider/provider.dart';
 
 class FindIdea extends StatefulWidget {
   @override
@@ -10,6 +15,15 @@ class FindIdea extends StatefulWidget {
 }
 
 class _FindIdeaState extends State<FindIdea> {
+  String token;
+  Auth authProvider;
+
+  initState() {
+    super.initState();
+    authProvider = Provider.of<Auth>(context, listen: false);
+    token = authProvider.token;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,14 +84,49 @@ class _FindIdeaState extends State<FindIdea> {
             Text("Search Recommendation",
                 style: TextStyle(fontSize: 16, color: Colors.black)),
             SizedBox(height: 10),
-            ListView.builder(
-              itemCount: 10,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, i) {
-                return FindIdeaWidget();
+            Consumer<IdeasProvider>(
+              builder: (BuildContext context, value, Widget child) {
+                return value.allIdeas != null
+                    ? value.allIdeas.length < 1
+                        ? Center(child: Text("Your idea list is empty"))
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: value.allIdeas.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Column(
+                                children: [
+                                  FindIdeaWidget(value.allIdeas[index]),
+                                  SizedBox(height: 10),
+                                ],
+                              );
+                            },
+                          )
+                    : FutureBuilder(
+                        future: value.getAllIdeaList(token),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Text("");
+                          } else if (snapshot.hasError) {
+                            print(
+                                "error to getting All Idea List ${snapshot.error}");
+                            return Center(
+                                child: Text(
+                                    "Something went wrong. Please try again later!"));
+                          } else {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                        });
               },
             ),
+            // ListView.builder(
+            //   itemCount: 10,
+            //   shrinkWrap: true,
+            //   physics: NeverScrollableScrollPhysics(),
+            //   itemBuilder: (context, i) {
+            //     return FindIdeaWidget();
+            //   },
+            // ),
           ]),
         ),
       ),
@@ -86,93 +135,97 @@ class _FindIdeaState extends State<FindIdea> {
 }
 
 class FindIdeaWidget extends StatelessWidget {
-  const FindIdeaWidget({
-    Key key,
-  }) : super(key: key);
+  final SetupIdeaModel idea;
+  const FindIdeaWidget(this.idea);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Card(
-          elevation: 3,
-          child: Container(
-            padding: EdgeInsets.all(15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Industry: <IndustryName>",
-                  style: TextStyle(
-                    color: middlePurple,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text("Headline: <Tapic Name>",
-                    style: TextStyle(color: Colors.black)),
-                SizedBox(height: 10),
-                Text("Idea: ", style: TextStyle(fontSize: 18)),
-                SizedBox(height: 5),
-                DropCapText(
-                  "Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, ",
-                  dropCapPosition: DropCapPosition.end,
-                  dropCap: DropCap(
-                    width: 120,
-                    height: 150,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        SizedBox(
-                          width: 120,
-                          child: RaisedButton(
-                              color: middlePurple,
-                              onPressed: () {},
-                              child: Text("View Profile",
-                                  style: TextStyle(color: Colors.white))),
-                        ),
-                        SizedBox(
-                            width: 120,
-                            child: OutlineButton(
-                                onPressed: () {}, child: Text("Message"))),
-                        SizedBox(
-                          width: 120,
-                          child: OutlineButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () {},
-                              child: Text("View Franchies")),
-                        ),
-                      ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pushNamed(ViewIdeas.routeName, arguments: idea);
+      },
+      child: Stack(
+        children: [
+          Card(
+            elevation: 3,
+            child: Container(
+              padding: EdgeInsets.all(15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Industry: ${idea.category}",
+                    style: TextStyle(
+                      color: middlePurple,
                     ),
                   ),
-                ),
-                // Text(
-                //     "Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, "),
-                SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "Post: 28-08-2020",
-                    style: TextStyle(color: Colors.grey),
+                  SizedBox(height: 10),
+                  Text("Headline: ${idea.ideaHeadline}",
+                      style: TextStyle(color: Colors.black)),
+                  SizedBox(height: 10),
+                  Text("Idea: ", style: TextStyle(fontSize: 18)),
+                  SizedBox(height: 5),
+                  DropCapText(
+                    "${idea.ideaText}",
+                    dropCapPosition: DropCapPosition.end,
+                    dropCap: DropCap(
+                      width: 120,
+                      height: 150,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            width: 120,
+                            child: RaisedButton(
+                                color: middlePurple,
+                                onPressed: () {},
+                                child: Text("View Profile",
+                                    style: TextStyle(color: Colors.white))),
+                          ),
+                          SizedBox(
+                              width: 120,
+                              child: OutlineButton(
+                                  onPressed: () {}, child: Text("Message"))),
+                          SizedBox(
+                            width: 120,
+                            child: OutlineButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {},
+                                child: Text("View Franchies")),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-              ],
+                  // Text(
+                  //     "Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, "),
+                  SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "Post: 28-08-2020",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                ],
+              ),
             ),
           ),
-        ),
-        Positioned(
-          right: 0,
-          top: 0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(topRight: Radius.circular(5)),
-            child: SizedBox(
-              width: 40,
-              height: 40,
-              child: Image.asset("assets/images/new.png"),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(topRight: Radius.circular(5)),
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: Image.asset("assets/images/new.png"),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

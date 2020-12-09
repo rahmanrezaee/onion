@@ -68,18 +68,18 @@ class _MyIdeaIdState extends State<MyIdeaId> {
             Expanded(
               child: Consumer<IdeasProvider>(
                 builder: (BuildContext context, value, Widget child) {
-                  return value.ideas != null
-                      ? value.ideas.length < 1
+                  return value.myIdeas != null
+                      ? value.myIdeas.length < 1
                           ? Center(child: Text("Your idea list is empty"))
                           : ListView.builder(
-                              itemCount: value.ideas.length,
+                              itemCount: value.myIdeas.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return Column(
                                   children: [
                                     ItemIdea(
                                       _scaffoldKey,
                                       value,
-                                      value.ideas[index],
+                                      value.myIdeas[index],
                                       () {
                                         setState(() {});
                                       },
@@ -104,7 +104,7 @@ class _MyIdeaIdState extends State<MyIdeaId> {
                               },
                             )
                       : FutureBuilder(
-                          future: value.getIdeaList(token),
+                          future: value.getMyIdeaList(token),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return Text("");
