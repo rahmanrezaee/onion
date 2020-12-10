@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:drop_cap_text/drop_cap_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/Idea/findIdea.dart';
+import 'package:onion/pages/franchises/FranchiesList.dart';
 import 'package:onion/statemanagment/franchise_provider.dart';
 import 'package:onion/widgets/Franchise/CardListItem.dart';
 import 'package:onion/widgets/Franchise/Discription.dart';
@@ -60,7 +62,7 @@ class RequestFranchiesList extends StatelessWidget {
                             itemBuilder: (BuildContext context, int index) {
                               return Column(
                                 children: [
-                                  FindIdeaWidget(franch: value.itemsAll[index]),
+                                  FindFranchiesWidget(franch: value.itemsAll[index]),
                                   // (),
                                   SizedBox(height: 10),
                                 ],
@@ -97,7 +99,7 @@ class RequestFranchiesList extends StatelessWidget {
 
 class FindFranchiesWidget extends StatelessWidget {
   const FindFranchiesWidget({
-    Key key,
+    Key key, FranchiesModel franch,
   }) : super(key: key);
 
   @override

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/Idea/findIdea.dart';
+import 'package:onion/pages/franchises/viewFranchisesUser.dart';
 import 'package:onion/statemanagment/franchise_provider.dart';
 import 'package:onion/widgets/Franchise/CardListItem.dart';
 import 'package:onion/widgets/Franchise/Discription.dart';
@@ -64,7 +65,6 @@ class FranchiesList extends StatelessWidget {
                       filled: true,
                       hintStyle: TextStyle(color: Colors.black),
                       hintText: "Search by locaion, Industrty",
-                      
                       fillColor: Colors.white,
                       prefixIcon: InkWell(
                           onTap: () {
@@ -168,9 +168,10 @@ class FranchiesList extends StatelessWidget {
 }
 
 class FindFranchiesWidget extends StatelessWidget {
-  const FindFranchiesWidget({
+  FranchiesModel franch;
+  FindFranchiesWidget({
+    this.franch,
     Key key,
-    FranchiesModel franch,
   }) : super(key: key);
 
   @override
@@ -185,19 +186,19 @@ class FindFranchiesWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Industry: <IndustryName>",
+                  "Industry: ${franch.industry}",
                   style: TextStyle(
                     color: middlePurple,
                   ),
                 ),
                 SizedBox(height: 10),
-                Text("Headline: <Tapic Name>",
+                Text("BrandName: ${franch.brandName}",
                     style: TextStyle(color: Colors.black)),
                 SizedBox(height: 10),
-                Text("Idea: ", style: TextStyle(fontSize: 18)),
+                Text("Requirment: ", style: TextStyle(fontSize: 18)),
                 SizedBox(height: 5),
                 DropCapText(
-                  "Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, Lorem ipsum dolor sit amit is simply, ",
+                  "${franch.requirments}",
                   dropCapPosition: DropCapPosition.end,
                   dropCap: DropCap(
                     width: 120,
@@ -221,7 +222,9 @@ class FindFranchiesWidget extends StatelessWidget {
                           width: 120,
                           child: OutlineButton(
                               padding: EdgeInsets.zero,
-                              onPressed: () {},
+                              onPressed: () => Navigator.of(context).pushNamed(
+                                  ViewFranchisesUser.routeName,
+                                  arguments: franch),
                               child: Text("View Franchies")),
                         ),
                       ],
