@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
+import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/models/requestFranchiesModel.dart';
-
+import 'package:onion/pages/franchises/view_franchies_intersted_reqeust.dart';
+import 'package:onion/widgets/IdeaWiget/popupMenu.dart' as mypopup;
 import '../../const/Size.dart';
 import '../../const/color.dart';
 import '../../const/values.dart';
@@ -9,7 +12,9 @@ import '../../const/values.dart';
 import '../MRaiseButton.dart';
 
 class CardListItem extends StatefulWidget {
-  RequestFranchiesModel dat;
+
+  Map dat;
+  
   CardListItem(
     this.dat, {
     Key key,
@@ -21,7 +26,18 @@ class CardListItem extends StatefulWidget {
 
 class _CardListItemState extends State<CardListItem> {
   final GlobalKey _menuKey = new GlobalKey();
+  RequestFranchiesModel franchiesRequestModel;
+  FranchiesModel franchiesModel;
+
   var _selection;
+ @override
+  initState() {
+    
+    super.initState();
+    franchiesModel = widget.dat["franch"];
+    franchiesRequestModel = widget.dat["request"];
+  
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,61 +92,140 @@ class _CardListItemState extends State<CardListItem> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: deviceSize(context).height * 0.08,
-                  width: deviceSize(context).height * 0.08,
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage(
-                      'assets/images/empty_profile.jpg',
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: deviceSize(context).height * 0.08,
+                    width: deviceSize(context).height * 0.08,
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage(
+                        '$BASE_URL/user/avatar/${franchiesRequestModel.id}',
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(width: deviceSize(context).width * 0.01),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    MyRichText(
-                      firstTxt: "Name",
-                      secondTxt: "Stephen",
-                    ),
-                    MyRichText(
-                      firstTxt: "Date",
-                      secondTxt: "${widget.dat.date}",
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Container(
-                  color: Colors.blue,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  SizedBox(width: deviceSize(context).width * 0.01),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
+                    // mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      GestureDetector(
-                        child: button,
-                        onTap: () {
-                          dynamic state = _menuKey.currentState;
-                          state.showButtonMenu();
-                        },
+                      MyRichText(
+                        firstTxt: "Name",
+                        secondTxt: "${franchiesRequestModel.userData.username}",
                       ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(right: 3.0),
-                      //   child: Text(
-                      //     "30/08/2020-11:00AM",
-                      //     textScaleFactor: 0.8,
-                      //     style: TextStyle(color: Colors.grey),
-                      //   ),
-                      // )
+                      // Spacer(),
+                      SizedBox(height: 5),
+                      MyRichText(
+                        firstTxt: "Interested",
+                        secondTxt: "${franchiesRequestModel.userData.interst}",
+                      ),
                     ],
                   ),
-                )
-              ],
+                  Spacer(),
+                  Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        mypopup.PopupMenuButton<String>(
+                          elevation: 20,
+                          padding: EdgeInsets.all(10),
+                          offset: Offset(50, 50),
+                          itemBuilder: (context) => [
+                            mypopup.PopupMenuItem(
+                              value: "View Profile",
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                decoration: BoxDecoration(
+                                  // color: ,
+                                  border: Border.all(
+                                      color: Colors.grey[200], width: 2),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text("View Profile"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            mypopup.PopupMenuItem(
+                              value: "Message",
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  // Navigator.pushNamed(
+                                  //     context, RequestOnFranchise.routeName,
+                                  //     arguments: widget.franchiesModel);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    // color: ,
+                                    border: Border.all(
+                                        color: Colors.grey[200], width: 2),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text("Message"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            mypopup.PopupMenuItem(
+                              value: "View",
+                              child: InkWell(
+                                onTap: () {
+
+                                  Navigator.pushNamed(context, viewFranchiesInterstedReqeust.routeName,arguments: widget.dat);
+
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    // color: ,
+                                    border: Border.all(
+                                        color: Colors.grey[200], width: 2),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text("View"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 3.0),
+                          child: Text(
+                            Jiffy("${franchiesRequestModel.date}").yMMMd,
+                            // Jiffy("${franchiesRequestModel.date}").fromNow(),
+                            textScaleFactor: 0.8,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
             ConstrainedBox(
               constraints: BoxConstraints(
@@ -146,7 +241,7 @@ class _CardListItemState extends State<CardListItem> {
                   ),
                   children: [
                     TextSpan(
-                      text: "${widget.dat.message}",
+                      text: "${franchiesRequestModel.message}",
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 13,

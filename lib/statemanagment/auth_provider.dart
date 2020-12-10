@@ -299,6 +299,10 @@ class Auth with ChangeNotifier {
         "token": token,
       };
       print(url.toString());
+
+      dio.options.headers = {
+        "token":token
+      };
       var response = await dio.post(
         url.toString(),
         data: formData,

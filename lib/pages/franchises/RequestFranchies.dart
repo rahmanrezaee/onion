@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:drop_cap_text/drop_cap_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:onion/models/FranchiesModel.dart';
 import 'package:onion/pages/Idea/findIdea.dart';
 import 'package:onion/statemanagment/franchise_provider.dart';
 import 'package:onion/widgets/Franchise/CardListItem.dart';
@@ -17,93 +16,23 @@ import '../../const/Size.dart';
 import '../../const/color.dart';
 import '../../widgets/MyAppBar.dart';
 
-class FranchiesList extends StatelessWidget {
-  static const routeName = "franchiesList";
+class RequestFranchiesList extends StatelessWidget {
+  static const routeName = "RequestFranchiesList";
   TextEditingController searchController = TextEditingController();
-  FranchiesList();
+  RequestFranchiesList();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size(double.infinity, kToolbarHeight + 100),
-        child: Column(
-          children: [
-            MyLittleAppbar(myTitle: "Find Franchies"),
-            // SizedBox(height: 10),
-            Container(
-              alignment: Alignment.bottomCenter,
-              height: deviceSize(context).height * 0.1,
-              padding: EdgeInsets.only(
-                left: deviceSize(context).width * 0.04,
-                right: deviceSize(context).width * 0.04,
-              ),
-              decoration: BoxDecoration(
-                color: middlePurple,
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(
-                    deviceSize(context).height * 0.04,
-                  ),
-                  bottomLeft: Radius.circular(
-                    deviceSize(context).height * 0.04,
-                  ),
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextField(
-                    controller: searchController,
-                    // textDirection: D,
-                    decoration: InputDecoration(
-                      border: new OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(20.0),
-                        ),
-                      ),
-                      contentPadding: EdgeInsets.all(2),
-                      filled: true,
-                      hintStyle: TextStyle(color: Colors.black),
-                      hintText: "Search by locaion, Industrty",
-                      
-                      fillColor: Colors.white,
-                      prefixIcon: InkWell(
-                          onTap: () {
-                            Provider.of<FranchiesProvider>(context,
-                                    listen: false)
-                                .setSearchKeyword(searchController.text);
-                          },
-                          child: Icon(Icons.search)),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: MyAppBar(title: "Request Franch")
+      ,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                // color: ,
-                border:
-                    Border.all(color: Theme.of(context).primaryColor, width: 2),
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("View Analysis"),
-                ],
-              ),
-            ),
-            SizedBox(height: 5),
-            Text("Search Recommendation",
+         
+            SizedBox(height: 10),
+            Text("Request Franchies",
                 style: TextStyle(fontSize: 16, color: Colors.black)),
             SizedBox(height: 10),
             Consumer<FranchiesProvider>(
@@ -131,8 +60,7 @@ class FranchiesList extends StatelessWidget {
                             itemBuilder: (BuildContext context, int index) {
                               return Column(
                                 children: [
-                                  FindFranchiesWidget(
-                                      franch: value.itemsAll[index]),
+                                  FindIdeaWidget(franch: value.itemsAll[index]),
                                   // (),
                                   SizedBox(height: 10),
                                 ],
@@ -170,7 +98,6 @@ class FranchiesList extends StatelessWidget {
 class FindFranchiesWidget extends StatelessWidget {
   const FindFranchiesWidget({
     Key key,
-    FranchiesModel franch,
   }) : super(key: key);
 
   @override

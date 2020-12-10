@@ -25,10 +25,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             color: Colors.white,
           ),
         ),
-        leading: IconButton(
-          icon: Icon(Icons.menu, color: Colors.white),
+        leading:  IconButton(
+          icon: Icon(openDrawer == null ? Icons.arrow_back_ios : Icons.menu, color: Colors.white),
           color: Colors.white,
-          onPressed: openDrawer,
+          onPressed: openDrawer == null ? () => Navigator.pop(context) : openDrawer,
         ),
         actions: [
           value.token != null
