@@ -67,7 +67,7 @@ class _PostIdeaState extends State<PostIdea> {
   SetupIdeaModel idea;
   bool first = true;
   @override
-  Widget build( context) {
+  Widget build(context) {
     // print("Setup Idea: ${setupIdea['category']}");
     if (ModalRoute.of(context).settings.arguments != null) {
       idea = ModalRoute.of(context).settings.arguments;
@@ -339,7 +339,7 @@ class _PostIdeaState extends State<PostIdea> {
                             },
                             decoration: InputDecoration(
                               hintText: "Idea Headline",
-                          //    errorText: validationService.teamSize.error,
+                              //    errorText: validationService.teamSize.error,
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 0,
                                 horizontal: 10,
@@ -709,7 +709,7 @@ class _PostIdeaState extends State<PostIdea> {
                                                   hintStyle: TextStyle(
                                                       color: Colors.black),
                                                   // errorText: validationService
-                                                      // .about.error,
+                                                  // .about.error,
                                                   contentPadding:
                                                       const EdgeInsets
                                                           .symmetric(
@@ -937,7 +937,7 @@ class _PostIdeaState extends State<PostIdea> {
                             child: ListView.builder(
                               itemCount: image.length + 1,
                               scrollDirection: Axis.horizontal,
-                              itemBuilder: ( context, int index) {
+                              itemBuilder: (context, int index) {
                                 return image.length > index
                                     ? Stack(
                                         overflow: Overflow.visible,
@@ -1537,7 +1537,7 @@ class _PostIdeaState extends State<PostIdea> {
       //   content: Text("Under Development"),
       //   // backgroundColor: Colors.red,
       // ));
-      print("postFOrm: ${postForm.toSendMap()}");
+      print("postForm: ${postForm.toSendMap()}");
       //Update an idea
       idea != null
           ? IdeasProvider()

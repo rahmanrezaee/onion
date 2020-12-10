@@ -111,7 +111,8 @@ class Auth with ChangeNotifier {
     currentUser.name = extractedUserData['username'];
     currentUser.email = extractedUserData['email'];
     currentUser.profile = extractedUserData['profile'];
-
+    currentUser.setupIdea = extractedUserData['setupIdea'];
+    print("This is setub idea bro: ${extractedUserData['setupIdea']}");
     notifyListeners();
     return true;
   }
@@ -165,6 +166,7 @@ class Auth with ChangeNotifier {
           'email': username,
           'password': password,
           'profile': responseData['data']['avatar'],
+          'setupIdea': responseData['ideaSetup'],
         },
       );
 
@@ -288,11 +290,14 @@ class Auth with ChangeNotifier {
       FormData formData = FormData.fromMap(
         {
           "uploadFile": await MultipartFile.fromFile(imageFile.path),
-          "token": UNTOKEN,
+          // "token": UNTOKEN,
           "category": category
         },
       );
 
+      dio.options.headers = {
+        "token": token,
+      };
       print(url.toString());
       var response = await dio.post(
         url.toString(),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/InnovatorsIdeas.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/Idea/bid.dart';
 import 'package:onion/pages/Idea/bidonIdea.dart';
 import 'package:onion/pages/Idea/findIdea.dart';
 import 'package:onion/pages/Idea/myBiddedIdea.dart';
@@ -162,7 +163,7 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
           home: CustomDrawerPage(widget.key),
-          // home: MyBiddedIdeaPage(),
+          // home: Bid(),
           routes: {
             Login.routeName: (context) =>
                 auth.token != null ? CustomDrawerPage(widget.key) : Login(),
@@ -221,6 +222,8 @@ class _MyAppState extends State<MyApp> {
             BiddedIdeas.routeName: (context) => BiddedIdeas(),
             BidOnIdeaPage.routeName: (context) => BidOnIdeaPage(),
             MyBiddedIdeaPage.routeName: (context) => MyBiddedIdeaPage(),
+            Bid.routeName: (context) => Bid(),
+            ViewIdeas.routeName: (context) => ViewIdeas(),
           },
           onUnknownRoute: (settings) {
             return MaterialPageRoute(builder: (_) => UnderDevelopment());

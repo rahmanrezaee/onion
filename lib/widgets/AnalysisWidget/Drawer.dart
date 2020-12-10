@@ -257,19 +257,22 @@ class _MyDrawerState extends State<MyDrawer> {
                 justPush: true,
                 hasDrawer: false,
               ),
-              myListTile(
-                  context: context,
-                  name: "My Ideas Id",
-                  icon: Icons.ac_unit,
-                  routeName: MyIdeaId.routeName,
-                  justPush: true),
-              myListTile(
-                  context: context,
-                  name: "My Franchies",
-                  icon: Icons.ac_unit,
-                  routeName: MyFranchises.routeName,
-                  justPush: true),
-
+              value.token != null
+                  ? myListTile(
+                      context: context,
+                      name: "My Ideas Id",
+                      icon: Icons.ac_unit,
+                      routeName: MyIdeaId.routeName,
+                      justPush: true)
+                  : Container(),
+              value.token != null
+                  ? myListTile(
+                      context: context,
+                      name: "My Franchies",
+                      icon: Icons.ac_unit,
+                      routeName: MyFranchises.routeName,
+                      justPush: true)
+                  : Container(),
               myListTile(
                   context: context,
                   name: " Franchies List",
