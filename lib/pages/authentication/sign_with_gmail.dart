@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:onion/const/values.dart';
 
 import 'package:onion/models/users.dart' as userModel;
 
@@ -28,9 +30,8 @@ Future<User> signInWithGoogle() async {
       await _auth.signInWithCredential(credential);
   final User user = authResult.user;
 
-  _auth.currentUser.getIdToken(true).then((data) {
-    print("token firebase : $data");
-  });
+  String data = await _auth.currentUser.getIdToken(true);
+  await loginFirebase(data);
 
   print("firebase user $user");
 
@@ -65,6 +66,40 @@ Future<void> signOutGoogle() async {
   await googleSignIn.signOut();
 
   print("User Signed Out");
+}
+
+Future signupFirebase(parent) async {
+  final StringBuffer url = new StringBuffer(BASE_URL + "/public/categories");
+  Dio dio = new Dio();
+
+  try {
+    print({"type": "location", "parent": parent});
+    Response state = await dio.get(url.toString(),
+        queryParameters: {"type": "location", "parent": parent});
+
+    return state.data;
+  } on DioError catch (e) {
+    print("errors");
+    print(e.response);
+    // throw UploadException(e.response.data["message"]);
+  }
+}
+
+Future loginFirebase(token) async {
+  final StringBuffer url = new StringBuffer(BASE_URL + "/loginFirebase");
+  Dio dio = new Dio();
+
+  try {
+    Response state =
+        await dio.post(url.toString(), data: {"firebaseToken": token});
+
+    print("firebase Login ${state.data}");
+    return state.data;
+  } on DioError catch (e) {
+    print("errors");
+    print(e.response);
+    // throw UploadException(e.response.data["message"]);
+  }
 }
 
 Future<userModel.User> signInWithFacebook() async {

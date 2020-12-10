@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_wrapper/connectivity_wrapper.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 // import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -26,8 +31,10 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  // final FirebaseFirestore db = FirebaseFirestore.instance;
+  final FirebaseMessaging _fcm = FirebaseMessaging();
   // // google Sign Up
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -36,6 +43,38 @@ class _LoginState extends State<Login> {
   final username = new TextEditingController();
   final passport = new TextEditingController();
   bool _obscureText = true;
+
+  String fcmToken = "";
+
+  StreamSubscription iosSubscription;
+
+  @override
+  void dispose() {
+    if (iosSubscription != null) iosSubscription.cancel();
+    super.dispose();
+  }
+
+  @override
+  Future<void> initState()  {
+    super.initState();
+    getFcmToken();
+  }
+
+  Future<void> getFcmToken() async {
+      if (Platform.isIOS) {
+      iosSubscription = _fcm.onIosSettingsRegistered.listen((data) async {
+        fcmToken = await _fcm.getToken();
+        print("firebase token $fcmToken");
+      });
+
+      _fcm.requestNotificationPermissions(IosNotificationSettings());
+    } else {
+      fcmToken = await _fcm.getToken();
+      print("firebase token $fcmToken");
+    }
+
+    
+  }
 
   @override
   Widget build(context) {
@@ -386,7 +425,7 @@ class _LoginState extends State<Login> {
 
     try {
       await Provider.of<Auth>(context, listen: false)
-          .login(username.text, passport.text)
+          .login(username.text, passport.text, fcmtoken: fcmToken)
           .then(
             (value) => print("I LogIn: $value"),
           );
@@ -408,15 +447,15 @@ class _LoginState extends State<Login> {
     try {
       fi.User result = await signInWithGoogle();
       print("${result}");
-      if (result != null) {
-        user.User newUser = new user.User();
-        newUser.name = result.displayName;
-        newUser.email = result.email;
-        newUser.phone = result.phoneNumber;
-        newUser.profile = result.photoURL;
-        Navigator.pushNamed(context, ComplateProfile.routeName,
-            arguments: newUser);
-      }
+      // if (result != null) {
+      //   user.User newUser = new user.User();
+      //   newUser.name = result.displayName;
+      //   newUser.email = result.email;
+      //   newUser.phone = result.phoneNumber;
+      //   newUser.profile = result.photoURL;
+      //   Navigator.pushNamed(context, ComplateProfile.routeName,
+      //       arguments: newUser);
+      // }
     } catch (e) {
       print("google Error");
       print(e);

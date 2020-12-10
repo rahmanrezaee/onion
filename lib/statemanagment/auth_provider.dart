@@ -130,14 +130,16 @@ class Auth with ChangeNotifier {
     return Future.value(token);
   }
 
-  Future<void> _authenticate(String username, String password) async {
+  Future<void> _authenticate(
+      String username, String password, String token) async {
     final url = '$baseUrl/user/login';
 
     try {
-      final response = await dio.post(url, data: {
-        'email': username,
-        'password': password,
-      });
+      print("login data " +
+          {'email': username, 'password': password, "token": token}.toString());
+
+      final response = await dio.post(url,
+          data: {'email': username, 'password': password, "token": token});
 
       final responseData = response.data;
 
@@ -204,8 +206,8 @@ class Auth with ChangeNotifier {
     }
   }
 
-  Future login(String username, String password) async {
-    return _authenticate(username, password);
+  Future login(String username, String password, {fcmtoken}) async {
+    return _authenticate(username, password, fcmtoken);
   }
 
   Future<bool> tryGetToken() async {
@@ -300,9 +302,7 @@ class Auth with ChangeNotifier {
       };
       print(url.toString());
 
-      dio.options.headers = {
-        "token":token
-      };
+      dio.options.headers = {"token": token};
       var response = await dio.post(
         url.toString(),
         data: formData,
@@ -360,6 +360,8 @@ class Auth with ChangeNotifier {
       // throw UploadException(e.response.data["message"]);
     }
   }
+
+  
 }
 
 class LoginException implements Exception {
