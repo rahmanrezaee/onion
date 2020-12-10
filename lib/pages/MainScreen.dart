@@ -10,6 +10,7 @@ import 'package:onion/utilities/Connectivity/MyConnectivity.dart';
 import 'package:onion/widgets/Snanckbar.dart';
 import 'package:onion/widgets/bottom_nav.dart';
 import 'package:onion/pages/SearchTab/SearchTab.dart';
+import './idea/findIdea.dart';
 
 class MainScreen extends StatefulWidget {
   static String routeName = "mainScreen";
@@ -41,7 +42,8 @@ class _MainScreenState extends State<MainScreen> {
       MyMessagePage(openDrawer: widget.openDrawer),
       Analysis(),
       Dashboard(openDrawer: widget.openDrawer),
-      SearchTab(openDrawer: widget.openDrawer),
+      // SearchTab(openDrawer: widget.openDrawer),
+      FindIdea(),
     ];
 
     return Scaffold(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:onion/pages/Dashborad/dashborad.dart';
 import 'package:onion/pages/Idea/InnovatorsIdeas.dart';
 import 'package:onion/pages/Idea/MyIdeaDetailes.dart';
+import 'package:onion/pages/Idea/bid.dart';
 import 'package:onion/pages/Idea/bidonIdea.dart';
 import 'package:onion/pages/Idea/findIdea.dart';
 import 'package:onion/pages/Idea/myBiddedIdea.dart';

@@ -12,6 +12,7 @@ class User {
   String country;
   String state;
   String profile;
+  bool setupIdea;
 
   Map<String, String> toMap() {
     return {
@@ -24,6 +25,7 @@ class User {
       'country': country != null ? '$country' : null,
       'state': state != null ? '$state' : null,
       'avatar': profile != null ? '$profile' : null,
+      'setupIdea': setupIdea != null ? '$setupIdea' : null,
     };
   }
 }
