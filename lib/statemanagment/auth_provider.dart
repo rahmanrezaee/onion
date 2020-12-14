@@ -361,7 +361,107 @@ class Auth with ChangeNotifier {
     }
   }
 
-  
+  Future<String> loginFirebase(String idToken) async {
+    final url = '$baseUrl/user/loginFirebase';
+
+    try {
+      dio.options.headers = {"firebaseToken": idToken};
+      final response = await dio.post(url);
+
+      // authMethods.signInWithEmailAndPassword(username, password).then((value) {
+      //   print("Mahdi I am Firebase SignIn: $value");
+      // }).catchError((e) {
+      //   print("Mahdi I am Firebase SignIn: $e");
+      // });
+
+      final responseData = response.data;
+      print("response firebase $responseData");
+      if (responseData['message'] != null) {
+        return "NEW_USER";
+      } else {
+        var prefs = await SharedPreferences.getInstance();
+        final userData = json.encode(
+          {
+            'token': responseData['token'],
+            'username': responseData['data']['username'],
+            'id': responseData['data']['_id'],
+            'country': responseData['data']['country'],
+            'phone': responseData['data']['phone'],
+            'email': responseData['data'],
+            'password': "abcd123",
+            'profile': responseData['data']['avatar'],
+          },
+        );
+        token = responseData['token'];
+        currentUser.name = responseData['data']['username'];
+        currentUser.email = responseData['data']['email'];
+        currentUser.country = responseData['data']['country'];
+        currentUser.profile = responseData['data']['avatar'];
+
+        prefs.setString('userData', userData);
+        notifyListeners();
+        return "EXITS";
+      }
+    } on DioError catch (e) {
+      if (e.response == null) {
+        return null;
+      }
+
+      if (e.response.data['errors'] != null) {
+        throw new LoginException(e.response.data['errors'][0]["msg"]);
+      }
+      if (e.response.data['message'] != null) {
+        throw new LoginException(e.response.data['message']);
+      }
+
+      if (e.response != null) {
+        print(e.response.data);
+        print(e.response.headers);
+        print(e.response.request);
+      } else {
+        print(e.request);
+        print(e.message);
+      }
+    }
+  }
+
+  Future registerFirebaseUser({User user, String idToken}) async {
+    try {
+      final String url = "$baseUrl/user/signupFirebase";
+      dio.options.headers = {"firebaseToken": idToken};
+
+      print("user data ${user.toMap()}");
+      var response = await dio.post(url, data: user.toMap());
+      final responseData = response.data;
+
+      var prefs = await SharedPreferences.getInstance();
+
+      currentUser = user;
+      userDataField = {
+        'token': responseData['token'],
+        'username': user.name,
+        'country': user.country,
+        'phone': user.phone,
+        'email': user.email,
+        'password': user.password,
+        'profile': user.profile != null ? user.profile : "",
+      };
+      var userData = json.encode(userDataField);
+      prefs.setString('userData', userData);
+      notifyListeners();
+    } on DioError catch (e) {
+      if (e.response.data['errors'] != null) {
+        print("error occure 1");
+
+        return e.response.data['errors'][0]["msg"];
+      }
+
+      if (e.response.data['msg'] != null) {
+        print("error occure 2");
+        return e.response.data['msg'];
+      }
+    }
+  }
 }
 
 class LoginException implements Exception {

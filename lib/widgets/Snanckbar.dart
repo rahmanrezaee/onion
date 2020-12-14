@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 
-Widget showSnackbar({String text, Icon icon, Color color, Duration duration,margin}) {
+Widget showSnackbar(
+    {String text, Icon icon, Color color, Duration duration, margin}) {
   return new SnackBar(
-    behavior: SnackBarBehavior.floating,
-    margin: margin,
+    // behavior: SnackBarBehavior.floating,
+    // margin: margin,
     backgroundColor: color,
     content: Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        new Text(
-          text,
-          style: TextStyle(fontFamily: "Vazir"),
+        Expanded(
+          child: new Text(
+            text,
+            style: TextStyle(fontFamily: "Vazir"),
+            overflow: TextOverflow.visible,
+          ),
         ),
         icon
       ],

@@ -1,11 +1,16 @@
-import 'package:dio/dio.dart';
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:onion/const/values.dart';
 
 import 'package:onion/models/users.dart' as userModel;
+import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -14,9 +19,8 @@ String name;
 String email;
 String imageUrl;
 
-Future<User> signInWithGoogle() async {
+Future<String> signInWithGoogle() async {
   await Firebase.initializeApp();
-
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
   final GoogleSignInAuthentication googleSignInAuthentication =
       await googleSignInAccount.authentication;
@@ -30,90 +34,62 @@ Future<User> signInWithGoogle() async {
       await _auth.signInWithCredential(credential);
   final User user = authResult.user;
 
-  String data = await _auth.currentUser.getIdToken(true);
-  await loginFirebase(data);
+  String idToken = await authResult.user.getIdToken(true);
 
-  print("firebase user $user");
+  return idToken;
+}
 
-  if (user != null) {
-    // Checking if email and name is null
-    assert(user.email != null);
-    assert(user.displayName != null);
-    assert(user.photoURL != null);
+Future<Map> signInWithFacebook() async {
+  print("idToken wait");
+  try {
+    final AccessToken result = await FacebookAuth.instance.login();
 
-    name = user.displayName;
-    email = user.email;
-    imageUrl = user.photoURL;
+    // Create a credential from the access token
+    final FacebookAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(result.token);
+    print("idToken token ${result.token}");
+    // Once signed in, return the UserCredential
 
-    // Only taking the first part of the name, i.e., First Name
-    if (name.contains(" ")) {
-      name = name.substring(0, name.indexOf(" "));
-    }
+     
+   
+    UserCredential authResult = await FirebaseAuth.instance
+        .signInWithCredential(facebookAuthCredential);
+    print("idToken auth it ${result.token}");
+    String idToken = await authResult.user.getIdToken(true);
 
-    assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
+    print("idToken authResult $authResult");
+    print("idToken $idToken");
 
-    final User currentUser = _auth.currentUser;
-    assert(user.uid == currentUser.uid);
+    return {
+      "status" : true,
+      "idToken" : idToken,
+    };
+  } catch (e, s) {
 
-    return user;
+    return {
+      "status" : false,
+      "message" : e.message,
+    };
+    // print("error ${e.message}");
+    // if (e is FacebookAuthException) {
+    //   print(e.message);
+    //   switch (e.errorCode) {
+    //     case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
+    //       print("idToken You have a previous login operation in progress");
+    //       break;
+    //     case FacebookAuthErrorCode.CANCELLED:
+    //       print("idToken login cancelled");
+    //       break;
+    //     case FacebookAuthErrorCode.FAILED:
+    //       print("idToken login failed");
+    //       break;
+    //   }
+    // }
   }
-
-  return null;
 }
 
 Future<void> signOutGoogle() async {
   await googleSignIn.signOut();
 
   print("User Signed Out");
-}
-
-Future signupFirebase(parent) async {
-  final StringBuffer url = new StringBuffer(BASE_URL + "/public/categories");
-  Dio dio = new Dio();
-
-  try {
-    print({"type": "location", "parent": parent});
-    Response state = await dio.get(url.toString(),
-        queryParameters: {"type": "location", "parent": parent});
-
-    return state.data;
-  } on DioError catch (e) {
-    print("errors");
-    print(e.response);
-    // throw UploadException(e.response.data["message"]);
-  }
-}
-
-Future loginFirebase(token) async {
-  final StringBuffer url = new StringBuffer(BASE_URL + "/loginFirebase");
-  Dio dio = new Dio();
-
-  try {
-    Response state =
-        await dio.post(url.toString(), data: {"firebaseToken": token});
-
-    print("firebase Login ${state.data}");
-    return state.data;
-  } on DioError catch (e) {
-    print("errors");
-    print(e.response);
-    // throw UploadException(e.response.data["message"]);
-  }
-}
-
-Future<userModel.User> signInWithFacebook() async {
-  // userModel.User u = new userModel.User();
-  // Trigger the sign-in flow
-  // await Firebase.initializeApp();
-
-  // by default the login method has the next permissions ['email','public_profile']
-  // AccessToken accessToken = await FacebookAuth.instance.login();
-  // print(accessToken.toJson());
-  // get the user data
-  // final auserDatasd = await FacebookAuth.instance.getUserData();
-  // print(auserDatasdz);
-  // u.name = auserDatasd['']
-
-  // return u;
 }

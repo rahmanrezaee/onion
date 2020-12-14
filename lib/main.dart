@@ -76,7 +76,6 @@ import './pages/idea/biddedIdeas.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  SharedPreferences.setMockInitialValues({});
   runApp(ConnectivityAppWrapper(
     app: MultiProvider(
       providers: [
@@ -128,17 +127,7 @@ void main() async {
   ));
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(context) {
     Provider.of<Auth>(context, listen: false).tryAutoLogin();
@@ -165,36 +154,37 @@ class _MyAppState extends State<MyApp> {
               bodyText2: TextStyle(color: Colors.black54),
             ),
           ),
-          home: 
-          // MessageHandler(),
-           CustomDrawerPage(widget.key),
-          // home: MyBiddedIdeaPage(),
+          home: CustomDrawerPage(key),
           routes: {
-            Login.routeName: (context) =>
-                auth.token != null ? CustomDrawerPage(widget.key) : Login(),
+            Login.routeName: (context) => auth.token != null
+                ? CustomDrawerPage(key)
+                : FutureBuilder(
+                    future: Provider.of<Auth>(context, listen: false)
+                        .tryAutoLogin(),
+                    builder: (ctx, authResultSnapshot) =>
+                        authResultSnapshot.connectionState ==
+                                ConnectionState.waiting
+                            ? Scaffold(
+                                body: Center(child: Text("Loading...")),
+                              )
+                            : Login(),
+                  ),
             MyIdeaId.routeName: (context) => MyIdeaId(),
             AnalysisList.routeName: (context) => AnalysisList(),
             ProfilePage.routeName: (context) => ProfilePage(),
-            RequestOnFranchise.routeName: (context) => RequestOnFranchise(
-                  ModalRoute.of(context).settings.arguments,
-                ),
+            // RequestOnFranchise.routeName: (context) => RequestOnFranchise(),
             SignUp.routeName: (context) =>
-                auth.token != null ? CustomDrawerPage(widget.key) : SignUp(),
-            ComplateProfile.routeName: (context) => auth.token != null
-                ? CustomDrawerPage(widget.key)
-                : ComplateProfile(
-                    ModalRoute.of(context).settings.arguments,
-                  ),
-            CustomDrawerPage.routeName: (context) =>
-                CustomDrawerPage(widget.key),
+                auth.token != null ? CustomDrawerPage(key) : SignUp(),
+            ComplateProfile.routeName: (context) =>
+                auth.token != null ? CustomDrawerPage(key) : ComplateProfile(),
+            CustomDrawerPage.routeName: (context) => CustomDrawerPage(key),
             AnalyticsOne.routeName: (context) => AnalyticsOne(),
             Analysis.routeName: (context) => Analysis(),
             RequestedIdeaPage.routeName: (context) => RequestedIdeaPage(),
-            ForgetPassword.routeName: (context) => auth.token != null
-                ? CustomDrawerPage(widget.key)
-                : ForgetPassword(),
+            ForgetPassword.routeName: (context) =>
+                auth.token != null ? CustomDrawerPage(key) : ForgetPassword(),
             ChangePassword.routeName: (context) => auth.token != null
-                ? CustomDrawerPage(widget.key)
+                ? CustomDrawerPage(key)
                 : ChangePassword(
                     ModalRoute.of(context).settings.arguments,
                   ),
@@ -206,37 +196,20 @@ class _MyAppState extends State<MyApp> {
             NotificationsList.routeName: (context) => NotificationsList(),
             PostIdea.routeName: (context) => PostIdea(),
             FandQ.routeName: (context) => FandQ(),
-            SearchTab.routeName: (context) => SearchTab(),
             Services.routeName: (context) => Services(),
-            FranchiesList.routeName: (context) => FranchiesList(),
             Settings.routeName: (context) => Settings(),
-            RequestFranchisesUser.routeName: (context) => RequestFranchisesUser(
-                  ModalRoute.of(context).settings.arguments,
-                ),
+            // RequestFranchisesUser.routeName: (context) =>
+            //     RequestFranchisesUser(),
             ViewFranchisesUser.routeName: (context) => ViewFranchisesUser(
                   ModalRoute.of(context).settings.arguments,
                 ),
             MyIdeaId.routeName: (context) => MyIdeaId(),
             // MyIdeaDetails.routeName: (context) => MyIdeaDetails( ModalRoute.of(context).settings.arguments,),
-            ViewMyRequestFranchise.routeName: (context) =>
-                ViewMyRequestFranchise(
-                  ModalRoute.of(context).settings.arguments,
-                ),
+            // ViewMyRequestFranchise.routeName: (context) => ViewMyRequestFranchise( ),
             RequestPage.routeName: (context) => RequestPage(),
             RatingPage.routeName: (context) => RatingPage(),
             MyFranchises.routeName: (context) => MyFranchises(),
-            AddFranchise.routeName: (context) => AddFranchise(
-                  editFile: ModalRoute.of(context).settings.arguments,
-                ),
-            RequestedIdeas.routeName: (context) => RequestedIdeas(),
-            BiddedIdeas.routeName: (context) => BiddedIdeas(),
-            BidOnIdeaPage.routeName: (context) => BidOnIdeaPage(),
-            MyBiddedIdeaPage.routeName: (context) => MyBiddedIdeaPage(),
-            viewFranchiesInterstedReqeust.routeName: (context) =>
-                viewFranchiesInterstedReqeust(
-                  ModalRoute.of(context).settings.arguments,
-                ),
-            RequestFranchiesList.routeName: (context) => RequestFranchiesList(),
+            AddFranchise.routeName: (context) => AddFranchise(),
           },
           onUnknownRoute: (settings) {
             return MaterialPageRoute(builder: (_) => UnderDevelopment());

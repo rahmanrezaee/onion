@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -443,19 +443,18 @@ class _LoginState extends State<Login> {
     setState(() {
       _isloadingGoogle = true;
     });
-
+    var auth_provider = Provider.of<Auth>(context, listen: false);
     try {
-      fi.User result = await signInWithGoogle();
-      print("${result}");
-      // if (result != null) {
-      //   user.User newUser = new user.User();
-      //   newUser.name = result.displayName;
-      //   newUser.email = result.email;
-      //   newUser.phone = result.phoneNumber;
-      //   newUser.profile = result.photoURL;
-      //   Navigator.pushNamed(context, ComplateProfile.routeName,
-      //       arguments: newUser);
-      // }
+      String idToken = await signInWithGoogle();
+      print("idToken $idToken");
+      var response = await auth_provider.loginFirebase(idToken);
+      if (response != null && response == "NEW_USER") {
+        Navigator.pushNamed(
+          context,
+          ComplateProfile.routeName,
+        );
+        // auth_provider.signUpFirebase(idToken);
+      }
     } catch (e) {
       print("google Error");
       print(e);
@@ -472,22 +471,28 @@ class _LoginState extends State<Login> {
     setState(() {
       _isloadingFacebook = true;
     });
+    var auth_provider = Provider.of<Auth>(context, listen: false);
 
     try {
-      // by default the login method has the next permissions ['email','public_profile']
-      await FacebookAuth.instance.login();
-      final auserDatasd = await FacebookAuth.instance.getUserData();
-      print(auserDatasd);
-      if (auserDatasd != null) {
-        user.User newUser = new user.User();
+      Map loginState = await signInWithFacebook();
 
-        newUser.name = auserDatasd["name"];
-        newUser.email = auserDatasd["email"];
-        newUser.phone = "";
-
-        newUser.profile = auserDatasd['picture']['data']['url'];
-        Navigator.pushNamed(context, ComplateProfile.routeName,
-            arguments: newUser);
+      print("status $loginState");
+      if (loginState['status']) {
+        var response = await auth_provider.loginFirebase(loginState['idToken']);
+        if (response != null && response == "NEW_USER") {
+          Navigator.pushNamed(
+            context,
+            ComplateProfile.routeName,
+          );
+          // auth_provider.signUpFirebase(idToken);
+        } else {
+          // print(e.cause);
+        }
+      } else {
+        _scaffoldKey.currentState.showSnackBar(showSnackbar(
+            color: Colors.red,
+            icon: Icon(Icons.error),
+            text: loginState["message"]));
       }
     } catch (e, s) {
       if (e is FacebookAuthException) {
