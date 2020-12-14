@@ -42,6 +42,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: ConnectivityWidgetWrapper(
         child: Stack(
           alignment: Alignment.center,
@@ -430,22 +431,28 @@ class _LoginState extends State<Login> {
     setState(() {
       _isloadingFacebook = true;
     });
+    var auth_provider = Provider.of<Auth>(context, listen: false);
 
     try {
-      // by default the login method has the next permissions ['email','public_profile']
-      await FacebookAuth.instance.login();
-      final auserDatasd = await FacebookAuth.instance.getUserData();
-      print(auserDatasd);
-      if (auserDatasd != null) {
-        user.User newUser = new user.User();
+      Map loginState = await signInWithFacebook();
 
-        newUser.name = auserDatasd["name"];
-        newUser.email = auserDatasd["email"];
-        newUser.phone = "";
-
-        newUser.profile = auserDatasd['picture']['data']['url'];
-        Navigator.pushNamed(context, ComplateProfile.routeName,
-            arguments: newUser);
+      print("status $loginState");
+      if (loginState['status']) {
+        var response = await auth_provider.loginFirebase(loginState['idToken']);
+        if (response != null && response == "NEW_USER") {
+          Navigator.pushNamed(
+            context,
+            ComplateProfile.routeName,
+          );
+          // auth_provider.signUpFirebase(idToken);
+        } else {
+          // print(e.cause);
+        }
+      } else {
+        _scaffoldKey.currentState.showSnackBar(showSnackbar(
+            color: Colors.red,
+            icon: Icon(Icons.error),
+            text: loginState["message"]));
       }
     } catch (e, s) {
       if (e is FacebookAuthException) {

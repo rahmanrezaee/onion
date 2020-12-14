@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 // import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -34,28 +35,60 @@ Future<String> signInWithGoogle() async {
 
   String idToken = await authResult.user.getIdToken(true);
 
-
   return idToken;
+}
+
+Future<Map> signInWithFacebook() async {
+  print("idToken wait");
+  try {
+    final AccessToken result = await FacebookAuth.instance.login();
+
+    // Create a credential from the access token
+    final FacebookAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(result.token);
+    print("idToken token ${result.token}");
+    // Once signed in, return the UserCredential
+
+     
+   
+    UserCredential authResult = await FirebaseAuth.instance
+        .signInWithCredential(facebookAuthCredential);
+    print("idToken auth it ${result.token}");
+    String idToken = await authResult.user.getIdToken(true);
+
+    print("idToken authResult $authResult");
+    print("idToken $idToken");
+
+    return {
+      "status" : true,
+      "idToken" : idToken,
+    };
+  } catch (e, s) {
+
+    return {
+      "status" : false,
+      "message" : e.message,
+    };
+    // print("error ${e.message}");
+    // if (e is FacebookAuthException) {
+    //   print(e.message);
+    //   switch (e.errorCode) {
+    //     case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
+    //       print("idToken You have a previous login operation in progress");
+    //       break;
+    //     case FacebookAuthErrorCode.CANCELLED:
+    //       print("idToken login cancelled");
+    //       break;
+    //     case FacebookAuthErrorCode.FAILED:
+    //       print("idToken login failed");
+    //       break;
+    //   }
+    // }
+  }
 }
 
 Future<void> signOutGoogle() async {
   await googleSignIn.signOut();
 
   print("User Signed Out");
-}
-
-Future<userModel.User> signInWithFacebook() async {
-  // userModel.User u = new userModel.User();
-  // Trigger the sign-in flow
-  // await Firebase.initializeApp();
-
-  // by default the login method has the next permissions ['email','public_profile']
-  // AccessToken accessToken = await FacebookAuth.instance.login();
-  // print(accessToken.toJson());
-  // get the user data
-  // final auserDatasd = await FacebookAuth.instance.getUserData();
-  // print(auserDatasdz);
-  // u.name = auserDatasd['']
-
-  // return u;
 }
