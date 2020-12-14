@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 // import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:onion/models/users.dart' as userModel;
+import 'package:onion/statemanagment/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -12,9 +17,8 @@ String name;
 String email;
 String imageUrl;
 
-Future<User> signInWithGoogle() async {
+Future<String> signInWithGoogle() async {
   await Firebase.initializeApp();
-
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
   final GoogleSignInAuthentication googleSignInAuthentication =
       await googleSignInAccount.authentication;
@@ -28,37 +32,10 @@ Future<User> signInWithGoogle() async {
       await _auth.signInWithCredential(credential);
   final User user = authResult.user;
 
-  _auth.currentUser.getIdToken(true).then((data) {
-    print("token firebase : $data");
-  });
+  String idToken = await authResult.user.getIdToken(true);
 
-  print("firebase user $user");
 
-  if (user != null) {
-    // Checking if email and name is null
-    assert(user.email != null);
-    assert(user.displayName != null);
-    assert(user.photoURL != null);
-
-    name = user.displayName;
-    email = user.email;
-    imageUrl = user.photoURL;
-
-    // Only taking the first part of the name, i.e., First Name
-    if (name.contains(" ")) {
-      name = name.substring(0, name.indexOf(" "));
-    }
-
-    assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
-
-    final User currentUser = _auth.currentUser;
-    assert(user.uid == currentUser.uid);
-
-    return user;
-  }
-
-  return null;
+  return idToken;
 }
 
 Future<void> signOutGoogle() async {

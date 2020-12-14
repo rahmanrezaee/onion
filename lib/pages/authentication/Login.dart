@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -400,20 +402,17 @@ class _LoginState extends State<Login> {
     setState(() {
       _isloadingGoogle = true;
     });
-
+    var auth_provider = Provider.of<Auth>(context, listen: false);
     try {
-      fi.User result = await signInWithGoogle();
-
-      if (result != null) {
-        user.User newUser = new user.User();
-
-        newUser.name = result.displayName;
-        newUser.email = result.email;
-        newUser.phone = result.phoneNumber;
-
-        newUser.profile = result.photoURL;
-        Navigator.pushNamed(context, ComplateProfile.routeName,
-            arguments: newUser);
+      String idToken = await signInWithGoogle();
+      print("idToken $idToken");
+      var response = await auth_provider.loginFirebase(idToken);
+      if (response != null && response == "NEW_USER") {
+        Navigator.pushNamed(
+          context,
+          ComplateProfile.routeName,
+        );
+        // auth_provider.signUpFirebase(idToken);
       }
     } catch (e) {
       print("google Error");

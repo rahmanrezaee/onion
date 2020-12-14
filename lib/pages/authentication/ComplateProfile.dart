@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onion/models/users.dart';
@@ -7,12 +8,14 @@ import 'package:onion/widgets/Checkbox/GlowCheckbox.dart';
 import 'package:onion/widgets/DropdownWidget/DropDownFormField.dart';
 import 'package:onion/widgets/Snanckbar.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fUser;
+import 'package:onion/models/users.dart' as sUser;
 
 // ignore: must_be_immutable
 class ComplateProfile extends StatefulWidget {
   static String routeName = '/complateProfile';
-  User user;
-  ComplateProfile(this.user);
+
+  ComplateProfile();
   @override
   _ComplateProfileState createState() => _ComplateProfileState();
 }
@@ -20,8 +23,9 @@ class ComplateProfile extends StatefulWidget {
 class _ComplateProfileState extends State<ComplateProfile> {
   final _formKey = new GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  User user = new User();
+  sUser.User user = new sUser.User();
 
+  FirebaseAuth userfirebase = FirebaseAuth.instance;
   bool checkboxSelected = false;
   bool switchSelected = false;
   bool radioSelected = false;
@@ -30,7 +34,16 @@ class _ComplateProfileState extends State<ComplateProfile> {
   bool _obscureText = true;
 
   @override
-  Widget build( context) {
+  void initState() {
+    user.name = userfirebase.currentUser.displayName;
+    user.email = userfirebase.currentUser.email;
+    user.profile = userfirebase.currentUser.photoURL;
+
+    super.initState();
+  }
+
+  @override
+  Widget build(context) {
     return Scaffold(
       key: _scaffoldKey,
       body: Stack(
@@ -111,8 +124,8 @@ class _ComplateProfileState extends State<ComplateProfile> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(25.0),
                             child: FadeInImage.assetNetwork(
-                              image: widget.user.profile != null
-                                  ? widget.user.profile
+                              image: userfirebase.currentUser.photoURL != null
+                                  ? userfirebase.currentUser.photoURL
                                   : null,
                               placeholder: "assets/images/user.png",
                             ),
@@ -120,7 +133,7 @@ class _ComplateProfileState extends State<ComplateProfile> {
                         ),
                         SizedBox(height: 10),
                         Text(
-                          widget.user.name,
+                          userfirebase.currentUser.displayName,
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
@@ -128,7 +141,7 @@ class _ComplateProfileState extends State<ComplateProfile> {
                         ),
 
                         Text(
-                          widget.user.email,
+                          userfirebase.currentUser.email,
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
@@ -326,41 +339,38 @@ class _ComplateProfileState extends State<ComplateProfile> {
   }
 
   Future<void> signUp() async {
-    _scaffoldKey.currentState.showSnackBar(showSnackbar(
-      text:
-        "For now is not Avilable",
-        icon:
-        Icon(Icons.alarm),
-        color:
-        Colors.red));
-    // if (_formKey.currentState.validate()) {
-    //   _formKey.currentState.save();
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
 
-    //   setState(() {
-    //     _isLoading = true;
-    //   });
-    //   try {
-    //     var re = await Provider.of<Auth>(context, listen: false)
-    //         .registerUser(user: user);
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        var re = await Provider.of<Auth>(context, listen: false)
+            .registerFirebaseUser(
+                user: user,
+                idToken: await userfirebase.currentUser.getIdToken(true));
 
-    //     if (re != null) {
-    //       _scaffoldKey.currentState
-    //           .showSnackBar(showSnackbar(re, Icon(Icons.alarm), Colors.red));
-    //     } else {
-    //       Navigator.pop(context);
-    //     }
+        if (re != null) {
+          print(re);
+          // _scaffoldKey.currentState
+          //     .showSnackBar(showSnackbar(re, Icon(Icons.alarm), Colors.red));
+        } else {
+          Navigator.pop(context);
+        }
 
-    //     // Navigator.pop(context);
-    //   } on LoginException catch (e) {
-    //     _scaffoldKey.currentState.showSnackBar(showSnackbar(
-    //         "Have Problem to Connection. Check Your Connection",
-    //         Icon(Icons.alarm),
-    //         Colors.red));
-    //   }
+        // Navigator.pop(context);
+      } on LoginException catch (e) {
+        print(e);
+        // _scaffoldKey.currentState.showSnackBar(showSnackbar(
+        //     "Have Problem to Connection. Check Your Connection",
+        //     Icon(Icons.alarm),
+        //     Colors.red));
+      }
 
-    //   setState(() {
-    //     _isLoading = false;
-    //   });
-    // }
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }
